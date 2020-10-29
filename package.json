@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Vonage/vonage-cli#readme",
   "devDependencies": {
+    "@oclif/test": "^1.2.7",
     "@types/jest": "^26.0.15",
     "@types/node": "^14.14.6",
     "eslint": "^7.12.1",
