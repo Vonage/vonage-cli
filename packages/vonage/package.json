@@ -1,0 +1,42 @@
+{
+  "name": "vonage",
+  "version": "0.0.0",
+  "author": "Kelly J Andrews @kellyjandrews",
+  "bin": {
+    "vonage": "./bin/run"
+  },
+  "bugs": "https://github.com/Vonage/vonage-cli/issues",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/dist",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/Vonage/vonage-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "Apache 2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "vonage",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "Vonage/vonage-cli",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
