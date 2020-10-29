@@ -28,7 +28,8 @@
     "commands": "./lib/commands",
     "bin": "vonage",
     "plugins": [
-      "@oclif/plugin-help"
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
     ]
   },
   "repository": "Vonage/vonage-cli",
@@ -36,7 +37,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "echo NO TESTS",
+    "test-watch": "../../node_modules/.bin/jest --watch",
     "version": "oclif-dev readme && git add README.md"
   }
 }
