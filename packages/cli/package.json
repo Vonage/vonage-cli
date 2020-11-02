@@ -1,5 +1,5 @@
 {
-  "name": "vonage",
+  "name": "@vonage/cli",
   "version": "0.0.0",
   "author": "Kelly J Andrews @kellyjandrews",
   "bin": {
@@ -29,7 +29,8 @@
     "bin": "vonage",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-plugins",
+      "@vonage/cli-numbers"
     ]
   },
   "repository": "Vonage/vonage-cli",

@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
 
-export default class Hello extends Command {
+export default class NumbersList extends Command {
   static description = 'describe the command here'
 
   static examples = [

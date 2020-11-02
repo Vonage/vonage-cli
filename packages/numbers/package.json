@@ -1,5 +1,5 @@
 {
-  "name": "numbers",
+  "name": "@vonage/cli-numbers",
   "version": "0.0.0",
   "author": "Kelly J Andrews @kellyjandrews",
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
