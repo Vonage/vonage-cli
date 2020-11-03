@@ -45,8 +45,8 @@ OPTIONS
 
 EXAMPLE
   $ oclif-example hello
-  hello world from ./src/hello.ts!
+  hello world from ./src/setup.ts!
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/Vonage/cli-plugin-auth/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/setup.ts](https://github.com/Vonage/cli-plugin-auth/blob/v0.0.0/src/commands/hello.ts)_
 <!-- commandsstop -->
