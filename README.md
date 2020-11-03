@@ -57,7 +57,7 @@ First change directory `cd packages/cli`. Next, run `lerna add @vonage/cli-plugi
 
 Lastly, add it to the `@vonage/cli` -> `package.json` file.
 
-```json
+```js
 {
   "name": "@vonage/cli",
   // ...
