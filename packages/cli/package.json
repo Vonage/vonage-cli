@@ -1,13 +1,29 @@
 {
   "name": "@vonage/cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Kelly J Andrews @kellyjandrews",
   "bin": {
     "vonage": "./bin/run"
   },
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "@oclif/plugin-help": "^3.2.0",
+    "@oclif/plugin-plugins": "^1.9.1",
+    "@vonage/cli-plugin-numbers": "^0.0.0",
+    "tslib": "^1.14.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@types/node": "^10.17.42",
+    "eslint": "^5.16.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
+    "globby": "^10.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -22,15 +38,14 @@
     "oclif"
   ],
   "license": "Apache 2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "vonage",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
-      "@vonage/cli-numbers"
+      "@vonage/cli-plugin-numbers"
     ]
   },
   "repository": "Vonage/vonage-cli",
