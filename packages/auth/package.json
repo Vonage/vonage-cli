@@ -1,23 +1,17 @@
 {
-  "name": "@vonage/cli",
-  "version": "0.0.1",
-  "author": "Kelly J Andrews @kellyjandrews",
-  "bin": {
-    "vonage": "./bin/run"
-  },
-  "bugs": "https://github.com/Vonage/vonage-cli/issues",
+  "name": "@vonage/cli-plugin-auth",
+  "version": "0.0.0",
+  "author": "Luke Oliff @lukeocodes",
+  "bugs": "https://github.com/Vonage/cli-plugin-auth/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
-    "@oclif/plugin-help": "^3.2.0",
-    "@oclif/plugin-plugins": "^1.9.1",
-    "@vonage/cli-plugin-auth": "^0.0.0",
-    "@vonage/cli-plugin-numbers": "^0.0.0",
     "tslib": "^1.14.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",
-    "@types/node": "^10.17.42",
+    "@oclif/plugin-help": "^3.2.0",
+    "@types/node": "^10.17.44",
     "eslint": "^5.16.0",
     "eslint-config-oclif": "^3.1.0",
     "eslint-config-oclif-typescript": "^0.1.0",
@@ -29,33 +23,28 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/bin",
-    "/dist",
+    "/lib",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/Vonage/vonage-cli",
+  "homepage": "https://github.com/Vonage/cli-plugin-auth",
   "keywords": [
-    "oclif"
+    "oclif-plugin"
   ],
   "license": "Apache 2.0",
-  "main": "lib/index.js",
   "oclif": {
     "commands": "./lib/commands",
-    "bin": "vonage",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins",
-      "@vonage/cli-plugin-numbers",
-      "@vonage/cli-plugin-auth"
+    "bin": "oclif-example",
+    "devPlugins": [
+      "@oclif/plugin-help"
     ]
   },
-  "repository": "Vonage/vonage-cli",
+  "repository": "Vonage/cli-plugin-auth",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test-watch": "../../node_modules/.bin/jest --watch",
+    "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   }
 }
