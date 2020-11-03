@@ -1,26 +1,37 @@
 {
-  "name": "@vonage/cli-numbers",
+  "name": "@vonage/cli-plugin-numbers",
   "version": "0.0.0",
-  "author": "Kelly J Andrews @kellyjandrews",
-  "bugs": "https://github.com/Vonage/vonage-cli/issues",
-  "dependencies": {},
-  "devDependencies": {},
+  "author": "Luke Oliff @lukeocodes",
+  "bugs": "https://github.com/Vonage/cli-plugin-numbers/issues",
+  "dependencies": {
+    "@oclif/command": "^1.8.0",
+    "@oclif/config": "^1.17.0",
+    "tslib": "^1.14.1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/plugin-help": "^3.2.0",
+    "@types/node": "^10.17.44",
+    "eslint": "^5.16.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
+    "globby": "^10.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
   "engines": {
     "node": ">=8.0.0"
   },
   "files": [
-    "/dist",
+    "/lib",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json",
-    "/package.lock"
+    "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/Vonage/vonage-cli",
+  "homepage": "https://github.com/Vonage/cli-plugin-numbers",
   "keywords": [
     "oclif-plugin"
   ],
-  "license": "Apache 2.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "MIT",
   "oclif": {
     "commands": "./lib/commands",
     "bin": "oclif-example",
@@ -28,12 +39,12 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "Vonage/vonage-cli",
+  "repository": "Vonage/cli-plugin-numbers",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test-watch": "../../node_modules/.bin/jest --watch",
+    "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   }
 }
