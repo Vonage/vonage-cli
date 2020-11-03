@@ -32,7 +32,7 @@ For problems directly related to the CLI, [add an issue on GitHub](https://githu
 Developing
 ==========
 
-This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `lerna bootstrap` after cloning the repository to set it up.
+This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages). Run `npm install && lerna bootstrap` after cloning the repository to set it up.
 
 The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment. `./bin/run` is a symlink to the core package `./packages/cli/bin/run`.
 
