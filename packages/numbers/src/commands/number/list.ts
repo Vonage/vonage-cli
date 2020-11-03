@@ -12,26 +12,13 @@ list all numbers
 
   static flags = {
     help: flags.help({char: 'h'}),
-    app: flags.boolean({char: 'n', description: 'list app numbers'}),
-    sip: flags.boolean({char: 't', description: 'list sip numbers'}),
-    sms: flags.boolean({char: 's', description: 'list sms numbers'}),
-    tel: flags.boolean({char: 't', description: 'list tel numbers'}),
+    features: flags.string({char: 'f', description: 'comma separate list of number features'}),
   }
 
   async run() {
     const {flags} = this.parse(List)
     const numbers = new Numbers()
 
-    if (flags.app) {
-      this.log(numbers.list('app'))
-    } else if (flags.sip) {
-      this.log(numbers.list('sip'))
-    } else if (flags.sms) {
-      this.log(numbers.list('sms'))
-    } else if (flags.tel) {
-      this.log(numbers.list('tel'))
-    } else {
-      this.log(numbers.list('all'))
-    }
+    numbers.list(flags)
   }
 }
