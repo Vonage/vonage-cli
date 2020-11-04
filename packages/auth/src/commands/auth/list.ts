@@ -1,39 +1,42 @@
-import {Command, flags} from '@oclif/command'
-import cli from 'cli-ux'
+import {Command} from '@oclif/command'
 import * as fs from 'fs'
 
 export default class List extends Command {
-  static description = 'sets API Key and Secret'
+  static description = 'lists Global and Local API Keys and Secrets'
 
   static examples = [
-    `$ vonage auth:setup --apikey=YOURAPIKEY --apisecret=YOURAPISECRET -l
-Credentials written to /path/to/your/local/project/.vonagerc
+    `$ vonage auth:list
+Global credentials:
+API Key: GlobalAPIKey API Secret: Gl*********
+Local credentials:
+API Key: LocalAPIKey API Secret: Lo*******
 `,
   ]
 
-  static flags = {
-    help: flags.help({char: 'h'}),
-    local: flags.boolean({char: 'l', description: 'save credentials to local folder'}),
-    apikey: flags.string({description: 'API key'}),
-    apisecret: flags.string({description: 'API secret'}),
+  maskSecret(apiSecret:string){
+    const show = 2;
+    const mask = '*'
+    return apiSecret.slice(0,show)+mask.repeat(apiSecret.length-show);
   }
 
   async run() {
-    const {flags} = this.parse(List)
-    let apiKey = flags.apikey
-    let apiSecret = flags.apisecret
-    if (!apiKey) {
-      apiKey = await cli.prompt('What is your API key?')
+    const fileName = '.vonagerc'
+    const key = (process.platform === 'win32') ? 'USERPROFILE' : 'HOME'
+    const globalFilePath = `${process.env[key]}/${fileName}`
+    const localFilePath = `${process.cwd()}/${fileName}`
+    this.log('Global credentials:')
+    try {
+      const globalCreds = JSON.parse(fs.readFileSync(globalFilePath,'utf8'))
+      this.log(`API Key: ${globalCreds.api_key} API Secret: ${this.maskSecret(globalCreds.api_secret)}`)
+    } catch (err) {
+      this.log('No global credentials found.')
     }
-    if (!apiSecret) {
-      apiSecret = await cli.prompt('What is your API secret?')
-    }
-    if (apiKey && apiSecret) {
-      const key = (process.platform === 'win32') ? 'USERPROFILE' : 'HOME'
-      const filePath = flags.local ? process.cwd() : process.env[key]
-      const fileName = '.vonagerc'
-      fs.writeFileSync(`${filePath}/${fileName}`, JSON.stringify({api_key: apiKey, api_secret: apiSecret}))
-      this.log(`Credentials written to ${filePath}/${fileName}`)
+    this.log('Local credentials:')
+    try {
+      const localCreds = JSON.parse(fs.readFileSync(localFilePath,'utf8'))
+      this.log(`API Key: ${localCreds.api_key} API Secret: ${this.maskSecret(localCreds.api_secret)}`)
+    } catch (err) {
+      this.log('No local credentials found.')
     }
   }
 }
