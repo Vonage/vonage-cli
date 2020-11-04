@@ -9,3 +9,4 @@ coverage
 .env
 coverage.lcov
 packages/**/dist
+.vonagerc
