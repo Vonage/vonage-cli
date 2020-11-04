@@ -22,7 +22,7 @@
   ],
   "license": "MIT",
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./dist/commands",
     "bin": "oclif-example",
     "devPlugins": [
       "@oclif/plugin-help"

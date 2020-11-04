@@ -2,7 +2,7 @@
   "name": "@vonage/cli-plugin-auth",
   "version": "0.0.0",
   "author": "Luke Oliff @lukeocodes",
-  "bugs": "https://github.com/Vonage/cli-plugin-auth/issues",
+  "bugs": "https://github.com/Vonage/vonage-cli/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
@@ -16,19 +16,19 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/Vonage/cli-plugin-auth",
+  "homepage": "https://github.com/Vonage/vonage-cli",
   "keywords": [
     "oclif-plugin"
   ],
   "license": "Apache 2.0",
   "oclif": {
-    "commands": "./lib/commands",
+    "commands": "./dist/commands",
     "bin": "oclif-example",
     "devPlugins": [
       "@oclif/plugin-help"
     ]
   },
-  "repository": "Vonage/cli-plugin-auth",
+  "repository": "Vonage/vonage-cli",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
