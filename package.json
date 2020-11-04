@@ -1,12 +1,20 @@
 {
   "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^10.17.42",
     "eslint": "^7.10.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
     "eslint-config-prettier": "^6.14.0",
-    "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-vue": "^7.1.0",
+    "globby": "^10.0.2",
     "lerna": "^3.22.1",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "ts-jest": "^26.4.3",
+    "ts-node-dev": "^1.0.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -14,10 +22,15 @@
   "private": true,
   "scripts": {
     "lerna": "node_modules/.bin/lerna",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/jest test",
+    "test-watch": "./node_modules/.bin/jest test --watch"
   },
   "workspaces": [
     "packages/*"
+  ],
+  "files": [
+    "eslint.config.js",
+    "jest.config.js"
   ],
   "repository": {
     "type": "git",
