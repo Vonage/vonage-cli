@@ -10,4 +10,3 @@ coverage
 coverage.lcov
 packages/**/dist
 .vonagerc
-package-lock.json
