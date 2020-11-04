@@ -1,5 +1,5 @@
 node_modules
-packages/**/package-lock.json
+package-lock.json
 npm-debug.log
 .nyc
 coverage
