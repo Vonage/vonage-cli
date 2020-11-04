@@ -8,17 +8,6 @@
     "@oclif/config": "^1.17.0",
     "tslib": "^1.14.1"
   },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/plugin-help": "^3.2.0",
-    "@types/node": "^10.17.44",
-    "eslint": "^5.16.0",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
-    "globby": "^10.0.2",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
-  },
   "engines": {
     "node": ">=8.0.0"
   },
@@ -44,7 +33,8 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "echo NO TESTS",
+    "test": "../../node_modules/.bin/jest test",
+    "test-watch": "../../node_modules/.bin/jest test --watch",
     "version": "oclif-dev readme && git add README.md"
   }
 }
