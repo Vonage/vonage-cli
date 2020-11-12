@@ -2,8 +2,8 @@ import {Command, flags} from '@oclif/command'
 import cli from 'cli-ux'
 import * as fs from 'fs'
 
-export default class Setup extends Command {
-  static description = 'sets API Key and Secret'
+export default class AuthSetup extends Command {
+  static description = 'Sets API Key and Secret'
 
   static examples = [
     `$ vonage auth:setup --apikey=YOURAPIKEY --apisecret=YOURAPISECRET -l
@@ -19,7 +19,7 @@ Credentials written to /path/to/your/local/project/.vonagerc
   }
 
   async run() {
-    const {flags} = this.parse(Setup)
+    const {flags} = this.parse(AuthSetup)
     let apiKey = flags.apikey
     let apiSecret = flags.apisecret
     if (!apiKey) {

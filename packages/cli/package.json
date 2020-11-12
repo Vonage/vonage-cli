@@ -38,7 +38,15 @@
       "@oclif/plugin-plugins",
       "@vonage/cli-plugin-numbers",
       "@vonage/cli-plugin-auth"
-    ]
+    ],
+    "topics": {
+      "auth": {
+        "hidden": true
+      },
+      "plugins": {
+        "hidden": true
+      }
+    }
   },
   "repository": "Vonage/vonage-cli",
   "scripts": {
