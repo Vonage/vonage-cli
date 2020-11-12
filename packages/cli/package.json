@@ -1,5 +1,6 @@
 {
   "name": "@vonage/cli",
+  "description": "CLI to interact with Vonage APIs",
   "version": "0.0.1",
   "author": "Kelly J Andrews @kellyjandrews",
   "bin": {
@@ -41,6 +42,7 @@
     ],
     "topics": {
       "auth": {
+        "description": "Manages Auth",
         "hidden": true
       },
       "plugins": {

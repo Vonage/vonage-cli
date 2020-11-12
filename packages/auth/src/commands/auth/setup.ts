@@ -3,7 +3,7 @@ import cli from 'cli-ux'
 import * as fs from 'fs'
 
 export default class AuthSetup extends Command {
-  static description = 'Sets API Key and Secret'
+  static description = 'sets authentication credentials'
 
   static examples = [
     `$ vonage auth:setup --apikey=YOURAPIKEY --apisecret=YOURAPISECRET -l
