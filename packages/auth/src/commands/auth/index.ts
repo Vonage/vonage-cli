@@ -6,10 +6,14 @@ export default class AuthIndex extends Command {
 
     static examples = [
         `$ vonage auth
-Global credentials:
-API Key: GlobalAPIKey API Secret: Gl*********
-Local credentials:
-API Key: LocalAPIKey API Secret: Lo*******
+Global
+==========
+No global credentials found.
+
+Local
+==========
+API Key: 12345
+API Secret: AB***
 `,
     ]
 
@@ -19,7 +23,7 @@ API Key: LocalAPIKey API Secret: Lo*******
         return apiSecret.slice(0, show) + mask.repeat(apiSecret.length - show)
     }
 
-  async run() {
+    async run() {
         const fileName = '.vonagerc'
         const key = process.platform === 'win32' ? 'USERPROFILE' : 'HOME'
         const globalFilePath = `${process.env[key]}/${fileName}`
@@ -30,9 +34,9 @@ API Key: LocalAPIKey API Secret: Lo*******
                 fs.readFileSync(globalFilePath, 'utf8')
             )
             this.log(
-              `API Key: ${globalCreds.api_key}\nAPI Secret: ${this.maskSecret(
+                `API Key: ${globalCreds.api_key}\nAPI Secret: ${this.maskSecret(
                     globalCreds.api_secret
-              )}`
+                )}`
             )
         } catch (err) {
             this.log('No global credentials found.')
@@ -42,11 +46,11 @@ API Key: LocalAPIKey API Secret: Lo*******
             const localCreds = JSON.parse(
                 fs.readFileSync(localFilePath, 'utf8')
             )
-          this.log(
-              `API Key: ${localCreds.api_key}\nAPI Secret: ${this.maskSecret(
-                   localCreds.api_secret
-               )}`
-          )
+            this.log(
+                `API Key: ${localCreds.api_key}\nAPI Secret: ${this.maskSecret(
+                    localCreds.api_secret
+                )}`
+            )
         } catch (err) {
             this.log('No local credentials found.')
         }
