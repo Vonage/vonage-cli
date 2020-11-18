@@ -38,7 +38,7 @@ Max Calls Per Second   30
 
   async run() {
     const {flags} = this.parse(AccountConfig)
-    let confirm = flags.confirm
+    const confirm = flags.confirm
     let inbound = flags["inbound-message-url"]
     let delivery = flags["delivery-receipt-url"]
     let response:any;
@@ -50,15 +50,8 @@ Max Calls Per Second   30
       if (!delivery) {
         delivery = await cli.prompt('What is the webhook URL for delivery receipt, pass ""(empty string) to unset or "unchanged" to not update')
       }
-      const check = await cli.prompt('Confirm? (Y/n)');
-      this.log(check.toLowerCase());
-      if (check.toLowerCase() !== 'y' && check.toLowerCase() !== 'yes') {
-        this.exit()
-      }
     }
-
     response = await this.updateConfiguration(inbound,delivery)
-
     if (response.statusCode === 200){
       this.log(`
 ${response.statusCode} OK. Settings updated.
