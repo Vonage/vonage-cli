@@ -51,7 +51,6 @@ Max Calls Per Second   30
         delivery = await cli.prompt('What is the webhook URL for delivery receipt, pass ""(empty string) to unset or "unchanged" to not update')
       }
       const check = await cli.prompt('Confirm? (Y/n)');
-      this.log(check.toLowerCase());
       if (check.toLowerCase() !== 'y' && check.toLowerCase() !== 'yes') {
         this.exit()
       }
