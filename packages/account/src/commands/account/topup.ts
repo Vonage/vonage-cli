@@ -18,7 +18,7 @@ export default class AccountTopUp extends Command {
 
   async postTopUp(trx:string | undefined) {
     // TODO: Process top up the right way
-    const statusCode:string = "200"
+    const statusCode:string = "f00"
     switch (statusCode) {
       case "200":
         return postTopUp200;
@@ -39,7 +39,8 @@ export default class AccountTopUp extends Command {
 
     if (!confirm){
       if (!trx) {
-        trx = await cli.prompt('What is the transaction reference')
+        this.log('Note: can be found on the dashboard at https://dashboard.nexmo.com/billing-and-payments/autoreload')
+        trx = await cli.prompt('What is the transaction reference?')
       }
       const check = await cli.prompt('Confirm? (y/n)');
       if (check.toLowerCase() !== 'y' && check.toLowerCase() !== 'yes') {
@@ -48,5 +49,8 @@ export default class AccountTopUp extends Command {
     }
     response = await this.postTopUp(trx)
     this.log(`${response["error-code"]}: ${response["error-code-label"]}`);
+    if (response["error-code"] !== "200"){
+      this.log('Note: account can be topped up in the dashboard at https://dashboard.nexmo.com/billing-and-payments/autoreload')
+    }
   }
 }
