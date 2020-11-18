@@ -4,9 +4,17 @@ export const getBalance = {
     "autoReload": false
 }
 // https://rest.nexmo.com/account/top-up
-export const postTopUp = {
+export const postTopUp200 = {
     "error-code": "200",
     "error-code-label": "success"
+}
+export const postTopUp401auth = {
+  "error-code": "401",
+  "error-code-label": "authentication failed"
+}
+export const postTopUp401auto = {
+  "error-code": "401",
+  "error-code-label": "not auto-reload enabled"
 }
 // https://rest.nexmo.com/account/settings
 export const postConfiguration = {
