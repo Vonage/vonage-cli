@@ -61,7 +61,7 @@ export const getSecrets404 = {
 }
 
 
-export const postSecrets = {
+export const postSecrets201 = {
     "_links": {
         "self": {
             "href": "abc123"
@@ -71,6 +71,32 @@ export const postSecrets = {
     "created_at": "2017-03-02T16:34:49Z"
 }
 
+export const postSecrets400 = {
+  "type": "https://developer.nexmo.com/api-errors/account/secret-management#validation",
+  "title": "Bad Request",
+  "detail": "The request failed due to secret validation errors",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf",
+  "invalid_parameters": [
+    {
+      "name": "secret",
+      "reason": "Does not meet complexity requirements"
+    }
+  ]
+}
+
+export const postSecrets401 = {
+  "type": "https://developer.nexmo.com/",
+  "title": "Unauthorized",
+  "detail": "Invalid credentials format. Expected: \"Authorization: (Base64(UTF-8(apiKey:secret)))\"",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
+export const postSecrets404 = {
+  "type": "https://developer.nexmo.com/api-errors#invalid-api-key",
+  "title": "Invalid API Key",
+  "detail": "API key 'abc123' not found",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
 
 // https://api.nexmo.com/accounts/:api_key/secrets/:secret_id
 export const deleteSecret = {

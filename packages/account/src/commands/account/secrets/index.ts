@@ -22,11 +22,11 @@ ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
       case "200":
         return { status:statusCode, secrets: getSecrets200._embedded.secrets}
       case "401":
-        return  { status:statusCode, ...getSecrets401 }
+        return { status:statusCode, ...getSecrets401 }
       case "404":
-        return  { status:statusCode, ...getSecrets404 };
+        return { status:statusCode, ...getSecrets404 };
       default:
-        return  { status:statusCode, ...getSecrets404 };
+        return { status:statusCode, ...getSecrets404 };
     }
   }
 
