@@ -56,16 +56,6 @@ export const postSecrets = {
     "created_at": "2017-03-02T16:34:49Z"
 }
 
-// https://api.nexmo.com/accounts/:api_key/secrets/:secret_id
-export const getSecret = {
-    "_links": {
-        "self": {
-            "href": "abc123"
-        }
-    },
-    "id": "ad6dc56f-07b5-46e1-a527-85530e625800",
-    "created_at": "2017-03-02T16:34:49Z"
-}
 
 // https://api.nexmo.com/accounts/:api_key/secrets/:secret_id
 export const deleteSecret = {
