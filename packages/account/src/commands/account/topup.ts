@@ -42,8 +42,8 @@ export default class AccountTopUp extends Command {
         this.log('Note: can be found on the dashboard at https://dashboard.nexmo.com/billing-and-payments/autoreload')
         trx = await cli.prompt('What is the transaction reference?')
       }
-      const check = await cli.prompt('Confirm? (y/n)');
-      if (check.toLowerCase() !== 'y' && check.toLowerCase() !== 'yes') {
+      const check = await cli.confirm('Confirm? (y/n)')
+      if (!check){
         this.exit()
       }
     }

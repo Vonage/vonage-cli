@@ -50,8 +50,8 @@ Max Calls Per Second   30
       if (!delivery) {
         delivery = await cli.prompt('What is the webhook URL for delivery receipt, pass ""(empty string) to unset or "unchanged" to not update')
       }
-      const check = await cli.prompt('Confirm? (y/n)');
-      if (check.toLowerCase() !== 'y' && check.toLowerCase() !== 'yes') {
+      const check = await cli.confirm('Confirm? (y/n)')
+      if (!check){
         this.exit()
       }
     }
