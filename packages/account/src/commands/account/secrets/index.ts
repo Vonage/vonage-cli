@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import { getSecrets } from "../../../../sample/responses";
+import { getSecrets200, getSecrets401, getSecrets404 } from "../../../../sample/responses";
 import cli from "cli-ux";
 
 export default class AccountSecrets extends Command {
@@ -7,30 +7,40 @@ export default class AccountSecrets extends Command {
 
   static examples = [
     `$ vonage account:secrets
-Balance                123.45
-Inbound Message URL    https://example.com
-Delivery Receipts URL  https://example.com
-Max Outbound Request   30
-Max Inbound Request    30
-Max Calls Per Second   30
+Id                                   Created at
+ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
 `,]
 
   static flags = {
     help: flags.help({char: 'h'}),
   }
 
-  async getConfiguration(){
+  async getSecrets(){
     // TODO: Get real values from account
-    return getSecrets._embedded.secrets
+    const statusCode:string = "200"
+    switch (statusCode) {
+      case "200":
+        return { status:statusCode, secrets: getSecrets200._embedded.secrets}
+      case "401":
+        return  { status:statusCode, ...getSecrets401 }
+      case "404":
+        return  { status:statusCode, ...getSecrets404 };
+      default:
+        return  { status:statusCode, ...getSecrets404 };
+    }
   }
 
   async run() {
     const {flags} = this.parse(AccountSecrets)
-    const accountSecrets = await this.getConfiguration();
-    cli.table(accountSecrets, {
-      id: {},
-      created_at: {},
-    }, {})
+    const response : any = await this.getSecrets();
+    if (response.status === "200"){
+      cli.table(response.secrets, {
+        id: {},
+        created_at: {},
+      }, {})
+    } else {
+      this.log(`${response.status}: ${response.title} - ${response.detail}`)
+    }
 
   }
 }

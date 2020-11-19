@@ -18,7 +18,7 @@ export default class AccountTopUp extends Command {
 
   async postTopUp(trx:string | undefined) {
     // TODO: Process top up the right way
-    const statusCode:string = "f00"
+    const statusCode:string = "200"
     switch (statusCode) {
       case "200":
         return postTopUp200;

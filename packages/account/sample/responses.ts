@@ -25,7 +25,7 @@ export const postConfiguration = {
     "max-calls-per-second": 30
 }
 // https://api.nexmo.com/accounts/:api_key/secrets
-export const getSecrets = {
+export const getSecrets200 = {
     "_links": {
         "self": {
             "href": "abc123"
@@ -45,6 +45,21 @@ export const getSecrets = {
         ]
     }
 }
+
+export const getSecrets401 = {
+  "type": "https://developer.nexmo.com/",
+  "title": "Unauthorized",
+  "detail": "Invalid credentials format. Expected: \"Authorization: (Base64(UTF-8(apiKey:secret)))\"",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
+export const getSecrets404 = {
+  "type": "https://developer.nexmo.com/api-errors#invalid-api-key",
+  "title": "Invalid API Key",
+  "detail": "API key 'abc123' not found",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
 
 export const postSecrets = {
     "_links": {
