@@ -37,16 +37,18 @@ export default class AccountTopUp extends Command {
     let trx = flags.trx
     let response:any;
 
+    if (!trx) {
+      this.log('Note: can be found on the dashboard at https://dashboard.nexmo.com/billing-and-payments/autoreload')
+      trx = await cli.prompt('What is the transaction reference?')
+    }
+
     if (!confirm){
-      if (!trx) {
-        this.log('Note: can be found on the dashboard at https://dashboard.nexmo.com/billing-and-payments/autoreload')
-        trx = await cli.prompt('What is the transaction reference?')
-      }
       const check = await cli.confirm('Confirm? (y/n)')
       if (!check){
         this.exit()
       }
     }
+
     response = await this.postTopUp(trx)
     this.log(`${response["error-code"]}: ${response["error-code-label"]}`);
     if (response["error-code"] !== "200"){
