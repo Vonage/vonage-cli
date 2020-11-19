@@ -99,6 +99,34 @@ export const postSecrets404 = {
 }
 
 // https://api.nexmo.com/accounts/:api_key/secrets/:secret_id
-export const deleteSecret = {
+export const deleteSecret204 = {
 
+}
+
+export const deleteSecret401 = {
+  "type": "https://developer.nexmo.com/",
+  "title": "Unauthorized",
+  "detail": "Invalid credentials format. Expected: \"Authorization: (Base64(UTF-8(apiKey:secret)))\"",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
+export const deleteSecret403 = {
+  "type": "https://developer.nexmo.com/",
+  "title": "Unauthorized",
+  "detail": "Invalid credentials format. Expected: \"Authorization: (Base64(UTF-8(apiKey:secret)))\"",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
+export const deleteSecret404key = {
+  "type": "https://developer.nexmo.com/api-errors#invalid-api-key",
+  "title": "Invalid API Key",
+  "detail": "API key 'abc123' not found",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
+}
+
+export const deleteSecret404secret = {
+  "type": "https://developer.nexmo.com/api-errors#invalid-api-key",
+  "title": "Invalid API Key",
+  "detail": "API key 'abc123' not found",
+  "instance": "bf0ca0bf927b3b52e3cb03217e1a1ddf"
 }

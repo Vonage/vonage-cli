@@ -26,7 +26,7 @@ ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
         'minimum 1 digit'}),
   }
 
-  async postSecrets(){
+  async postSecrets(secret:string | undefined){
     // TODO: Get real values from account
     const statusCode:string = "201"
     switch (statusCode) {
@@ -54,8 +54,7 @@ ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
   async run() {
     const {flags} = this.parse(AccountSecretsCreate)
     let secret = flags.secret
-    const response : any = await this.postSecrets()
-    let valid = false
+    let valid
     if (!secret){
       secret = await cli.prompt('New secret must be:\n' +
         'minimum 8 characters\n' +
@@ -70,6 +69,7 @@ ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
     }
 
     if (valid) {
+      const response : any = await this.postSecrets(secret)
       if (response.status === "201") {
         this.log(`${response.status}: Success id: ${response.id}  created at: ${response.created_at}`)
       } else {
