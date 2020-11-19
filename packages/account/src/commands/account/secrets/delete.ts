@@ -1,4 +1,5 @@
 import {Command, flags} from '@oclif/command'
+import AccountSecrets from './index'
 import {
   deleteSecret204,
   deleteSecret401,
@@ -48,8 +49,9 @@ export default class AccountSecretsDelete extends Command {
     let id = flags.id
 
     if (!id){
-        // TODO: list ids and have the user either select from table or enter
-        id = await cli.prompt('Enter id to revoke')
+      // TODO: list ids and have the user either select from table or enter
+      await AccountSecrets.run([])
+      id = await cli.prompt('Enter id to revoke')
     }
     if (!confirm){
       const check = await cli.confirm('Confirm? (y/n)')
