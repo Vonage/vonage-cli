@@ -1,13 +1,12 @@
 import {Command, flags} from '@oclif/command'
-import AccountSecrets from './index'
+import * as inquirer from 'inquirer'
 import {
   deleteSecret204,
   deleteSecret401,
   deleteSecret403,
   deleteSecret404key,
-  deleteSecret404secret
+  deleteSecret404secret, getSecrets200, getSecrets401, getSecrets404
 } from "../../../../sample/responses";
-import cli from "cli-ux";
 
 export default class AccountSecretsDelete extends Command {
   static description = 'revoke a Vonage account secret'
@@ -24,7 +23,23 @@ export default class AccountSecretsDelete extends Command {
 
   }
 
-  async deleteSecrets(id: string | undefined){
+  async getSecrets(){
+    // TODO: Get real values from account
+    const statusCode:string = "200"
+    switch (statusCode) {
+      case "200":
+        return { status:statusCode, secrets: getSecrets200._embedded.secrets}
+      case "401":
+        return { status:statusCode, ...getSecrets401 }
+      case "404":
+        return { status:statusCode, ...getSecrets404 };
+      default:
+        return { status:statusCode, ...getSecrets404 };
+    }
+  }
+
+
+  async deleteSecret(id: string | undefined){
     // TODO: Get real values from account
     const statusCode:string = "204"
     switch (statusCode) {
@@ -47,24 +62,47 @@ export default class AccountSecretsDelete extends Command {
     const {flags} = this.parse(AccountSecretsDelete)
     const confirm = flags.confirm
     let id = flags.id
+    let secrets: any = [];
 
     if (!id){
-      // TODO: list ids and have the user either select from table or enter
-      await AccountSecrets.run([])
-      id = await cli.prompt('Enter id to revoke')
+      let ids = await this.getSecrets()
+      secrets = ids.secrets?.map(secret => {
+        return {name: `${secret.id} - ${secret.created_at}`, value: secret.id, description: secret.created_at}
+      })
+      // this.log('secrets: ', secrets);
+      const response: any = await inquirer.prompt([{
+        name: 'id',
+        message: 'select a secret',
+        type: 'list',
+        choices: secrets,
+      }])
+      id = response.id;
+      // this.log('response: ',response)
     }
     if (!confirm){
-      const check = await cli.confirm('Confirm? (y/n)')
-      if (!check){
-        this.exit()
+      const check = await inquirer.prompt([{
+        name: 'response',
+        message: 'Confirm?',
+        type: 'confirm',
+        default: false
+      }])
+      if (!check.response){
+        this.exit(0)
       }
     }
 
-    const response : any = await this.deleteSecrets(id)
+    const response : any = await this.deleteSecret(id)
     if (response.status === "204") {
       this.log(`${response.status}: Success`)
     } else {
       this.log(`${response.status}: ${response.title} - ${response.detail}`)
     }
+  }
+
+  async catch(error:any) {
+    if (error.oclif.exit !== 0){
+      this.log(`${error.name}: ${error.message}`)
+    }
+    //throw error;
   }
 }

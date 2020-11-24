@@ -7,11 +7,13 @@
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
+    "inquirer": "^7.3.3",
     "tslib": "^1.14.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.23.1",
     "@oclif/plugin-help": "^3.2.0",
+    "@types/inquirer": "^7.3.1",
     "@types/node": "^10.17.44",
     "globby": "^10.0.2",
     "ts-node": "^8.10.2",

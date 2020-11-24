@@ -41,6 +41,5 @@ ad6dc56f-07b5-46e1-a527-85530e625800 2017-03-02T16:34:49Z
     } else {
       this.log(`${response.status}: ${response.title} - ${response.detail}`)
     }
-
   }
 }
