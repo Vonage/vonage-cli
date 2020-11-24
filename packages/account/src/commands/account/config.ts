@@ -1,6 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import { postConfiguration } from "../../../sample/responses";
-import cli from "cli-ux";
+import * as inquirer from 'inquirer'
 
 export default class AccountConfig extends Command {
   static description = 'configure Vonage account'
@@ -20,6 +20,10 @@ Max Calls Per Second   30
     "inbound-message-url": flags.string({char: 'i', description: 'webhook URL for incoming SMS messages, pass "" to unset or leave blank to not change'}),
     "delivery-receipt-url": flags.string({char: 'd', description: 'webhook URL for delivery receipt, pass "" to unset or leave blank to not change'}),
     confirm: flags.boolean({char: 'c', description: 'bypass confirmation'}),
+  }
+
+  async getConfiguration(){
+    return postConfiguration;
   }
 
   async updateConfiguration(inbound:string | undefined,delivery:string | undefined) {
@@ -43,18 +47,42 @@ Max Calls Per Second   30
     let delivery = flags["delivery-receipt-url"]
     let response:any;
 
+    const currentConfiguration = await this.getConfiguration()
+
+    if(!inbound){
+      const response: any = await inquirer.prompt([{
+        name: 'incoming',
+        message: 'webhook URL for incoming SMS messages, pass ""(empty string) to unset',
+        type: 'input',
+        default: currentConfiguration["mo-callback-url"],
+      }])
+      inbound = response.incoming
+      this.log('inbound: ',inbound)
+    }
+
+    if(!delivery){
+      const response: any = await inquirer.prompt([{
+        name: 'delivery',
+        message: 'webhook URL for delivery receipt, pass ""(empty string) to unset',
+        type: 'input',
+        default: currentConfiguration["dr-callback-url"],
+      }])
+      delivery = response.delivery
+      this.log('inbound: ',delivery)
+    }
+
     if (!confirm){
-      if (!inbound) {
-        inbound = await cli.prompt('What is the webhook URL for incoming SMS messages, pass ""(empty string) to unset or "unchanged" to not update')
-      }
-      if (!delivery) {
-        delivery = await cli.prompt('What is the webhook URL for delivery receipt, pass ""(empty string) to unset or "unchanged" to not update')
-      }
-      const check = await cli.confirm('Confirm? (y/n)')
-      if (!check){
-        this.exit()
+      const check = await inquirer.prompt([{
+        name: 'response',
+        message: 'Confirm?',
+        type: 'confirm',
+        default: false
+      }])
+      if (!check.response){
+        this.exit(0)
       }
     }
+
 
     response = await this.updateConfiguration(inbound,delivery)
 
@@ -71,4 +99,11 @@ Max Calls Per Second   ${response["max-calls-per-second"]}
       this.log(`${response.statusCode} Error updating configuration.`);
     }
   }
+
+  async catch(error:any) {
+    if (error.oclif.exit !== 0){
+      this.log(`${error.name}: ${error.message}`)
+    }
+  }
+
 }

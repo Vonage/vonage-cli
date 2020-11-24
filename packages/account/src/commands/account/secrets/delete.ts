@@ -72,7 +72,7 @@ export default class AccountSecretsDelete extends Command {
       // this.log('secrets: ', secrets);
       const response: any = await inquirer.prompt([{
         name: 'id',
-        message: 'select a secret',
+        message: 'select a Secret ID',
         type: 'list',
         choices: secrets,
       }])
@@ -103,6 +103,5 @@ export default class AccountSecretsDelete extends Command {
     if (error.oclif.exit !== 0){
       this.log(`${error.name}: ${error.message}`)
     }
-    //throw error;
   }
 }
