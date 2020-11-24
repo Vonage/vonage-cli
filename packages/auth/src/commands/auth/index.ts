@@ -17,6 +17,10 @@ API Secret: AB***
 `,
     ]
 
+    static flags = {
+        help: flags.help({char: 'h'}),
+    }
+
     maskSecret(apiSecret: string) {
         const show = 2
         const mask = '*'
@@ -24,6 +28,7 @@ API Secret: AB***
     }
 
     async run() {
+        const {flags} = this.parse(AuthIndex)
         const fileName = '.vonagerc'
         const key = process.platform === 'win32' ? 'USERPROFILE' : 'HOME'
         const globalFilePath = `${process.env[key]}/${fileName}`
