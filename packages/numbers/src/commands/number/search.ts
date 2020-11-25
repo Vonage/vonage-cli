@@ -2,34 +2,30 @@ import {cli} from 'cli-ux'
 import {Command, flags} from '@oclif/command'
 import Numbers from '../../libs/numbers'
 
-export default class NumbersList extends Command {
+export default class NumbersSearch extends Command {
   static description = 'manage Vonage numbers'
 
   static examples = [
-    `$ vonage number
+    `$ vonage number:search --limit 1
 Msisdn          Country  Type        Features 
-(032) 475-0014  GB       mobile-lvn  sms      
-(343) 078-3910  GB       mobile-lvn  sms      
-(280) 578-6440  GB       mobile-lvn  sms      
-(871) 993-4907  GB       mobile-lvn  voice    
-(451) 930-6591  GB       mobile-lvn  sms
+(196) 125-6464  GB       mobile-lvn  voice
 `,
   ]
 
   static flags = {
     help: flags.help({char: 'h'}),
     features: flags.string({char: 'f', description: 'comma separate list of number features'}),
+    limit: flags.integer({char: 'l', default: 10})
   }
 
   async run() {
-    const { flags } = this.parse(NumbersList)
+    const { flags } = this.parse(NumbersSearch)
     const numbers = new Numbers()
 
-    cli.table(numbers.list(flags), {
+    cli.table(numbers.search(flags), {
       msisdn: {},
       country: {},
       type: {},
       features: {},
-    }, {})
-  }
+    }, {})  }
 }
