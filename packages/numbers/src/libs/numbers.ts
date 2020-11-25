@@ -26,6 +26,6 @@ export default class Numbers {
   }
 
   buy(flags: any) {
-    return 'success'
+    return `You've just bought ${flags.number}, YAY!`
   }
 }

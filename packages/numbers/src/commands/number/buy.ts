@@ -1,8 +1,9 @@
 import {cli} from 'cli-ux'
 import {Command, flags} from '@oclif/command'
 import Numbers from '../../libs/numbers'
+import NumbersSearch from './search'
 
-export default class NumbersSearch extends Command {
+export default class NumbersBuy extends Command {
   static description = 'manage Vonage numbers'
 
   static examples = [
@@ -14,13 +15,18 @@ list all numbers
   static flags = {
     help: flags.help({char: 'h'}),
     features: flags.string({char: 'f', description: 'comma separate list of number features'}),
-    limit: flags.integer({char: 'l', default: 10})
+    number: flags.string({char: 'l'})
   }
 
   async run() {
-    const { flags } = this.parse(NumbersSearch)
+    const { flags } = this.parse(NumbersBuy)
     const numbers = new Numbers()
 
-    cli.log(numbers.buy(flags))
+    if (!flags.number) {
+      const number = numbers.search({ limit: 1 })
+      cli.log(numbers.buy({...flags, number: number[0].msisdn}))
+    } else {
+      cli.log(numbers.buy(flags))
+    }
   }
 }
