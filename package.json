@@ -22,6 +22,7 @@
   },
   "private": true,
   "scripts": {
+    "postinstall": "lerna bootstrap",
     "lerna": "node_modules/.bin/lerna",
     "test": "./node_modules/.bin/jest test",
     "test-watch": "./node_modules/.bin/jest test --watch"
