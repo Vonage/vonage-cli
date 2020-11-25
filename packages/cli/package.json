@@ -44,7 +44,12 @@
     ],
     "topics": {
       "auth": {
-        "description": "Manages Auth",
+        "hidden": true
+      },
+      "account": {
+        "hidden": true
+      },
+      "number": {
         "hidden": true
       },
       "plugins": {
