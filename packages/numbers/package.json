@@ -36,5 +36,8 @@
     "test": "../../node_modules/.bin/jest test",
     "test-watch": "../../node_modules/.bin/jest test --watch",
     "version": "oclif-dev readme && git add README.md"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^7.3.1"
   }
 }

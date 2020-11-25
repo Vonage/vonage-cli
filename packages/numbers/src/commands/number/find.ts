@@ -1,4 +1,5 @@
 import {cli} from 'cli-ux'
+import * as inquirer from 'inquirer'
 import {Command, flags} from '@oclif/command'
 import Numbers from '../../libs/numbers'
 
@@ -22,10 +23,26 @@ Msisdn          Country  Type        Features
     const { flags } = this.parse(NumbersList)
     const numbers = new Numbers()
 
-    cli.table(numbers.search(flags), {
-      msisdn: {},
-      country: {},
-      type: {},
-      features: {},
-    }, {})  }
+    cli.log
+
+    try {
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'number',
+            message: 'Pick a number to purchase',
+            choices: () => numbers.search(flags).map(n => n.msisdn),
+          }
+        ])
+        .then(answers => {
+          cli.log(numbers.buy({...flags, number: answers.number}))
+        })
+        .catch(error => {
+          throw Error(error)
+        })
+    } catch (error) {
+      throw Error(error)
+    }
+  }
 }
