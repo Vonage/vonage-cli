@@ -7,6 +7,7 @@
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
+    "@vonage/cli-utils": "^0.0.0",
     "tslib": "^1.14.1"
   },
   "engines": {

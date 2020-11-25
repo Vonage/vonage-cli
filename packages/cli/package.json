@@ -16,6 +16,7 @@
     "@vonage/cli-plugin-account": "^0.0.0",
     "@vonage/cli-plugin-auth": "^0.0.0",
     "@vonage/cli-plugin-numbers": "^0.0.0",
+    "@vonage/cli-utils": "^0.0.0",
     "inquirer": "^7.3.3",
     "tslib": "^1.14.1"
   },

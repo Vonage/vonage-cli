@@ -1,6 +1,7 @@
 import {cli} from 'cli-ux'
 import {Command, flags} from '@oclif/command'
 import Numbers from '../../libs/numbers'
+import hello from '@vonage/cli-utils'
 
 export default class NumbersList extends Command {
   static description = 'manage Vonage numbers'
@@ -24,6 +25,8 @@ Msisdn          Country  Type        Features
   async run() {
     const { flags } = this.parse(NumbersList)
     const numbers = new Numbers()
+
+    hello('dave')
 
     cli.table(numbers.list(flags), {
       msisdn: {},

@@ -1,7 +1,6 @@
 import {cli} from 'cli-ux'
 import {Command, flags} from '@oclif/command'
 import Numbers from '../../libs/numbers'
-import NumbersSearch from './search'
 
 export default class NumbersBuy extends Command {
   static description = 'manage Vonage numbers'
