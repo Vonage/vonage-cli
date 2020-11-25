@@ -15,18 +15,24 @@ list all numbers
   static flags = {
     help: flags.help({char: 'h'}),
     features: flags.string({char: 'f', description: 'comma separate list of number features'}),
-    number: flags.string({char: 'l'})
+    'get-lucky': flags.boolean({char: 'l'})
   }
 
+  static args = [
+    {name: 'number'}
+  ]
+
   async run() {
-    const { flags } = this.parse(NumbersBuy)
+    const { flags, args } = this.parse(NumbersBuy)
     const numbers = new Numbers()
 
-    if (!flags.number) {
+    if (args.number && args.number.match(/^\+[1-9]\d{1,14}$/g)) {
+      cli.log(numbers.buy({...flags, number: args.number}))
+    } else if (flags['get-lucky']) {
       const number = numbers.search({ limit: 1 })
-      cli.log(numbers.buy({...flags, number: number[0].msisdn}))
+      cli.log(numbers.buy({...flags, number: `+44${number[0].msisdn.replace(/\D/g, '')}`}))
     } else {
-      cli.log(numbers.buy(flags))
+      throw Error('Please use either a valid number i.e. `vonage number:buy +14155552671` or `vonage number:buy --get-lucky` to buy the first number we find.')
     }
   }
 }
