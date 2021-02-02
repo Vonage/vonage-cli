@@ -21,18 +21,21 @@ hello world from ./src/hello.ts!
 
     static flags = {
         ...Command.flags,
-        'voice': flags.string({
-            description: 'add voice capability'
+        'voice-answer-url': flags.string({
+            description: 'Voice Answer Webhook URL Address'
         }),
-        'messages': flags.string({
-            description: 'add messages capability'
+        'voice-answer-http': flags.string({
+            description: 'Voice Answer Webhook HTTP Method',
+            options: ['GET', 'POST']
         }),
-        'rtc': flags.string({
-            description: 'add RTC capability'
+        'voice-event-url': flags.string({
+            description: 'Voice Event Webhook URL Address'
         }),
-        'vbc': flags.boolean({
-            description: 'add VBC capability'
-        })
+        'voice-event-url-http': flags.string({
+            description: 'Voice Event Webhook HTTP Method',
+            options: ['GET', 'POST']
+        }),
+        
     }
 
     static args = [
@@ -81,10 +84,9 @@ hello world from ./src/hello.ts!
                 })
 
                 if (voice['voice-webhooks-confirm']) {
-                    let answer_url = await webhookQuestions({ name: 'Answer Webhook' })
-                    let fallback_answer_url = await webhookQuestions({ name: 'Fallback Answer Webhook' })
-                    let event_url = await webhookQuestions({ name: 'Event Webhook' })
-                    response.capabilities.voice = { webhooks: { answer_url, fallback_answer_url, event_url } }
+                    let answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
+                    let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
+                    response.capabilities.voice = { webhooks: { answer_url, event_url } }
                 }
             }
 
