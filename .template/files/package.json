@@ -2,7 +2,7 @@
   "name": "@vonage/cli-plugin-PACKAGE",
   "description": "DESCRIPTION",
   "version": "0.0.0",
-  "author": "AUTHOR",
+  "author": "AUTHOR-NAME",
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
@@ -13,7 +13,8 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/lib",
+    "/dist",
+    "/bin",
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
@@ -33,7 +34,7 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "../../node_modules/.bin/jest test",
     "test-watch": "../../node_modules/.bin/jest test --watch",
     "version": "oclif-dev readme && git add README.md"

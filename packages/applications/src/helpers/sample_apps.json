@@ -1,0 +1,387 @@
+{
+    "page_size": 50,
+    "page": 1,
+    "total_items": 14,
+    "total_pages": 1,
+    "_embedded": {
+        "applications": [
+            {
+                "id": "01b3e887-e54a-40c2-b326-366e560124c7",
+                "name": "chat-app-test",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyokAz85D0tYW4MXlCphn\nNWMubiacR93f/CnwtYwiNNJZwoIYTWNcKSbApy6x2v0+XkzYG2K3ZmeYM7Jc5t/E\nNw3rWH0AsUfHxeeqZEAGLLSg+xBlFvS8mWfgsOyMTYJE+agO4aPYhdshVQnZEsQQ\nf0EAJbjO9P72lIXQ4F+5X3E+XPypbnUVsOD72f0tdrO9mdB6iPzTw8t3vO+9V5mx\n9+0lYVImgo7j8/Y+qX4z5+N0zXB8j5IPB3ajWOI9jaRg9oDXxD+hNUaF2a7W03Iz\nnpFnIz4dcHm1Cs303H25VYL6UZESA2VycdK/GI6+PaeUA5gT+SV13U9Tr2OyK5jU\nXwIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/events",
+                                "http_method": "POST"
+                            },
+                            "fallback_answer_url": {
+                                "address": "",
+                                "http_method": "GET"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    },
+                    "rtc": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/rtc",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "06013b7b-5dcb-4555-a84c-081e8819ff5d",
+                "name": "Vonage API Examples",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyI6i3IbSzxdAlSp/ibCz\nx2rP4gmDi2/abKO/eYV/cSybz4aRRP9+JtEAadC8hy23Or31DLiVboCorJnJd+XH\nEnXBifRPV3RMnenQtyUkCjLtIhU0pQ+WFArrSWj6P8kTTys5kZXu8IhhTWI2s9WS\nEycD6d1zkqaOiHQ5AFa5hIzBQZz91Bs036DRnyoqQEOPmGKM6892omcocRcsLuBn\nZ0+oiZDIwHc1HxY8j/TbRzr0phYfXL8crq1/A7u4conKCQEv8YHeNIOgzyD7PCSd\nT0kLinHEEiLAaI/nlDGGifFHnRZQDWCW6c4ZvimBuZdeXkO4joxYQ6+ePdJEF4l4\nMwIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kja.ngrok.io/vonage-api-examples/us-central1/voice-events-webhook",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://kja.ngrok.io/vonage-api-examples/us-central1/voice-answer-webhook",
+                                "http_method": "POST"
+                            },
+                            "fallback_answer_url": {
+                                "address": "",
+                                "http_method": "GET"
+                            }
+                        }
+                    },
+                    "messages": {
+                        "webhooks": {
+                            "inbound_url": {
+                                "address": "https://us-central1-vonage-api-examples.cloudfunctions.net/messaging-dialogflow-webhook",
+                                "http_method": "POST"
+                            },
+                            "status_url": {
+                                "address": "https://us-central1-vonage-api-examples.cloudfunctions.net/messaging-dialogflow-status",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "0e51f264-843a-49b3-b340-8a2bf879f3e9",
+                "name": "react-nexmo-hooks",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv0o2D6mR1dORM9hDByeG\nLenWY9QHyimpa5KcUKg9qhaCBw/1P4OAe7ORpez8s0Dyzi5/NaRgMkLyyKXFORGQ\nHmVQNC8yVq/plAr0rT01QdttS35H8YzXdH5scdWMGtjGE5Lk9nTT8SgKLDe9ql1Z\ncVkKb9EFR0uR16ZPus1/gel7848rs8/J6yrAJpt3S8UQ7mWuxNheXro2JPgP5XCv\nnL0pVBQn4H3QQTNv/VHJsCzV7dc7qWaT80YLG/nhC52nLUQPB+H66/axkc8PMxAD\n7zExs/Rpuipcj6dhCjw0F8qqpoGvWqJlNZlE5uDKO4+ynhrEiRIezaQLCai0o4NX\n1wIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "rtc": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://example.com/events",
+                                "http_method": "POST"
+                            }
+                        }
+                    },
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://example.com/events",
+                                "http_method": "POST"
+                            },
+                            "fallback_answer_url": {
+                                "address": "https://example.com/fallback",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://example.com/answer",
+                                "http_method": "POST"
+                            }
+                        }
+                    },
+                    "messages": {
+                        "webhooks": {
+                            "inbound_url": {
+                                "address": "https://example.com/inbound",
+                                "http_method": "POST"
+                            },
+                            "status_url": {
+                                "address": "https://example.com/status",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "1f34babe-defa-4815-9f63-6771a3bddbcb",
+                "name": "Google Agent Assist",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyihP7MjE+fhf+rMSh/JL\r\nGLD8r+rAGoEP8U381A5ET9wzpwsI6i4mtek1r3eijwYpnSydNO2Rq+aSEA4TqCvI\r\n8XRHdM9v3oauaW/6sq+qYvdT+7L/G23g86EQSH3LyDxIQzvXk3vHvn9SG9AI61ET\r\nqxTyUh5YaSJrRLrYsJ2O5/hyykm0iInPcLHjkpEDEgGz0s3nbdQ7Ct71ULnhKzXO\r\nU4eQ2k3T4xqNTEDgd0OHZhtCX7gPuvnzhZMz1UfZCmRZZrPTDOQMhv9HUG2fQ666\r\nvis6XSZTQcXYN1F9NX0kzqKsEGJAM6LjKZ/n+9EzrOisM8Ms3ZQj2QPM3kLnCZ/I\r\nOwIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/events",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "22cc90df-9d6c-43f7-acdc-02ea739693f5",
+                "name": "chat-app-test",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk6C19V0gRUMMA/WrlKaP\n9LZoO5GvnwMju+lPzTe9aOrPMr1c+Z0XxuPwe5Z/m3BIp3mrAmLizaCzSdaGxikF\nfWOmYAvdS6UUxZ4mFGiGbqEDjnsvH57t57AJlQHUKA/HO6nDWuogNTtWEESSSrPZ\nfei9ZWTTL09t+8nyvKIJc36VeFTnh0OsYXEzYv8q9xHcZUsjiRLz7sdwqjrQUnSZ\neYXwVYULmyICtjxfayJ8WIopfNsIrovewxfzG1Le1/RYukxRtlbB5m/a2DW/KRjK\nz+wthUJLpLE4Hyv/DUi0kIpfn1Rc3e1F30+6vtGSso3oG1MT6eGQP4kKxgCPImAb\nJQIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/events",
+                                "http_method": "POST"
+                            },
+                            "fallback_answer_url": {
+                                "address": "",
+                                "http_method": "GET"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    },
+                    "rtc": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/rtc",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "4bf2925d-0350-482d-83ed-e43f12fddf33",
+                "name": "Facebook Messenger Total Home Control",
+                "keys": {
+                    "public_key": ""
+                },
+                "capabilities": {
+                    "messages": {
+                        "webhooks": {
+                            "inbound_url": {
+                                "address": "https://kja.ngrok.io/inbound",
+                                "http_method": "POST"
+                            },
+                            "status_url": {
+                                "address": "https://kja.ngrok.io/status",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "66f42ec3-57d0-4105-84dc-6798040f7cd1",
+                "name": "Google Speech Transcription",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAx0vdWwuRHWSmirBN4CTT\r\nZTzWG/l6qU3tdxDsLXPgarq6cIcvsR5tv9lZ0Rw5auWtsGfVlLiLUCv2RYO8UybD\r\nioPQHpD3ceQ2zvcn8cMy1aD0z2awLHxgDg59PPNaquaQJYjSTG9y6oCDqdVi2hkL\r\nKFZ7ovM/iqJOW0ZpXZNxrfbq7vScRHrQbCWZl01Aj4CwplwvJ+GOaSFcPix0a7U8\r\nnPjlUoW650iEyLO2WFMt4pcWkwZh5xjS6ma8aDpn83d+kWcjzHddg/ftH9TgjYlE\r\nLnX61aS6wKbWP5gwoTE1XGtfD5NjAMPoqy3nBXYQqcmLslrlEO942mWrGBe0BWDh\r\nawIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/event",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/ncco",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "7a28867a-c462-4da2-a94a-ab445334591c",
+                "name": "QR Code Demo",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtF0N8JbIlN3xZNqEkJ57\r\nC+oGMpOIlUvUZ1DnwFN5EuEpMb/3C4SHabOdzgUS2muB0ADj8YyqD2Zk2jIAyAi7\r\ncMJ4v7I44x5x8pQA8ZIA2mzkQt95hjKQOfSFb63LNeiiLZxO1wwhbg2fPhzpU0p4\r\nZu4N9vQRl6SELRWE8oFfZHjdekuqLaBa0oIUHuJVW1Vsn3uf6st81lp29JWOdxSr\r\nFtJgZ593M2oipYOh5sj2hdJh3nAqH7235Wmzz7EbAdJa/xJr1y1xXELC97didXpt\r\nKHi9IN9ajw337fcbP3ru1b3G8J0WmrKD/ZjstWP7YaNKkvtjm82z4P6KcNyqNpUw\r\n1wIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://qrcode-nexmo.glitch.me/events",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://qrcode-nexmo.glitch.me/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "7cc81832-89c1-4233-86e5-7a936b556ca8",
+                "name": "Google STT",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArAEpefVZnaOk9uv6qtrg\r\nc68MdC6xmvNCtrmuSoSAc8U4/AoR2p26g9jWEKGI23aZX8OFMNY72Ak9tFqA2M1+\r\nX1L45QCOyIjmwdBfbw6F9XWdk+G4NWZ3ZqL8gHYRczb7eu14aJCdi9PznuzZhdbD\r\n0ZUZ1sXG19yzkFLmiH3BUIXVjIJzRYjypwrNSjwOsas/Dow6ZPhvCP+uBGifZ6Yp\r\nF+zeuTpI60O2TYI9goW7ffGs39k9l0G5Z2clpv3CmDADQncSPw8NJvi/haecIoAq\r\nby2id61S6LDQhv+GFIkrL2sO4BAck/OsIWan/82o5vrwUVAO4dUlEPGTPcbYM3eb\r\nRQIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/event",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/ncco",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "9823aa01-5c05-4038-86a2-f9857d1efbe9",
+                "name": "Area 51 Call Center",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArOMcRgrsJ4F3CSRRoJmW\r\nDJV5h0ITsw07NIY8yV5q+5XS22n1noPH/s28BN6vjqFnN0O1Gy2RJRD/d0s0tiaz\r\nUyJDK8T47F2V7hq9c5NtoVAM2PdhlMlbsE0EYku97M0FcYkw/eul8ciqUxaIb7OC\r\nwFPS+NcsSRjSv79d/raPCyBybHvunkmjWB6Ektv5Qe6HxNcz3wkFf5b/ZiM0imYu\r\nEmSxOYHfD2vqZvlzcu6doEK7Cfvl4zLlig3eIt0K4fk9THK8UBiwyHlwEiHMfGUu\r\nX3a3+5sCk5Yq4LxEhmLmzUuIQex/si7pUCgYzj9J0DL5XUrYDwlDV7vWTGNvrjwf\r\nMwIDAQAB\r\n-----END PUBLIC KEY-----\r\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kja.ngrok.io/event",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "https://kja.ngrok.io/answer",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "af2c32b0-f057-441b-9c2f-f33b1e2c7d41",
+                "name": "chat-app-test",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnWdU/sugJchEX8ZpRAv7\n7orKse93WtM3faUmr8B9ydacYh6Q5xtzxm7uaXG9w3kWUa0HUzgfaJeO5lS54OLF\nW64UrxRCHNOaHojm8/LrNkinquvUL9Z69lSUakN7ztBKgKYVtNNn4mJCG8PJNgNI\ndJIC5y1SZfVhqajdKTERP9scdy/1vNIJulMTZoUKB2iI2JIkdwbe25wb+85jeW77\nVXJiJ4+oDnL786HFvS8MBth/SdeZZakV5SRh3XsCPz6lAjIIa90XrpfoTT48q4Og\nnAcJ5s1Yag4BbE9KHyhYbjODV+snxjtC1gZQSKB2YNIU1lhQiK6gEoBNWDph187m\njwIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/events",
+                                "http_method": "POST"
+                            },
+                            "fallback_answer_url": {
+                                "address": "",
+                                "http_method": "GET"
+                            },
+                            "answer_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    },
+                    "rtc": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "https://kellyjandrews.ngrok.io/webhooks/rtc",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "b46097c7-fe93-4a8f-9974-199576e11fa8",
+                "name": "sdk-testing-app",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyx6k58KM0dMp2HlGyf76\n5XB+/XRv4rwHAEOgqsZDgUJNU9mbMSAwL2fv3gLJUi6PV0diXFgzFs77SFg32vz+\nfcpdYk3X2Aw/NS8jvboneDlAsOjdVBn1RO+ZzU+B6qk5k1yygcTt4c4c/idDvvgR\nacQiKHk0HWhn+zFmARobPiinVplp6o2irwlhtFlssLHgVSws9V0v+6scdnk1q1ZM\nANeQjYX0FrneZR/Mlazxzhkp8WkATnffE8lvevyp33qYnLd1N30p8U3+hM4Ztpnu\ncYsfrahH3PHM5bN4ZT/sutpOtXuPQwD/DAXcDEn7H1oEz7qE2wBDAMH/fc8no7hY\npQIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "rtc": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "http://test.com/events",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "cdd8c2ad-859d-4efd-9994-091b4ffbc7ee",
+                "name": "smart-home",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqNrZISz06o0neZS+0lr1\nu/FfXxvE9EWqjjfnSkLM0ozu0yHlrgAYqfIRdcvlAyI5RfE3/MqVK3fyYxFAXZjj\n3xHQTiscbdt6f6FWeN7+2xmC8ozoMikakaqhntwEINvfXVAt6QiJ0E+35qeGhmxA\nlTA/hnJjvAeBOhu7P2EQXpE3nfeEQrpHNS7SKZ6XJRyiq1nM7Rtu6r5gAUMrbVsZ\ntC+7vI/uz84e0uRUn2oQcLMxFelgTOcMk8BzHAerGkHDv4ecNj4FuV6ayhDPmNja\nXMCIhfTqg11C4Yzed8Fo1bZgnHKEY7dTyGwZ1vdR+vGONihReoiBgoyyblMVI6zi\nTQIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "messages": {
+                        "webhooks": {
+                            "inbound_url": {
+                                "address": "https://kellyjandrews.ngrok.io/inboundMessage",
+                                "http_method": "POST"
+                            },
+                            "status_url": {
+                                "address": "https://kellyjandrews.ngrok.io/messageStatus",
+                                "http_method": "POST"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "id": "f524547f-2ccc-4e0a-8a39-a5ad7331ad94",
+                "name": "deskmo",
+                "keys": {
+                    "public_key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsflaWOBXFp+UwojPpLZb\nP0f5WDYmDYBmEfXIKhvJ9K5v6SQ98hPj/VcvGOpm22ckRA6i2F8EVQCGKEVjf6pN\nL0DKooXlmjGlcdDnC3FFepAfSQtHJVIhSXvxPWLPNOQp7mzNFJB+AfxvELGAlVB8\n4JIfd6zw4r29qU9BvwLv79fKHzHot8FxxhHcQ+VNcFq4osR4IEbgt4JU15qv/Vrt\nyS1u6IjZgCh8pM6Ny+1PZQT5qN80eMo98fbdhIJmnkQNbtrlUl/rFcCn2+g8ATKy\nd2MWhGHxj1sCQh/zkvX4FQ5UMsy0jcSaMjuNzAXfON62K5NgsAvvOEZCBLpGxGUJ\nDwIDAQAB\n-----END PUBLIC KEY-----\n"
+                },
+                "capabilities": {
+                    "voice": {
+                        "webhooks": {
+                            "event_url": {
+                                "address": "http://kellyjandrews.ngrok.io/webhook/event",
+                                "http_method": "POST"
+                            },
+                            "answer_url": {
+                                "address": "http://kellyjandrews.ngrok.io/webhook/answer",
+                                "http_method": "GET"
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "_links": {
+        "self": {
+            "href": "/v2/applications?page_size=50&page=1"
+        },
+        "first": {
+            "href": "/v2/applications?page_size=50"
+        },
+        "last": {
+            "href": "/v2/applications?page_size=50&page=1"
+        }
+    }
+}

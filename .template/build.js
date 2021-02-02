@@ -98,7 +98,7 @@ prompt.get(
         let packageJson = fs.readFileSync(`${dir}/package.json`, 'utf-8')
         let newPackageJson = packageJson
             .replace(/PACKAGE/gim, pkgName)
-            .replace(/AUTHOR/gim, author)
+            .replace(/AUTHOR-NAME/gim, author)
             .replace(/DESCRIPTION/gim, description)
         fs.writeFileSync(`${dir}/package.json`, newPackageJson, 'utf-8')
 

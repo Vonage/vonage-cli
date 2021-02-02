@@ -14,6 +14,7 @@
     "@oclif/plugin-plugins": "^1.9.1",
     "@types/inquirer": "^7.3.1",
     "@vonage/cli-plugin-account": "^0.0.0",
+    "@vonage/cli-plugin-applications": "^0.0.0",
     "@vonage/cli-plugin-auth": "^0.0.0",
     "@vonage/cli-plugin-numbers": "^0.0.0",
     "@vonage/cli-utils": "^0.0.0",
@@ -43,7 +44,8 @@
       "@oclif/plugin-plugins",
       "@vonage/cli-plugin-numbers",
       "@vonage/cli-plugin-auth",
-      "@vonage/cli-plugin-account"
+      "@vonage/cli-plugin-account",
+      "@vonage/cli-plugin-applications"
     ],
     "topics": {
       "auth": {
@@ -55,6 +57,9 @@
       "number": {
         "hidden": true
       },
+      "secrets": {
+        "hidden": true
+      },
       "plugins": {
         "hidden": true
       }
@@ -64,7 +69,7 @@
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "../../node_modules/.bin/jest test",
     "test-watch": "../../node_modules/.bin/jest test --watch",
     "version": "oclif-dev readme && git add README.md"

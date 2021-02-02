@@ -49,6 +49,6 @@
   "homepage": "https://github.com/Vonage/vonage-cli#readme",
   "name": "@vonage/cli-bundle",
   "dependencies": {
-
+    "@types/prompts": "^2.0.9"
   }
 }

@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "strict": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": true,
     "composite": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "strict": false,
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "types": [
       "node",
       "jest"

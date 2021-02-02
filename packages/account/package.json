@@ -24,10 +24,10 @@
     "node": ">=8.0.0"
   },
   "files": [
-    "/lib",
+    "/dist",
+    "/bin",
     "/npm-shrinkwrap.json",
-    "/oclif.manifest.json",
-    "/yarn.lock"
+    "/oclif.manifest.json"
   ],
   "homepage": "https://github.com/conshus/cli-plugin-account",
   "keywords": [
@@ -44,7 +44,7 @@
   "repository": "conshus/cli-plugin-account",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "echo NO TESTS",
     "version": "oclif-dev readme && git add README.md"
   }
