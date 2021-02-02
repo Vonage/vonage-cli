@@ -1,6 +1,5 @@
 import Command from '../base'
 import cli from 'cli-ux'
-import {getAllApplications} from '../../helpers'
 
 // to-do - capabilities presentation not ideal
 

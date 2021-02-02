@@ -1,7 +1,7 @@
 import { Command, flags } from '@oclif/command'
 import cli from 'cli-ux'
 import { prompt } from 'prompts'
-import { getAllApplications, getSingleApplication, updateApplication, webhookQuestions} from '../../helpers'
+import { webhookQuestions } from '../../helpers'
 
 export default class ApplicationsUpdate extends Command {
     static description = 'update Vonage applications'

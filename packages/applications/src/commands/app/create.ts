@@ -1,7 +1,7 @@
 import Command from '../base'
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
-import { createApplication, webhookQuestions } from '../../helpers'
+import { webhookQuestions } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator'
 
 

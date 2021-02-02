@@ -1,6 +1,5 @@
 import Command from '../base'
 import {prompt} from 'prompts'
-import {getAllApplications, deleteApplication} from '../../helpers'
 
 export default class ApplicationsDelete extends Command {
     static description = 'delete Vonage application'
