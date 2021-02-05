@@ -21,19 +21,43 @@ hello world from ./src/hello.ts!
 
     static flags = {
         ...Command.flags,
-        'voice-answer-url': flags.string({
+        'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address'
         }),
-        'voice-answer-http': flags.string({
+        'voice_answer_http': flags.string({
             description: 'Voice Answer Webhook HTTP Method',
             options: ['GET', 'POST']
         }),
-        'voice-event-url': flags.string({
+        'voice_event_url': flags.string({
             description: 'Voice Event Webhook URL Address'
         }),
-        'voice-event-url-http': flags.string({
+        'voice_event_http': flags.string({
             description: 'Voice Event Webhook HTTP Method',
             options: ['GET', 'POST']
+        }),
+        'messages_inbound_url': flags.string({
+            description: 'Messages Inbound Webhook URL Address'
+        }),
+        'messages_inbound_http': flags.string({
+            description: 'Messages Inbound Webhook HTTP Method',
+            options: ['GET', 'POST']
+        }),
+        'messages_status_url': flags.string({
+            description: 'Messages Status Webhook URL Address'
+        }),
+        'messages_status_http': flags.string({
+            description: 'Messages Status Webhook HTTP Method',
+            options: ['GET', 'POST']
+        }),
+        'rtc_event_url': flags.string({
+            description: 'RTC Event Webhook URL Address',
+        }),
+        'rtc_event_http': flags.string({
+            description: 'RTC Event Webhook HTTP Method',
+            options: ['GET', 'POST']
+        }),
+        'vbc': flags.boolean({
+            description: 'VBC Capabilities Enabled',
         }),
         
     }
@@ -79,11 +103,11 @@ hello world from ./src/hello.ts!
 
                 let voice = await prompt({
                     type: 'confirm',
-                    name: 'voice-webhooks-confirm',
+                    name: 'voice_webhooks_confirm',
                     message: 'Create voice webhooks?'
                 })
 
-                if (voice['voice-webhooks-confirm']) {
+                if (voice.voice_webhooks_confirm) {
                     let answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
                     let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
                     response.capabilities.voice = { webhooks: { answer_url, event_url } }
@@ -95,11 +119,11 @@ hello world from ./src/hello.ts!
 
                 let messages = await prompt({
                     type: 'confirm',
-                    name: 'webhooks-confirm',
+                    name: 'webhooks_confirm',
                     message: 'Create messages webhooks?'
                 })
 
-                if (messages['webhooks-confirm']) {
+                if (messages.webhooks_confirm) {
                     let inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
                     let status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
                     response.capabilities.messages = { webhooks: { status_url, inbound_url } }
@@ -112,11 +136,11 @@ hello world from ./src/hello.ts!
 
                 let rtc = await prompt({
                     type: 'confirm',
-                    name: 'webhooks-confirm',
+                    name: 'webhooks_confirm',
                     message: 'Create RTC webhook?'
                 })
 
-                if (rtc['webhooks-confirm']) {
+                if (rtc.webhooks_confirm) {
                     let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
                     response.capabilities.rtc = { webhooks: { event_url } }
                 }
@@ -131,7 +155,7 @@ hello world from ./src/hello.ts!
             delete response.selected_capabilities
 
             //TO-DO - go check on a cleaner way to return the responses - shouldn't call twice
-            this.createApplication(response);
+            //this.createApplication(response);
 
         }
 
@@ -147,13 +171,12 @@ hello world from ./src/hello.ts!
         // the SDK can verify the response
         if (args.name && fArray.length >= 0) {
             console.log("Creating Application")
-
-            // needs to be in the right format from here
-            this.createApplication(response);
+            // response = this.normailzeResponseInput(response);
         }
 
+        console.dir(this.normailzeResponseInput(response), {depth: 6});
         // handle SDK error responses
-
+        
         // handle successful creation
 
 
