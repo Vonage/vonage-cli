@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator'
+import {merge} from 'lodash';
 
 
 const shortName = uniqueNamesGenerator({
@@ -22,44 +23,47 @@ hello world from ./src/hello.ts!
     static flags = {
         ...Command.flags,
         'voice_answer_url': flags.string({
-            description: 'Voice Answer Webhook URL Address'
+            description: 'Voice Answer Webhook URL Address',
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
         }),
         'voice_answer_http': flags.string({
             description: 'Voice Answer Webhook HTTP Method',
-            options: ['GET', 'POST']
+            options: ['GET', 'POST'],
+            dependsOn: ['voice_answer_url'],
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"method": "${input}"}}}}`
         }),
         'voice_event_url': flags.string({
-            description: 'Voice Event Webhook URL Address'
+            description: 'Voice Event Webhook URL Address',
+            parse: input => `{"voice": {"webhooks": {"event_url": {"address": "${input}"}}}}`
         }),
         'voice_event_http': flags.string({
             description: 'Voice Event Webhook HTTP Method',
-            options: ['GET', 'POST']
+            options: ['GET', 'POST'],
+            dependsOn: ['voice_event_url'],
+            parse: input => `{"voice": {"webhooks": {"event_url": {"method": "${input}"}}}}`
         }),
         'messages_inbound_url': flags.string({
-            description: 'Messages Inbound Webhook URL Address'
-        }),
-        'messages_inbound_http': flags.string({
-            description: 'Messages Inbound Webhook HTTP Method',
-            options: ['GET', 'POST']
+            description: 'Messages Inbound Webhook URL Address',
+            parse: input => `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`
         }),
         'messages_status_url': flags.string({
-            description: 'Messages Status Webhook URL Address'
-        }),
-        'messages_status_http': flags.string({
-            description: 'Messages Status Webhook HTTP Method',
-            options: ['GET', 'POST']
+            description: 'Messages Status Webhook URL Address',
+            parse: input => `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`
         }),
         'rtc_event_url': flags.string({
             description: 'RTC Event Webhook URL Address',
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"address": "${input}"}}}}`
         }),
         'rtc_event_http': flags.string({
             description: 'RTC Event Webhook HTTP Method',
-            options: ['GET', 'POST']
+            options: ['GET', 'POST'],
+            dependsOn: ['rtc_event_url'],
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"method": "${input}"}}}}`
         }),
         'vbc': flags.boolean({
             description: 'VBC Capabilities Enabled',
         }),
-        
+
     }
 
     static args = [
@@ -68,15 +72,12 @@ hello world from ./src/hello.ts!
 
     async run() {
         const { args, flags } = this.parse(ApplicationsCreate)
-
-        let fArray = Object.keys(flags)
-        let response = Object.assign({}, args, flags)
+        let response: any = { name: '', capabilities: {} };
 
         // if no flags or arguments provided, make interactive
+        if (!args.name && Object.keys(flags).length === 0) {
 
-        if (!args.name && fArray.length === 0) {
-
-            response = await prompt([
+            let general = await prompt([
                 {
                     type: 'text',
                     name: 'name',
@@ -95,11 +96,11 @@ hello world from ./src/hello.ts!
                     hint: '- Space to select. Return to submit'
                 }
             ])
-
-
-            response.capabilities = {};
+            response = Object.assign({}, response, general);
 
             if (response.selected_capabilities?.indexOf('voice') > -1) {
+                response.capabilities.voice = {}
+                let answer_url, event_url
 
                 let voice = await prompt({
                     type: 'confirm',
@@ -108,15 +109,19 @@ hello world from ./src/hello.ts!
                 })
 
                 if (voice.voice_webhooks_confirm) {
-                    let answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
-                    let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
-                    response.capabilities.voice = { webhooks: { answer_url, event_url } }
+                    answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
+                    event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
+                } else {
+                    answer_url = { address: "https://www.sample.com/webhook/answer_url" }
+                    event_url = { address: "https://www.sample.com/webhook/event_url" }
                 }
+
+                response.capabilities.voice = { webhooks: { answer_url, event_url } }
             }
 
             if (response.selected_capabilities?.indexOf('messages') > -1) {
-
-
+                response.capabilities.messages = {};
+                let inbound_url, status_url
                 let messages = await prompt({
                     type: 'confirm',
                     name: 'webhooks_confirm',
@@ -124,15 +129,19 @@ hello world from ./src/hello.ts!
                 })
 
                 if (messages.webhooks_confirm) {
-                    let inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
-                    let status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
-                    response.capabilities.messages = { webhooks: { status_url, inbound_url } }
+                    inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
+                    status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
+                } else {
+                    inbound_url = { address: "https://www.sample.com/webhook/inbound_url" }
+                    status_url = { address: "https://www.sample.com/webhook/status_url" }
                 }
-
+                response.capabilities.messages = { webhooks: { status_url, inbound_url } }
 
             }
 
             if (response.selected_capabilities?.indexOf('rtc') > -1) {
+                response.capabilities.rtc = {};
+                let event_url
 
                 let rtc = await prompt({
                     type: 'confirm',
@@ -143,9 +152,11 @@ hello world from ./src/hello.ts!
                 if (rtc.webhooks_confirm) {
                     let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
                     response.capabilities.rtc = { webhooks: { event_url } }
+                } else {
+                    event_url = { address: "https://www.sample.com/webhook/rtc_event_url" }
                 }
 
-
+                response.capabilities.rtc = { webhooks: { event_url } }
             }
 
             if (response.selected_capabilities?.indexOf('vbc') > -1) {
@@ -154,31 +165,32 @@ hello world from ./src/hello.ts!
 
             delete response.selected_capabilities
 
-            //TO-DO - go check on a cleaner way to return the responses - shouldn't call twice
-            //this.createApplication(response);
-
         }
 
-
-
-
         // if flags are provided but no name, throw error
-        if (!args.name && fArray.length > 0) {
+        if (!args.name && Object.keys(flags).length > 0) {
             console.error("Missing Required Argument: name")
         }
 
         // if name is provided, just create the application.
         // the SDK can verify the response
-        if (args.name && fArray.length >= 0) {
-            console.log("Creating Application")
-            // response = this.normailzeResponseInput(response);
+        if (args.name && Object.keys(flags).length >= 0) {
+            
+            let tobeAssigned = Object.keys(flags).map((value: string, index)=>{
+                return JSON.parse(flags[value])
+            }, [])
+
+            merge(response.capabilities, ...tobeAssigned)
         }
 
-        console.dir(this.normailzeResponseInput(response), {depth: 6});
-        // handle SDK error responses
-        
-        // handle successful creation
 
+        let output = await this.createApplication(response)
+        // handle SDK error responses
+
+        // handle successful creation
+        // console.dir(response, { depth: 6 })
+        console.log(output)
+        // create a private key file? how does it display here? is it reusable? 
 
     }
 

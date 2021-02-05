@@ -5,6 +5,9 @@ interface WebhookQuestions {
     data?: object
     questions?: number
 }
+
+// address needs to be verified as a valid http address before proceeding
+
 export async function webhookQuestions({name, questions=4, data={}}: WebhookQuestions) {
    return await prompt([{
         type: 'text',
