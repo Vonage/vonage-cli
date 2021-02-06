@@ -1,9 +1,9 @@
 import Command from '../base'
-import { flags } from '@oclif/command'
+import { flags, } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator'
-import {merge} from 'lodash';
+import { merge } from 'lodash';
 
 
 const shortName = uniqueNamesGenerator({
@@ -71,7 +71,7 @@ hello world from ./src/hello.ts!
     ]
 
     async run() {
-        const { args, flags } = this.parse(ApplicationsCreate)
+        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsCreate)
         let response: any = { name: '', capabilities: {} };
 
         // if no flags or arguments provided, make interactive
@@ -175,23 +175,25 @@ hello world from ./src/hello.ts!
         // if name is provided, just create the application.
         // the SDK can verify the response
         if (args.name && Object.keys(flags).length >= 0) {
-            
-            let tobeAssigned = Object.keys(flags).map((value: string, index)=>{
+
+            let tobeAssigned = Object.keys(flags).map((value: string, index) => {
                 return JSON.parse(flags[value])
             }, [])
 
             merge(response.capabilities, ...tobeAssigned)
+            response.name = args.name;
         }
 
 
         let output = await this.createApplication(response)
+        console.dir(output, {depth: 6})
+
         // handle SDK error responses
 
         // handle successful creation
-        // console.dir(response, { depth: 6 })
-        console.log(output)
-        // create a private key file? how does it display here? is it reusable? 
-
+        
+        // create a private key file? 
+        // how does it display here? 
     }
 
     // async catch(error: any) {

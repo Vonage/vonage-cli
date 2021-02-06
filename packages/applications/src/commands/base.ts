@@ -1,6 +1,5 @@
 /// <reference path="../../node_modules/@vonage/server-sdk/typings/index.d.ts" />
 import Command, { flags } from '@oclif/command'
-import { string } from '@oclif/command/lib/flags';
 import * as Vonage from '@vonage/server-sdk';
 
 export default abstract class extends Command {
@@ -39,10 +38,10 @@ export default abstract class extends Command {
         return new Promise((res, rej) => {
             this.vonage.applications.create(data, (error: any, response: any) => {
                 if (error) {
-                    console.dir(error, {depth: 5})
+                    // console.dir(error, {depth: 5})
                     rej(error)
                 } else {
-                    console.log(response)
+                    // console.log(response)
                     res(response)
                 }
             })
