@@ -1,5 +1,7 @@
 import Command from '../base'
 import {prompt} from 'prompts'
+import chalk from 'chalk';
+import cli from 'cli-ux';
 
 export default class ApplicationsDelete extends Command {
     static description = 'delete Vonage application'
@@ -49,8 +51,15 @@ hello world from ./src/hello.ts!
                     initial: false
                 }
             ])
-            delete response.confirm
-            this.deleteApplication(response.appId)
+            if (response.confirm) {
+                delete response.confirm
+                cli.action.start(chalk.bold('Deleting Application'), 'Initializing', {stdout: true})
+                this.deleteApplication(response.appId)
+                cli.action.stop()
+            } else {
+               console.log(chalk.bold('Delete cancelled.')); 
+            }
+
         }
 
         if (userInput.appId) {
@@ -58,9 +67,6 @@ hello world from ./src/hello.ts!
         }
         
         // handle errors from SDK
-
-        // handle success from SDK
-
     }
 
     async catch(error:any) {
