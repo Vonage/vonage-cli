@@ -34,6 +34,8 @@ export default abstract class extends Command {
         })
     }
 
+    
+
     createApplication(data: object): any {
         return new Promise((res, rej) => {
             this.vonage.applications.create(data, (error: any, response: any) => {

@@ -4,7 +4,9 @@ import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator'
 import { merge } from 'lodash';
-
+import * as fs from 'fs';
+import cli from 'cli-ux';
+import chalk from 'chalk';
 
 const shortName = uniqueNamesGenerator({
     dictionaries: [adjectives, animals], // colors can be omitted here as not used
@@ -184,21 +186,25 @@ hello world from ./src/hello.ts!
             response.name = args.name;
         }
 
-
-        let output = await this.createApplication(response)
-        console.dir(output, {depth: 6})
-
-        // handle SDK error responses
-
         // handle successful creation
-        
-        // create a private key file? 
-        // how does it display here? 
+        cli.action.start(chalk.bold('Creating Application'), 'Initializing', {stdout: true})
+        let output = await this.createApplication(response)
+        console.log(chalk.bold("Application ID:"), output.id)
+        console.log(chalk.bold("Application Name:"), output.name)
+        console.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
+
+        await fs.writeFile(`/${process.cwd()}/${output.name}_private.key`, output.keys.private_key, (err) => {
+            if (err) throw err;
+        });
+
+        console.log(chalk.bold("Keyfile Location:"), `/${process.cwd()}/${output.name}_private.key`)
+        cli.action.stop()
+
     }
 
-    // async catch(error: any) {
-    //     if (error.oclif.exit !== 0) {
-    //         this.log(`${error.name}: ${error.message}`)
-    //     }
-    // }
+    async catch(error: any) {
+        if (error.oclif.exit !== 0) {
+            this.log(`${error.name}: ${error.message}`)
+        }
+    }
 }
