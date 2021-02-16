@@ -51,6 +51,9 @@
       "auth": {
         "hidden": true
       },
+      "app": {
+        "hidden": true
+      },
       "account": {
         "hidden": true
       },
