@@ -2,6 +2,9 @@ import Command from '../../helpers/base'
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
+import { merge } from 'lodash';
+import cli from 'cli-ux';
+import chalk from 'chalk';
 
 export default class ApplicationsUpdate extends Command {
     static description = 'update Vonage applications'
@@ -14,42 +17,48 @@ hello world from ./src/hello.ts!
 
     static flags = {
         ...Command.flags,
-        'voice-answer-url': flags.string({
-            description: 'Voice Answer Webhook URL Address'
+        'voice_answer_url': flags.string({
+            description: 'Voice Answer Webhook URL Address',
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
         }),
-        'voice-answer-http': flags.string({
+        'voice_answer_http': flags.string({
             description: 'Voice Answer Webhook HTTP Method',
-            options: ['GET', 'POST']
+            options: ['GET', 'POST'],
+            dependsOn: ['voice_answer_url'],
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"method": "${input}"}}}}`
         }),
-        'voice-event-url': flags.string({
-            description: 'Voice Event Webhook URL Address'
+        'voice_event_url': flags.string({
+            description: 'Voice Event Webhook URL Address',
+            parse: input => `{"voice": {"webhooks": {"event_url": {"address": "${input}"}}}}`
         }),
-        'voice-event-http': flags.string({
+        'voice_event_http': flags.string({
             description: 'Voice Event Webhook HTTP Method',
-            options: ['GET', 'POST']
+            options: ['GET', 'POST'],
+            dependsOn: ['voice_event_url'],
+            parse: input => `{"voice": {"webhooks": {"event_url": {"method": "${input}"}}}}`
         }),
-        'messages-inbound-url': flags.string({
-            description: 'Messages Inbound Webhook URL Address'
+        'messages_inbound_url': flags.string({
+            description: 'Messages Inbound Webhook URL Address',
+            parse: input => `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`
         }),
-        'messages-inbound-http': flags.string({
-            description: 'Messages Inbound Webhook HTTP Method',
-            options: ['GET', 'POST']
+        'messages_status_url': flags.string({
+            description: 'Messages Status Webhook URL Address',
+            parse: input => `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`
         }),
-        'messages-status-url': flags.string({
-            description: 'Messages Status Webhook URL Address'
-        }),
-        'messages-status-http': flags.string({
-            description: 'Messages Status Webhook HTTP Method',
-            options: ['GET', 'POST']
-        }),
-        'rtc-event-url': flags.string({
+        'rtc_event_url': flags.string({
             description: 'RTC Event Webhook URL Address',
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"address": "${input}"}}}}`
         }),
-        'rtc-event-http': flags.string({
+        'rtc_event_http': flags.string({
             description: 'RTC Event Webhook HTTP Method',
-            options: ['GET', 'POST']
-        })
-        
+            options: ['GET', 'POST'],
+            dependsOn: ['rtc_event_url'],
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"method": "${input}"}}}}`
+        }),
+        'vbc': flags.boolean({
+            description: 'VBC Capabilities Enabled',
+        }),
+
     }
 
     static args = [
@@ -65,17 +74,22 @@ hello world from ./src/hello.ts!
         })
     }
 
+    // TODO - adding capabilities works, removing them currently not - needs to be addressed
+    // due to the merge method - find a better way to do this.
+    // TODO - make sure current data is getting passed for webhook questions
+
     async run() {
-        const { args, flags } = this.parse(ApplicationsUpdate)
-        let app;
-        let fArray = Object.keys(flags)
-        let response = Object.assign({}, args, flags)
+        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsUpdate)
+        let response: any = { name: '', capabilities: {} };
+        let app: any;
 
         // if no flags or arguments, use interactive mode
-        if (!args.appId && fArray.length === 0) {
+        if (!args.appId && Object.keys(flags).length === 0) {
             let appData = await this.allApplications;
             let appList = appData['_embedded'].applications;
-            let response = await prompt([
+
+
+            let init = await prompt([
                 {
                     type: 'autocomplete',
                     name: 'appId',
@@ -84,10 +98,16 @@ hello world from ./src/hello.ts!
                     initial: 0,
                 }])
 
-            app = this.getSingleApplication(response.appId)
+            app = await this.getSingleApplication(init.appId)
             let selected_capabilities = Object.keys(app.capabilities);
 
-            response = await prompt([
+            let general = await prompt([
+                {
+                    type: 'text',
+                    name: 'name',
+                    message: `Application Name`,
+                    initial: app.name
+                },
                 {
                     type: 'multiselect',
                     name: 'selected_capabilities',
@@ -102,59 +122,67 @@ hello world from ./src/hello.ts!
                 }
             ])
 
-            response.capabilities = {};
+            response = Object.assign({}, response, general);
 
             if (response.selected_capabilities?.indexOf('voice') > -1) {
+                response.capabilities.voice = {}
+                let answer_url, event_url
 
                 let voice = await prompt({
                     type: 'confirm',
-                    name: 'voice-webhooks-confirm',
-                    message: 'Update voice webhooks?'
+                    name: 'voice_webhooks_confirm',
+                    message: 'Create voice webhooks?'
                 })
 
-                // tie in the current data if available
-                if (voice['voice-webhooks-confirm']) {
-                    let answer_url = await webhookQuestions({ name: 'Answer Webhook' })
-                    let fallback_answer_url = await webhookQuestions({ name: 'Fallback Answer Webhook' })
-                    let event_url = await webhookQuestions({ name: 'Event Webhook' })
-                    response.capabilities.voice = { webhooks: { answer_url, fallback_answer_url, event_url } }
+                if (voice.voice_webhooks_confirm) {
+                    answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
+                    event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
                 } else {
-                    response.capabilities.voice = app.capabilities.voice
+                    answer_url = { address: app.capabilities.voice.webhooks.answer_url.address || "https://www.sample.com/webhook/answer_url" }
+                    event_url = { address: app.capabilities.voice.webhooks.event_url.address || "https://www.sample.com/webhook/event_url" }
                 }
+
+                response.capabilities.voice = { webhooks: { answer_url, event_url } }
             }
 
             if (response.selected_capabilities?.indexOf('messages') > -1) {
+                response.capabilities.messages = {};
+                let inbound_url, status_url
                 let messages = await prompt({
                     type: 'confirm',
-                    name: 'webhooks-confirm',
-                    message: 'Update messages webhooks?'
+                    name: 'webhooks_confirm',
+                    message: 'Create messages webhooks?'
                 })
 
-                // tie in the current data if available
-                if (messages['webhooks-confirm']) {
-                    let inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
-                    let status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
-                    response.capabilities.messages = { webhooks: { status_url, inbound_url } }
+                if (messages.webhooks_confirm) {
+                    inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
+                    status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
                 } else {
-                    response.capabilities.messages = app.capabilities.messages
+                    inbound_url = { address: app.capabilities.messages.webhooks.inbound_url.address || "https://www.sample.com/webhook/inbound_url" }
+                    status_url = { address: app.capabilities.messages.webhooks.status_url.address || "https://www.sample.com/webhook/status_url" }
                 }
+                response.capabilities.messages = { webhooks: { status_url, inbound_url } }
+
             }
 
             if (response.selected_capabilities?.indexOf('rtc') > -1) {
+                response.capabilities.rtc = {};
+                let event_url
+
                 let rtc = await prompt({
                     type: 'confirm',
-                    name: 'webhooks-confirm',
-                    message: 'Update RTC webhook?'
+                    name: 'webhooks_confirm',
+                    message: 'Create RTC webhook?'
                 })
 
-                // tie in the current data if available
-                if (rtc['webhooks-confirm']) {
+                if (rtc.webhooks_confirm) {
                     let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
                     response.capabilities.rtc = { webhooks: { event_url } }
                 } else {
-                    response.capabilities.rtc = app.capabilities.rtc
+                    event_url = { address: app.capabilities.rtc.webhooks.event_url.address || "https://www.sample.com/webhook/rtc_event_url" }
                 }
 
+                response.capabilities.rtc = { webhooks: { event_url } }
             }
 
             if (response.selected_capabilities?.indexOf('vbc') > -1) {
@@ -162,28 +190,34 @@ hello world from ./src/hello.ts!
             }
 
             delete response.selected_capabilities
-            this.updateApplication(Object.assign({}, app, response));
+
         }
+
 
         // if flags are provided but no appId, throw error
-        if (!args.appId && fArray.length > 0) {
+        if (!args.appId && Object.keys(flags).length > 0) {
             console.error("Missing Required Argument: name")
         }
-
         // if name is provided, just create the application.
         // the SDK can verify the response
-        if (args.name && fArray.length >= 0) {
-            console.log("Creating Application")
-            app = this.getSingleApplication(response.appId)
-            response = this.normailzeResponseInput(response);
+        if (args.name && Object.keys(flags).length >= 0) {
 
+            let tobeAssigned = Object.keys(flags).map((value: string, index) => {
+                return JSON.parse(flags[value])
+            }, [])
+
+            merge(response.capabilities, ...tobeAssigned)
+            response.name = args.name;
         }
 
-        console.log(Object.assign({}, app, response))
-
-        // this.updateApplication(Object.assign({}, app, response))
+        await this.updateApplication(merge({}, app, response))
         // handle SDK error responses
-
+        cli.action.start(chalk.bold('Updating Application'), 'Initializing', {stdout: true})
+        let output = await this.createApplication(response)
+        console.log(chalk.bold("Application ID:"), output.id)
+        console.log(chalk.bold("Application Name:"), output.name)
+        console.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
+        cli.action.stop()
         // handle successful creation
     }
 
