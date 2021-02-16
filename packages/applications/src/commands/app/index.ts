@@ -1,4 +1,4 @@
-import Command from '../base'
+import Command from '../../helpers/base'
 import cli from 'cli-ux'
 
 // to-do - capabilities presentation not ideal

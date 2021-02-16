@@ -18,6 +18,7 @@ export default abstract class extends Command {
             apiKey: process.env.VONAGE_API_KEY || '',
             apiSecret: process.env.VONAGE_API_SECRET || ''
         })
+
         return this._vonage
     }
 
@@ -34,8 +35,6 @@ export default abstract class extends Command {
         })
     }
 
-    
-
     createApplication(data: object): any {
         return new Promise((res, rej) => {
             this.vonage.applications.create(data, (error: any, response: any) => {
@@ -51,7 +50,16 @@ export default abstract class extends Command {
     }
 
     getSingleApplication(appId: string): any {
-        return appId
+        return new Promise((res, rej) => {
+            this.vonage.applications.get(appId, (error: any, response: any) => {
+                if (error) {
+                    rej(error);
+                }
+                else {
+                    res(response);
+                }
+            }, true);
+        })
     }
 
     updateApplication(appId: string): any {

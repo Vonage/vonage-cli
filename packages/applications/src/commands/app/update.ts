@@ -1,4 +1,4 @@
-import Command from '../base'
+import Command from '../../helpers/base'
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'

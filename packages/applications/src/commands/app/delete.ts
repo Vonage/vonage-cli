@@ -1,4 +1,4 @@
-import Command from '../base'
+import Command from '../../helpers/base'
 import {prompt} from 'prompts'
 import chalk from 'chalk';
 import cli from 'cli-ux';

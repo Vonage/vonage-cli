@@ -1,4 +1,4 @@
-import Command from '../base'
+import Command from '../../helpers/base'
 import { flags, } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
@@ -202,9 +202,9 @@ hello world from ./src/hello.ts!
 
     }
 
-    async catch(error: any) {
-        if (error.oclif.exit !== 0) {
-            this.log(`${error.name}: ${error.message}`)
-        }
-    }
+    // async catch(error: any) {
+    //     if (error.oclif.exit !== 0) {
+    //         this.log(`${error.name}: ${error.message}`)
+    //     }
+    // }
 }
