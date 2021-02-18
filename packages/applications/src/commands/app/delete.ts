@@ -38,7 +38,7 @@ hello world from ./src/hello.ts!
             let appList = appData['_embedded'].applications;
             let response = await prompt([
                 {
-                    type: 'autocomplete',
+                    type: 'autocompleteMultiselect',
                     name: 'appId',
                     message: 'Your Applications',
                     choices: this.setQuestions(appList),
@@ -53,8 +53,13 @@ hello world from ./src/hello.ts!
             ])
             if (response.confirm) {
                 delete response.confirm
-                cli.action.start(chalk.bold('Deleting Application'), 'Initializing', {stdout: true})
-                this.deleteApplication(response.appId)
+                let plural = response.appId.length > 1 ? 's': '';
+                cli.action.start(chalk.bold(`Deleting ${response.appId.length} Application${plural}`), 'Initializing', {stdout: true})
+
+                response.appId.map((v) => {
+                    this.deleteApplication(v)
+                })
+                
                 cli.action.stop()
             } else {
                console.log(chalk.bold('Delete cancelled.')); 
