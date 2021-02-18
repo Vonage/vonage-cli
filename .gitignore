@@ -9,4 +9,4 @@ coverage
 coverage.lcov
 packages/**/dist
 .vonagerc
-.key
+*.key

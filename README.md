@@ -3,9 +3,17 @@
 ![screenshot of the Vonage CLI](./assets/splash.png)
 <!-- https://carbon.now.sh/?bg=rgba%28171%2C184%2C195%2C0%29&t=night-owl&wt=none&l=text%2Fapache&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=false&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%2524%2520vonage -->
 
-# Documentation
+# Current Working Commands:
 
-(coming soon)
+app
+app:show
+app:create (partial - change only, no removal of capabilities)
+app:update
+app:delete
+
+# Current Known Issues
+
+* help text is not correct
 
 # Overview
 
