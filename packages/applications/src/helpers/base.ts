@@ -1,19 +1,20 @@
 /// <reference path="../../node_modules/@vonage/server-sdk/typings/index.d.ts" />
 import Command, { flags } from '@oclif/command'
 import * as Vonage from '@vonage/server-sdk';
+import parsePhoneNumber from 'libphonenumber-js'
+
 
 export default abstract class extends Command {
     _vonage!: any
 
     static flags = {
         help: flags.help({ char: 'h' }),
-        apiKey: flags.string(),
-        apiSecret: flags.string()
+        apiKey: flags.string({hidden:true}),
+        apiSecret: flags.string({hidden:true})
     }
 
     get vonage() {
         if (this._vonage) return this._vonage
-
         this._vonage = new Vonage({
             apiKey: process.env.VONAGE_API_KEY || '',
             apiSecret: process.env.VONAGE_API_SECRET || ''
@@ -79,12 +80,56 @@ export default abstract class extends Command {
         })
     }
 
-    async init() {
-        // do some initialization
+    updateNumber(lvn: string, cc: string, appId?: string): any {
+        return new Promise((res,rej) => {
+            this.vonage.number.update(
+                cc,
+                lvn,
+                {
+                    app_id: appId || null,
+                },
+                (error: any, result: any) => {
+                    if (error) {
+                       rej(error);
+                    } else {
+                        res(result)
+                    }
+                }
+            );
+        })
     }
-    async catch(err: any) {
-        // add any custom logic to handle errors from the command
-        // or simply return the parent class error handling
-        return super.catch(err);
+    
+    listNumbers(lvn?: string): any {
+        return new Promise((res, rej) => {
+            this.vonage.number.get(
+                {
+                    pattern: lvn || '',
+                    search_pattern: 1
+                },
+                (error, result) => {
+                  if (error) {
+                    rej(error)
+                  } else {
+                      res(result)
+                  }
+                }
+            )
+        })
+    }
+
+    async init() {
+        return super.init()
+    }
+
+
+    async catch(error: any) {
+
+        if (error.statusCode === 401) {
+            console.warn('Authentication Error: Invalid Credentials');
+        } 
+
+        if (error.oclif?.exit === 0) return;
+
+        return super.catch(error);
     }
 }
