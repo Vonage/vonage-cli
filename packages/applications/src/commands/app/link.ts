@@ -1,7 +1,7 @@
 import Command from '../../helpers/base'
 
-export default class ApplicationsAssign extends Command {
-    static description = 'Assign numbers to Vonage application'
+export default class ApplicationsLink extends Command {
+    static description = 'Link numbers to Vonage application'
 
     static examples = []
 
@@ -15,16 +15,16 @@ export default class ApplicationsAssign extends Command {
     ]
 
     async run() {
-        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsAssign)
+        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsLink)
 
         // if no args provided, present UX
-        if (!args.appId && !args.lvn) {
+        if (!args.appId && !args.number) {
             //get list of applications - select one
             //get list of numbers - select multiple?
         }
 
         // check for either arg, if any missing, error out
-        if (!args.appId || !args.lvn) {
+        if (!args.appId || !args.number) {
             this.log('Please provide both Application ID and Number')
             this.exit();
         }
