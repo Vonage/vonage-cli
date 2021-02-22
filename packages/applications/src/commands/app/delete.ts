@@ -6,11 +6,7 @@ import cli from 'cli-ux';
 export default class ApplicationsDelete extends Command {
     static description = 'delete Vonage application'
 
-    static examples = [
-        `$ vonage apps:delete
-hello world from ./src/hello.ts!
-`,
-    ]
+    static examples = []
 
     static flags = {
         ...Command.flags
@@ -62,7 +58,7 @@ hello world from ./src/hello.ts!
                 
                 cli.action.stop()
             } else {
-               console.log(chalk.bold('Delete cancelled.')); 
+               this.log(chalk.bold('Delete cancelled.')); 
             }
 
         }
@@ -70,13 +66,10 @@ hello world from ./src/hello.ts!
         if (userInput.appId) {
             this.deleteApplication(userInput.appId)
         }
-        
-        // handle errors from SDK
+
+        this.exit();
+
     }
 
-    async catch(error:any) {
-        if (error.oclif.exit !== 0){
-            this.log(`${error.name}: ${error.message}`)
-        }
-    }
+    // async catch(error:any) {}
 }

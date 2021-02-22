@@ -7,13 +7,9 @@ import cli from 'cli-ux';
 import chalk from 'chalk';
 
 export default class ApplicationsUpdate extends Command {
-    static description = 'update Vonage applications'
+    static description = 'Update Vonage application settings'
 
-    static examples = [
-        `$ vonage applications
-hello world from ./src/hello.ts!
-`,
-    ]
+    static examples = []
 
     static flags = {
         ...Command.flags,
@@ -196,7 +192,7 @@ hello world from ./src/hello.ts!
 
         // if flags are provided but no appId, throw error
         if (!args.appId && Object.keys(flags).length > 0) {
-            console.error("Missing Required Argument: name")
+            this.error("Missing Required Argument: name")
         }
         // if name is provided, just create the application.
         // the SDK can verify the response
@@ -214,16 +210,12 @@ hello world from ./src/hello.ts!
         // handle SDK error responses
         cli.action.start(chalk.bold('Updating Application'), 'Initializing', {stdout: true})
         let output = await this.createApplication(response)
-        console.log(chalk.bold("Application ID:"), output.id)
-        console.log(chalk.bold("Application Name:"), output.name)
-        console.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
+        this.log(chalk.bold("Application ID:"), output.id)
+        this.log(chalk.bold("Application Name:"), output.name)
+        this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
         cli.action.stop()
         // handle successful creation
     }
 
-    // async catch(error:any) {
-    //     if (error.oclif.exit !== 0){
-    //         this.log(`${error.name}: ${error.message}`)
-    //     }
-    // }
+    // async catch(error:any) {}
 }

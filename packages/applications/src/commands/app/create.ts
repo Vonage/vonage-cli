@@ -189,22 +189,18 @@ hello world from ./src/hello.ts!
         // handle successful creation
         cli.action.start(chalk.bold('Creating Application'), 'Initializing', {stdout: true})
         let output = await this.createApplication(response)
-        console.log(chalk.bold("Application ID:"), output.id)
-        console.log(chalk.bold("Application Name:"), output.name)
-        console.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
+        this.log(chalk.bold("Application ID:"), output.id)
+        this.log(chalk.bold("Application Name:"), output.name)
+        this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
 
         await fs.writeFile(`/${process.cwd()}/${output.name}_private.key`, output.keys.private_key, (err) => {
             if (err) throw err;
         });
 
-        console.log(chalk.bold("Keyfile Location:"), `/${process.cwd()}/${output.name}_private.key`)
+        this.log(chalk.bold("Keyfile Location:"), `/${process.cwd()}/${output.name}_private.key`)
         cli.action.stop()
 
     }
 
-    // async catch(error: any) {
-    //     if (error.oclif.exit !== 0) {
-    //         this.log(`${error.name}: ${error.message}`)
-    //     }
-    // }
+    // async catch(error: any) {}
 }

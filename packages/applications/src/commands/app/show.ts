@@ -3,13 +3,9 @@ import {prompt} from 'prompts'
 import chalk from 'chalk'
 
 export default class ApplicationsShow extends Command {
-    static description = 'manage Vonage applications'
+    static description = 'Show Vonage application details';
 
-    static examples = [
-        `$ vonage apps
-hello world from ./src/hello.ts!
-`,
-    ]
+    static examples = []
 
     static flags = {
         ...Command.flags,
@@ -49,14 +45,10 @@ hello world from ./src/hello.ts!
         }
 
         let output = await this.getSingleApplication(response.appId);
-        console.log(chalk.bold("Application ID:"), output.id)
-        console.log(chalk.bold("Application Name:"), output.name)
-        console.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
+        this.log(chalk.bold("Application ID:"), output.id)
+        this.log(chalk.bold("Application Name:"), output.name)
+        this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
     }
 
-    // async catch(error: any) {
-    //     if (error.oclif.exit !== 0) {
-    //         this.log(`${error.name}: ${error.message}`)
-    //     }
-    // }
+    // async catch(error: any) {}
 }

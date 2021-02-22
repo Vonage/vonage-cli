@@ -4,13 +4,9 @@ import cli from 'cli-ux'
 // to-do - capabilities presentation not ideal
 
 export default class ApplicationsList extends Command {
-    static description = 'manage Vonage applications'
+    static description = 'List Vonage applications'
 
-    static examples = [
-        `$ vonage apps
-hello world from ./src/hello.ts!
-`,
-    ]
+    static examples = []
 
     static flags = {
         ...Command.flags,
@@ -19,13 +15,9 @@ hello world from ./src/hello.ts!
         })
     }
 
-    static args = [
-        {name: 'appId', required: false},
-    ]
-
     async run() {
 
-        const {args, flags} = this.parse(ApplicationsList)
+        const { args, flags } = this.parse(ApplicationsList)
         let appData = await this.allApplications;
         let appList = appData['_embedded'].applications;
 
@@ -38,12 +30,8 @@ hello world from ./src/hello.ts!
         }, {
             ...flags
         })
-
+        this.exit();
     }
 
-    async catch(error:any) {
-        if (error.oclif.exit !== 0){
-            this.log(`${error.name}: ${error.message}`)
-        }
-    }
+    // async catch(error: any) {}
 }
