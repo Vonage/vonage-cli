@@ -12,10 +12,7 @@
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.0",
     "@oclif/plugin-plugins": "^1.9.1",
-    "@vonage/cli-plugin-account": "^0.0.0",
-    "@vonage/cli-plugin-applications": "^0.0.0",
     "@vonage/cli-plugin-auth": "^0.0.0",
-    "@vonage/cli-plugin-numbers": "^0.0.0",
     "tslib": "^1.14.1"
   },
   "engines": {
@@ -39,9 +36,6 @@
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins",
-      "@vonage/cli-plugin-numbers",
-      "@vonage/cli-plugin-auth",
-      "@vonage/cli-plugin-account",
       "@vonage/cli-plugin-applications"
     ],
     "topics": {
