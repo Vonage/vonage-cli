@@ -37,6 +37,9 @@
       "@oclif/plugin-plugins",
       "@vonage/cli-plugin-applications"
     ],
+    "hooks": {
+      "init": "./src/hooks/init"
+    },
     "topics": {
       "auth": {
         "hidden": true

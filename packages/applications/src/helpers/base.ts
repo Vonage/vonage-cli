@@ -1,27 +1,6 @@
-/// <reference path="../../node_modules/@vonage/server-sdk/typings/index.d.ts" />
-import Command, { flags } from '@oclif/command'
-import * as Vonage from '@vonage/server-sdk';
-import parsePhoneNumber from 'libphonenumber-js'
+import { Command as Base } from '@vonage/cli-utils';
 
-
-export default abstract class extends Command {
-    _vonage!: any
-
-    static flags = {
-        help: flags.help({ char: 'h' }),
-        apiKey: flags.string({hidden:true}),
-        apiSecret: flags.string({hidden:true})
-    }
-
-    get vonage() {
-        if (this._vonage) return this._vonage
-        this._vonage = new Vonage({
-            apiKey: process.env.VONAGE_API_KEY || '',
-            apiSecret: process.env.VONAGE_API_SECRET || ''
-        })
-
-        return this._vonage
-    }
+export default abstract class Command extends Base {
 
     get allApplications(): any {
         return new Promise((res, rej) => {
@@ -81,7 +60,7 @@ export default abstract class extends Command {
     }
 
     updateNumber(lvn: string, cc: string, appId?: string): any {
-        return new Promise((res,rej) => {
+        return new Promise((res, rej) => {
             this.vonage.number.update(
                 cc,
                 lvn,
@@ -90,7 +69,7 @@ export default abstract class extends Command {
                 },
                 (error: any, result: any) => {
                     if (error) {
-                       rej(error);
+                        rej(error);
                     } else {
                         res(result)
                     }
@@ -98,7 +77,7 @@ export default abstract class extends Command {
             );
         })
     }
-    
+
     listNumbers(lvn?: string): any {
         return new Promise((res, rej) => {
             this.vonage.number.get(
@@ -107,29 +86,14 @@ export default abstract class extends Command {
                     search_pattern: 1
                 },
                 (error, result) => {
-                  if (error) {
-                    rej(error)
-                  } else {
-                      res(result)
-                  }
+                    if (error) {
+                        rej(error)
+                    } else {
+                        res(result)
+                    }
                 }
             )
         })
     }
 
-    async init() {
-        return super.init()
-    }
-
-
-    async catch(error: any) {
-
-        if (error.statusCode === 401) {
-            console.warn('Authentication Error: Invalid Credentials');
-        } 
-
-        if (error.oclif?.exit === 0) return;
-
-        return super.catch(error);
-    }
 }
