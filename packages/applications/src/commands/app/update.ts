@@ -206,9 +206,10 @@ export default class ApplicationsUpdate extends Command {
             response.name = args.name;
         }
 
+        // go back and just build new object to send to method
         await this.updateApplication(merge({}, app, response))
         // handle SDK error responses
-        cli.action.start(chalk.bold('Updating Application'), 'Initializing', {stdout: true})
+        cli.action.start(chalk.bold('Updating Application'), 'Initializing', { stdout: true })
         let output = await this.createApplication(response)
         this.log(chalk.bold("Application ID:"), output.id)
         this.log(chalk.bold("Application Name:"), output.name)
@@ -217,5 +218,4 @@ export default class ApplicationsUpdate extends Command {
         // handle successful creation
     }
 
-    // async catch(error:any) {}
 }

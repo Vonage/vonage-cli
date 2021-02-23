@@ -5,10 +5,6 @@ export default class ApplicationsLink extends Command {
 
     static examples = []
 
-    static flags = {
-        ...Command.flags,
-    }
-
     static args = [
         { name: 'appId', required: false },
         { name: 'number', required: false }

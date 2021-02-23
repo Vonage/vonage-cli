@@ -5,10 +5,6 @@ export default class ApplicationsUnlink extends Command {
 
     static examples = []
 
-    static flags = {
-        ...Command.flags,
-    }
-
     static args = [
         { name: 'number', required: false }
     ]
@@ -30,5 +26,4 @@ export default class ApplicationsUnlink extends Command {
         this.log(response);
     }
 
-    // async catch(error: any) {}
 }

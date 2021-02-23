@@ -1,5 +1,5 @@
 import Command from '../../helpers/base'
-import {prompt} from 'prompts'
+import { prompt } from 'prompts'
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
@@ -8,12 +8,8 @@ export default class ApplicationsDelete extends Command {
 
     static examples = []
 
-    static flags = {
-        ...Command.flags
-    }
-
     static args = [
-        {name: 'appId', required: false},
+        { name: 'appId', required: false },
     ]
 
     setQuestions(list: any) {
@@ -26,7 +22,7 @@ export default class ApplicationsDelete extends Command {
     }
 
     async run() {
-        const {args, flags} = this.parse(ApplicationsDelete)
+        const { args, flags } = this.parse(ApplicationsDelete)
         let userInput = Object.assign({}, args, flags)
 
         if (!userInput.appId) {
@@ -49,16 +45,16 @@ export default class ApplicationsDelete extends Command {
             ])
             if (response.confirm) {
                 delete response.confirm
-                let plural = response.appId.length > 1 ? 's': '';
-                cli.action.start(chalk.bold(`Deleting ${response.appId.length} Application${plural}`), 'Initializing', {stdout: true})
+                let plural = response.appId.length > 1 ? 's' : '';
+                cli.action.start(chalk.bold(`Deleting ${response.appId.length} Application${plural}`), 'Initializing', { stdout: true })
 
                 response.appId.map((v) => {
                     this.deleteApplication(v)
                 })
-                
+
                 cli.action.stop()
             } else {
-               this.log(chalk.bold('Delete cancelled.')); 
+                this.log(chalk.bold('Delete cancelled.'));
             }
 
         }

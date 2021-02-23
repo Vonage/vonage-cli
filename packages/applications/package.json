@@ -1,12 +1,13 @@
 {
   "name": "@vonage/cli-plugin-applications",
-  "A plugin for Vonage CLI": "A plugin for Vonage CLI",
-  "version": "0.0.0",
+  "description": "A plugin for Vonage CLI",
+  "version": "0.0.1",
   "author": "Vonage Dev Rel <devrel@vonage.com>",
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
+    "@vonage/cli-utils": "^0.0.0",
     "@vonage/server-sdk": "^2.10.5",
     "chalk": "^2.4.2",
     "lodash": "^4.17.20",

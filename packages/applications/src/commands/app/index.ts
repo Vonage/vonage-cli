@@ -1,4 +1,6 @@
-import Command from '../../helpers/base'
+import Command from '../../helpers/base';
+import { flags } from '@oclif/command';
+
 import cli from 'cli-ux'
 
 // to-do - capabilities presentation not ideal
@@ -16,11 +18,9 @@ export default class ApplicationsList extends Command {
     }
 
     async run() {
-
         const { args, flags } = this.parse(ApplicationsList)
         let appData = await this.allApplications;
         let appList = appData['_embedded'].applications;
-
         cli.table(appList, {
             name: {},
             id: {},
@@ -33,5 +33,4 @@ export default class ApplicationsList extends Command {
         this.exit();
     }
 
-    // async catch(error: any) {}
 }

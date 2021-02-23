@@ -1,15 +1,11 @@
 import Command from '../../helpers/base'
-import {prompt} from 'prompts'
+import { prompt } from 'prompts'
 import chalk from 'chalk'
 
 export default class ApplicationsShow extends Command {
     static description = 'Show Vonage application details';
 
     static examples = []
-
-    static flags = {
-        ...Command.flags,
-    }
 
     static args = [
         { name: 'appId', required: false },
@@ -31,7 +27,7 @@ export default class ApplicationsShow extends Command {
         if (!args.appId) {
             let appData = await this.allApplications;
             let appList = appData['_embedded'].applications;
-             
+
             response = await prompt([
                 {
                     type: 'autocomplete',
@@ -41,7 +37,7 @@ export default class ApplicationsShow extends Command {
                     initial: 0,
                 }
             ])
-            
+
         }
 
         let output = await this.getSingleApplication(response.appId);
@@ -50,5 +46,4 @@ export default class ApplicationsShow extends Command {
         this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
     }
 
-    // async catch(error: any) {}
 }

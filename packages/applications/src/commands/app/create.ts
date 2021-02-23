@@ -187,7 +187,7 @@ hello world from ./src/hello.ts!
         }
 
         // handle successful creation
-        cli.action.start(chalk.bold('Creating Application'), 'Initializing', {stdout: true})
+        cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
         let output = await this.createApplication(response)
         this.log(chalk.bold("Application ID:"), output.id)
         this.log(chalk.bold("Application Name:"), output.name)
@@ -202,5 +202,4 @@ hello world from ./src/hello.ts!
 
     }
 
-    // async catch(error: any) {}
 }
