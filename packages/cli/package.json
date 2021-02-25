@@ -1,73 +1,74 @@
 {
-  "name": "@vonage/cli",
-  "description": "CLI to interact with Vonage APIs",
-  "version": "0.0.1",
-  "author": "Kelly J Andrews @kellyjandrews",
-  "bin": {
-    "vonage": "./bin/run"
-  },
-  "bugs": "https://github.com/Vonage/vonage-cli/issues",
-  "dependencies": {
-    "@oclif/command": "^1.8.0",
-    "@oclif/config": "^1.17.0",
-    "@oclif/plugin-help": "^3.2.0",
-    "@oclif/plugin-plugins": "^1.9.1",
-    "tslib": "^2.1.0"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/dist",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/Vonage/vonage-cli",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "Apache 2.0",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./dist/commands",
-    "bin": "vonage",
-    "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins",
-      "@vonage/cli-plugin-applications"
-    ],
-    "hooks": {
-      "init": "./src/hooks/init"
+    "name": "@vonage/cli",
+    "description": "CLI to interact with Vonage APIs",
+    "version": "0.0.1",
+    "author": "Kelly J Andrews @kellyjandrews",
+    "bin": {
+        "vonage": "./bin/run"
     },
-    "topics": {
-      "auth": {
-        "hidden": true
-      },
-      "app": {
-        "hidden": true
-      },
-      "account": {
-        "hidden": true
-      },
-      "number": {
-        "hidden": true
-      },
-      "secrets": {
-        "hidden": true
-      },
-      "plugins": {
-        "hidden": true
-      }
+    "bugs": "https://github.com/Vonage/vonage-cli/issues",
+    "dependencies": {
+        "@oclif/command": "^1.8.0",
+        "@oclif/config": "^1.17.0",
+        "@oclif/plugin-help": "^3.2.0",
+        "@oclif/plugin-plugins": "^1.9.1",
+        "@vonage/cli-utils": "^0.0.0",
+        "tslib": "^2.1.0"
+    },
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "files": [
+        "/bin",
+        "/dist",
+        "/npm-shrinkwrap.json",
+        "/oclif.manifest.json"
+    ],
+    "homepage": "https://github.com/Vonage/vonage-cli",
+    "keywords": [
+        "oclif"
+    ],
+    "license": "Apache 2.0",
+    "main": "lib/index.js",
+    "oclif": {
+        "commands": "./dist/commands",
+        "bin": "vonage",
+        "plugins": [
+            "@oclif/plugin-help",
+            "@oclif/plugin-plugins",
+            "@vonage/cli-plugin-applications"
+        ],
+        "hooks": {
+            "init": "./src/hooks/init"
+        },
+        "topics": {
+            "auth": {
+                "hidden": true
+            },
+            "app": {
+                "hidden": true
+            },
+            "account": {
+                "hidden": true
+            },
+            "number": {
+                "hidden": true
+            },
+            "secrets": {
+                "hidden": true
+            },
+            "plugins": {
+                "hidden": true
+            }
+        }
+    },
+    "repository": "Vonage/vonage-cli",
+    "scripts": {
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint . --ext .ts --config .eslintrc",
+        "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "../../node_modules/.bin/jest test",
+        "test-watch": "../../node_modules/.bin/jest test --watch",
+        "version": "oclif-dev readme && git add README.md"
     }
-  },
-  "repository": "Vonage/vonage-cli",
-  "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "../../node_modules/.bin/jest test",
-    "test-watch": "../../node_modules/.bin/jest test --watch",
-    "version": "oclif-dev readme && git add README.md"
-  }
 }

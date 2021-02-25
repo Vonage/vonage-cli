@@ -1,14 +1,14 @@
-/// <reference path="../node_modules/@vonage/server-sdk/typings/index.d.ts" />
-import Command, { flags } from '@oclif/command'
-import * as Vonage from '@vonage/server-sdk';
-import * as fs from 'fs-extra'
-import * as path from 'path'
+import Command, { flags } from '@oclif/command';
+import Vonage from '@vonage/server-sdk';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 export default abstract class extends Command {
-    private _vonage!: any
-    private _apiKey: string
-    private _apiSecret: string
+    private _vonage: any
+    private _apiKey: string = ''
+    private _apiSecret: string = ''
     private _userConfig: any
+
 
     static flags = {
         help: flags.help({ char: 'h' }),
@@ -24,8 +24,6 @@ export default abstract class extends Command {
             apiSecret: this._apiSecret
         })
 
-        // console.log(this._vonage)
-
         return this._vonage
     }
 
@@ -33,7 +31,7 @@ export default abstract class extends Command {
         return this._userConfig;
     }
 
-    promisify(method, data) {
+    promisify(method: any, data: any) {
         console.log(method.toString())
         return new Promise((res, rej) => {
             method.call(data, (error: any, response: any) => {
@@ -51,7 +49,8 @@ export default abstract class extends Command {
     async init() {
         const { flags } = this.parse(Command)
         this._userConfig = await fs.readJSON(path.join(this.config.configDir, 'vonage.config.json'))
-
+        this._apiKey = '';
+        this._apiSecret = ''
         // creds priority order -- flags > env > config
         if (flags.apiKey && flags.apiKey) {
             this._apiKey = flags.apiKey;

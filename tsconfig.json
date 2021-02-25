@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
-    "composite": true,
     "declaration": true,
-    "declarationMap": true,
     "sourceMap": true,
-    "strict": false,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "strict": true,
     "esModuleInterop": true,
     "target": "es5",
-    "module": "commonjs",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
     "skipLibCheck": true,
     "types": [
       "node",

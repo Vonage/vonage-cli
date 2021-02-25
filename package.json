@@ -48,5 +48,8 @@
     "url": "https://github.com/Vonage/vonage-cli/issues"
   },
   "homepage": "https://github.com/Vonage/vonage-cli#readme",
-  "name": "@vonage/cli-bundle"
+  "name": "@vonage/cli-bundle",
+  "dependencies": {
+    "@vonage/server-sdk": "file:../vonage-node-sdk"
+  }
 }
