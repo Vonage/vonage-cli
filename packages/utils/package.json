@@ -6,10 +6,11 @@
     "dependencies": {
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
-        "@types/fs-extra": "^9.0.7",
+        "@types/fs-extra": "^5.0.2",
         "@vonage/server-sdk": "file:../../../vonage-node-sdk",
-        "nexmo": "^2.9.1",
-        "tslib": "^2.1.0"
+        "fs-extra": "^9.0.1",
+        "tslib": "^2.1.0",
+        "typescript": "^4.2.2"
     },
     "engines": {
         "node": ">=8.0.0"
@@ -24,5 +25,14 @@
     ],
     "main": "src/index.ts",
     "license": "MIT",
-    "repository": "Vonage/vonage-cli"
+    "repository": "Vonage/vonage-cli",
+    "scripts": {
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint . --ext .ts --config .eslintrc",
+        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "../../node_modules/.bin/jest test",
+        "test-watch": "../../node_modules/.bin/jest test --watch",
+        "version": "oclif-dev readme && git add README.md",
+        "build": "rm -rf dist && tsc -b"
+    }
 }

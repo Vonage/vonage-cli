@@ -1,8 +1,8 @@
 import Command from '../../helpers/base'
-import { flags, } from '@oclif/command'
+import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
-import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator'
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { merge } from 'lodash';
 import * as fs from 'fs';
 import cli from 'cli-ux';
@@ -22,7 +22,7 @@ hello world from ./src/hello.ts!
 `,
     ]
 
-    static flags = {
+    static flags: flags.Input<any> = {
         ...Command.flags,
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',

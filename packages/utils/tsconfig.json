@@ -1,10 +1,20 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "src",
-  },
-  "include": [
-    "src/**/*"
-  ],
+    "compilerOptions": {
+        "declaration": true,
+        "sourceMap": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "types": [],
+        "baseUrl": "../",
+        "outDir": "./dist",
+        "rootDir": "src",
+        "strict": true,
+        "target": "es2015",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*"]
 }

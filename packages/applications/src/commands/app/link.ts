@@ -11,7 +11,7 @@ export default class ApplicationsLink extends Command {
     ]
 
     async run() {
-        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsLink)
+        const { args }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsLink)
 
         // if no args provided, present UX
         if (!args.appId && !args.number) {

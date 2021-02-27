@@ -1,19 +1,15 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "sourceMap": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "target": "es5",
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "skipLibCheck": true,
-    "types": [
-      "node",
-      "jest"
-    ],
-    "baseUrl": "../",
-  }
+    "compilerOptions": {
+        "declaration": true,
+        "sourceMap": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "strict": false,
+        "esModuleInterop": true,
+        "target": "es5",
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "types": ["node", "jest"],
+        "baseUrl": "../"
+    }
 }

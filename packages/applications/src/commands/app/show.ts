@@ -22,7 +22,7 @@ export default class ApplicationsShow extends Command {
 
     async run() {
 
-        const { args, flags } = this.parse(ApplicationsShow)
+        const { args } = this.parse(ApplicationsShow)
         let response = args;
         if (!args.appId) {
             let appData = await this.allApplications;

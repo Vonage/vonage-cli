@@ -10,7 +10,7 @@ export default class ApplicationsUnlink extends Command {
     ]
 
     async run() {
-        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsUnlink)
+        const { args }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsUnlink)
 
         // get the number details, or error if number doesn't exist
         let number = await this.listNumbers(args.number)

@@ -11,7 +11,7 @@ export default class ApplicationsUpdate extends Command {
 
     static examples = []
 
-    static flags = {
+    static flags: flags.Input<any> = {
         ...Command.flags,
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',
@@ -95,7 +95,7 @@ export default class ApplicationsUpdate extends Command {
                 }])
 
             app = await this.getSingleApplication(init.appId)
-            let selected_capabilities = Object.keys(app.capabilities);
+            // let selected_capabilities = Object.keys(app.capabilities);
 
             let general = await prompt([
                 {

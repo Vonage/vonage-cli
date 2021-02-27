@@ -1,9 +1,8 @@
 import { Hook } from '@oclif/config'
-import { Console } from 'console';
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-async function isExists(path) {
+async function isExists(path: any) {
     try {
         await fs.access(path);
         return true;
@@ -12,12 +11,12 @@ async function isExists(path) {
     }
 };
 
-async function writeFile(filePath, data) {
+async function writeFile(filePath: any, data: any) {
     try {
         const dirname = path.dirname(filePath);
         let exist = await isExists(dirname);
         if (!exist) {
-            await fs.mkdir(dirname, { recursive: true });
+            await fs.mkdir(dirname);
         }
 
         exist = await isExists(filePath);

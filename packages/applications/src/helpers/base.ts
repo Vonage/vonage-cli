@@ -85,7 +85,7 @@ export default abstract class Command extends Base {
                     pattern: lvn || '',
                     search_pattern: 1
                 },
-                (error, result) => {
+                (error: any, result: any) => {
                     if (error) {
                         rej(error)
                     } else {

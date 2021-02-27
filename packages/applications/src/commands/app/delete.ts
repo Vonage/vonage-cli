@@ -48,7 +48,7 @@ export default class ApplicationsDelete extends Command {
                 let plural = response.appId.length > 1 ? 's' : '';
                 cli.action.start(chalk.bold(`Deleting ${response.appId.length} Application${plural}`), 'Initializing', { stdout: true })
 
-                response.appId.map((v) => {
+                response.appId.map((v: any) => {
                     this.deleteApplication(v)
                 })
 
