@@ -1,6 +1,6 @@
-import Command from '../../helpers/base'
+import { AppCommand } from '@vonage/cli-utils';
 
-export default class ApplicationsLink extends Command {
+export default class ApplicationsLink extends AppCommand {
     static description = 'Link numbers to Vonage application'
 
     static examples = []
@@ -11,7 +11,8 @@ export default class ApplicationsLink extends Command {
     ]
 
     async run() {
-        const { args }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsLink)
+
+        const args = this.parsedArgs!;
 
         // if no args provided, present UX
         if (!args.appId && !args.number) {

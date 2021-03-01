@@ -1,4 +1,5 @@
-import Command from '../../helpers/base'
+import { AppCommand } from '@vonage/cli-utils';
+import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
@@ -6,13 +7,25 @@ import { merge } from 'lodash';
 import cli from 'cli-ux';
 import chalk from 'chalk';
 
-export default class ApplicationsUpdate extends Command {
+interface UpdateFlags {
+    voice_answer_url: any,
+    voice_answer_http: any,
+    voice_event_url: any,
+    voice_event_http: any,
+    messages_inbound_url: any,
+    messages_status_url: any,
+    rtc_event_url: any,
+    rtc_event_http: any,
+    vbc: any
+}
+
+export default class ApplicationsUpdate extends AppCommand {
     static description = 'Update Vonage application settings'
 
     static examples = []
 
-    static flags: flags.Input<any> = {
-        ...Command.flags,
+    static flags: OutputFlags<typeof AppCommand.flags> & UpdateFlags = {
+        ...AppCommand.flags,
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',
             parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
@@ -75,7 +88,9 @@ export default class ApplicationsUpdate extends Command {
     // TODO - make sure current data is getting passed for webhook questions
 
     async run() {
-        const { args, flags }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsUpdate)
+        const flags = this.parsedFlags;
+        const args = this.parsedArgs!;
+
         let response: any = { name: '', capabilities: {} };
         let app: any;
 

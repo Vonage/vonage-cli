@@ -1,6 +1,16 @@
-import { Command as Base } from '@vonage/cli-utils';
+import BaseCommand from './command';
 
-export default abstract class Command extends Base {
+export default abstract class AppCommand extends BaseCommand {
+
+    static flags = {
+        ...BaseCommand.flags,
+        /* ... */
+    };
+
+    static args = [
+        ...BaseCommand.args,
+        /* ... */
+    ];
 
     get allApplications(): any {
         return new Promise((res, rej) => {

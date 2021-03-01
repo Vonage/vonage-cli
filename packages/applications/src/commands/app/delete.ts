@@ -1,9 +1,9 @@
-import Command from '../../helpers/base'
+import { AppCommand } from '@vonage/cli-utils';
 import { prompt } from 'prompts'
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
-export default class ApplicationsDelete extends Command {
+export default class ApplicationsDelete extends AppCommand {
     static description = 'delete Vonage application'
 
     static examples = []
@@ -22,7 +22,8 @@ export default class ApplicationsDelete extends Command {
     }
 
     async run() {
-        const { args, flags } = this.parse(ApplicationsDelete)
+        const flags = this.parsedFlags
+        const args = this.parsedArgs!;
         let userInput = Object.assign({}, args, flags)
 
         if (!userInput.appId) {

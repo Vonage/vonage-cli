@@ -1,12 +1,13 @@
 {
     "name": "@vonage/cli-plugin-applications",
     "description": "A plugin for Vonage CLI",
-    "version": "0.0.1",
+    "version": "1.0.0-alpha.0",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
+        "@oclif/parser": "^3.8.5",
         "@vonage/cli-utils": "^0.0.0",
         "chalk": "^2.4.2",
         "lodash": "^4.17.20",
@@ -49,7 +50,7 @@
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf dist && tsc -b"
+        "build": "rm -rf ./dist && tsc -b"
     },
     "devDependencies": {
         "@types/lodash.merge": "^4.6.6"

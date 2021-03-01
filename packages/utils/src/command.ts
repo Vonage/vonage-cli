@@ -1,27 +1,44 @@
-import Command, { flags } from '@oclif/command';
+import { Command, flags } from '@oclif/command';
+import { Input, OutputArgs, OutputFlags } from '@oclif/parser';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-export default abstract class extends Command {
-    private _vonage!: any;
-    private _apiKey!: string
-    private _apiSecret!: string
-    private _userConfig!: { apiKey: string, apiSecret: string }
+interface UserConfig {
+    apiKey: string,
+    apiSecret: string
+}
 
-    static flags: flags.Input<any> = {
+export default abstract class BaseCommand extends Command {
+    private _vonage!: any;
+
+    protected _apiKey!: any;
+    protected _apiSecret!: any
+
+    protected _userConfig!: UserConfig
+
+    protected parsedArgs?: OutputArgs<any>;
+    protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
+
+    // add global flags here
+    static args = [];
+
+    // add global flags here
+    static flags = {
         help: flags.help({ char: 'h' }),
         apiKey: flags.string({ hidden: true, dependsOn: ['apiSecret'] }),
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] })
     }
 
+
+
     get vonage() {
         if (this._vonage) return this._vonage
 
         let credentials: CredentialsObject = {
-            apiKey: this._apiKey,
-            apiSecret: this._apiSecret
+            apiKey: this._apiKey || '',
+            apiSecret: this._apiSecret || ''
         }
 
         this._vonage = new Vonage(credentials);
@@ -33,40 +50,32 @@ export default abstract class extends Command {
         return this._userConfig;
     }
 
-    promisify(method: any, data: any) {
-        console.log(this.vonage.applications.get({}))
-        return new Promise((res, rej) => {
-            method.call(data, (error: any, response: any) => {
-                if (error) {
-                    console.log(error, null, 4)
-                    rej(error)
-                } else {
-                    console.log(error, null, 4)
-                    res(response)
-                }
-            })
-        })
+    saveConfig(newConfig: UserConfig): void {
+        fs.writeFileSync(path.join(this.config.configDir, 'vonage.config.json'), JSON.stringify(newConfig));
+        return;
     }
 
-    async init() {
-        const { flags } = this.parse(Command)
+    async init(): Promise<void> {
+        const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
+        this.parsedArgs = args;
+        this.parsedFlags = flags;
         this._userConfig = await fs.readJSON(path.join(this.config.configDir, 'vonage.config.json'))
+        let apiKey, apiSecret;
 
         // creds priority order -- flags > env > config
         if (flags?.apiKey && flags?.apiSecret) {
-            this._apiKey = flags?.apiKey;
-            this._apiSecret = flags?.apiSecret;
+            apiKey = flags.apiKey;
+            apiSecret = flags.apiSecret;
         } else if (process.env.VONAGE_API_KEY && process.env.VONAGE_API_SECRET) {
-            this._apiKey = process.env.VONAGE_API_KEY;
-            this._apiSecret = process.env.VONAGE_API_SECRET;
+            apiKey = process.env.VONAGE_API_KEY;
+            apiSecret = process.env.VONAGE_API_SECRET;
         } else {
-            this._apiKey = this._userConfig.apiKey;
-            this._apiSecret = this._userConfig.apiSecret;
+            apiKey = this._userConfig.apiKey;
+            apiSecret = this._userConfig.apiSecret;
         }
-        console.log(flags)
-        console.log(process.env.VONAGE_API_KEY)
-        console.log(this._userConfig)
 
+        this._apiKey = apiKey;
+        this._apiSecret = apiSecret;
     }
 
 

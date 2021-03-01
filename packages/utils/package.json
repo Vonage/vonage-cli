@@ -6,6 +6,7 @@
     "dependencies": {
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
+        "@oclif/parser": "^3.8.5",
         "@types/fs-extra": "^5.0.2",
         "@vonage/server-sdk": "file:../../../vonage-node-sdk",
         "fs-extra": "^9.0.1",
@@ -33,6 +34,6 @@
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf dist && tsc -b"
+        "build": "rm -rf ./dist && tsc -b"
     }
 }

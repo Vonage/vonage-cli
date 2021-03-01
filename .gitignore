@@ -7,7 +7,7 @@ coverage
 .DS_Store
 .env
 coverage.lcov
-packages/**/dist
 .vonagerc
 *.key
 temp
+**/dist

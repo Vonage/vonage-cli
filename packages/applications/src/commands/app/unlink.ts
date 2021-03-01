@@ -1,6 +1,6 @@
-import Command from '../../helpers/base'
+import { AppCommand } from '@vonage/cli-utils';
 
-export default class ApplicationsUnlink extends Command {
+export default class ApplicationsUnlink extends AppCommand {
     static description = 'Remove numbers from Vonage application'
 
     static examples = []
@@ -10,7 +10,7 @@ export default class ApplicationsUnlink extends Command {
     ]
 
     async run() {
-        const { args }: { args: any, flags: { [index: string]: any } } = this.parse(ApplicationsUnlink)
+        const args = this.parsedArgs!;
 
         // get the number details, or error if number doesn't exist
         let number = await this.listNumbers(args.number)

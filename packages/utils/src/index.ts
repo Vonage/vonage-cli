@@ -1,4 +1,5 @@
-import Command from './command';
+import BaseCommand from './command';
+import AppCommand from './app_base';
 
-export { Command };
-export default Command;
+export { BaseCommand, AppCommand };
+export default BaseCommand;

@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "0.0.1",
+    "version": "1.0.0-alpha.0",
     "author": "Kelly J Andrews @kellyjandrews",
     "bin": {
         "vonage": "./bin/run"
@@ -73,6 +73,6 @@
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf dist && tsc -b"
+        "build": "rm -rf ./dist && tsc -b"
     }
 }

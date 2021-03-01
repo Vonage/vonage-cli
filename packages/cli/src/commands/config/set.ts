@@ -1,19 +1,33 @@
-import Command from '@vonage/cli-utils';
+import BaseCommand from '@vonage/cli-utils';
+import { OutputFlags } from '@oclif/parser';
+
+import { flags } from '@oclif/command'
+
 // import cli from 'cli-ux'
 
 // to-do - capabilities presentation not ideal
 
-export default class ConfigSet extends Command {
+export default class ConfigSet extends BaseCommand {
     static description = 'List Vonage CLI config'
 
-    static examples = []
+    static flags = {
+        ...BaseCommand.flags,
+        'apiKey': flags.string({
+            description: 'Vonage API Key',
+        }),
+        'apiSecret': flags.string({
+            description: 'Vonage API Key',
+        })
+    }
+
+    static args = [
+        ...BaseCommand.args,
+    ]
 
     async run() {
-        this.log(JSON.stringify(this.userConfig))
-    }
+        const flags = this.parsedFlags as OutputFlags<typeof ConfigSet.flags>
 
-    async catch(error: any) {
-        this.log(error);
+        //add start, stop process indicators
+        this.saveConfig(Object.assign({}, this.userConfig, flags))
     }
-
 }

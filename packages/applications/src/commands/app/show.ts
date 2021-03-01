@@ -1,8 +1,8 @@
-import Command from '../../helpers/base'
+import { AppCommand } from '@vonage/cli-utils';
 import { prompt } from 'prompts'
 import chalk from 'chalk'
 
-export default class ApplicationsShow extends Command {
+export default class ApplicationsShow extends AppCommand {
     static description = 'Show Vonage application details';
 
     static examples = []
@@ -21,8 +21,7 @@ export default class ApplicationsShow extends Command {
     }
 
     async run() {
-
-        const { args } = this.parse(ApplicationsShow)
+        const args = this.parsedArgs!;
         let response = args;
         if (!args.appId) {
             let appData = await this.allApplications;
