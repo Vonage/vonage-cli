@@ -69,11 +69,11 @@ export default abstract class AppCommand extends BaseCommand {
         })
     }
 
-    updateNumber(lvn: string, cc: string, appId?: string): any {
+    updateNumber(number: string, countryCode: string, appId?: string): any {
         return new Promise((res, rej) => {
             this.vonage.number.update(
-                cc,
-                lvn,
+                countryCode,
+                number,
                 {
                     app_id: appId || null,
                 },
@@ -88,11 +88,11 @@ export default abstract class AppCommand extends BaseCommand {
         })
     }
 
-    listNumbers(lvn?: string): any {
+    listNumbers(number?: string): any {
         return new Promise((res, rej) => {
             this.vonage.number.get(
                 {
-                    pattern: lvn || '',
+                    pattern: number || '',
                     search_pattern: 1
                 },
                 (error: any, result: any) => {

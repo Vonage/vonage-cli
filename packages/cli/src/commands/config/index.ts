@@ -11,6 +11,7 @@ export default class ConfigList extends BaseCommand {
 
     async run() {
         const flags = this.parsedFlags as OutputFlags<typeof ConfigList.flags>
+        this.log("~~~User Conifg~~~")
         cli.log(JSON.stringify(Object.assign({}, this.userConfig, flags)))
     }
 

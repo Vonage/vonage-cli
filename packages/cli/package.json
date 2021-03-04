@@ -2,7 +2,7 @@
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
     "version": "1.0.0-alpha.0",
-    "author": "Kelly J Andrews @kellyjandrews",
+    "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run"
     },
@@ -12,11 +12,13 @@
         "@oclif/config": "^1.17.0",
         "@oclif/plugin-help": "^3.2.0",
         "@oclif/plugin-plugins": "^1.9.1",
-        "@vonage/cli-utils": "^0.0.0",
         "@types/fs-extra": "^5.0.2",
+        "@vonage/cli-plugin-applications": "^1.0.0-alpha.0",
+        "@vonage/cli-plugin-numbers": "^1.0.0-alpha.0",
+        "@vonage/cli-utils": "^0.0.0",
         "fs-extra": "^9.0.1",
-        "typescript": "^4.2.2",
-        "tslib": "^2.1.0"
+        "tslib": "^2.1.0",
+        "typescript": "^4.2.2"
     },
     "engines": {
         "node": ">=8.0.0"
@@ -32,14 +34,15 @@
         "oclif"
     ],
     "license": "Apache 2.0",
-    "main": "lib/index.js",
+    "main": "dist/index.js",
     "oclif": {
         "commands": "./dist/commands",
         "bin": "vonage",
         "plugins": [
             "@oclif/plugin-help",
             "@oclif/plugin-plugins",
-            "@vonage/cli-plugin-applications"
+            "@vonage/cli-plugin-applications",
+            "@vonage/cli-plugin-numbers"
         ],
         "hooks": {
             "init": "./src/hooks/init"

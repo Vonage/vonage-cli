@@ -1,5 +1,5 @@
 import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
+// import { OutputFlags } from '@oclif/parser';
 
 // import cli from 'cli-ux'
 
@@ -13,12 +13,10 @@ export default class ConfigUnset extends BaseCommand {
     static args = []
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof ConfigUnset.flags>
-        const args = this.parsedArgs!;
+        // const flags = this.parsedFlags as OutputFlags<typeof ConfigUnset.flags>
+        // const args = this.parsedArgs!;
 
-        this.log(JSON.stringify(args))
-        this.log(JSON.stringify(this.userConfig))
-        this.log(JSON.stringify(Object.assign({}, this.userConfig, flags)))
+        this.log("Not quite functional")
     }
 
     async catch(error: any) {
