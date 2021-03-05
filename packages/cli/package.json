@@ -27,6 +27,7 @@
         "/bin",
         "/dist",
         "/npm-shrinkwrap.json",
+        "/node_modules",
         "/oclif.manifest.json"
     ],
     "homepage": "https://github.com/Vonage/vonage-cli",
@@ -72,11 +73,11 @@
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint . --ext .ts --config .eslintrc",
-        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "prepack": "npm install && rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "13d14becc66058040b19d78f800d3f60618eb536"
+    "gitHead": "4fcc1bd4a14a9c06e3f7d13e488299c95ac2ecc2"
 }
