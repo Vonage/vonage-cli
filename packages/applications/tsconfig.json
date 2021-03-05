@@ -7,13 +7,9 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "module": "commonjs",
-        "types": [],
-        "baseUrl": "../",
         "outDir": "./dist",
         "rootDir": "src",
-        "strict": false,
-        "target": "es6",
-        "resolveJsonModule": true
+        "strict": false
     },
     "include": ["src/**/*"]
 }

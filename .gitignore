@@ -11,3 +11,4 @@ coverage.lcov
 *.key
 temp
 **/dist
+*.log
