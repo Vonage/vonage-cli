@@ -9,6 +9,7 @@
         "module": "commonjs",
         "outDir": "./dist",
         "rootDir": "src",
+        "target": "es5",
         "strict": false
     },
     "include": ["src/**/*"]
