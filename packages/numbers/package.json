@@ -1,13 +1,13 @@
 {
     "name": "@vonage/cli-plugin-numbers",
-    "version": "1.0.0-alpha.3",
+    "version": "1.0.0-alpha.4",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
-        "@vonage/cli-utils": "^1.0.0-alpha.3",
+        "@vonage/cli-utils": "^1.0.0-alpha.4",
         "chalk": "^2.4.2",
         "lodash": "^4.17.20",
         "prompts": "^2.4.0",
