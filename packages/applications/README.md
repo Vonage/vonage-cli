@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-alpha.6 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-alpha.7 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
