@@ -1,14 +1,14 @@
 {
     "name": "@vonage/cli-plugin-applications",
     "description": "A plugin for Vonage CLI",
-    "version": "1.0.0-alpha.8",
+    "version": "1.0.0-alpha.7",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
-        "@vonage/cli-utils": "^1.0.0-alpha.8",
+        "@vonage/cli-utils": "^1.0.0-alpha.7",
         "chalk": "^2.4.2",
         "lodash": "^4.17.20",
         "prompts": "^2.4.0",
@@ -47,7 +47,7 @@
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint . --ext .ts --config .eslintrc",
-        "prepack": "npm install && rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",

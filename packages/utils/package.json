@@ -30,10 +30,10 @@
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint . --ext .ts --config .eslintrc",
-        "prepack": "npm install && rm -rf dist && tsc -b",
+        "prepack": "rm -rf dist && tsc -b",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "9f588b374b9b043fd6cf4685938ea73c1fc92cc2"
+    "gitHead": "c4caf53faa145f82933d3dfda1bc64ef52f5e71a"
 }
