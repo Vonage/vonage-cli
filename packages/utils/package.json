@@ -8,7 +8,7 @@
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
         "@types/fs-extra": "^5.0.2",
-        "@vonage/server-sdk": "2.10.7",
+        "@vonage/server-sdk": "^2.10.7",
         "fs-extra": "^9.0.1",
         "tslib": "^2.1.0",
         "typescript": "^4.2.2"

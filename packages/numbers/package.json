@@ -7,7 +7,7 @@
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
-        "@vonage/cli-utils": "1.0.0-alpha.0",
+        "@vonage/cli-utils": "^1.0.0-alpha.0",
         "chalk": "^2.4.2",
         "lodash": "^4.17.20",
         "prompts": "^2.4.0",
@@ -39,7 +39,7 @@
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint . --ext .ts --config .eslintrc",
-        "prepack": "rm -rf src && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",

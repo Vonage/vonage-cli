@@ -15,7 +15,7 @@
         "@types/fs-extra": "^5.0.2",
         "@vonage/cli-plugin-applications": "^1.0.0-alpha.1",
         "@vonage/cli-plugin-numbers": "^1.0.0-alpha.1",
-        "@vonage/cli-utils": "1.0.0-alpha.0",
+        "@vonage/cli-utils": "^1.0.0-alpha.0",
         "fs-extra": "^9.0.1",
         "tslib": "^2.1.0",
         "typescript": "^4.2.2"
