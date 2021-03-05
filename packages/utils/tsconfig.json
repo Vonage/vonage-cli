@@ -1,13 +1,9 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "sourceMap": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
         "esModuleInterop": true,
-        "moduleResolution": "node",
         "module": "CommonJS",
-        "outDir": "./dist",
+        "outDir": "dist",
         "rootDir": "src",
         "target": "es6",
         "strict": false
