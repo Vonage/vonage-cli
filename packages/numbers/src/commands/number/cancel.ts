@@ -2,11 +2,11 @@ import { NumberCommand } from '@vonage/cli-utils';
 import { OutputFlags, OutputArgs } from '@oclif/parser';
 // import { flags } from '@oclif/command'
 
-interface buyArgs {
+interface cancelArgs {
   number: string,
   countryCode: string
 }
-export default class NumberBuy extends NumberCommand {
+export default class NumberCancel extends NumberCommand {
   static description = 'manage Vonage numbers'
 
   static examples = []
@@ -22,8 +22,8 @@ export default class NumberBuy extends NumberCommand {
 
   async run() {
     // const flags = this.parsedFlags as OutputFlags<typeof NumberBuy.flags>;
-    const args = this.parsedArgs! as OutputArgs<typeof NumberBuy.args> & buyArgs;
-    let resp = await this.numberBuy(args);
+    const args = this.parsedArgs! as OutputArgs<typeof NumberCancel.args> & cancelArgs;
+    let resp = await this.numberCancel(args);
     console.log(resp)
   }
 }

@@ -13,10 +13,6 @@ export default abstract class NumberCommand extends BaseCommand {
     ];
 
     get allNumbers(): any {
-        // {
-        //     pattern: NUMBER_SEARCH_CRITERIA,
-        //     search_pattern: NUMBER_SEARCH_PATTERN
-        //   }
         return new Promise((res, rej) => {
             this.vonage.number.get({}, (error: any, response: any) => {
                 if (error) {
@@ -29,8 +25,8 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberBuy(number: string): any {
-        let countryCode = ''
+    numberBuy(params: { number: string, countryCode: string }): any {
+        let { countryCode, number } = params;
         return new Promise((res, rej) => {
             this.vonage.number.buy(countryCode, number, (error: any, response: any) => {
                 if (error) {
@@ -43,18 +39,11 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberSearch(number: string): any {
-        let countryCode = ''
-        // {
-        //     type: VONAGE_NUMBER_TYPE,
-        //     pattern: NUMBER_SEARCH_CRITERIA,
-        //     search_pattern: NUMBER_SEARCH_PATTERN,
-        //     features: VONAGE_NUMBER_FEATURES
-        // }
+    numberSearch(countryCode: string, options: { type?: string, pattern?: string, search_pattern?: string, features?: [] }): any {
         return new Promise((res, rej) => {
             this.vonage.number.search(
                 countryCode,
-                {},
+                options,
                 (error: any, response: any) => {
                     if (error) {
                         rej(error);
@@ -67,21 +56,12 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberUpdate(number: string): any {
-        let countryCode = ''
-        // {
-        //     messagesCallbackType: 'app',
-        //     messagesCallbackValue: VONAGE_APPLICATION_ID,
-        //     voiceCallbackType: VOICE_CALLBACK_TYPE,
-        //     voiceCallbackValue: VOICE_CALLBACK_VALUE,
-        //     voiceStatusCallback: VOICE_STATUS_URL,
-        //     moHttpUrl: SMS_CALLBACK_URL,
-        // }
+    numberUpdate(number: string, countryCode: string, options: { voiceCallbackType: string, voiceCallbackValue: string, voiceStatusCallback: string, moHttpUrl: string }): any {
         return new Promise((res, rej) => {
             this.vonage.number.update(
                 countryCode,
                 number,
-                {},
+                options,
                 (error: any, response: any) => {
                     if (error) {
                         rej(error);
@@ -94,9 +74,8 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberCancel(number: string): any {
-        let countryCode = ''
-
+    numberCancel(params: { number: string, countryCode: string }): any {
+        let { countryCode, number } = params;
         return new Promise((res, rej) => {
             this.vonage.number.cancel(
                 countryCode,
