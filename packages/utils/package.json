@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-utils",
-    "version": "1.0.0-alpha.7",
+    "version": "1.0.0-alpha.8",
     "author": "Kelly Andrews @kellyjandrews",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
@@ -35,5 +35,5 @@
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "62b1f197431fe52310c498bed27cc55b336c3037"
+    "gitHead": "9f588b374b9b043fd6cf4685938ea73c1fc92cc2"
 }

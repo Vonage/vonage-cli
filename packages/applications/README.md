@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-alpha.7 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-alpha.8 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -52,6 +52,8 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 ```
 
+_See code: [dist/commands/app/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/index.js)_
+
 ## `oclif-example app:create [NAME]`
 
 create Vonage applications
@@ -77,6 +79,8 @@ EXAMPLE
   hello world from ./src/hello.ts!
 ```
 
+_See code: [dist/commands/app/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/create.js)_
+
 ## `oclif-example app:delete [APPID]`
 
 delete Vonage application
@@ -88,6 +92,8 @@ USAGE
 OPTIONS
   -h, --help  show CLI help
 ```
+
+_See code: [dist/commands/app/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/delete.js)_
 
 ## `oclif-example app:link [APPID] [NUMBER]`
 
@@ -101,6 +107,8 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
+_See code: [dist/commands/app/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/link.js)_
+
 ## `oclif-example app:show [APPID]`
 
 Show Vonage application details
@@ -113,6 +121,8 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
+_See code: [dist/commands/app/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/show.js)_
+
 ## `oclif-example app:unlink [NUMBER]`
 
 Remove numbers from Vonage application
@@ -124,6 +134,8 @@ USAGE
 OPTIONS
   -h, --help  show CLI help
 ```
+
+_See code: [dist/commands/app/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/unlink.js)_
 
 ## `oclif-example app:update [APPID]`
 
@@ -145,4 +157,6 @@ OPTIONS
   --voice_event_http=GET|POST                  Voice Event Webhook HTTP Method
   --voice_event_url=voice_event_url            Voice Event Webhook URL Address
 ```
+
+_See code: [dist/commands/app/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.8/dist/commands/app/update.js)_
 <!-- commandsstop -->

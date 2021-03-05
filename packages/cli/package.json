@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "1.0.0-alpha.7",
+    "version": "1.0.0-alpha.8",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run"
@@ -13,9 +13,9 @@
         "@oclif/plugin-help": "^3.2.0",
         "@oclif/plugin-plugins": "^1.9.1",
         "@types/fs-extra": "^5.0.2",
-        "@vonage/cli-plugin-applications": "^1.0.0-alpha.7",
-        "@vonage/cli-plugin-numbers": "^1.0.0-alpha.7",
-        "@vonage/cli-utils": "^1.0.0-alpha.7",
+        "@vonage/cli-plugin-applications": "^1.0.0-alpha.8",
+        "@vonage/cli-plugin-numbers": "^1.0.0-alpha.8",
+        "@vonage/cli-utils": "^1.0.0-alpha.8",
         "fs-extra": "^9.0.1",
         "tslib": "^2.1.0",
         "typescript": "^4.2.2"
@@ -79,5 +79,5 @@
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "62b1f197431fe52310c498bed27cc55b336c3037"
+    "gitHead": "9f588b374b9b043fd6cf4685938ea73c1fc92cc2"
 }
