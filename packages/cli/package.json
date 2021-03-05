@@ -45,7 +45,7 @@
             "@vonage/cli-plugin-numbers"
         ],
         "hooks": {
-            "init": "./src/hooks/init"
+            "init": "./dist/hooks/init"
         },
         "topics": {
             "auth": {

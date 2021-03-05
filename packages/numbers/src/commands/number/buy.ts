@@ -6,6 +6,7 @@ interface buyArgs {
   number: string,
   countryCode: string
 }
+
 export default class NumberBuy extends NumberCommand {
   static description = 'manage Vonage numbers'
 

@@ -11,10 +11,9 @@
         "baseUrl": "../",
         "outDir": "./dist",
         "rootDir": "src",
-        "strict": true,
+        "strict": false,
         "target": "es2015",
-        "resolveJsonModule": true,
-        "allowSyntheticDefaultImports": true
+        "resolveJsonModule": true
     },
     "include": ["src/**/*"]
 }

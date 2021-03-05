@@ -17,7 +17,7 @@
         "node": ">=8.0.0"
     },
     "files": [
-        "/lib",
+        "/dist",
         "/npm-shrinkwrap.json"
     ],
     "homepage": "https://github.com/Vonage/vonage-cli",
