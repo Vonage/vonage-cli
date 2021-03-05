@@ -80,13 +80,13 @@ export default abstract class BaseCommand extends Command {
 
 
     async catch(error: any) {
-        console.log(error)
         if (error.statusCode === 401) {
             console.warn('Authentication Error: Invalid Credentials');
             // add direction to use config to set the proper credentials.
         }
 
         if (error.oclif?.exit === 0) return;
+        console.log(error)
         return super.catch(error);
     }
 }

@@ -6,9 +6,9 @@
         "noUnusedLocals": true,
         "strict": false,
         "esModuleInterop": true,
-        "target": "es5",
+        "target": "es6",
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "CommonJS",
         "types": ["node", "jest"],
         "baseUrl": "../"
     }

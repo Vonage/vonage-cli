@@ -6,7 +6,7 @@
         "noUnusedLocals": true,
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "module": "commonjs",
+        "module": "CommonJS",
         "outDir": "./dist",
         "rootDir": "src",
         "target": "es6",
