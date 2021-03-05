@@ -12,7 +12,6 @@
         "eslint-plugin-prettier": "^3.1.4",
         "fs-extra": "^9.0.1",
         "globby": "^10.0.2",
-        "lerna": "^3.22.1",
         "prettier": "^2.1.2",
         "prompt": "^1.0.0",
         "ts-jest": "^26.4.3",
