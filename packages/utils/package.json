@@ -25,7 +25,6 @@
         "cli"
     ],
     "main": "src/index.ts",
-    "type": "module",
     "license": "MIT",
     "repository": "Vonage/vonage-cli",
     "scripts": {

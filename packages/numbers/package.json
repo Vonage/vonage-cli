@@ -36,7 +36,6 @@
             "@oclif/plugin-help"
         ]
     },
-    "type": "module",
     "repository": "Vonage/vonage-cli",
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",

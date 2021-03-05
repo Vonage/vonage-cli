@@ -30,7 +30,6 @@
     "keywords": [
         "oclif-plugin"
     ],
-    "type": "module",
     "license": "Apache 2.0",
     "oclif": {
         "commands": "./dist/commands",
