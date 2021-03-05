@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-utils",
-    "version": "0.0.0-alpha.3",
+    "version": "1.0.0-alpha.5",
     "author": "Kelly Andrews @kellyjandrews",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
@@ -30,7 +30,7 @@
     "scripts": {
         "postpack": "rm -f oclif.manifest.json",
         "posttest": "eslint . --ext .ts --config .eslintrc",
-        "prepack": "rm -rf dist && tsc -b",
+        "prepack": "npm install && rm -rf dist && tsc -b",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "build": "rm -rf ./dist && tsc -b"
