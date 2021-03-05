@@ -12,7 +12,7 @@
         "outDir": "./dist",
         "rootDir": "src",
         "strict": false,
-        "target": "es2015",
+        "target": "es6",
         "resolveJsonModule": true
     },
     "include": ["src/**/*"]
