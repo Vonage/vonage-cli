@@ -78,5 +78,5 @@
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "91a480e3c9effde9b43be756e107b64c2ab07431"
+    "gitHead": "615f36b5b200ee8a6a15f143cd75a09b93b8e730"
 }

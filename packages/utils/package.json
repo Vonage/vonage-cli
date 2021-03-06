@@ -34,5 +34,5 @@
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "1db8c6aac639ff76105eba983a497a63d1bacfca"
+    "gitHead": "615f36b5b200ee8a6a15f143cd75a09b93b8e730"
 }
