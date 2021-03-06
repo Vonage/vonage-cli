@@ -33,12 +33,7 @@
     "license": "Apache 2.0",
     "main": "dist/index.js",
     "oclif": {
-        "commands": "./src/commands",
-        "hooks": {
-            "capabilities": [
-                "./src/hooks/capabilities/capabilities"
-            ]
-        },
+        "commands": "./dist/commands",
         "bin": "oclif-example",
         "devPlugins": [
             "@oclif/plugin-help"

@@ -31,7 +31,7 @@
     "license": "MIT",
     "main": "dist/index.js",
     "oclif": {
-        "commands": "./src/commands",
+        "commands": "./dist/commands",
         "bin": "oclif-example",
         "devPlugins": [
             "@oclif/plugin-help"
