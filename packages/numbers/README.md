@@ -30,5 +30,65 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`oclif-example number`](#oclif-example-number)
+* [`oclif-example number:buy [NUMBER] [COUNTRYCODE]`](#oclif-example-numberbuy-number-countrycode)
+* [`oclif-example number:cancel [NUMBER] [COUNTRYCODE]`](#oclif-example-numbercancel-number-countrycode)
+* [`oclif-example number:search [COUNTRYCODE]`](#oclif-example-numbersearch-countrycode)
 
+## `oclif-example number`
+
+manage Vonage numbers
+
+```
+USAGE
+  $ oclif-example number
+
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $ vonage number
+  list all numbers
+```
+
+## `oclif-example number:buy [NUMBER] [COUNTRYCODE]`
+
+manage Vonage numbers
+
+```
+USAGE
+  $ oclif-example number:buy [NUMBER] [COUNTRYCODE]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+## `oclif-example number:cancel [NUMBER] [COUNTRYCODE]`
+
+manage Vonage numbers
+
+```
+USAGE
+  $ oclif-example number:cancel [NUMBER] [COUNTRYCODE]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+## `oclif-example number:search [COUNTRYCODE]`
+
+manage Vonage numbers
+
+```
+USAGE
+  $ oclif-example number:search [COUNTRYCODE]
+
+OPTIONS
+  -h, --help                                     show CLI help
+  --contains=contains
+  --endsWith=endsWith
+  --features=features
+  --startsWith=startsWith
+  --type=landline|mobile-lvn|landline-toll-free
+```
 <!-- commandsstop -->
