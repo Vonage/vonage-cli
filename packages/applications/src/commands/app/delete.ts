@@ -1,4 +1,4 @@
-import { AppCommand } from '@vonage/cli-utils';
+import { AppCommand } from 'kja-cli-utils';
 import { prompt } from 'prompts'
 import chalk from 'chalk';
 import cli from 'cli-ux';

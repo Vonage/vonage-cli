@@ -1,4 +1,4 @@
-import { NumberCommand } from '@vonage/cli-utils';
+import { NumberCommand } from 'kja-cli-utils';
 import { OutputFlags } from '@oclif/parser';
 
 export default class NumberList extends NumberCommand {

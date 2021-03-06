@@ -1,4 +1,4 @@
-import { AppCommand } from '@vonage/cli-utils';
+import { AppCommand } from 'kja-cli-utils';
 
 export default class ApplicationsLink extends AppCommand {
     static description = 'Link numbers to Vonage application'

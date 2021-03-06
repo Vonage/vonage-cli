@@ -1,4 +1,4 @@
-import BaseCommand from '@vonage/cli-utils';
+import BaseCommand from 'kja-cli-utils';
 // import { OutputFlags } from '@oclif/parser';
 
 // import cli from 'cli-ux'

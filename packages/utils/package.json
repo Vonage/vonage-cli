@@ -1,6 +1,6 @@
 {
     "name": "kja-cli-utils",
-    "version": "1.0.0-alpha.18",
+    "version": "1.0.0-alpha.17",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
@@ -8,7 +8,7 @@
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
         "@types/fs-extra": "^5.0.2",
-        "@vonage/server-sdk": "^2.10.7",
+        "kja-server-sdk": "^2.10.7",
         "fs-extra": "^9.0.1",
         "tslib": "^2.1.0"
     },
@@ -23,7 +23,7 @@
     "keywords": [
         "cli"
     ],
-    "main": "dist/index.ts",
+    "main": "dist/index.js",
     "license": "MIT",
     "repository": "Vonage/vonage-cli",
     "scripts": {

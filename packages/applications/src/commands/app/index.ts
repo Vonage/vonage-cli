@@ -1,4 +1,4 @@
-import { AppCommand } from '@vonage/cli-utils';
+import { AppCommand } from 'kja-cli-utils';
 import { OutputFlags } from '@oclif/parser';
 
 import cli from 'cli-ux'
