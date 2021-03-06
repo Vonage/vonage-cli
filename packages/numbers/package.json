@@ -30,7 +30,7 @@
     ],
     "license": "MIT",
     "oclif": {
-        "commands": "./dist/commands",
+        "commands": "./src/commands",
         "bin": "oclif-example",
         "devPlugins": [
             "@oclif/plugin-help"
@@ -46,5 +46,5 @@
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "c4caf53faa145f82933d3dfda1bc64ef52f5e71a"
+    "gitHead": "1db8c6aac639ff76105eba983a497a63d1bacfca"
 }
