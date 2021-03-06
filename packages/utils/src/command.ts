@@ -1,7 +1,7 @@
 import { Command, flags } from '@oclif/command';
 import { Input, OutputArgs, OutputFlags } from '@oclif/parser';
-import Vonage from 'kja-server-sdk';
-import { CredentialsObject } from 'kja-server-sdk';
+import Vonage from '@vonage/server-sdk';
+import { CredentialsObject } from '@vonage/server-sdk';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
