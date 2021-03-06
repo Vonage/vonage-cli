@@ -6,27 +6,25 @@
 [![License](https://img.shields.io/npm/l/kja-cli-plugin-numbers.svg)](https://github.com/Vonage/cli-plugin-numbers/blob/master/package.json)
 
 <!-- toc -->
-
--   [Usage](#usage)
--   [Commands](#commands)
+* [kja-cli-plugin-numbers](#kja-cli-plugin-numbers)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g kja-cli-plugin-numbers
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-kja-cli-plugin-numbers/1.0.0-alpha.18 linux-x64 node-v12.18.2
+kja-cli-plugin-numbers/1.0.0-alpha.19 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
