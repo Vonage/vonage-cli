@@ -19,7 +19,7 @@ $ npm install -g kja-cli-plugin-numbers
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-kja-cli-plugin-numbers/1.0.0-alpha.20 linux-x64 node-v12.18.2
+kja-cli-plugin-numbers/1.0.0-alpha.21 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -51,6 +51,8 @@ EXAMPLE
   list all numbers
 ```
 
+_See code: [dist/commands/number/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.21/dist/commands/number/index.js)_
+
 ## `oclif-example number:buy [NUMBER] [COUNTRYCODE]`
 
 manage Vonage numbers
@@ -63,6 +65,8 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
+_See code: [dist/commands/number/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.21/dist/commands/number/buy.js)_
+
 ## `oclif-example number:cancel [NUMBER] [COUNTRYCODE]`
 
 manage Vonage numbers
@@ -74,6 +78,8 @@ USAGE
 OPTIONS
   -h, --help  show CLI help
 ```
+
+_See code: [dist/commands/number/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.21/dist/commands/number/cancel.js)_
 
 ## `oclif-example number:search [COUNTRYCODE]`
 
@@ -91,4 +97,6 @@ OPTIONS
   --startsWith=startsWith
   --type=landline|mobile-lvn|landline-toll-free
 ```
+
+_See code: [dist/commands/number/search.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.21/dist/commands/number/search.js)_
 <!-- commandsstop -->
