@@ -1,7 +1,7 @@
 {
     "name": "kja-cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "1.0.0-alpha.17",
+    "version": "1.0.0-alpha.18",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run"
@@ -14,9 +14,9 @@
         "@oclif/plugin-plugins": "^1.9.1",
         "@types/fs-extra": "^5.0.2",
         "fs-extra": "^9.0.1",
-        "kja-cli-plugin-applications": "^1.0.0-alpha.17",
-        "kja-cli-plugin-numbers": "^1.0.0-alpha.17",
-        "kja-cli-utils": "^1.0.0-alpha.17",
+        "kja-cli-plugin-applications": "^1.0.0-alpha.18",
+        "kja-cli-plugin-numbers": "^1.0.0-alpha.18",
+        "kja-cli-utils": "^1.0.0-alpha.18",
         "tslib": "^2.1.0"
     },
     "engines": {

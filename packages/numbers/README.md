@@ -19,7 +19,7 @@ $ npm install -g kja-cli-plugin-numbers
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-kja-cli-plugin-numbers/1.0.0-alpha.17 linux-x64 node-v12.18.2
+kja-cli-plugin-numbers/1.0.0-alpha.18 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
