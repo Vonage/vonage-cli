@@ -1,7 +1,7 @@
 {
-    "name": "@vonage/cli-utils",
+    "name": "cli-utils",
     "version": "1.0.0-alpha.16",
-    "author": "Kelly Andrews @kellyjandrews",
+    "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
         "@oclif/command": "^1.8.0",
@@ -10,11 +10,10 @@
         "@types/fs-extra": "^5.0.2",
         "@vonage/server-sdk": "^2.10.7",
         "fs-extra": "^9.0.1",
-        "tslib": "^2.1.0",
-        "typescript": "^4.2.2"
+        "tslib": "^2.1.0"
     },
     "engines": {
-        "node": ">=8.0.0"
+        "node": ">=12.0.0"
     },
     "files": [
         "/dist",

@@ -1,12 +1,14 @@
 {
     "compilerOptions": {
         "declaration": true,
-        "esModuleInterop": true,
-        "module": "CommonJS",
         "outDir": "dist",
         "rootDir": "src",
-        "target": "es6",
-        "strict": false
+        "strict": false,
+        "lib": ["ESNext"],
+        "module": "commonjs",
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "esModuleInterop": true
     },
     "include": ["src/**/*"]
 }
