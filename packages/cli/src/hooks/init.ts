@@ -1,6 +1,7 @@
 import { Hook } from '@oclif/config'
 import * as fs from 'fs-extra'
 import * as path from 'path'
+import shell from 'shelljs';
 
 async function isExists(path: any) {
     try {
@@ -11,16 +12,19 @@ async function isExists(path: any) {
     }
 };
 
+// 
+
 async function writeFile(filePath: any, data: any) {
     try {
         const dirname = path.dirname(filePath);
         let exist = await isExists(dirname);
         if (!exist) {
-            await fs.mkdir(dirname);
+            await shell.mkdir('-p', dirname);
         }
 
         exist = await isExists(filePath);
         if (!exist) {
+
             await fs.writeFile(filePath, JSON.stringify({ apiKey: '', apiSecret: '' }, null, 2), 'utf8');
         }
 
