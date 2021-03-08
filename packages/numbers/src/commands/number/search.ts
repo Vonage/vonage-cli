@@ -2,6 +2,8 @@ import { NumberCommand } from '@vonage/cli-utils';
 import { OutputFlags, OutputArgs } from '@oclif/parser';
 import { flags } from '@oclif/command'
 
+import cli from 'cli-ux'
+
 interface searchFlags {
   type?: any,
   startsWith?: any,
@@ -69,10 +71,21 @@ export default class NumberSearch extends NumberCommand {
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
     const args = this.parsedArgs! as OutputArgs<typeof NumberCommand.args> & searchArgs;
-    console.log(flags, args)
     let options = parseFlags(flags)
     let resp = await this.numberSearch(args.countryCode, options);
-    // clean up response
-    console.dir(resp, { depth: 4 })
+    cli.table(resp.numbers, {
+      country: {},
+      msisdn: {
+        header: "Number"
+      },
+      type: {},
+      cost: {},
+      features: {
+        get: (row: any) => row.features.join(',')
+      }
+    }, {
+      ...flags
+    });
+    this.exit();
   }
 }
