@@ -209,11 +209,11 @@ hello world from ./src/hello.ts!
         this.log(chalk.bold("Application Name:"), output.name)
         this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
 
-        await fs.writeFile(`/${process.cwd()}/${output.name}_private.key`, output.keys.private_key, (err) => {
+        await fs.writeFile(`${process.cwd()}/${output.name}_private.key`, output.keys.private_key, (err) => {
             if (err) throw err;
         });
 
-        this.log(chalk.bold("Keyfile Location:"), `/${process.cwd()}/${output.name}_private.key`)
+        this.log(chalk.bold("Keyfile Location:"), `${process.cwd()}/${output.name}_private.key`)
         cli.action.stop()
 
     }
