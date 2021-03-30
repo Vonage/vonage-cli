@@ -3,7 +3,7 @@ import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 
 export default class ConfigSet extends BaseCommand {
-    static description = 'List Vonage CLI config'
+    static description = 'set Vonage CLI config'
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
