@@ -27,7 +27,7 @@ interface CreateFlags {
 }
 
 export default class ApplicationsCreate extends AppCommand {
-    static description = 'create Vonage applications'
+    static description = 'create a new Vonage application'
 
     static examples = [
         `$ vonage applications

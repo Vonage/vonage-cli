@@ -1,7 +1,7 @@
 import { AppCommand } from '@vonage/cli-utils';
 
 export default class ApplicationsUnlink extends AppCommand {
-    static description = 'Remove numbers from Vonage application'
+    static description = 'unlink numbers from Vonage application'
 
     static examples = []
 

@@ -1,7 +1,7 @@
 import { AppCommand } from '@vonage/cli-utils';
 
 export default class ApplicationsLink extends AppCommand {
-    static description = 'Link numbers to Vonage application'
+    static description = 'link numbers to Vonage application'
 
     static examples = []
 

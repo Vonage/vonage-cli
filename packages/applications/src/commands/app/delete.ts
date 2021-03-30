@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import cli from 'cli-ux';
 
 export default class ApplicationsDelete extends AppCommand {
-    static description = 'delete Vonage application'
+    static description = 'delete a Vonage application'
 
     static examples = []
 

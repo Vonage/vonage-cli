@@ -3,7 +3,7 @@ import { prompt } from 'prompts'
 import chalk from 'chalk'
 
 export default class ApplicationsShow extends AppCommand {
-    static description = 'Show Vonage application details';
+    static description = 'show Vonage application details';
 
     static examples = []
 

@@ -20,7 +20,7 @@ interface UpdateFlags {
 }
 
 export default class ApplicationsUpdate extends AppCommand {
-    static description = 'Update Vonage application settings'
+    static description = 'update a Vonage application'
 
     static examples = []
 
