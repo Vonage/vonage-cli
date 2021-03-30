@@ -4,7 +4,7 @@ import { OutputFlags } from '@oclif/parser';
 import cli from 'cli-ux'
 
 export default class NumberList extends NumberCommand {
-  static description = 'manage Vonage numbers'
+  static description = 'manage your Vonage numbers'
 
   static examples = [
     `$ vonage number
@@ -16,7 +16,7 @@ list all numbers
     ...NumberCommand.flags,
     ...cli.table.flags({
       except: ['columns', 'no-truncate', 'csv']
-  })
+    })
   }
 
   static args = []

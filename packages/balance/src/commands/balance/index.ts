@@ -2,7 +2,7 @@ import { OutputFlags } from '@oclif/parser';
 import { BalanceCommand } from '@vonage/cli-utils';
 
 export default class DisplayBalance extends BalanceCommand {
-    static description = "Display your account balance"
+    static description = "display your Vonage account balance"
 
     static examples = [
         `$vonage balance

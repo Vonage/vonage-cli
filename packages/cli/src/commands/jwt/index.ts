@@ -4,7 +4,7 @@ import cli from 'cli-ux'
 
 
 export default class GenerateJWT extends BaseCommand {
-    static description = 'List Vonage CLI config'
+    static description = 'generate a Vonage JWT token'
 
     static examples = []
     static flags: OutputFlags<typeof BaseCommand.flags> = {

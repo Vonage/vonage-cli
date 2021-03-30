@@ -5,7 +5,7 @@ import cli from 'cli-ux'
 // to-do - capabilities presentation not ideal
 
 export default class ConfigList extends BaseCommand {
-    static description = 'List Vonage CLI config'
+    static description = 'manage Vonage CLI configuration'
 
     static examples = []
 
