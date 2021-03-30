@@ -8,7 +8,7 @@ interface buyArgs {
 }
 
 export default class NumberBuy extends NumberCommand {
-  static description = 'manage Vonage numbers'
+  static description = 'buy a Vonage number'
 
   static examples = []
 

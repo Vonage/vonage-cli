@@ -37,7 +37,7 @@ function parseFlags(flagData: searchFlags): any {
 }
 
 export default class NumberSearch extends NumberCommand {
-  static description = 'manage Vonage numbers'
+  static description = 'search for available Vonage numbers'
 
   static examples = []
 

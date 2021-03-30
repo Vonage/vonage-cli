@@ -7,7 +7,7 @@ interface cancelArgs {
   countryCode: string
 }
 export default class NumberCancel extends NumberCommand {
-  static description = 'manage Vonage numbers'
+  static description = 'cancel a Vonage number'
 
   static examples = []
 
