@@ -1,16 +1,11 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
-
 import { flags } from '@oclif/command'
-
-// import cli from 'cli-ux'
-
-// to-do - capabilities presentation not ideal
 
 export default class ConfigSet extends BaseCommand {
     static description = 'List Vonage CLI config'
 
-    static flags = {
+    static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
         'apiKey': flags.string({
             description: 'Vonage API Key',
@@ -25,9 +20,10 @@ export default class ConfigSet extends BaseCommand {
     ]
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof ConfigSet.flags>
+        const flags = this.parsedFlags
 
         //add start, stop process indicators
         this.saveConfig(Object.assign({}, this.userConfig, flags))
+        this.log('Configuration saved.')
     }
 }

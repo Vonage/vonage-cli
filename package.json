@@ -24,7 +24,7 @@
     },
     "private": true,
     "scripts": {
-        "postinstall": "lerna bootstrap",
+        "postinstall": "lerna bootstrap && lerna run build",
         "lerna": "node_modules/.bin/lerna",
         "create-plugin": "node .template/build.js",
         "test": "./node_modules/.bin/jest test",

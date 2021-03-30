@@ -3,8 +3,6 @@ import { OutputFlags } from '@oclif/parser';
 
 import cli from 'cli-ux'
 
-// to-do - capabilities presentation not ideal
-
 export default class ApplicationsList extends AppCommand {
     static description = 'List Vonage applications'
 

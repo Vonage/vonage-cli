@@ -31,8 +31,6 @@ export default abstract class BaseCommand extends Command {
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] })
     }
 
-
-
     get vonage() {
         if (this._vonage) return this._vonage
 
