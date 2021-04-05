@@ -49,11 +49,9 @@ export default class ApplicationsShow extends AppCommand {
         let output = await this.getSingleApplication(response.appId);
         let indent = '  '
 
-        this.log(chalk.magenta.underline.bold("Application Name"))
-        this.log(output.name)
+        this.log(chalk.magenta.underline.bold("Application Name:"), output.name)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Application ID"))
-        this.log(output.id)
+        this.log(chalk.magenta.underline.bold("Application ID:"), output.id)
         this.log('')
 
         let { voice, messages, rtc, vbc } = output.capabilities
@@ -62,12 +60,10 @@ export default class ApplicationsShow extends AppCommand {
             let { event_url, answer_url } = voice.webhooks
 
             this.log(chalk.magenta.underline.bold("Voice Settings"))
-            this.log('')
 
             this.log(indent, chalk.cyan.underline.bold("Event Webhook:"))
             this.log(indent, indent, chalk.bold('Address:'), event_url.address)
             this.log(indent, indent, chalk.bold('HTTP Method:'), event_url.http_method)
-            this.log('')
 
             this.log(indent, chalk.cyan.underline.bold("Answer Webhook:"))
             this.log(indent, indent, chalk.bold('Address:'), answer_url.address)
@@ -79,12 +75,10 @@ export default class ApplicationsShow extends AppCommand {
             let { inbound_url, status_url } = messages.webhooks
 
             this.log(chalk.magenta.underline.bold("Messages Settings"))
-            this.log('')
 
             this.log(indent, chalk.cyan.underline.bold("Inbound Webhook:"))
             this.log(indent, indent, chalk.bold('Address:'), inbound_url.address)
             this.log(indent, indent, chalk.bold('HTTP Method:'), inbound_url.http_method)
-            this.log('')
 
             this.log(indent, chalk.cyan.underline.bold("Status Webhook:"))
             this.log(indent, indent, chalk.bold('Address:'), status_url.address)
@@ -95,7 +89,6 @@ export default class ApplicationsShow extends AppCommand {
         if (rtc) {
             let { event_url } = rtc.webhooks
             this.log(chalk.magenta.underline.bold("RTC Settings"))
-            this.log('')
 
             this.log(indent, chalk.cyan.underline.bold("Event Webhook:"))
             this.log(indent, indent, chalk.bold('Address:'), event_url.address)
