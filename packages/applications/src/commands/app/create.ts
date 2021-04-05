@@ -30,9 +30,7 @@ export default class ApplicationsCreate extends AppCommand {
     static description = 'create a new Vonage application'
 
     static examples = [
-        `$ vonage applications
-hello world from ./src/hello.ts!
-`,
+        'vonage app:create', 'vonage app:create APP_NAME --voice_answer_url=https://www.sample.com'
     ]
 
     static flags: OutputFlags<typeof AppCommand.flags> & CreateFlags = {
@@ -89,8 +87,21 @@ hello world from ./src/hello.ts!
     async run() {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
-
         let response: any = { name: '', capabilities: {} };
+
+        if (!args.name && Object.keys(flags).length > 0) {
+            this.error(new Error('Argument \'name\' not provided'))
+        }
+
+        if (args.name && Object.keys(flags).length >= 0) {
+
+            let tobeAssigned = Object.keys(flags).map((value: string, index) => {
+                return JSON.parse(flags[value])
+            }, [])
+
+            merge(response.capabilities, ...tobeAssigned)
+            response.name = args.name;
+        }
 
         // if no flags or arguments provided, make interactive
         if (!args.name && Object.keys(flags).length === 0) {
@@ -185,26 +196,11 @@ hello world from ./src/hello.ts!
 
         }
 
-        // if flags are provided but no name, throw error
-        if (!args.name && Object.keys(flags).length > 0) {
-            console.error("Missing Required Argument: name")
-        }
-
-        // if name is provided, just create the application.
-        // the SDK can verify the response
-        if (args.name && Object.keys(flags).length >= 0) {
-
-            let tobeAssigned = Object.keys(flags).map((value: string, index) => {
-                return JSON.parse(flags[value])
-            }, [])
-
-            merge(response.capabilities, ...tobeAssigned)
-            response.name = args.name;
-        }
-
-        // handle successful creation
         cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
+        console.log(this)
+        // create application
         let output = await this.createApplication(response)
+
         this.log(chalk.bold("Application ID:"), output.id)
         this.log(chalk.bold("Application Name:"), output.name)
         this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
@@ -214,8 +210,9 @@ hello world from ./src/hello.ts!
         });
 
         this.log(chalk.bold("Keyfile Location:"), `${process.cwd()}/${output.name}_private.key`)
-        cli.action.stop()
 
+        cli.action.stop()
+        this.exit();
     }
 
 }

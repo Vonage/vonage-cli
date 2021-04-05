@@ -8,8 +8,8 @@ interface WebhookQuestions {
 
 // address needs to be verified as a valid http address before proceeding
 
-export async function webhookQuestions({name, questions=4, data={}}: WebhookQuestions) {
-   return await prompt([{
+export async function webhookQuestions({ name, questions = 4, data = {} }: WebhookQuestions) {
+    return await prompt([{
         type: 'text',
         name: 'address',
         message: `${name} - URL`,

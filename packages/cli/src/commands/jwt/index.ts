@@ -1,5 +1,5 @@
 import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
+import { OutputFlags, OutputArgs } from '@oclif/parser';
 import cli from 'cli-ux'
 
 
@@ -7,17 +7,48 @@ export default class GenerateJWT extends BaseCommand {
     static description = 'generate a Vonage JWT token'
 
     static examples = []
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
+
+    static flags = {
         ...BaseCommand.flags,
     }
 
+    static args = [
+        { name: 'appId', required: false },
+    ]
+
     async run() {
         const flags = this.parsedFlags
-        // this.vonage.generateJwt()
+        const args = this.parsedArgs
+        console.log(args)
+
+        try {
+            let jwt = await this.vonage.generateJwt()
+        } catch (error) {
+            // console.log(error)
+            this.error(new Error("whoops"), { code: 'xyz', ref: 'testing', suggestions: ['something', 'another thing'] })
+            // this.error(message: string | Error, options ?: { code?: string, exit?: number, ref?: string; suggestions?: string[]; })
+        }
+
+
+        // if (!appId) {
+        //     this.warn("Please provide application id.");
+        // }
+        // this.log(jwt)
+
     }
 
+    // async catch(error: any) {
+
+    //     return super.catch(error)
+    // }
 }
 
+
+// Error code
+// Error title
+// Error description(Optional)
+// How to fix the error
+// URL for more information
 
 // {
 //     "iat": 1532093588,

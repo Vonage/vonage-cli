@@ -6,12 +6,12 @@ import cli from 'cli-ux'
 export default class ApplicationsList extends AppCommand {
     static description = 'manage your Vonage applications'
 
-    static examples = []
+    static examples = ['vonage app', 'vonage app --output=json']
 
     static flags: OutputFlags<typeof AppCommand.flags> = {
         ...AppCommand.flags,
         ...cli.table.flags({
-            except: ['columns', 'no-truncate', 'csv']
+            except: ['columns', 'no-truncate', 'csv', 'extended', 'no-header']
         })
     }
 
@@ -19,6 +19,7 @@ export default class ApplicationsList extends AppCommand {
         const flags = this.parsedFlags as OutputFlags<typeof ApplicationsList.flags>
         let appData = await this.allApplications;
         let appList = appData['_embedded'].applications;
+
         cli.table(appList, {
             name: {},
             id: {},
@@ -28,6 +29,7 @@ export default class ApplicationsList extends AppCommand {
         }, {
             ...flags
         })
+
         this.exit();
     }
 

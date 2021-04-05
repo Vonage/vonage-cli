@@ -1,12 +1,20 @@
 import { AppCommand } from '@vonage/cli-utils';
 import { prompt } from 'prompts'
+import { OutputFlags } from '@oclif/parser';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
 export default class ApplicationsDelete extends AppCommand {
     static description = 'delete a Vonage application'
 
-    static examples = []
+    static flags: OutputFlags<typeof AppCommand.flags> = {
+        ...AppCommand.flags,
+    }
+
+    static examples = [
+        `vonage app:delete 00000000-0000-0000-0000-000000000000`,
+        `vonage app:delete`
+    ]
 
     static args = [
         { name: 'appId', required: false },
@@ -23,10 +31,9 @@ export default class ApplicationsDelete extends AppCommand {
 
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs!;
-        let userInput = Object.assign({}, args, flags)
+        const args = this.parsedArgs!
 
-        if (!userInput.appId) {
+        if (!args.appId) {
             let appData = await this.allApplications;
             let appList = appData['_embedded'].applications;
             let response = await prompt([
@@ -40,7 +47,7 @@ export default class ApplicationsDelete extends AppCommand {
                 {
                     type: 'confirm',
                     name: 'confirm',
-                    message: `Confirm deletion of application?`,
+                    message: `Confirm deletion?`,
                     initial: false
                 }
             ])
@@ -51,6 +58,7 @@ export default class ApplicationsDelete extends AppCommand {
 
                 response.appId.map((v: any) => {
                     this.deleteApplication(v)
+                    this.log(`Application ${v} deleted.`)
                 })
 
                 cli.action.stop()
@@ -60,13 +68,18 @@ export default class ApplicationsDelete extends AppCommand {
 
         }
 
-        if (userInput.appId) {
-            this.deleteApplication(userInput.appId)
+        if (args.appId) {
+            this.deleteApplication(args.appId)
+            this.log(`Application ${args.appId} deleted.`)
         }
+
 
         this.exit();
 
     }
 
-    // async catch(error:any) {}
+    async catch(error: any) {
+        return super.catch(error);
+    }
+
 }

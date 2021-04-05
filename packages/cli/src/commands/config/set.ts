@@ -1,11 +1,10 @@
 import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 
 export default class ConfigSet extends BaseCommand {
     static description = 'set Vonage CLI config'
 
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
+    static flags = {
         ...BaseCommand.flags,
         'apiKey': flags.string({
             description: 'Vonage API Key',
