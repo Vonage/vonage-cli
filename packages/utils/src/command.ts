@@ -1,7 +1,8 @@
 import { Command, flags } from '@oclif/command';
 import { Input, OutputArgs, OutputFlags } from '@oclif/parser';
+import { string } from '@oclif/parser/lib/flags';
 import Vonage from '@vonage/server-sdk';
-import { CredentialsObject } from '@vonage/server-sdk';
+import { CredentialsObject, VonageOptions, Message, Media, Number as VNumber, NumberInsight, Verify, Voice } from '@vonage/server-sdk';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -11,9 +12,33 @@ interface UserConfig {
 }
 
 
+interface IClaims {
+    application_id: string
+    iat?: number,
+    jti?: string,
+    sub?: string,
+    exp?: string,
+    acl?: {
+        paths?: {
+            "/*/users/**"?: any,
+            "/*/conversations/**"?: any,
+            "/*/sessions/**"?: any,
+            "/*/devices/**"?: any,
+            "/*/image/**"?: any,
+            "/*/media/**"?: any,
+            "/*/applications/**"?: any,
+            "/*/push/**"?: any,
+            "/*/knocking/**"?: any,
+            "/*/legs/**"?: any
+        }
+    },
+
+}
+
+
 export default abstract class BaseCommand extends Command {
     private _vonage!: any;
-
+    protected Vonage!: any;
     protected _apiKey!: any;
     protected _apiSecret!: any
 
@@ -56,10 +81,12 @@ export default abstract class BaseCommand extends Command {
         return;
     }
 
-    generateJwt(private_key: string, claims: any): void {
-        console.log('Create JWT not currently working')
-        // return Vonage.generateJwt(private_key, claims)
-    }
+    // generateJwt(private_key: string, claims: IClaims): string {
+    //     // this.Vonage = Vonage
+    //     console.log(this.Vonage.generateJwt)
+    //     return 'test'
+    //     // return this.Vonage.generateJwt(private_key, claims);
+    // }
 
     async init(): Promise<void> {
         const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
@@ -67,7 +94,7 @@ export default abstract class BaseCommand extends Command {
         this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, trace: flags.trace };
         this.parsedArgs = args;
         this.parsedFlags = flags;
-
+        this.Vonage = Vonage;
         //this removes the global flags from the command, so checking for interactive mode is possible.
         delete this.parsedFlags.apiKey
         delete this.parsedFlags.apiSecret

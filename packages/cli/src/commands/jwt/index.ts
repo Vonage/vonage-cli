@@ -1,73 +1,45 @@
 import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags, OutputArgs } from '@oclif/parser';
-import cli from 'cli-ux'
+import { flags } from '@oclif/command';
+import { OutputFlags } from '@oclif/parser';
+import * as fs from 'fs-extra';
+import * as path from 'path';
+
+
+interface GenerateJWTFlags {
+    app_id: any,
+    key_file: any,
+    subject?: any,
+    acl?: any,
+}
 
 
 export default class GenerateJWT extends BaseCommand {
+
     static description = 'generate a Vonage JWT token'
 
     static examples = []
 
-    static flags = {
+    static flags: OutputFlags<typeof BaseCommand.flags> & GenerateJWTFlags = {
         ...BaseCommand.flags,
+        app_id: flags.string({ required: true }),
+        key_file: flags.string({ required: true }),
+        subject: flags.string({ required: false }),
+        acl: flags.string({ required: false, default: '{}' }),
     }
 
     static args = [
-        { name: 'appId', required: false },
+        ...BaseCommand.args,
     ]
 
     async run() {
-        const flags = this.parsedFlags
-        const args = this.parsedArgs
-        console.log(args)
 
-        try {
-            let jwt = await this.vonage.generateJwt()
-        } catch (error) {
-            // console.log(error)
-            this.error(new Error("whoops"), { code: 'xyz', ref: 'testing', suggestions: ['something', 'another thing'] })
-            // this.error(message: string | Error, options ?: { code?: string, exit?: number, ref?: string; suggestions?: string[]; })
-        }
+        const flags = this.parsedFlags as OutputFlags<typeof BaseCommand.flags> & GenerateJWTFlags
+        let private_key = await fs.readFile(flags.key_file.replace(/(\s+)/g, '\\$1'));
+        let claims = { application_id: flags.app_id, ...flags?.subject, ...JSON.parse(flags.acl) }
+        let jwt = this.Vonage.generateJwt(private_key, claims)
 
-
-        // if (!appId) {
-        //     this.warn("Please provide application id.");
-        // }
-        // this.log(jwt)
+        this.log(jwt)
+        this.exit()
 
     }
-
-    // async catch(error: any) {
-
-    //     return super.catch(error)
-    // }
 }
-
-
-// Error code
-// Error title
-// Error description(Optional)
-// How to fix the error
-// URL for more information
-
-// {
-//     "iat": 1532093588,
-//         "jti": "705b6f50-8c21-11e8-9bcb-595326422d60",
-//             "sub": "alice",
-//                 "exp": "1532179987",
-//                     "acl": {
-//         "paths": {
-//             "/*/users/**": { },
-//             "/*/conversations/**": { },
-//             "/*/sessions/**": { },
-//             "/*/devices/**": { },
-//             "/*/image/**": { },
-//             "/*/media/**": { },
-//             "/*/applications/**": { },
-//             "/*/push/**": { },
-//             "/*/knocking/**": { },
-//             "/*/legs/**": { }
-//         }
-//     },
-//     "application_id": "aaaaaaaa-bbbb-cccc-dddd-0123456789ab"
-// }

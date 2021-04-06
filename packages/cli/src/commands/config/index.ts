@@ -1,8 +1,6 @@
 import BaseCommand from '@vonage/cli-utils';
 import cli from 'cli-ux'
 
-// to-do - capabilities presentation not ideal
-
 export default class ConfigList extends BaseCommand {
     static description = 'manage Vonage CLI configuration'
 
