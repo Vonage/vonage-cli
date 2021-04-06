@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli-plugin-applications",
     "description": "A plugin for Vonage CLI",
-    "version": "1.0.0-alpha.19",
+    "version": "1.0.0-beta.0",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
@@ -9,7 +9,7 @@
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
         "@types/lodash.merge": "^4.6.6",
-        "@vonage/cli-utils": "^1.0.0-alpha.19",
+        "@vonage/cli-utils": "^1.0.0-beta.0",
         "chalk": "^2.4.2",
         "lodash": "^4.17.20",
         "prompts": "^2.4.0",

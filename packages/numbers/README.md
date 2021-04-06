@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numbers
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numbers/1.0.0-alpha.19 linux-x64 node-v12.18.2
+@vonage/cli-plugin-numbers/1.0.0-beta.0 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -35,7 +35,7 @@ USAGE
 
 ## `oclif-example number`
 
-manage Vonage numbers
+manage your Vonage numbers
 
 ```
 USAGE
@@ -54,11 +54,11 @@ EXAMPLE
   list all numbers
 ```
 
-_See code: [dist/commands/number/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/number/index.js)_
+_See code: [dist/commands/number/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/number/index.js)_
 
 ## `oclif-example number:buy [NUMBER] [COUNTRYCODE]`
 
-manage Vonage numbers
+buy a Vonage number
 
 ```
 USAGE
@@ -68,11 +68,11 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/number/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/number/buy.js)_
+_See code: [dist/commands/number/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/number/buy.js)_
 
 ## `oclif-example number:cancel [NUMBER] [COUNTRYCODE]`
 
-manage Vonage numbers
+cancel a Vonage number
 
 ```
 USAGE
@@ -82,11 +82,11 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/number/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/number/cancel.js)_
+_See code: [dist/commands/number/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/number/cancel.js)_
 
 ## `oclif-example number:search [COUNTRYCODE]`
 
-manage Vonage numbers
+search for available Vonage numbers
 
 ```
 USAGE
@@ -101,5 +101,5 @@ OPTIONS
   --type=landline|mobile-lvn|landline-toll-free
 ```
 
-_See code: [dist/commands/number/search.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/number/search.js)_
+_See code: [dist/commands/number/search.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/number/search.js)_
 <!-- commandsstop -->

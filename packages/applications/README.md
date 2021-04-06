@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-alpha.19 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-beta.0 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -30,14 +30,14 @@ USAGE
 * [`oclif-example app`](#oclif-example-app)
 * [`oclif-example app:create [NAME]`](#oclif-example-appcreate-name)
 * [`oclif-example app:delete [APPID]`](#oclif-example-appdelete-appid)
-* [`oclif-example app:link [APPID] [NUMBER]`](#oclif-example-applink-appid-number)
+* [`oclif-example app:link [APPID]`](#oclif-example-applink-appid)
 * [`oclif-example app:show [APPID]`](#oclif-example-appshow-appid)
-* [`oclif-example app:unlink [NUMBER]`](#oclif-example-appunlink-number)
+* [`oclif-example app:unlink`](#oclif-example-appunlink)
 * [`oclif-example app:update [APPID]`](#oclif-example-appupdate-appid)
 
 ## `oclif-example app`
 
-List Vonage applications
+manage your Vonage applications
 
 ```
 USAGE
@@ -45,18 +45,20 @@ USAGE
 
 OPTIONS
   -h, --help              show CLI help
-  -x, --extended          show extra columns
   --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
   --output=csv|json|yaml  output in a more machine friendly format
   --sort=sort             property to sort by (prepend '-' for descending)
+
+EXAMPLES
+  vonage app
+  vonage app --output=json
 ```
 
-_See code: [dist/commands/app/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/index.js)_
+_See code: [dist/commands/app/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/index.js)_
 
 ## `oclif-example app:create [NAME]`
 
-create Vonage applications
+create a new Vonage application
 
 ```
 USAGE
@@ -74,16 +76,16 @@ OPTIONS
   --voice_event_http=GET|POST                  Voice Event Webhook HTTP Method
   --voice_event_url=voice_event_url            Voice Event Webhook URL Address
 
-EXAMPLE
-  $ vonage applications
-  hello world from ./src/hello.ts!
+EXAMPLES
+  vonage app:create
+  vonage app:create APP_NAME --voice_answer_url=https://www.sample.com
 ```
 
-_See code: [dist/commands/app/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/create.js)_
+_See code: [dist/commands/app/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/create.js)_
 
 ## `oclif-example app:delete [APPID]`
 
-delete Vonage application
+delete a Vonage application
 
 ```
 USAGE
@@ -91,27 +93,32 @@ USAGE
 
 OPTIONS
   -h, --help  show CLI help
+
+EXAMPLES
+  vonage app:delete 00000000-0000-0000-0000-000000000000
+  vonage app:delete
 ```
 
-_See code: [dist/commands/app/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/delete.js)_
+_See code: [dist/commands/app/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/delete.js)_
 
-## `oclif-example app:link [APPID] [NUMBER]`
+## `oclif-example app:link [APPID]`
 
-Link numbers to Vonage application
+link numbers to Vonage application
 
 ```
 USAGE
-  $ oclif-example app:link [APPID] [NUMBER]
+  $ oclif-example app:link [APPID]
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help       show CLI help
+  --number=number  Owned number to be assigned
 ```
 
-_See code: [dist/commands/app/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/link.js)_
+_See code: [dist/commands/app/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/link.js)_
 
 ## `oclif-example app:show [APPID]`
 
-Show Vonage application details
+show Vonage application details
 
 ```
 USAGE
@@ -121,25 +128,26 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/app/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/show.js)_
+_See code: [dist/commands/app/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/show.js)_
 
-## `oclif-example app:unlink [NUMBER]`
+## `oclif-example app:unlink`
 
-Remove numbers from Vonage application
+unlink numbers from Vonage application
 
 ```
 USAGE
-  $ oclif-example app:unlink [NUMBER]
+  $ oclif-example app:unlink
 
 OPTIONS
-  -h, --help  show CLI help
+  -h, --help       show CLI help
+  --number=number  Owned number to be unassigned
 ```
 
-_See code: [dist/commands/app/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/unlink.js)_
+_See code: [dist/commands/app/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/unlink.js)_
 
 ## `oclif-example app:update [APPID]`
 
-Update Vonage application settings
+update a Vonage application
 
 ```
 USAGE
@@ -149,6 +157,7 @@ OPTIONS
   -h, --help                                   show CLI help
   --messages_inbound_url=messages_inbound_url  Messages Inbound Webhook URL Address
   --messages_status_url=messages_status_url    Messages Status Webhook URL Address
+  --name=name                                  Name of Vonage Application
   --rtc_event_http=GET|POST                    RTC Event Webhook HTTP Method
   --rtc_event_url=rtc_event_url                RTC Event Webhook URL Address
   --vbc                                        VBC Capabilities Enabled
@@ -156,7 +165,11 @@ OPTIONS
   --voice_answer_url=voice_answer_url          Voice Answer Webhook URL Address
   --voice_event_http=GET|POST                  Voice Event Webhook HTTP Method
   --voice_event_url=voice_event_url            Voice Event Webhook URL Address
+
+EXAMPLES
+  vonage app:update
+  vonage app:update APP_ID --voice_answer_url="https://www.example.com/answer
 ```
 
-_See code: [dist/commands/app/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-alpha.19/dist/commands/app/update.js)_
+_See code: [dist/commands/app/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.0/dist/commands/app/update.js)_
 <!-- commandsstop -->
