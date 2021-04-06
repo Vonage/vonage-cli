@@ -29,10 +29,8 @@ export default abstract class AppCommand extends BaseCommand {
         return new Promise((res, rej) => {
             this.vonage.applications.create(data, (error: any, response: any) => {
                 if (error) {
-                    // console.dir(error, {depth: 5})
                     rej(error)
                 } else {
-                    // console.log(response)
                     res(response)
                 }
             })
@@ -52,8 +50,17 @@ export default abstract class AppCommand extends BaseCommand {
         })
     }
 
-    updateApplication(appId: string): any {
-        return appId
+    updateApplication(appObj: any): any {
+        return new Promise((res, rej) => {
+            this.vonage.applications.update(appObj.id, appObj, (error: any, result: any) => {
+                if (error) {
+                    rej(error);
+                }
+                else {
+                    res(result);
+                }
+            });
+        })
     }
 
     deleteApplication(appId: string): any {

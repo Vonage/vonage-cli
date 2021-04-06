@@ -9,9 +9,8 @@ export default class ConfigList extends BaseCommand {
     static examples = []
 
     async run() {
-        const flags = this.parsedFlags
         this.log("~~~User Conifg~~~")
-        cli.log(JSON.stringify(Object.assign({}, this.userConfig, flags)))
+        cli.log(JSON.stringify(Object.assign({}, this.userConfig)))
     }
 
 }

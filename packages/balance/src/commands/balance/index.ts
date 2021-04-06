@@ -16,7 +16,7 @@ Displays your current balance in Euros
 
     async run() {
         let res = await this.displayBalance();
-        console.log(`Current balance: ${res.value.toFixed(2)} EUR`);
+        this.log(`Current balance: ${res.value.toFixed(2)} EUR`);
         this.exit();
     }
 }

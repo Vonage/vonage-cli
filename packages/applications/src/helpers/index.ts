@@ -1,19 +1,20 @@
+import { mkdir } from 'fs-extra';
 import { prompt } from 'prompts';
 
 interface WebhookQuestions {
     name: string
-    data?: object
-    questions?: number
+    url?: string
+    method?: string
 }
 
 // address needs to be verified as a valid http address before proceeding
 
-export async function webhookQuestions({ name, questions = 4, data = {} }: WebhookQuestions) {
+export async function webhookQuestions({ name, url = 'https://example.com/webhook_name', method = 'POST' }: WebhookQuestions) {
     return await prompt([{
         type: 'text',
         name: 'address',
         message: `${name} - URL`,
-        initial: 'https://example.com/webhook_name'
+        initial: url
     },
     {
         type: 'select',
@@ -22,23 +23,8 @@ export async function webhookQuestions({ name, questions = 4, data = {} }: Webho
         choices: [
             { title: 'GET', value: 'GET' },
             { title: 'POST', value: 'POST' }
-        ]
-    },
-    {
-        type: 'number',
-        name: 'connection_timeout',
-        message: `${name} - Connection Timeout`,
-        initial: '1000',
-        min: '300',
-        max: '1000'
-    },
-    {
-        type: 'number',
-        name: 'socket_timeout',
-        message: `${name} - Socket Timeout`,
-        initial: '5000',
-        min: '1000',
-        max: '5000'
-    }].slice(0, questions))
+        ],
+        initial: method === 'POST' ? 1 : 0
+    }])
 
 }

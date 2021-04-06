@@ -8,6 +8,7 @@ import { merge } from 'lodash';
 import * as fs from 'fs';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import ApplicationsShow from './show'
 
 const shortName = uniqueNamesGenerator({
     dictionaries: [adjectives, animals], // colors can be omitted here as not used
@@ -138,8 +139,8 @@ export default class ApplicationsCreate extends AppCommand {
                 })
 
                 if (voice.voice_webhooks_confirm) {
-                    answer_url = await webhookQuestions({ name: 'Answer Webhook', questions: 2 })
-                    event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
+                    answer_url = await webhookQuestions({ name: 'Answer Webhook' })
+                    event_url = await webhookQuestions({ name: 'Event Webhook' })
                 } else {
                     answer_url = { address: "https://www.sample.com/webhook/answer_url" }
                     event_url = { address: "https://www.sample.com/webhook/event_url" }
@@ -158,8 +159,8 @@ export default class ApplicationsCreate extends AppCommand {
                 })
 
                 if (messages.webhooks_confirm) {
-                    inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', questions: 2 })
-                    status_url = await webhookQuestions({ name: 'Status Webhook', questions: 2 })
+                    inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook' })
+                    status_url = await webhookQuestions({ name: 'Status Webhook' })
                 } else {
                     inbound_url = { address: "https://www.sample.com/webhook/inbound_url" }
                     status_url = { address: "https://www.sample.com/webhook/status_url" }
@@ -179,7 +180,7 @@ export default class ApplicationsCreate extends AppCommand {
                 })
 
                 if (rtc.webhooks_confirm) {
-                    let event_url = await webhookQuestions({ name: 'Event Webhook', questions: 2 })
+                    let event_url = await webhookQuestions({ name: 'Event Webhook' })
                     response.capabilities.rtc = { webhooks: { event_url } }
                 } else {
                     event_url = { address: "https://www.sample.com/webhook/rtc_event_url" }
@@ -197,21 +198,76 @@ export default class ApplicationsCreate extends AppCommand {
         }
 
         cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
-        console.log(this)
+
         // create application
         let output = await this.createApplication(response)
-
-        this.log(chalk.bold("Application ID:"), output.id)
-        this.log(chalk.bold("Application Name:"), output.name)
-        this.log(chalk.bold("Capabilities"), Object.keys(output.capabilities))
-
-        await fs.writeFile(`${process.cwd()}/${output.name}_private.key`, output.keys.private_key, (err) => {
-            if (err) throw err;
-        });
-
-        this.log(chalk.bold("Keyfile Location:"), `${process.cwd()}/${output.name}_private.key`)
-
+        fs.writeFileSync(`${process.cwd()}/${output.name}_private.key`, output.keys.private_key)
         cli.action.stop()
+
+
+        let indent = '  '
+
+        this.log(chalk.magenta.underline.bold("Application Name:"), output.name)
+        this.log('')
+        this.log(chalk.magenta.underline.bold("Application ID:"), output.id)
+        this.log('')
+
+        let { voice, messages, rtc, vbc } = output.capabilities
+
+        if (voice) {
+            let { event_url, answer_url } = voice.webhooks
+
+            this.log(chalk.magenta.underline.bold("Voice Settings"))
+
+            this.log(indent, chalk.cyan.underline.bold("Event Webhook:"))
+            this.log(indent, indent, chalk.bold('Address:'), event_url.address)
+            this.log(indent, indent, chalk.bold('HTTP Method:'), event_url.http_method)
+
+            this.log(indent, chalk.cyan.underline.bold("Answer Webhook:"))
+            this.log(indent, indent, chalk.bold('Address:'), answer_url.address)
+            this.log(indent, indent, chalk.bold('HTTP Method:'), answer_url.http_method)
+            this.log('')
+        }
+
+        if (messages) {
+            let { inbound_url, status_url } = messages.webhooks
+
+            this.log(chalk.magenta.underline.bold("Messages Settings"))
+
+            this.log(indent, chalk.cyan.underline.bold("Inbound Webhook:"))
+            this.log(indent, indent, chalk.bold('Address:'), inbound_url.address)
+            this.log(indent, indent, chalk.bold('HTTP Method:'), inbound_url.http_method)
+
+            this.log(indent, chalk.cyan.underline.bold("Status Webhook:"))
+            this.log(indent, indent, chalk.bold('Address:'), status_url.address)
+            this.log(indent, indent, chalk.bold('HTTP Method:'), status_url.http_method)
+            this.log('')
+        }
+
+        if (rtc) {
+            let { event_url } = rtc.webhooks
+            this.log(chalk.magenta.underline.bold("RTC Settings"))
+
+            this.log(indent, chalk.cyan.underline.bold("Event Webhook:"))
+            this.log(indent, indent, chalk.bold('Address:'), event_url.address)
+            this.log(indent, indent, chalk.bold('HTTP Method:'), event_url.http_method)
+            this.log('')
+        }
+
+        if (vbc) {
+            this.log(chalk.magenta.underline.bold("VBC Settings"))
+            this.log(chalk.bold("Enabled"))
+            this.log('')
+        }
+
+        this.log(chalk.magenta.underline.bold("Public Key"))
+        this.log(output.keys.public_key)
+        this.log('')
+
+        this.log(chalk.magenta.underline.bold("Private Key File"))
+        this.log(`${process.cwd()}/${output.name}_private.key`)
+        this.log('')
+
         this.exit();
     }
 

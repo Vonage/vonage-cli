@@ -8,6 +8,7 @@ import cli from 'cli-ux';
 import chalk from 'chalk';
 
 interface UpdateFlags {
+    name: any,
     voice_answer_url: any,
     voice_answer_http: any,
     voice_event_url: any,
@@ -22,10 +23,14 @@ interface UpdateFlags {
 export default class ApplicationsUpdate extends AppCommand {
     static description = 'update a Vonage application'
 
-    static examples = []
+    static examples = [`vonage app:update`, 'vonage app:update APP_ID --voice_answer_url="https://www.example.com/answer']
 
     static flags: OutputFlags<typeof AppCommand.flags> & UpdateFlags = {
         ...AppCommand.flags,
+        'name': flags.string({
+            description: 'Name of Vonage Application',
+            parse: input => `{"name": "${input}"}`
+        }),
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',
             parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
@@ -83,15 +88,136 @@ export default class ApplicationsUpdate extends AppCommand {
         })
     }
 
-    // TODO - adding capabilities works, removing them currently not - needs to be addressed
-    // due to the merge method - find a better way to do this.
-    // TODO - make sure current data is getting passed for webhook questions
+    async menuOptions() {
+        return await prompt([
+            {
+                type: 'select',
+                name: 'updateSelection',
+                message: 'Select Item to Update',
+                choices: [
+                    { title: 'Application Name', value: 'name' },
+                    { title: 'Voice Settings', value: 'voice' },
+                    { title: 'Messages Settings', value: 'messages' },
+                    { title: 'RTC Settings', value: 'rtc' },
+                    { title: 'Cancel', value: 'cancel' },
+                    { title: 'Update', value: 'update' }
+                ],
+            }
+        ])
+    }
 
     async run() {
         const flags = this.parsedFlags;
         const args = this.parsedArgs!;
+        let response = args;
+        let oldAppState, newAppState
+
+        if (!response.appId) {
+            let appData = await this.allApplications;
+            let appList = appData['_embedded'].applications;
+
+            response = await prompt([
+                {
+                    type: 'autocomplete',
+                    name: 'appId',
+                    message: 'Select Application',
+                    choices: this.setQuestions(appList),
+                    initial: 0,
+                }
+            ])
+        }
+
+        oldAppState = await this.getSingleApplication(response.appId);
+        newAppState = Object.assign({}, oldAppState);
+
+        if (Object.keys(flags).length > 0) {
+            //merge flags into new object
+            let tobeAssigned = Object.keys(flags).map((value: string, index) => {
+                return JSON.parse(flags[value])
+            }, [])
+
+            merge(newAppState.capabilities, ...tobeAssigned)
+
+        } else {
+            //run interactive
+
+            let menu = await this.menuOptions();
+            let updateItem = menu.updateSelection;
+
+            while (updateItem !== 'update' && updateItem !== 'cancel') {
+                let { voice, messages, rtc, vbc } = oldAppState.capabilities
+
+                if (updateItem === 'name') {
+                    let { newAppName } = await prompt([
+                        {
+                            type: 'text',
+                            name: 'newAppName',
+                            message: 'Update Name',
+                            initial: oldAppState.name
+                        }
+                    ])
+                    newAppState.name = newAppName
+                }
+
+                if (updateItem === 'voice') {
+
+                    if (!voice) voice = { webhooks: { answer_url: { address: '', http_method: '' }, event_url: { address: '', http_method: '' } } }
+
+                    let { answer_url, event_url } = voice.webhooks
+                    let new_answer_url = await webhookQuestions({ name: 'Answer Webhook', url: answer_url.address, method: answer_url.method })
+                    let new_event_url = await webhookQuestions({ name: 'Event Webhook', url: event_url.address, method: answer_url.method })
+                    newAppState.capabilities.voice = {
+                        webhooks: { answer_url: new_answer_url, event_url: new_event_url }
+                    }
+                }
+
+                if (updateItem === 'messages') {
+
+                    if (!messages) messages = { webhooks: { inbound_url: { address: '', http_method: '' }, status_url: { address: '', http_method: '' } } }
+
+                    let { inbound_url, status_url } = messages.webhooks
+                    let new_inbound_url = await webhookQuestions({ name: 'Inbound Message Webhook', url: inbound_url.address, method: inbound_url.method })
+                    let new_status_url = await webhookQuestions({ name: 'Status Webhook', url: status_url.address, method: status_url.method })
+
+                    newAppState.capabilities.messages = {
+                        webhooks: { inbound_url: new_inbound_url, status_url: new_status_url }
+                    }
+                }
+
+                if (updateItem === 'rtc') {
+
+                    if (!rtc) rtc = { webhooks: { event_url: { address: '', http_method: '' } } }
+
+                    let { event_url } = rtc.webhooks
+                    let new_event_url = await webhookQuestions({ name: 'Event Webhook', url: event_url.address, method: event_url.method })
+                    newAppState.capabilities.rtc = {
+                        webhooks: { event_url: new_event_url }
+                    }
+                }
+
+                if (updateItem === 'vbc') {
+                    this.log('Update VBC')
+                }
+
+                if (updateItem === 'key') {
+                    this.log('Update Private Key')
+                }
+
+                let menu = await this.menuOptions();
+                updateItem = menu.updateSelection;
+            }
+
+            if (updateItem === 'cancel') {
+                this.log(chalk.bold('Application update cancelled.'))
+                this.exit();
+            }
+
+        }
 
 
+        cli.action.start(chalk.bold(`Updating "${newAppState.name}"`))
+        let output = await this.updateApplication(newAppState);
+        cli.action.stop()
     }
 
 }

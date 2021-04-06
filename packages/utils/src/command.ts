@@ -10,6 +10,7 @@ interface UserConfig {
     apiSecret: string
 }
 
+
 export default abstract class BaseCommand extends Command {
     private _vonage!: any;
 
@@ -55,6 +56,11 @@ export default abstract class BaseCommand extends Command {
         return;
     }
 
+    generateJwt(private_key: string, claims: any): void {
+        console.log('Create JWT not currently working')
+        // return Vonage.generateJwt(private_key, claims)
+    }
+
     async init(): Promise<void> {
         const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
 
@@ -89,7 +95,7 @@ export default abstract class BaseCommand extends Command {
 
     async catch(error: any) {
         if (error.oclif?.exit === 0) return;
-        if (this.globalFlags.trace) this.log(error.stack)
+        if (this.globalFlags?.trace) this.log(error.stack)
         if (error.statusCode === 401) {
             this.error(
                 new Error('Invalid Credentials'),
