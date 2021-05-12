@@ -67,7 +67,7 @@ export default abstract class BaseCommand extends Command {
             apiSecret: this._apiSecret || ''
         }
 
-        this._vonage = new Vonage(credentials);
+        this._vonage = new Vonage(credentials, { appendToUserAgent: "vonage-cli" });
 
         return this._vonage
     }
