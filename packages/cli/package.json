@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "1.0.0-beta.4",
+    "version": "1.0.0-beta.5",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run"
@@ -15,11 +15,11 @@
         "@types/fs-extra": "^5.0.2",
         "@types/lodash.merge": "^4.6.6",
         "@types/shelljs": "^0.8.8",
-        "@vonage/cli-plugin-applications": "^1.0.0-beta.4",
-        "@vonage/cli-plugin-balance": "^1.0.0-beta.4",
-        "@vonage/cli-plugin-numbers": "^1.0.0-beta.4",
-        "@vonage/cli-plugin-numberinsight": "^1.0.0-beta.4",
-        "@vonage/cli-utils": "^1.0.0-beta.4",
+        "@vonage/cli-plugin-applications": "^1.0.0-beta.5",
+        "@vonage/cli-plugin-balance": "^1.0.0-beta.5",
+        "@vonage/cli-plugin-numberinsight": "^1.0.0-beta.5",
+        "@vonage/cli-plugin-numbers": "^1.0.0-beta.5",
+        "@vonage/cli-utils": "^1.0.0-beta.5",
         "fs-extra": "^9.0.1",
         "lodash": "^4.17.20",
         "shelljs": "^0.8.4",

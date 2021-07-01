@@ -15,11 +15,11 @@
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g @vonage/cli-plugin-numbers
+$ npm install -g @vonage/cli-plugin-numberinsight
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numbers/1.0.0-beta.4 linux-x64 node-v12.18.2
+@vonage/cli-plugin-numberinsight/1.0.0-beta.5 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -28,78 +28,25 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example number`](#oclif-example-number)
-* [`oclif-example number:buy [NUMBER] [COUNTRYCODE]`](#oclif-example-numberbuy-number-countrycode)
-* [`oclif-example number:cancel [NUMBER] [COUNTRYCODE]`](#oclif-example-numbercancel-number-countrycode)
-* [`oclif-example number:search [COUNTRYCODE]`](#oclif-example-numbersearch-countrycode)
+* [`oclif-example numberinsight NUMBER`](#oclif-example-numberinsight-number)
 
-## `oclif-example number`
+## `oclif-example numberinsight NUMBER`
 
 manage your Vonage numbers
 
 ```
 USAGE
-  $ oclif-example number
+  $ oclif-example numberinsight NUMBER
 
 OPTIONS
-  -h, --help              show CLI help
-  -x, --extended          show extra columns
-  --filter=filter         filter property by partial string matching, ex: name=foo
-  --no-header             hide table header from output
-  --output=csv|json|yaml  output in a more machine friendly format
-  --sort=sort             property to sort by (prepend '-' for descending)
+  -h, --help                       show CLI help
+  -y, --confirm
+  --level=basic|standard|advanced  [default: basic]
 
 EXAMPLE
-  $ vonage number
-  list all numbers
+  $ vonage numberinsight 5555555555
+  $ vonage numberinsight 5555555555 --level=advanced
 ```
 
-_See code: [dist/commands/number/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.4/dist/commands/number/index.js)_
-
-## `oclif-example number:buy [NUMBER] [COUNTRYCODE]`
-
-buy a Vonage number
-
-```
-USAGE
-  $ oclif-example number:buy [NUMBER] [COUNTRYCODE]
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [dist/commands/number/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.4/dist/commands/number/buy.js)_
-
-## `oclif-example number:cancel [NUMBER] [COUNTRYCODE]`
-
-cancel a Vonage number
-
-```
-USAGE
-  $ oclif-example number:cancel [NUMBER] [COUNTRYCODE]
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [dist/commands/number/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.4/dist/commands/number/cancel.js)_
-
-## `oclif-example number:search [COUNTRYCODE]`
-
-search for available Vonage numbers
-
-```
-USAGE
-  $ oclif-example number:search [COUNTRYCODE]
-
-OPTIONS
-  -h, --help                                     show CLI help
-  --contains=contains
-  --endsWith=endsWith
-  --features=features
-  --startsWith=startsWith
-  --type=landline|mobile-lvn|landline-toll-free
-```
-
-_See code: [dist/commands/number/search.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.4/dist/commands/number/search.js)_
+_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/numberinsight/index.js)_
 <!-- commandsstop -->
