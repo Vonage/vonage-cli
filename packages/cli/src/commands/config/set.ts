@@ -12,6 +12,12 @@ export default class ConfigSet extends BaseCommand {
         }),
         'apiSecret': flags.string({
             description: 'Vonage API Key',
+        }),
+        'appId': flags.string({
+            description: 'Default Application ID',
+        }),
+        'privateKey': flags.string({
+            description: 'Default Application Private Key',
         })
     }
 

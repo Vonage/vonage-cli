@@ -46,5 +46,8 @@
         "url": "https://github.com/Vonage/vonage-cli/issues"
     },
     "homepage": "https://github.com/Vonage/vonage-cli#readme",
-    "name": "@vonage/cli"
+    "name": "@vonage/cli",
+    "dependencies": {
+        "@vonage/cli": "file:packages/cli"
+    }
 }

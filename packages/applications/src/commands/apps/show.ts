@@ -1,4 +1,4 @@
-import { AppCommand } from '@vonage/cli-utils';
+import AppCommand from '../../app_base';
 import { prompt } from 'prompts'
 import { OutputFlags } from '@oclif/parser';
 

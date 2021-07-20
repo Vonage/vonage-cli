@@ -1,5 +1,5 @@
 import { flags } from '@oclif/parser';
-import { AppCommand } from '@vonage/cli-utils';
+import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
 
 interface LinkFlags {

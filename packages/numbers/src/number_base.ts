@@ -1,4 +1,4 @@
-import BaseCommand from './command';
+import BaseCommand from '@vonage/cli-utils';
 
 export default abstract class NumberCommand extends BaseCommand {
 

@@ -1,4 +1,4 @@
-import { NumberCommand } from '@vonage/cli-utils';
+import NumberCommand from '../../number_base';
 import { OutputFlags } from '@oclif/parser';
 
 import cli from 'cli-ux'

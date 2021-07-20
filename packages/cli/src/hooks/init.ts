@@ -25,7 +25,7 @@ async function writeFile(filePath: any, data: any) {
         exist = await isExists(filePath);
         if (!exist) {
 
-            await fs.writeFile(filePath, JSON.stringify({ apiKey: '', apiSecret: '' }, null, 2), 'utf8');
+            await fs.writeFile(filePath, JSON.stringify({ apiKey: '', apiSecret: '', appId: '', privateKey: '' }, null, 2), 'utf8');
         }
 
     } catch (err) {

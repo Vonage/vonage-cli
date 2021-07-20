@@ -1,4 +1,4 @@
-import BaseCommand from './command';
+import BaseCommand from '@vonage/cli-utils';
 
 export default abstract class BalanceCommand extends BaseCommand {
     static flags = {
@@ -12,7 +12,7 @@ export default abstract class BalanceCommand extends BaseCommand {
     displayBalance(): any {
         return new Promise((res, rej) => {
             this.vonage.account.checkBalance((error: any, response: any) => {
-                if(error) {
+                if (error) {
                     rej(error);
                 } else {
                     res(response);

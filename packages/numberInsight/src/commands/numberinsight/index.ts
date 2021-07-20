@@ -1,4 +1,4 @@
-import { NumberInsightCommand } from '@vonage/cli-utils';
+import NumberInsightCommand from '../../numberinsight_base';
 import { OutputFlags, OutputArgs, flags } from '@oclif/parser';
 import { startCase, toLower } from 'lodash';
 import { prompt } from 'prompts'
