@@ -15,7 +15,7 @@ function notBasic(level) {
 }
 
 export default class NumberInsight extends NumberInsightCommand {
-  static description = 'manage your Vonage numbers'
+  static description = 'get details about a phon number'
 
   static examples = [
     `$ vonage numberinsight 5555555555
