@@ -1,0 +1,52 @@
+{
+    "name": "@vonage/cli-plugin-conversations",
+    "version": "1.0.0-beta.5",
+    "author": "Vonage Dev Rel <devrel@vonage.com>",
+    "homepage": "https://github.com/vonage/vonage-cli",
+    "license": "MIT",
+    "bugs": "https://github.com/Vonage/vonage-cli/issues",
+    "dependencies": {
+        "@oclif/command": "^1.8.0",
+        "@oclif/config": "^1.17.0",
+        "@oclif/parser": "^3.8.5",
+        "@types/inquirer": "^7.3.1",
+        "@vonage/cli-utils": "^1.0.0-beta.5",
+        "chalk": "^2.4.2",
+        "lodash": "^4.17.20",
+        "prompts": "^2.4.0",
+        "tslib": "^2.1.0"
+    },
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "files": [
+        "/dist",
+        "/bin",
+        "/npm-shrinkwrap.json",
+        "/node_modules",
+        "/oclif.manifest.json"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Vonage/vonage-cli.git"
+    },
+    "keywords": [
+        "oclif-plugin"
+    ],
+    "oclif": {
+        "commands": "./dist/commands",
+        "bin": "oclif-example",
+        "devPlugins": [
+            "@oclif/plugin-help"
+        ]
+    },
+    "scripts": {
+        "postpack": "rm -f oclif.manifest.json",
+        "posttest": "eslint . --ext .ts --config .eslintrc",
+        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
+        "test": "../../node_modules/.bin/jest test",
+        "test-watch": "../../node_modules/.bin/jest test --watch",
+        "version": "oclif-dev readme && git add README.md",
+        "build": "rm -rf ./dist && tsc -b"
+    }
+}
