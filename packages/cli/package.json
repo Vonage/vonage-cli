@@ -59,7 +59,19 @@
             "auth": {
                 "hidden": true
             },
-            "app": {
+            "apps": {
+                "hidden": true
+            },
+            "apps:conversations": {
+                "hidden": true
+            },
+            "apps:users": {
+                "hidden": true
+            },
+            "apps:conversations:members": {
+                "hidden": true
+            },
+            "apps:users:conversations": {
                 "hidden": true
             },
             "account": {
@@ -71,10 +83,7 @@
             "config": {
                 "hidden": true
             },
-            "number": {
-                "hidden": true
-            },
-            "secrets": {
+            "numbers": {
                 "hidden": true
             },
             "plugins": {
