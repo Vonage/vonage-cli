@@ -1,5 +1,6 @@
 import { OutputFlags } from '@oclif/parser';
 import UserCommand from '../../../users_base';
+import chalk from 'chalk';
 
 export default class UsersDelete extends UserCommand {
     static description = ""
@@ -11,11 +12,16 @@ export default class UsersDelete extends UserCommand {
         ...UserCommand.flags
     }
 
+    static args = [
+        { name: 'userID', required: false },
+    ]
+
     async run() {
-        this.deleteUser();
+        const flags = this.parsedFlags
+        const args = this.parsedArgs!;
+
+        let response = await this.deleteUser(args.userID);
+
+        this.log(`User ${chalk.bold(args.userID)} deleted.`)
     }
 }
-
-// requires id
-
-// response 204
