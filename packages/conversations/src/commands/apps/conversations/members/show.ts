@@ -11,8 +11,19 @@ export default class ConversationMemberShow extends ConversationCommand {
         ...ConversationCommand.flags
     }
 
+    static args = [
+        ...ConversationCommand.args,
+        { name: 'conversationID', required: false },
+        { name: 'memberID', required: false }
+    ]
+
     async run() {
-        this.getMemberById();
+        const flags = this.parsedFlags
+        const args = this.parsedArgs!;
+
+        let response = this.getMemberById({ ...args, ...flags });
+
+        this.log(response);
     }
 }
 

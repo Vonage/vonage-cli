@@ -11,8 +11,19 @@ export default class ConversationMemberAdd extends ConversationCommand {
         ...ConversationCommand.flags
     }
 
+    static args = [
+        ...ConversationCommand.args,
+        { name: 'conversationID', required: false },
+        { name: 'memberID', required: false }
+    ]
+
     async run() {
-        this.addMemberToConversation();
+        const flags = this.parsedFlags
+        const args = this.parsedArgs!;
+
+        let response = this.addMemberToConversation({ ...args, ...flags });
+
+        this.log(response);
     }
 }
 // requires convo id

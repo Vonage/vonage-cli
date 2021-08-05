@@ -11,8 +11,19 @@ export default class ConversationMemberRemove extends ConversationCommand {
         ...ConversationCommand.flags
     }
 
+    static args = [
+        ...ConversationCommand.args,
+        { name: 'conversationID', required: false },
+        { name: 'memberID', required: false }
+    ]
+
     async run() {
-        this.removeMemberFromConversation();
+        const flags = this.parsedFlags
+        const args = this.parsedArgs!;
+
+        let response = this.removeMemberFromConversation({ ...args, ...flags });
+
+        this.log(response);
     }
 }
 
