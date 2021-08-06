@@ -23,22 +23,22 @@ export default class ConversationMemberRemove extends ConversationCommand {
 
         let response = this.removeMemberFromConversation({ ...args, ...flags });
 
-        this.log(response);
+        this.log(`Member ID ${args.memberID} was removed from ${args.conversationID}`);
     }
 }
 
 // response 
-// {
-//     "state": "joined",
-//     "channel": {
-//       "type": "phone",
-//       "leg_id": "a595959595959595995",
-//       "from": "string",
-//       "to": "string",
-//       "leg_ids": [
-//         {
-//           "leg_id": "a595959595959595995"
-//         }
-//       ]
-//     }
-//   }
+const apiresponse = {
+    "state": "joined",
+    "channel": {
+        "type": "phone",
+        "leg_id": "a595959595959595995",
+        "from": "string",
+        "to": "string",
+        "leg_ids": [
+            {
+                "leg_id": "a595959595959595995"
+            }
+        ]
+    }
+}

@@ -17,18 +17,18 @@ export default abstract class ConversationsCommand extends BaseCommand {
         return;
     }
 
-    getAllConversations(opts): any { return opts }
-    createConversation(opts): any { return opts }
-    getConversationById(id): any { return id }
-    updateConversation(opts): any { return opts }
-    deleteConversation(id): any { return id }
+    getAllConversations(opts): Promise<any> { return opts }
+    createConversation(opts): Promise<any> { return opts }
+    getConversationById(id): Promise<any> { return id }
+    updateConversation(opts): Promise<any> { return opts }
+    deleteConversation(id): Promise<any> { return id }
 
-    getConversationsByUser(opts): any { return opts }
+    getConversationsByUser(opts): Promise<any> { return opts }
 
-    getAllMembersInConversation(opts): any { return opts }
-    getMemberById(id): any { return id }
-    addMemberToConversation(opts): any { return opts }
-    removeMemberFromConversation(opts): any { return opts }
+    getAllMembersInConversation(opts): Promise<any> { return opts }
+    getMemberById(id): Promise<any> { return id }
+    addMemberToConversation(opts): Promise<any> { return opts }
+    removeMemberFromConversation(opts): Promise<any> { return opts }
 }
 
 
