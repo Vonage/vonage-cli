@@ -117,6 +117,7 @@ export default abstract class BaseCommand extends Command {
 
         this._apiKey = apiKey;
         this._apiSecret = apiSecret;
+        return super.init()
     }
 
 
