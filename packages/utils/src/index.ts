@@ -7,7 +7,9 @@ import * as path from 'path';
 
 interface UserConfig {
     apiKey: string,
-    apiSecret: string
+    apiSecret: string,
+    appId: string,
+    keyFile: string
 }
 
 
@@ -40,7 +42,8 @@ export default abstract class BaseCommand extends Command {
     protected Vonage!: any;
     protected _apiKey!: any;
     protected _apiSecret!: any
-
+    protected _appId!: any
+    protected _keyFile!: any
     protected _userConfig!: UserConfig
 
     protected parsedArgs?: OutputArgs<any>;
@@ -55,6 +58,8 @@ export default abstract class BaseCommand extends Command {
         help: flags.help({ char: 'h' }),
         apiKey: flags.string({ hidden: true, dependsOn: ['apiSecret'] }),
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] }),
+        appId: flags.string({ hidden: true, dependsOn: ['keyFile'] }),
+        keyFile: flags.string({ hidden: true, dependsOn: ['appId'] }),
         trace: flags.boolean({ hidden: true })
     }
 
@@ -80,42 +85,47 @@ export default abstract class BaseCommand extends Command {
         return;
     }
 
-    // generateJwt(private_key: string, claims: IClaims): string {
-    //     // this.Vonage = Vonage
-    //     console.log(this.Vonage.generateJwt)
-    //     return 'test'
-    //     // return this.Vonage.generateJwt(private_key, claims);
-    // }
-
     async init(): Promise<void> {
         const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
 
-        this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, trace: flags.trace };
+        this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
         this.parsedArgs = args;
         this.parsedFlags = flags;
         this.Vonage = Vonage;
+
         //this removes the global flags from the command, so checking for interactive mode is possible.
         delete this.parsedFlags.apiKey
         delete this.parsedFlags.apiSecret
+        delete this.parsedFlags.appId
+        delete this.parsedFlags.keyFile
         delete this.parsedFlags.trace
 
         this._userConfig = await fs.readJSON(path.join(this.config.configDir, 'vonage.config.json'))
-        let apiKey, apiSecret;
+        let apiKey, apiSecret, appId, keyFile;
 
         // creds priority order -- flags > env > config
+        // todo - need a better interface for this
         if (flags?.apiKey && flags?.apiSecret) {
             apiKey = flags.apiKey;
             apiSecret = flags.apiSecret;
+            appId = flags.appId;
+            keyFile = flags.keyFile;
         } else if (process.env.VONAGE_API_KEY && process.env.VONAGE_API_SECRET) {
             apiKey = process.env.VONAGE_API_KEY;
             apiSecret = process.env.VONAGE_API_SECRET;
+            appId = process.env.VONAGE_APP_ID;
+            keyFile = process.env.VONAGE_PRIVATE_KEY;
         } else {
             apiKey = this._userConfig.apiKey;
             apiSecret = this._userConfig.apiSecret;
+            appId = this._userConfig.appId;
+            keyFile = this._userConfig.keyFile;
         }
 
         this._apiKey = apiKey;
         this._apiSecret = apiSecret;
+        this._appId = appId;
+        this._keyFile = keyFile;
     }
 
 
@@ -129,7 +139,6 @@ export default abstract class BaseCommand extends Command {
                     code: 'API_AUTH_ERR',
                     suggestions: [
                         'Check your config credentials are correct - vonage config',
-                        'Set your credentials - vonage config:set --apiKey=123 --apiSecret=ABC'
                     ]
                 }
             )
