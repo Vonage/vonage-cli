@@ -21,9 +21,11 @@ export default class ConversationDelete extends ConversationCommand {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
+        // validate proper response
         let response = await this.deleteConversation(args.conversationID);
-
-        this.log(`Conversation ${chalk.bold(args.conversationID)} deleted.`)
+        if (response.status === 204) {
+            this.log(`Conversation ${chalk.bold(args.conversationID)} deleted.`)
+        }
 
     }
 }

@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import ConversationCommand from '../../../conversations_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 interface UpdateFlags {
     name: any
@@ -33,23 +34,18 @@ export default class UserConversations extends ConversationCommand {
     async run() {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
+        let update = await this.updateConversation({ ...args, ...flags });
+        let response = await this.getConversationById(args.conversationID) as VetchResponse;
 
-
-        let response = await this.updateConversation({ ...args, ...flags });
-
-        this.log(chalk.magenta.underline.bold("User ID:"), apiresponse.id)
+        this.log(chalk.magenta.underline.bold("Conversation ID:"), response.data.id)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Name:"), apiresponse.name, `(${apiresponse.display_name})`)
+        this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name || ""})`)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), apiresponse.image_url)
+        this.log(chalk.magenta.underline.bold("Image Url:"), response.data.image_url || "None")
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), apiresponse.image_url)
+        this.log(chalk.magenta.underline.bold("State:"), response.data.state || "None")
         this.log('')
-        this.log(chalk.magenta.underline.bold("State:"), apiresponse.state)
-        this.log('')
-        this.log(chalk.magenta.underline.bold("Created:"), apiresponse.timestamp.created) // use moment here
-        this.log('')
-        this.log(chalk.magenta.underline.bold("TTL:"), apiresponse.properties.ttl, `(minutes remaining)`) // use moment here to get time remaining if > 0
+        this.log(chalk.magenta.underline.bold("Created:"), response.data.timestamp.created) // use moment here
         this.log('')
     }
 }

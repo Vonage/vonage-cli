@@ -34,12 +34,11 @@ export default class ConversationCreate extends ConversationCommand {
         const args = this.parsedArgs!;
 
 
-        cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
+        cli.action.start(chalk.bold('Creating Conversation'), 'Initializing', { stdout: true })
 
         let response = await this.createConversation({ ...flags, ...args });
 
         cli.action.stop()
-
 
         this.log(chalk.magenta.underline.bold("User ID:"), apiresponse.id)
         this.log('')

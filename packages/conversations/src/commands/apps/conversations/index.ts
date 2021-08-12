@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import ConversationCommand from '../../../conversations_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 interface IndexFlags {
     date_start: any
@@ -20,11 +21,11 @@ export default class ConversationDefault extends ConversationCommand {
 
     static flags: OutputFlags<typeof ConversationCommand.flags> & IndexFlags = {
         ...ConversationCommand.flags,
-        'date_start': flags.string({ description: '' }), // make defaults
-        'date_end': flags.string({ description: '' }),
-        'page_size': flags.string({ description: '' }),
-        'order': flags.string({ description: '' }),
-        'cursor': flags.string({ description: '' }),
+        'date_start': flags.string({ description: '', hidden: true }), // make defaults
+        'date_end': flags.string({ description: '', hidden: true }),
+        'page_size': flags.string({ description: '', hidden: true }),
+        'order': flags.string({ description: '', hidden: true }),
+        'cursor': flags.string({ description: '', hidden: true }),
         ...cli.table.flags({
             except: ['columns', 'no-truncate', 'csv', 'extended', 'no-header']
         })
@@ -36,15 +37,13 @@ export default class ConversationDefault extends ConversationCommand {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
-        let response = await this.getAllConversations(flags);
+        let response = await this.getAllConversations(flags) as VetchResponse;
 
-        let conversationsList = apiresponse._embedded.conversations;
+        let conversationsList = response.data?._embedded.conversations;
 
         cli.table(conversationsList, {
             id: {},
             name: {},
-            display_name: {},
-            image_url: {}
         }, {
             ...flags
         })
