@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 interface CreateFlags {
     display_name: any
@@ -34,15 +35,15 @@ export default class UsersCreate extends UserCommand {
 
         cli.action.start(chalk.bold('Creating User'), 'Initializing', { stdout: true })
 
-        let response = await this.createUser({ ...flags, ...args });
+        let response = await this.createUser({ ...flags, ...args }) as VetchResponse;
 
         cli.action.stop()
 
-        this.log(chalk.magenta.underline.bold("User ID:"), apiresponse.id)
+        this.log(chalk.magenta.underline.bold("User ID:"), response.data.id)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Name:"), apiresponse.name, `(${apiresponse.display_name})`)
+        this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name || ""})`)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), apiresponse.image_url)
+        this.log(chalk.magenta.underline.bold("Image Url:"), response.data.image_url || "None")
         this.log('')
 
     }

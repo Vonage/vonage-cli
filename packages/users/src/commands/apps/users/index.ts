@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 interface IndexFlags {
     page_size: any
@@ -19,12 +20,9 @@ export default class UsersDefault extends UserCommand {
 
     static flags: OutputFlags<typeof UserCommand.flags> & IndexFlags = {
         ...UserCommand.flags,
-        'page_size': flags.string({ description: '' }),
-        'order': flags.string({ description: '' }),
-        'cursor': flags.string({ description: '' }),
-        ...cli.table.flags({
-            except: ['columns', 'no-truncate', 'csv']
-        })
+        'page_size': flags.string({ description: '', hidden: true }),
+        'order': flags.string({ description: '', hidden: true }),
+        'cursor': flags.string({ description: '', hidden: true }),
     }
 
     static args = []
@@ -32,15 +30,12 @@ export default class UsersDefault extends UserCommand {
     async run() {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
-        let response = await this.getAllUsers(flags);
-        let userData = apiresponse._embedded.users;
+        let response = await this.getAllUsers(flags) as VetchResponse;
+        let userData = response.data._embedded.users;
 
         cli.table(userData, {
             id: {},
-            name: {
-                header: "Name"
-            },
-            display_name: { header: "Display Name" }
+            name: {}
         }, {
             ...flags
         });

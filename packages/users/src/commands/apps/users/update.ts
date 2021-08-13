@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 interface UpdateFlags {
     name: any
@@ -33,13 +34,13 @@ export default class UsersUpdate extends UserCommand {
         const args = this.parsedArgs!;
 
 
-        let response = await this.updateUser({ ...args, ...flags });
+        let response = await this.updateUser({ ...args, ...flags }) as VetchResponse;
 
         this.log(chalk.magenta.underline.bold("User ID:"), args.id)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Name:"), apiresponse.name, `(${apiresponse.display_name})`)
+        this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name})`)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), apiresponse.image_url)
+        this.log(chalk.magenta.underline.bold("Image Url:"), response.data.image_url)
         this.log('')
     }
 }

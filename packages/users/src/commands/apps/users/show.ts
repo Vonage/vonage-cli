@@ -2,6 +2,7 @@ import { OutputFlags } from '@oclif/parser';
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
+import { VetchResponse } from '../../../types';
 
 export default class UsersShow extends UserCommand {
     static description = ""
@@ -21,13 +22,13 @@ export default class UsersShow extends UserCommand {
     async run() {
         const args = this.parsedArgs!;
 
-        let response = await this.getUserById(args.userID);
+        let response = await this.getUserById(args.userID) as VetchResponse;
 
-        this.log(chalk.magenta.underline.bold("User ID:"), apiresponse.id)
+        this.log(chalk.magenta.underline.bold("User ID:"), response.data.id)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Name:"), apiresponse.name, `(${apiresponse.display_name})`)
+        this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name || ""})`)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), apiresponse.image_url)
+        this.log(chalk.magenta.underline.bold("Image Url:"), response.data.image_url || "None")
         this.log('')
     }
 }

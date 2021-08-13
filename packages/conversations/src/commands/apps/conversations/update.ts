@@ -1,9 +1,7 @@
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import ConversationCommand from '../../../conversations_base';
-import cli from 'cli-ux';
 import chalk from 'chalk';
-import { VetchResponse } from '../../../types';
 
 interface UpdateFlags {
     name: any
@@ -13,7 +11,7 @@ interface UpdateFlags {
 }
 
 export default class UserConversations extends ConversationCommand {
-    static description = ""
+    static description = "Modify a conversation"
 
     static examples = [
     ]
@@ -35,7 +33,7 @@ export default class UserConversations extends ConversationCommand {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
         let update = await this.updateConversation({ ...args, ...flags });
-        let response = await this.getConversationById(args.conversationID) as VetchResponse;
+        let response = await this.getConversationById(args.conversationID);
 
         this.log(chalk.magenta.underline.bold("Conversation ID:"), response.data.id)
         this.log('')
@@ -47,28 +45,5 @@ export default class UserConversations extends ConversationCommand {
         this.log('')
         this.log(chalk.magenta.underline.bold("Created:"), response.data.timestamp.created) // use moment here
         this.log('')
-    }
-}
-
-// response
-
-const apiresponse = {
-    "id": "CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a",
-    "name": "customer_chat",
-    "display_name": "Customer Chat",
-    "image_url": "https://example.com/image.png",
-    "state": "ACTIVE",
-    "sequence_number": 0,
-    "timestamp": {
-        "created": "2019-09-03T18:40:24.324Z"
-    },
-    "properties": {
-        "ttl": 60
-    },
-    "numbers": {},
-    "_links": {
-        "self": {
-            "href": "https://api.nexmo.com/v0.3/conversations/CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a"
-        }
     }
 }

@@ -8,7 +8,6 @@ import { HTTPMethods, ResponseTypes } from './types';
 
 export default abstract class ConversationsCommand extends BaseCommand {
     protected _token!: string
-
     protected _baseurl = `https://api.nexmo.com/v0.3/conversations`;
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
@@ -81,7 +80,6 @@ export default abstract class ConversationsCommand extends BaseCommand {
         } catch (error) {
             console.dir(error, { depth: 8 })
         }
-
     }
 
     async deleteConversation(id) {
@@ -93,11 +91,62 @@ export default abstract class ConversationsCommand extends BaseCommand {
         return response
     }
 
+    async getAllMembersInConversation(params) {
+        const opts = merge({}, this._defaultHttpOptions)
+        opts['url'] = `${this._baseurl}/${params.conversationID}/members`;
+        opts['headers']['Authorization'] = `Bearer ${this._token}`
+        let response = await request(opts);
+        return response;
+    }
+
+    async getMemberById(params) {
+        const opts = merge({}, this._defaultHttpOptions)
+        opts['url'] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
+        opts['method'] = HTTPMethods.GET;
+        opts['headers']['Authorization'] = `Bearer ${this._token}`
+        let response = await request(opts);
+        return response
+    }
+
+    async addMemberToConversation(params) {
+        let data = {
+            "state": "joined",
+            "user": {
+                "id": params.userID,
+            },
+            "channel": {
+                "type": "app",
+            },
+        }
+
+        const opts = merge({}, this._defaultHttpOptions)
+        opts['url'] = `${this._baseurl}/${params.conversationID}/members`;
+        opts['method'] = HTTPMethods.POST;
+        opts['data'] = data;
+        opts['headers']['Authorization'] = `Bearer ${this._token}`
+        try {
+            let response = await request(opts);
+            console.log(response)
+            return response
+        } catch (error) {
+            console.dir(error, { depth: 8 })
+        }
+
+    }
+
+    async removeMemberFromConversation(params) {
+        const opts = merge({}, this._defaultHttpOptions)
+        opts['url'] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
+        opts['method'] = HTTPMethods.DELETE;
+        opts['headers']['Authorization'] = `Bearer ${this._token}`
+        try {
+            let response = await request(opts);
+            return response
+        } catch (error) {
+            console.dir(error, { depth: 8 })
+        }
+
+    }
 
     getConversationsByUser(opts): Promise<any> { return opts }
-
-    getAllMembersInConversation(opts): Promise<any> { return opts }
-    getMemberById(id): Promise<any> { return id }
-    addMemberToConversation(opts): Promise<any> { return opts }
-    removeMemberFromConversation(opts): Promise<any> { return opts }
 }

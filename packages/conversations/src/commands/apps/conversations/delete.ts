@@ -1,10 +1,9 @@
 import { OutputFlags } from '@oclif/parser';
 import ConversationCommand from '../../../conversations_base';
-import cli from 'cli-ux';
 import chalk from 'chalk';
 
 export default class ConversationDelete extends ConversationCommand {
-    static description = ""
+    static description = "Delete a conversation"
 
     static examples = [
     ]
