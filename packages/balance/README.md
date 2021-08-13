@@ -6,29 +6,47 @@
 [![License](https://img.shields.io/npm/l/@vonage/cli-plugin-balance.svg)](https://github.com/Vonage/vonage-cli/blob/master/balances/balance/balance.json)
 
 <!-- toc -->
-
--   [Usage](#usage)
--   [Commands](#commands)
+* [@vonage/cli-plugin-balance](#vonagecli-plugin-balance)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
-$ vonage plugin:install @vonage/cli-plugin-balance
+$ npm install -g @vonage/cli-plugin-balance
+$ oclif-example COMMAND
+running command...
+$ oclif-example (-v|--version|version)
+@vonage/cli-plugin-balance/1.0.0-beta.6 linux-x64 node-v12.18.2
+$ oclif-example --help [COMMAND]
+USAGE
+  $ oclif-example COMMAND
+...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
+* [`oclif-example balance`](#oclif-example-balance)
 
-## `vonage <<COMMANDS>>`
+## `oclif-example balance`
 
-describe the command here
+display your Vonage account balance
 
-_See code: [src/commands/index.ts](https://github.com/Vonage/cli-plugin-auth/blob/v0.0.0/src/commands/hello.ts)_
+```
+USAGE
+  $ oclif-example balance
 
+OPTIONS
+  -h, --help  show CLI help
+
+EXAMPLE
+  $vonage balance
+  Displays your current balance in Euros
+```
+
+_See code: [dist/commands/balance/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/balance/index.js)_
 <!-- commandsstop -->

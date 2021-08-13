@@ -6,29 +6,155 @@
 [![License](https://img.shields.io/npm/l/@vonage/cli-plugin-conversations.svg)](https://github.com/Vonage/vonage-cli/blob/master/conversationss/conversations/conversations.json)
 
 <!-- toc -->
-
--   [Usage](#usage)
--   [Commands](#commands)
+* [@vonage/cli-plugin-conversations](#vonagecli-plugin-conversations)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
-$ vonage plugin:install @vonage/cli-plugin-conversations
+$ npm install -g @vonage/cli-plugin-conversations
+$ oclif-example COMMAND
+running command...
+$ oclif-example (-v|--version|version)
+@vonage/cli-plugin-conversations/1.0.0-beta.6 linux-x64 node-v12.18.2
+$ oclif-example --help [COMMAND]
+USAGE
+  $ oclif-example COMMAND
+...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
+* [`oclif-example apps:conversations`](#oclif-example-appsconversations)
+* [`oclif-example apps:conversations:create [NAME]`](#oclif-example-appsconversationscreate-name)
+* [`oclif-example apps:conversations:delete [CONVERSATIONID]`](#oclif-example-appsconversationsdelete-conversationid)
+* [`oclif-example apps:conversations:members [CONVERSATIONID]`](#oclif-example-appsconversationsmembers-conversationid)
+* [`oclif-example apps:conversations:members:add [CONVERSATIONID] [USERID]`](#oclif-example-appsconversationsmembersadd-conversationid-userid)
+* [`oclif-example apps:conversations:members:show [CONVERSATIONID] [MEMBERID]`](#oclif-example-appsconversationsmembersshow-conversationid-memberid)
+* [`oclif-example apps:conversations:show [CONVERSATIONID]`](#oclif-example-appsconversationsshow-conversationid)
+* [`oclif-example apps:conversations:update [CONVERSATIONID]`](#oclif-example-appsconversationsupdate-conversationid)
 
-## `vonage <<COMMANDS>>`
+## `oclif-example apps:conversations`
 
-describe the command here
+Show all conversations
 
-_See code: [src/commands/index.ts](https://github.com/Vonage/cli-plugin-auth/blob/v0.0.0/src/commands/hello.ts)_
+```
+USAGE
+  $ oclif-example apps:conversations
 
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/index.js)_
+
+## `oclif-example apps:conversations:create [NAME]`
+
+Create conversations
+
+```
+USAGE
+  $ oclif-example apps:conversations:create [NAME]
+
+OPTIONS
+  -h, --help                   show CLI help
+  --display_name=display_name
+  --image_url=image_url
+  --ttl=ttl
+```
+
+_See code: [dist/commands/apps/conversations/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/create.js)_
+
+## `oclif-example apps:conversations:delete [CONVERSATIONID]`
+
+Delete a conversation
+
+```
+USAGE
+  $ oclif-example apps:conversations:delete [CONVERSATIONID]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/delete.js)_
+
+## `oclif-example apps:conversations:members [CONVERSATIONID]`
+
+View all members in a conversation
+
+```
+USAGE
+  $ oclif-example apps:conversations:members [CONVERSATIONID]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/members/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/members/index.js)_
+
+## `oclif-example apps:conversations:members:add [CONVERSATIONID] [USERID]`
+
+Add user to conversation
+
+```
+USAGE
+  $ oclif-example apps:conversations:members:add [CONVERSATIONID] [USERID]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/members/add.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/members/add.js)_
+
+## `oclif-example apps:conversations:members:show [CONVERSATIONID] [MEMBERID]`
+
+Show specific member
+
+```
+USAGE
+  $ oclif-example apps:conversations:members:show [CONVERSATIONID] [MEMBERID]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/members/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/members/show.js)_
+
+## `oclif-example apps:conversations:show [CONVERSATIONID]`
+
+Show conversation details
+
+```
+USAGE
+  $ oclif-example apps:conversations:show [CONVERSATIONID]
+
+OPTIONS
+  -h, --help  show CLI help
+```
+
+_See code: [dist/commands/apps/conversations/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/show.js)_
+
+## `oclif-example apps:conversations:update [CONVERSATIONID]`
+
+Modify a conversation
+
+```
+USAGE
+  $ oclif-example apps:conversations:update [CONVERSATIONID]
+
+OPTIONS
+  -h, --help                   show CLI help
+  --display_name=display_name
+  --image_url=image_url
+  --name=name
+  --ttl=ttl
+```
+
+_See code: [dist/commands/apps/conversations/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/conversations/update.js)_
 <!-- commandsstop -->

@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-beta.5 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-beta.6 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -27,21 +27,21 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example app`](#oclif-example-app)
-* [`oclif-example app:create [NAME]`](#oclif-example-appcreate-name)
-* [`oclif-example app:delete [APPID]`](#oclif-example-appdelete-appid)
-* [`oclif-example app:link [APPID]`](#oclif-example-applink-appid)
-* [`oclif-example app:show [APPID]`](#oclif-example-appshow-appid)
-* [`oclif-example app:unlink`](#oclif-example-appunlink)
-* [`oclif-example app:update [APPID]`](#oclif-example-appupdate-appid)
+* [`oclif-example apps`](#oclif-example-apps)
+* [`oclif-example apps:create [NAME]`](#oclif-example-appscreate-name)
+* [`oclif-example apps:delete [APPID]`](#oclif-example-appsdelete-appid)
+* [`oclif-example apps:link [APPID]`](#oclif-example-appslink-appid)
+* [`oclif-example apps:show [APPID]`](#oclif-example-appsshow-appid)
+* [`oclif-example apps:unlink`](#oclif-example-appsunlink)
+* [`oclif-example apps:update [APPID]`](#oclif-example-appsupdate-appid)
 
-## `oclif-example app`
+## `oclif-example apps`
 
 manage your Vonage applications
 
 ```
 USAGE
-  $ oclif-example app
+  $ oclif-example apps
 
 OPTIONS
   -h, --help              show CLI help
@@ -54,15 +54,15 @@ EXAMPLES
   vonage app --output=json
 ```
 
-_See code: [dist/commands/app/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/index.js)_
+_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/index.js)_
 
-## `oclif-example app:create [NAME]`
+## `oclif-example apps:create [NAME]`
 
 create a new Vonage application
 
 ```
 USAGE
-  $ oclif-example app:create [NAME]
+  $ oclif-example apps:create [NAME]
 
 OPTIONS
   -h, --help                                   show CLI help
@@ -81,15 +81,15 @@ EXAMPLES
   vonage app:create APP_NAME --voice_answer_url=https://www.sample.com
 ```
 
-_See code: [dist/commands/app/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/create.js)_
+_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/create.js)_
 
-## `oclif-example app:delete [APPID]`
+## `oclif-example apps:delete [APPID]`
 
 delete a Vonage application
 
 ```
 USAGE
-  $ oclif-example app:delete [APPID]
+  $ oclif-example apps:delete [APPID]
 
 OPTIONS
   -h, --help  show CLI help
@@ -99,59 +99,59 @@ EXAMPLES
   vonage app:delete
 ```
 
-_See code: [dist/commands/app/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/delete.js)_
+_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/delete.js)_
 
-## `oclif-example app:link [APPID]`
+## `oclif-example apps:link [APPID]`
 
 link numbers to Vonage application
 
 ```
 USAGE
-  $ oclif-example app:link [APPID]
+  $ oclif-example apps:link [APPID]
 
 OPTIONS
   -h, --help       show CLI help
   --number=number  Owned number to be assigned
 ```
 
-_See code: [dist/commands/app/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/link.js)_
+_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/link.js)_
 
-## `oclif-example app:show [APPID]`
+## `oclif-example apps:show [APPID]`
 
 show Vonage application details
 
 ```
 USAGE
-  $ oclif-example app:show [APPID]
+  $ oclif-example apps:show [APPID]
 
 OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/app/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/show.js)_
+_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/show.js)_
 
-## `oclif-example app:unlink`
+## `oclif-example apps:unlink`
 
 unlink numbers from Vonage application
 
 ```
 USAGE
-  $ oclif-example app:unlink
+  $ oclif-example apps:unlink
 
 OPTIONS
   -h, --help       show CLI help
   --number=number  Owned number to be unassigned
 ```
 
-_See code: [dist/commands/app/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/unlink.js)_
+_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/unlink.js)_
 
-## `oclif-example app:update [APPID]`
+## `oclif-example apps:update [APPID]`
 
 update a Vonage application
 
 ```
 USAGE
-  $ oclif-example app:update [APPID]
+  $ oclif-example apps:update [APPID]
 
 OPTIONS
   -h, --help                                   show CLI help
@@ -171,5 +171,5 @@ EXAMPLES
   vonage app:update APP_ID --voice_answer_url="https://www.example.com/answer
 ```
 
-_See code: [dist/commands/app/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.5/dist/commands/app/update.js)_
+_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.6/dist/commands/apps/update.js)_
 <!-- commandsstop -->
