@@ -20,6 +20,7 @@
         "@vonage/cli-plugin-numberinsight": "^1.0.0-beta.6",
         "@vonage/cli-plugin-numbers": "^1.0.0-beta.6",
         "@vonage/cli-utils": "^1.0.0-beta.6",
+        "cli-ux": "^5.6.3",
         "fs-extra": "^9.0.1",
         "lodash": "^4.17.20",
         "shelljs": "^0.8.4",
