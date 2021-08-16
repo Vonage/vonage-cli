@@ -79,7 +79,6 @@ export default abstract class ConversationsCommand extends BaseCommand {
         } catch (error) {
             console.dir(error, { depth: 8 })
         }
-
     }
 
     async deleteUser(id) {
