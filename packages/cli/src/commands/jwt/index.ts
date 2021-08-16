@@ -35,7 +35,7 @@ export default class GenerateJWT extends BaseCommand {
 
         const flags = this.parsedFlags as OutputFlags<typeof BaseCommand.flags> & GenerateJWTFlags
         let private_key = await fs.readFile(flags.key_file.replace(/(\s+)/g, '\\$1'));
-        let claims = { application_id: flags.app_id, ...flags?.subject, ...JSON.parse(flags.acl) }
+        let claims = { application_id: flags.app_id, sub: flags.subject, acl: JSON.parse(flags.acl) }
         let jwt = this.Vonage.generateJwt(private_key, claims)
 
         this.log(jwt)
