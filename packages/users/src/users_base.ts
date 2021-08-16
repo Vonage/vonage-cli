@@ -68,8 +68,8 @@ export default abstract class ConversationsCommand extends BaseCommand {
 
     async updateUser(params) {
         const opts = merge({}, this._defaultHttpOptions)
-        opts['url'] = `${this._baseurl}/${params.conversationID}`;
-        opts['method'] = HTTPMethods.PUT;
+        opts['url'] = `${this._baseurl}/${params.userID}`;
+        opts['method'] = HTTPMethods.PATCH;
         opts['data'] = params;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
         console.log(opts)
