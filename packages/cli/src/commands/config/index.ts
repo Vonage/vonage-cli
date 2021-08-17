@@ -7,7 +7,7 @@ export default class ConfigList extends BaseCommand {
     static examples = []
 
     async run() {
-        this.log("~~~User Conifg~~~")
+        this.log("~~~User Config~~~")
         cli.log(JSON.stringify(Object.assign({}, this.userConfig)))
     }
 
