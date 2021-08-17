@@ -1,8 +1,10 @@
 import { OutputFlags } from '@oclif/parser';
-import ConversationCommand from './conversations_base';
+import cli from 'cli-ux';
+import chalk from 'chalk';
+import ConversationCommand from '../../../../conversations_base';
 
 export default class ConversationMemberRemove extends ConversationCommand {
-    static description = ""
+    static description = "Remove a user from a conversation"
 
     static examples = [
     ]
@@ -21,8 +23,8 @@ export default class ConversationMemberRemove extends ConversationCommand {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
-        let response = this.removeMemberFromConversation({ ...args, ...flags });
+        let response = await this.removeMemberFromConversation(args);
 
-        this.log(`Member ID ${args.memberID} was removed from ${args.conversationID}`);
+        this.log(`Member ${chalk.bold(args.memberID)} removed from Conversation ${chalk.bold(args.conversationID)}.`)
     }
 }
