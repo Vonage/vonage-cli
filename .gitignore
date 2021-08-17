@@ -12,3 +12,4 @@ coverage.lcov
 temp
 **/dist
 *.log
+vonage_app.json
