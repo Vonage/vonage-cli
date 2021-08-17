@@ -1,7 +1,8 @@
 import BaseCommand from '@vonage/cli-utils';
+import { OutputFlags } from '@oclif/parser';
 
 export default abstract class BalanceCommand extends BaseCommand {
-    static flags = {
+    static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
     };
 

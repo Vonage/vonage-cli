@@ -16,8 +16,8 @@ export default class ConfigSet extends BaseCommand {
         'appId': flags.string({
             description: 'Default Application ID',
         }),
-        'privateKey': flags.string({
-            description: 'Default Application Private Key',
+        'keyFile': flags.string({
+            description: 'Default Application Private Key file location',
         })
     }
 
@@ -29,6 +29,7 @@ export default class ConfigSet extends BaseCommand {
         const flags = this.globalFlags
 
         //add start, stop process indicators
+        console.log(flags)
         this.saveConfig(merge({}, this.userConfig, flags))
         this.log('Configuration saved.')
     }
