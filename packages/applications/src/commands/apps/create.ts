@@ -209,7 +209,7 @@ export default class ApplicationsCreate extends AppCommand {
         writeFileSync(vonage_app_file_path, JSON.stringify({
             application_name: output.name,
             application_id: output.id,
-            private_key: `${output.keys.private_key}`
+            private_key: output.keys.private_key
         }, null, 2))
 
         writeFileSync(vonage_private_key_file_path, output.keys.private_key)

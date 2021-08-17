@@ -27,8 +27,7 @@ export default abstract class ConversationsCommand extends BaseCommand {
     private async _generateJWT() {
         let app_details_raw = readFileSync(`${process.cwd()}/vonage_app.json`);
         let app_details = (JSON.parse(app_details_raw.toString()));
-        // remove 
-        this._token = await tokenGenerate(app_details.applicationId, app_details.private_key)
+        this._token = await tokenGenerate(app_details.application_id, app_details.private_key)
         return;
     }
 
