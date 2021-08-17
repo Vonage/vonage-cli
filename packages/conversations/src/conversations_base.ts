@@ -2,7 +2,7 @@ import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
 import { tokenGenerate } from '@vonage/jwt';
 import { request } from '@vonage/vetch';
-import * as fs from 'fs-extra';
+import { readFileSync } from 'fs';
 import { merge } from 'lodash';
 import { HTTPMethods, ResponseTypes } from './types';
 
@@ -25,12 +25,10 @@ export default abstract class ConversationsCommand extends BaseCommand {
     }
 
     private async _generateJWT() {
-        if (!this._appId || !this._keyFile) {
-            this.error('Missing appId or private key');
-        }
-
-        let private_key = await fs.readFile(`${this._keyFile}`);
-        this._token = await tokenGenerate(this._appId, private_key)
+        let app_details_raw = readFileSync(`${process.cwd()}/vonage_app.json`);
+        let app_details = (JSON.parse(app_details_raw.toString()));
+        // remove 
+        this._token = await tokenGenerate(app_details.applicationId, app_details.private_key)
         return;
     }
 
@@ -73,13 +71,8 @@ export default abstract class ConversationsCommand extends BaseCommand {
         opts['method'] = HTTPMethods.PUT;
         opts['data'] = params;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
-        console.log(opts)
-        try {
-            let response = await request(opts);
-            return response
-        } catch (error) {
-            console.dir(error, { depth: 8 })
-        }
+        let response = await request(opts);
+        return response
     }
 
     async deleteConversation(id) {
@@ -124,14 +117,8 @@ export default abstract class ConversationsCommand extends BaseCommand {
         opts['method'] = HTTPMethods.POST;
         opts['data'] = data;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
-        try {
-            let response = await request(opts);
-            console.log(response)
-            return response
-        } catch (error) {
-            console.dir(error, { depth: 8 })
-        }
-
+        let response = await request(opts);
+        return response
     }
 
     async removeMemberFromConversation(params) {
@@ -139,13 +126,8 @@ export default abstract class ConversationsCommand extends BaseCommand {
         opts['url'] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
         opts['method'] = HTTPMethods.DELETE;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
-        try {
-            let response = await request(opts);
-            return response
-        } catch (error) {
-            console.dir(error, { depth: 8 })
-        }
-
+        let response = await request(opts);
+        return response
     }
 
     getConversationsByUser(opts): Promise<any> { return opts }

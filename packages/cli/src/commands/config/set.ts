@@ -12,12 +12,6 @@ export default class ConfigSet extends BaseCommand {
         }),
         'apiSecret': flags.string({
             description: 'Vonage API Key',
-        }),
-        'appId': flags.string({
-            description: 'Default Application ID',
-        }),
-        'keyFile': flags.string({
-            description: 'Default Application Private Key file location',
         })
     }
 
@@ -27,9 +21,7 @@ export default class ConfigSet extends BaseCommand {
 
     async run() {
         const flags = this.globalFlags
-
         //add start, stop process indicators
-        console.log(flags)
         this.saveConfig(merge({}, this.userConfig, flags))
         this.log('Configuration saved.')
     }

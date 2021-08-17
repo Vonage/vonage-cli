@@ -5,10 +5,10 @@ import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { merge } from 'lodash';
-import * as fs from 'fs';
+import { writeFileSync } from 'fs';
 import cli from 'cli-ux';
 import chalk from 'chalk';
-import ApplicationsShow from './show'
+
 
 const shortName = uniqueNamesGenerator({
     dictionaries: [adjectives, animals], // colors can be omitted here as not used
@@ -199,9 +199,21 @@ export default class ApplicationsCreate extends AppCommand {
 
         cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
 
-        // create application
+        // create application 
         let output = await this.createApplication(response)
-        fs.writeFileSync(`${process.cwd()}/${output.name}_private.key`, output.keys.private_key)
+
+        // write vonage.app file
+        let vonage_app_file_path = `${process.cwd()}/vonage_app.json`;
+        let vonage_private_key_file_path = `${process.cwd()}/${output.name}_private.key`;
+
+        writeFileSync(vonage_app_file_path, JSON.stringify({
+            application_name: output.name,
+            application_id: output.id,
+            private_key: `${output.keys.private_key}`
+        }, null, 2))
+
+        writeFileSync(vonage_private_key_file_path, output.keys.private_key)
+
         cli.action.stop()
 
 
@@ -264,8 +276,11 @@ export default class ApplicationsCreate extends AppCommand {
         this.log(output.keys.public_key)
         this.log('')
 
-        this.log(chalk.magenta.underline.bold("Private Key File"))
-        this.log(`${process.cwd()}/${output.name}_private.key`)
+
+        this.log(chalk.magenta.underline.bold("App File"))
+        this.log(chalk.bold('Vonage App File:'), vonage_app_file_path)
+        this.log('')
+        this.log(chalk.bold('Private Key File:'), vonage_private_key_file_path)
         this.log('')
 
         this.exit();

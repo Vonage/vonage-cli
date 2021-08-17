@@ -1,4 +1,3 @@
-import { mkdir } from 'fs-extra';
 import { prompt } from 'prompts';
 
 interface WebhookQuestions {

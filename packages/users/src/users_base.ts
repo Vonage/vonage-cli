@@ -2,7 +2,7 @@ import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
 import { tokenGenerate } from '@vonage/jwt';
 import { request } from '@vonage/vetch';
-import * as fs from 'fs-extra';
+import { readFileSync } from 'fs';
 import { merge } from 'lodash';
 import { HTTPMethods, ResponseTypes } from './types';
 
@@ -25,11 +25,14 @@ export default abstract class ConversationsCommand extends BaseCommand {
     }
 
     private async _generateJWT() {
+        let private_key_new = readFileSync(`${process.cwd()}/vonage_app.json`);
+        console.log(JSON.parse(private_key_new.toString()))
+
         if (!this._appId || !this._keyFile) {
             this.error('Missing appId or private key');
         }
 
-        let private_key = await fs.readFile(`${this._keyFile}`);
+        let private_key = readFileSync(`${this._keyFile}`);
         this._token = await tokenGenerate(this._appId, private_key)
         return;
     }

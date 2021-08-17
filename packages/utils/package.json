@@ -7,10 +7,9 @@
         "@oclif/command": "^1.8.0",
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
-        "@types/fs-extra": "^5.0.2",
+        "@types/node": "^16.6.1",
         "@vonage/server-sdk": "^2.10.7",
         "cli-ux": "^5.6.3",
-        "fs-extra": "^9.0.1",
         "tslib": "^2.1.0"
     },
     "engines": {

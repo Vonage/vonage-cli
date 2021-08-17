@@ -1,31 +1,30 @@
 import { Hook } from '@oclif/config'
-import * as fs from 'fs-extra'
+import { promises as fs } from 'fs'
+import { writeFileSync, constants } from 'fs'
 import * as path from 'path'
 import shell from 'shelljs';
 
 async function isExists(path: any) {
     try {
-        await fs.access(path);
+        let result = await fs.access(path, constants.F_OK);
         return true;
-    } catch {
+    } catch (error) {
         return false;
     }
 };
-
-// 
 
 async function writeFile(filePath: any, data: any) {
     try {
         const dirname = path.dirname(filePath);
         let exist = await isExists(dirname);
+
         if (!exist) {
             await shell.mkdir('-p', dirname);
         }
 
         exist = await isExists(filePath);
         if (!exist) {
-
-            await fs.writeFile(filePath, JSON.stringify({ apiKey: '', apiSecret: '', appId: '', privateKey: '' }, null, 2), 'utf8');
+            writeFileSync(filePath, JSON.stringify({ apiKey: '', apiSecret: '' }, null, 2), 'utf8');
         }
 
     } catch (err) {
@@ -35,7 +34,7 @@ async function writeFile(filePath: any, data: any) {
 
 const hook: Hook<'init'> = async function (options) {
     let name = path.join(this.config.configDir, 'vonage.config.json');
-    await writeFile(name, '');
+    writeFile(name, '');
     return;
 }
 

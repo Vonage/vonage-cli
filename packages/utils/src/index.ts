@@ -2,14 +2,12 @@ import { Command, flags } from '@oclif/command';
 import { Input, OutputArgs, OutputFlags } from '@oclif/parser';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
-import * as fs from 'fs-extra';
+import { readFileSync, writeFileSync } from 'fs';
 import * as path from 'path';
 
 interface UserConfig {
     apiKey: string,
-    apiSecret: string,
-    appId: string,
-    keyFile: string
+    apiSecret: string
 }
 
 
@@ -81,7 +79,7 @@ export default abstract class BaseCommand extends Command {
     }
 
     saveConfig(newConfig: UserConfig): void {
-        fs.writeFileSync(path.join(this.config.configDir, 'vonage.config.json'), JSON.stringify(newConfig));
+        writeFileSync(path.join(this.config.configDir, 'vonage.config.json'), JSON.stringify(newConfig));
         return;
     }
 
@@ -96,11 +94,11 @@ export default abstract class BaseCommand extends Command {
         //this removes the global flags from the command, so checking for interactive mode is possible.
         delete this.parsedFlags.apiKey
         delete this.parsedFlags.apiSecret
-        delete this.parsedFlags.appId
-        delete this.parsedFlags.keyFile
         delete this.parsedFlags.trace
 
-        this._userConfig = await fs.readJSON(path.join(this.config.configDir, 'vonage.config.json'))
+        let rawConfig = readFileSync(path.join(this.config.configDir, 'vonage.config.json'))
+
+        this._userConfig = JSON.parse(rawConfig.toString());
         let apiKey, apiSecret, appId, keyFile;
 
         // creds priority order -- flags > env > config
@@ -108,18 +106,17 @@ export default abstract class BaseCommand extends Command {
         if (flags?.apiKey && flags?.apiSecret) {
             apiKey = flags.apiKey;
             apiSecret = flags.apiSecret;
-            appId = flags.appId;
-            keyFile = flags.keyFile;
         } else if (process.env.VONAGE_API_KEY && process.env.VONAGE_API_SECRET) {
             apiKey = process.env.VONAGE_API_KEY;
             apiSecret = process.env.VONAGE_API_SECRET;
-            appId = process.env.VONAGE_APP_ID;
-            keyFile = process.env.VONAGE_PRIVATE_KEY;
         } else {
             apiKey = this._userConfig.apiKey;
             apiSecret = this._userConfig.apiSecret;
-            appId = this._userConfig.appId;
-            keyFile = this._userConfig.keyFile;
+        }
+
+        if (flags?.appId && flags?.keyFile) {
+            appId = flags.appId;
+            keyFile = flags.keyFile;
         }
 
         this._apiKey = apiKey;
