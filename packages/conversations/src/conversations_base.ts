@@ -9,6 +9,7 @@ import { HTTPMethods, ResponseTypes } from './types';
 export default abstract class ConversationsCommand extends BaseCommand {
     protected _token!: string
     protected _baseurl = `https://api.nexmo.com/v0.3/conversations`;
+    protected _userBaseurl = `https://api.nexmo.com/v0.3/users`;
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
@@ -134,5 +135,12 @@ export default abstract class ConversationsCommand extends BaseCommand {
         return response
     }
 
-    getConversationsByUser(opts): Promise<any> { return opts }
+    async getConversationsByUser(params) { 
+        const opts = merge({}, this._defaultHttpOptions);
+        opts['url'] = `${this._userBaseurl}/${params.userID}/conversations/`;
+        opts['method'] = HTTPMethods.GET;
+        opts['headers']['Authorization'] = `Bearer ${this._token}`
+        let response = await request(opts);
+        return response
+    }
 }

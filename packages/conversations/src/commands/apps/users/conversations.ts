@@ -1,6 +1,6 @@
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
-import ConversationCommand from '../conversations_base';
+import ConversationCommand from '../../../conversations_base';
 import cli from 'cli-ux';
 
 interface IndexFlags {
