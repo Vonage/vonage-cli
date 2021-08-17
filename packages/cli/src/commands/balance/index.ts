@@ -1,7 +1,6 @@
-import { OutputFlags } from '@oclif/parser';
-import BalanceCommand from '../../balance_base';
+import BaseCommand from '@vonage/cli-utils';
 
-export default class DisplayBalance extends BalanceCommand {
+export default class DisplayBalance extends BaseCommand {
     static description = "display your Vonage account balance"
 
     static examples = [
@@ -10,9 +9,6 @@ Displays your current balance in Euros
 `
     ]
 
-    static flags: OutputFlags<typeof BalanceCommand.flags> = {
-        ...BalanceCommand.flags
-    }
 
     async run() {
         let res = await this.displayBalance();

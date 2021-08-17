@@ -16,7 +16,6 @@
         "@types/node": "^16.6.1",
         "@types/shelljs": "^0.8.8",
         "@vonage/cli-plugin-applications": "^1.0.0-beta.8",
-        "@vonage/cli-plugin-balance": "^1.0.0-beta.8",
         "@vonage/cli-plugin-numberinsight": "^1.0.0-beta.8",
         "@vonage/cli-plugin-numbers": "^1.0.0-beta.8",
         "@vonage/cli-utils": "^1.0.0-beta.8",
@@ -48,7 +47,6 @@
             "@oclif/plugin-help",
             "@oclif/plugin-plugins",
             "@vonage/cli-plugin-applications",
-            "@vonage/cli-plugin-balance",
             "@vonage/cli-plugin-numbers",
             "@vonage/cli-plugin-numberinsight"
         ],
