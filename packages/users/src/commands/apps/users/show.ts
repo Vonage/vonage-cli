@@ -32,20 +32,3 @@ export default class UsersShow extends UserCommand {
         this.log('')
     }
 }
-
-// requires id
-const apiresponse: any = {
-    "id": "USR-82e028d9-5201-4f1e-8188-604b2d3471ec",
-    "name": "my_user_name",
-    "display_name": "My User Name",
-    "image_url": "https://example.com/image.png",
-    "properties": {
-        "custom_data": {}
-    },
-    "channels": {},
-    "_links": {
-        "self": {
-            "href": "https://api.nexmo.com/v0.3/users/USR-82e028d9-5201-4f1e-8188-604b2d3471ec"
-        }
-    }
-}

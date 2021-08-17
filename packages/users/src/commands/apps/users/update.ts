@@ -44,21 +44,3 @@ export default class UsersUpdate extends UserCommand {
         this.log('')
     }
 }
-
-// requires id
-const apiresponse = {
-    "name": "my_user_name",
-    "display_name": "My User Name",
-    "image_url": "https://example.com/image.png",
-    "channels": {
-        "type": "phone",
-        "leg_id": "a595959595959595995",
-        "from": "string",
-        "to": "string",
-        "leg_ids": [
-            {
-                "leg_id": "a595959595959595995"
-            }
-        ]
-    }
-}

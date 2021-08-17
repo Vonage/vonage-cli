@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { merge } from 'lodash';
 import { HTTPMethods, ResponseTypes } from './types';
 
-export default abstract class ConversationsCommand extends BaseCommand {
+export default abstract class UsersCommand extends BaseCommand {
     protected _token!: string
     protected _baseurl = `https://api.nexmo.com/v0.3/users`;
 
@@ -25,15 +25,9 @@ export default abstract class ConversationsCommand extends BaseCommand {
     }
 
     private async _generateJWT() {
-        let private_key_new = readFileSync(`${process.cwd()}/vonage_app.json`);
-        console.log(JSON.parse(private_key_new.toString()))
-
-        if (!this._appId || !this._keyFile) {
-            this.error('Missing appId or private key');
-        }
-
-        let private_key = readFileSync(`${this._keyFile}`);
-        this._token = await tokenGenerate(this._appId, private_key)
+        let app_details_raw = readFileSync(`${process.cwd()}/vonage_app.json`);
+        let app_details = (JSON.parse(app_details_raw.toString()));
+        this._token = await tokenGenerate(app_details.application_id, app_details.private_key)
         return;
     }
 
@@ -75,13 +69,8 @@ export default abstract class ConversationsCommand extends BaseCommand {
         opts['method'] = HTTPMethods.PATCH;
         opts['data'] = params;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
-        console.log(opts)
-        try {
-            let response = await request(opts);
-            return response
-        } catch (error) {
-            console.dir(error, { depth: 8 })
-        }
+        let response = await request(opts);
+        return response
     }
 
     async deleteUser(id) {
