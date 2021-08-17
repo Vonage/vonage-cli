@@ -85,6 +85,18 @@ export default abstract class BaseCommand extends Command {
         return;
     }
 
+    async displayBalance(): Promise<any> {
+        return new Promise((res, rej) => {
+            this.vonage.account.checkBalance((error: any, response: any) => {
+                if (error) {
+                    rej(error);
+                } else {
+                    res(response);
+                }
+            });
+        })
+    }
+
     async init(): Promise<void> {
         const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
 
