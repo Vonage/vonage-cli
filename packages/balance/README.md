@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-balance
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-balance/1.0.0-beta.7 linux-x64 node-v12.18.2
+@vonage/cli-plugin-balance/1.0.0-beta.8 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -48,5 +48,5 @@ EXAMPLE
   Displays your current balance in Euros
 ```
 
-_See code: [dist/commands/balance/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.7/dist/commands/balance/index.js)_
+_See code: [dist/commands/balance/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.8/dist/commands/balance/index.js)_
 <!-- commandsstop -->

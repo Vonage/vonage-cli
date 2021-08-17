@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-numbers",
-    "version": "1.0.0-beta.7",
+    "version": "1.0.0-beta.8",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "dependencies": {
@@ -9,7 +9,7 @@
         "@oclif/parser": "^3.8.5",
         "@types/inquirer": "^7.3.1",
         "@types/node": "^16.6.1",
-        "@vonage/cli-utils": "^1.0.0-beta.7",
+        "@vonage/cli-utils": "^1.0.0-beta.8",
         "chalk": "^2.4.2",
         "cli-ux": "^5.6.3",
         "lodash": "^4.17.20",
