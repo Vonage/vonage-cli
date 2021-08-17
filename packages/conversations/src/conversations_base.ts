@@ -121,9 +121,14 @@ export default abstract class ConversationsCommand extends BaseCommand {
     }
 
     async removeMemberFromConversation(params) {
+        let data = {
+            "state": "left"
+        }
+
         const opts = merge({}, this._defaultHttpOptions)
         opts['url'] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
-        opts['method'] = HTTPMethods.DELETE;
+        opts['method'] = HTTPMethods.PATCH;
+        opts['data'] = data;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
         let response = await request(opts);
         return response
