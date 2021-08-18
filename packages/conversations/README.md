@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-conversations
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-conversations/1.0.0-beta.10 linux-x64 node-v12.18.2
+@vonage/cli-plugin-conversations/1.0.0-beta.11 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -53,7 +53,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/index.js)_
+_See code: [dist/commands/apps/conversations/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/index.js)_
 
 ## `oclif-example apps:conversations:create [NAME]`
 
@@ -70,7 +70,7 @@ OPTIONS
   --ttl=ttl
 ```
 
-_See code: [dist/commands/apps/conversations/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/create.js)_
+_See code: [dist/commands/apps/conversations/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/create.js)_
 
 ## `oclif-example apps:conversations:delete [CONVERSATIONID]`
 
@@ -84,7 +84,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/delete.js)_
+_See code: [dist/commands/apps/conversations/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/delete.js)_
 
 ## `oclif-example apps:conversations:members [CONVERSATIONID]`
 
@@ -98,7 +98,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/members/index.js)_
+_See code: [dist/commands/apps/conversations/members/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/members/index.js)_
 
 ## `oclif-example apps:conversations:members:add [CONVERSATIONID] [USERID]`
 
@@ -112,7 +112,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/add.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/members/add.js)_
+_See code: [dist/commands/apps/conversations/members/add.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/members/add.js)_
 
 ## `oclif-example apps:conversations:members:remove [CONVERSATIONID] [MEMBERID]`
 
@@ -138,7 +138,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/members/show.js)_
+_See code: [dist/commands/apps/conversations/members/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/members/show.js)_
 
 ## `oclif-example apps:conversations:show [CONVERSATIONID]`
 
@@ -152,7 +152,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/show.js)_
+_See code: [dist/commands/apps/conversations/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/show.js)_
 
 ## `oclif-example apps:conversations:update [CONVERSATIONID]`
 
@@ -170,7 +170,7 @@ OPTIONS
   --ttl=ttl
 ```
 
-_See code: [dist/commands/apps/conversations/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.10/dist/commands/apps/conversations/update.js)_
+_See code: [dist/commands/apps/conversations/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/conversations/update.js)_
 
 ## `oclif-example apps:users:conversations [USERID]`
 
