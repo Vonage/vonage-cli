@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-users
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-users/1.0.0-beta.9 linux-x64 node-v12.18.2
+@vonage/cli-plugin-users/1.0.0-beta.11 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -46,7 +46,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.9/dist/commands/apps/users/index.js)_
+_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/users/index.js)_
 
 ## `oclif-example apps:users:create [NAME]`
 
@@ -60,7 +60,7 @@ OPTIONS
   --image_url=image_url
 ```
 
-_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.9/dist/commands/apps/users/create.js)_
+_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/users/create.js)_
 
 ## `oclif-example apps:users:delete [USERID]`
 
@@ -72,7 +72,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.9/dist/commands/apps/users/delete.js)_
+_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/users/delete.js)_
 
 ## `oclif-example apps:users:show [USERID]`
 
@@ -84,7 +84,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.9/dist/commands/apps/users/show.js)_
+_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/users/show.js)_
 
 ## `oclif-example apps:users:update [USERID]`
 
@@ -99,5 +99,5 @@ OPTIONS
   --name=name
 ```
 
-_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.9/dist/commands/apps/users/update.js)_
+_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/users/update.js)_
 <!-- commandsstop -->
