@@ -229,7 +229,7 @@ export default class ApplicationsCreate extends AppCommand {
 
         // write vonage.app file
         let vonage_app_file_path = `${process.cwd()}/vonage_app.json`;
-        let vonage_private_key_file_path = `${process.cwd()}/${keyFileName}.key`;
+        let vonage_private_key_file_path = `${process.cwd()}/${keyFileName.toLowerCase()}.key`;
 
         writeFileSync(vonage_app_file_path, JSON.stringify({
             application_name: output.name,
