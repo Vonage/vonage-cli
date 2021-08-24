@@ -6,7 +6,7 @@ import cli from 'cli-ux'
 export default class ApplicationsList extends AppCommand {
     static description = 'manage your Vonage applications'
 
-    static examples = ['vonage app', 'vonage app --output=json']
+    static examples = ['vonage apps', 'vonage apps --output=json']
 
     static flags: OutputFlags<typeof AppCommand.flags> = {
         ...AppCommand.flags,

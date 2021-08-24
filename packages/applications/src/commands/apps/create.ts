@@ -2,7 +2,7 @@ import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
-import { webhookQuestions } from '../../helpers'
+import { webhookQuestions, sanitizeFileName } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { merge } from 'lodash';
 import { writeFileSync } from 'fs';
@@ -24,14 +24,17 @@ interface CreateFlags {
     messages_status_url: any,
     rtc_event_url: any,
     rtc_event_http: any,
-    vbc: any
+    vbc: any,
+    improve_ai: any
 }
+
+const kb_article = 'https://help.nexmo.com/hc/en-us/articles/4401914566036';
 
 export default class ApplicationsCreate extends AppCommand {
     static description = 'create a new Vonage application'
 
     static examples = [
-        'vonage app:create', 'vonage app:create APP_NAME --voice_answer_url=https://www.sample.com'
+        'vonage apps:create', 'vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com'
     ]
 
     static flags: OutputFlags<typeof AppCommand.flags> & CreateFlags = {
@@ -77,7 +80,9 @@ export default class ApplicationsCreate extends AppCommand {
         'vbc': flags.boolean({
             description: 'VBC Capabilities Enabled',
         }),
-
+        'improve_ai': flags.boolean({
+            description: `Allow use of data for AI training? Read data collection disclosure - ${kb_article}`,
+        })
     }
 
     static args = [
@@ -86,9 +91,9 @@ export default class ApplicationsCreate extends AppCommand {
     ]
 
     async run() {
-        const flags = this.parsedFlags
+        const flags = this.parsedFlags;
         const args = this.parsedArgs!;
-        let response: any = { name: '', capabilities: {} };
+        let response: any = { name: '', capabilities: {}, privacy: { improve_ai: false } };
 
         if (!args.name && Object.keys(flags).length > 0) {
             this.error(new Error('Argument \'name\' not provided'))
@@ -97,10 +102,18 @@ export default class ApplicationsCreate extends AppCommand {
         if (args.name && Object.keys(flags).length >= 0) {
 
             let tobeAssigned = Object.keys(flags).map((value: string, index) => {
+
+                if (value === "improve_ai") {
+                    response.privacy.improve_ai = flags[value];
+                    return;
+                }
+
                 return JSON.parse(flags[value])
+
             }, [])
 
             merge(response.capabilities, ...tobeAssigned)
+
             response.name = args.name;
         }
 
@@ -195,6 +208,16 @@ export default class ApplicationsCreate extends AppCommand {
 
             delete response.selected_capabilities
 
+
+            let improve_ai = await prompt({
+                type: 'confirm',
+                name: 'improve_ai',
+                message: `Allow use of data for AI training? Read data collection disclosure - ${kb_article}`
+            })
+
+            response.privacy = improve_ai;
+
+
         }
 
         cli.action.start(chalk.bold('Creating Application'), 'Initializing', { stdout: true })
@@ -202,9 +225,11 @@ export default class ApplicationsCreate extends AppCommand {
         // create application 
         let output = await this.createApplication(response)
 
+        let keyFileName = sanitizeFileName(output.name);
+
         // write vonage.app file
         let vonage_app_file_path = `${process.cwd()}/vonage_app.json`;
-        let vonage_private_key_file_path = `${process.cwd()}/${output.name}_private.key`;
+        let vonage_private_key_file_path = `${process.cwd()}/${keyFileName.toLowerCase()}.key`;
 
         writeFileSync(vonage_app_file_path, JSON.stringify({
             application_name: output.name,
@@ -215,7 +240,6 @@ export default class ApplicationsCreate extends AppCommand {
         writeFileSync(vonage_private_key_file_path, output.keys.private_key)
 
         cli.action.stop()
-
 
         let indent = '  '
 
@@ -277,10 +301,14 @@ export default class ApplicationsCreate extends AppCommand {
         this.log('')
 
 
-        this.log(chalk.magenta.underline.bold("App File"))
+        this.log(chalk.magenta.underline.bold("App Files"))
         this.log(chalk.bold('Vonage App File:'), vonage_app_file_path)
         this.log('')
         this.log(chalk.bold('Private Key File:'), vonage_private_key_file_path)
+        this.log('')
+
+        this.log(chalk.magenta.underline.bold("Improve AI:"), output.privacy.improve_ai)
+
         this.log('')
 
         this.exit();
