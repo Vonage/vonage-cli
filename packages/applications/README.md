@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-beta.11 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-beta.12 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -50,11 +50,11 @@ OPTIONS
   --sort=sort             property to sort by (prepend '-' for descending)
 
 EXAMPLES
-  vonage app
-  vonage app --output=json
+  vonage apps
+  vonage apps --output=json
 ```
 
-_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/index.js)_
+_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/index.js)_
 
 ## `oclif-example apps:create [NAME]`
 
@@ -66,22 +66,34 @@ USAGE
 
 OPTIONS
   -h, --help                                   show CLI help
+
+  --improve_ai                                 Allow use of data for AI training? Read data collection disclosure -
+                                               https://help.nexmo.com/hc/en-us/articles/4401914566036
+
   --messages_inbound_url=messages_inbound_url  Messages Inbound Webhook URL Address
+
   --messages_status_url=messages_status_url    Messages Status Webhook URL Address
+
   --rtc_event_http=GET|POST                    RTC Event Webhook HTTP Method
+
   --rtc_event_url=rtc_event_url                RTC Event Webhook URL Address
+
   --vbc                                        VBC Capabilities Enabled
+
   --voice_answer_http=GET|POST                 Voice Answer Webhook HTTP Method
+
   --voice_answer_url=voice_answer_url          Voice Answer Webhook URL Address
+
   --voice_event_http=GET|POST                  Voice Event Webhook HTTP Method
+
   --voice_event_url=voice_event_url            Voice Event Webhook URL Address
 
 EXAMPLES
-  vonage app:create
-  vonage app:create APP_NAME --voice_answer_url=https://www.sample.com
+  vonage apps:create
+  vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com
 ```
 
-_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/create.js)_
+_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/create.js)_
 
 ## `oclif-example apps:delete [APPID]`
 
@@ -95,11 +107,11 @@ OPTIONS
   -h, --help  show CLI help
 
 EXAMPLES
-  vonage app:delete 00000000-0000-0000-0000-000000000000
-  vonage app:delete
+  vonage apps:delete 00000000-0000-0000-0000-000000000000
+  vonage apps:delete
 ```
 
-_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/delete.js)_
+_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/delete.js)_
 
 ## `oclif-example apps:link [APPID]`
 
@@ -114,7 +126,7 @@ OPTIONS
   --number=number  Owned number to be assigned
 ```
 
-_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/link.js)_
+_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/link.js)_
 
 ## `oclif-example apps:show [APPID]`
 
@@ -128,7 +140,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/show.js)_
+_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/show.js)_
 
 ## `oclif-example apps:unlink`
 
@@ -143,7 +155,7 @@ OPTIONS
   --number=number  Owned number to be unassigned
 ```
 
-_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/unlink.js)_
+_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/unlink.js)_
 
 ## `oclif-example apps:update [APPID]`
 
@@ -167,9 +179,9 @@ OPTIONS
   --voice_event_url=voice_event_url            Voice Event Webhook URL Address
 
 EXAMPLES
-  vonage app:update
-  vonage app:update APP_ID --voice_answer_url="https://www.example.com/answer
+  vonage apps:update
+  vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer
 ```
 
-_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.11/dist/commands/apps/update.js)_
+_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/update.js)_
 <!-- commandsstop -->
