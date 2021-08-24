@@ -23,7 +23,7 @@ interface UpdateFlags {
 export default class ApplicationsUpdate extends AppCommand {
     static description = 'update a Vonage application'
 
-    static examples = [`vonage app:update`, 'vonage app:update APP_ID --voice_answer_url="https://www.example.com/answer']
+    static examples = [`vonage apps:update`, 'vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer']
 
     static flags: OutputFlags<typeof AppCommand.flags> & UpdateFlags = {
         ...AppCommand.flags,

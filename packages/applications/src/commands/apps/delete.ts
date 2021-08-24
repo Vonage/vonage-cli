@@ -12,8 +12,8 @@ export default class ApplicationsDelete extends AppCommand {
     }
 
     static examples = [
-        `vonage app:delete 00000000-0000-0000-0000-000000000000`,
-        `vonage app:delete`
+        `vonage apps:delete 00000000-0000-0000-0000-000000000000`,
+        `vonage apps:delete`
     ]
 
     static args = [
