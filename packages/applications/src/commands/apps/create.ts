@@ -2,7 +2,7 @@ import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
-import { webhookQuestions } from '../../helpers'
+import { webhookQuestions, sanitizeFileName } from '../../helpers'
 import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator'
 import { merge } from 'lodash';
 import { writeFileSync } from 'fs';
@@ -225,9 +225,11 @@ export default class ApplicationsCreate extends AppCommand {
         // create application 
         let output = await this.createApplication(response)
 
+        let keyFileName = sanitizeFileName(output.name);
+
         // write vonage.app file
         let vonage_app_file_path = `${process.cwd()}/vonage_app.json`;
-        let vonage_private_key_file_path = `${process.cwd()}/${output.name}_private.key`;
+        let vonage_private_key_file_path = `${process.cwd()}/${keyFileName}.key`;
 
         writeFileSync(vonage_app_file_path, JSON.stringify({
             application_name: output.name,
