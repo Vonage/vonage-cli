@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "1.0.0-beta.14",
+    "version": "1.0.0-beta.15",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run"
@@ -15,7 +15,7 @@
         "@types/lodash.merge": "^4.6.6",
         "@types/node": "^16.6.1",
         "@types/shelljs": "^0.8.8",
-        "@vonage/cli-plugin-applications": "^1.0.0-beta.12",
+        "@vonage/cli-plugin-applications": "^1.0.0-beta.13",
         "@vonage/cli-plugin-numberinsight": "^1.0.0-beta.11",
         "@vonage/cli-plugin-numbers": "^1.0.0-beta.11",
         "@vonage/cli-utils": "^1.0.0-beta.11",
