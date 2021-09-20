@@ -21,7 +21,9 @@ interface CreateFlags {
     voice_event_url: any,
     voice_event_http: any,
     messages_inbound_url: any,
+    messages_inbound_http: any,
     messages_status_url: any,
+    messages_status_http: any,
     rtc_event_url: any,
     rtc_event_http: any,
     vbc: any,
@@ -41,31 +43,45 @@ export default class ApplicationsCreate extends AppCommand {
         ...AppCommand.flags,
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',
+            dependsOn: ['voice_event_url'],
             parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
         }),
         'voice_answer_http': flags.string({
             description: 'Voice Answer Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['voice_answer_url'],
-            parse: input => `{"voice": {"webhooks": {"answer_url": {"method": "${input}"}}}}`
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"http_method": "${input}"}}}}`
         }),
         'voice_event_url': flags.string({
             description: 'Voice Event Webhook URL Address',
+            dependsOn: ['voice_answer_url'],
             parse: input => `{"voice": {"webhooks": {"event_url": {"address": "${input}"}}}}`
         }),
         'voice_event_http': flags.string({
             description: 'Voice Event Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['voice_event_url'],
-            parse: input => `{"voice": {"webhooks": {"event_url": {"method": "${input}"}}}}`
+            parse: input => `{"voice": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`
         }),
         'messages_inbound_url': flags.string({
             description: 'Messages Inbound Webhook URL Address',
             parse: input => `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`
         }),
+        'messages_inbound_http': flags.string({
+            description: 'Messages Inbound Webhook HTTP Method',
+            options: ['GET', 'POST'],
+            dependsOn: ['messages_inbound_url'],
+            parse: input => `{"messages": {"webhooks": {"inbound_url": {"http_method": "${input}"}}}}`
+        }),
         'messages_status_url': flags.string({
             description: 'Messages Status Webhook URL Address',
             parse: input => `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`
+        }),
+        'messages_status_http': flags.string({
+            description: 'Messages Status Webhook HTTP Method',
+            options: ['GET', 'POST'],
+            dependsOn: ['messages_status_url'],
+            parse: input => `{"messages": {"webhooks": {"status_url": {"http_method": "${input}"}}}}`
         }),
         'rtc_event_url': flags.string({
             description: 'RTC Event Webhook URL Address',
@@ -75,7 +91,7 @@ export default class ApplicationsCreate extends AppCommand {
             description: 'RTC Event Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['rtc_event_url'],
-            parse: input => `{"rtc": {"webhooks": {"event_url": {"method": "${input}"}}}}`
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`
         }),
         'vbc': flags.boolean({
             description: 'VBC Capabilities Enabled',
@@ -94,6 +110,7 @@ export default class ApplicationsCreate extends AppCommand {
         const flags = this.parsedFlags;
         const args = this.parsedArgs!;
         let response: any = { name: '', capabilities: {}, privacy: { improve_ai: false } };
+
 
         if (!args.name && Object.keys(flags).length > 0) {
             this.error(new Error('Argument \'name\' not provided'))
@@ -184,7 +201,7 @@ export default class ApplicationsCreate extends AppCommand {
 
             if (response.selected_capabilities?.indexOf('rtc') > -1) {
                 response.capabilities.rtc = {};
-                let event_url
+                let event_url;
 
                 let rtc = await prompt({
                     type: 'confirm',
@@ -193,8 +210,7 @@ export default class ApplicationsCreate extends AppCommand {
                 })
 
                 if (rtc.webhooks_confirm) {
-                    let event_url = await webhookQuestions({ name: 'Event Webhook' })
-                    response.capabilities.rtc = { webhooks: { event_url } }
+                    event_url = await webhookQuestions({ name: 'Event Webhook' })
                 } else {
                     event_url = { address: "https://www.sample.com/webhook/rtc_event_url" }
                 }
@@ -312,6 +328,10 @@ export default class ApplicationsCreate extends AppCommand {
         this.log('')
 
         this.exit();
+    }
+
+    async catch(error: any) {
+        return super.catch(error);
     }
 
 }

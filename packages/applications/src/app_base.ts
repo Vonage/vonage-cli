@@ -1,5 +1,6 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
+import chalk from 'chalk';
 
 export default abstract class AppCommand extends BaseCommand {
 
@@ -12,6 +13,13 @@ export default abstract class AppCommand extends BaseCommand {
         ...BaseCommand.args,
         /* ... */
     ];
+
+    async catch(error: any) {
+        if (error?.oclif?.exit === 0) return super.catch(error)
+
+        this.log(chalk.red.bold(error?.body?.detail || error))
+        return super.catch(error);
+    }
 
     get allApplications(): any {
         return new Promise((res, rej) => {
