@@ -95,6 +95,8 @@ export default class ApplicationsCreate extends AppCommand {
         }),
         'vbc': flags.boolean({
             description: 'VBC Capabilities Enabled',
+            parse: () => `{"vbc": {}}`
+
         }),
         'improve_ai': flags.boolean({
             description: `Allow use of data for AI training? Read data collection disclosure - ${kb_article}`,
