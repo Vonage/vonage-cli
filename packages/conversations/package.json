@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-conversations",
-    "version": "1.0.0-beta.11",
+    "version": "1.0.0-beta.13",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",
@@ -11,7 +11,7 @@
         "@oclif/parser": "^3.8.5",
         "@types/lodash": "^4.14.172",
         "@types/node": "^16.6.1",
-        "@vonage/cli-utils": "^1.0.0-beta.11",
+        "@vonage/cli-utils": "^1.0.0",
         "@vonage/jwt": "^3.0.0-beta.1",
         "@vonage/vetch": "^3.0.0-beta.3",
         "chalk": "^2.4.2",
