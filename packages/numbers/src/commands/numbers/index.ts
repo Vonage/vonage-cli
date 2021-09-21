@@ -7,9 +7,7 @@ export default class NumberList extends NumberCommand {
   static description = 'manage your Vonage numbers'
 
   static examples = [
-    `$ vonage number
-list all numbers
-`,
+    `vonage number`,
   ]
 
   static flags: OutputFlags<typeof NumberCommand.flags> = {
@@ -23,23 +21,33 @@ list all numbers
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberList.flags>
-    let numberData = await this.allNumbers;
-    cli.table(numberData.numbers, {
-      country: {},
-      msisdn: {
-        header: "Number"
-      },
-      type: {},
-      features: {
-        get: (row: any) => row.features.join(',')
-      },
-      app_id: {
-        header: "Application",
-        get: (row: any) => row.app_id || ""
-      }
-    }, {
-      ...flags
-    });
+    let numberData = await this.getAllNumbers({});
+
+    try {
+      cli.table(numberData.numbers, {
+        country: {},
+        msisdn: {
+          header: "Number"
+        },
+        type: {},
+        features: {
+          get: (row: any) => row.features.join(',')
+        },
+        app_id: {
+          header: "Application",
+          get: (row: any) => row.app_id || ""
+        }
+      }, {
+        ...flags
+      });
+    } catch (error) {
+      this.error('No results found.')
+    }
+
     this.exit();
+  }
+
+  async catch(error: any) {
+    return super.catch(error);
   }
 }

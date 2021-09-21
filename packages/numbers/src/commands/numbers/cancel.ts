@@ -24,6 +24,10 @@ export default class NumberCancel extends NumberCommand {
     // const flags = this.parsedFlags as OutputFlags<typeof NumberBuy.flags>;
     const args = this.parsedArgs! as OutputArgs<typeof NumberCancel.args> & cancelArgs;
     let resp = await this.numberCancel(args);
-    this.log(resp)
+    this.log(`Number ${args.number} has been cancelled.`)
+  }
+
+  async catch(error: any) {
+    return super.catch(error);
   }
 }
