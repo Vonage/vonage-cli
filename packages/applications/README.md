@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-applications/1.0.0-beta.12 linux-x64 node-v12.18.2
+@vonage/cli-plugin-applications/1.0.0-beta.13 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -54,7 +54,7 @@ EXAMPLES
   vonage apps --output=json
 ```
 
-_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/index.js)_
+_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/index.js)_
 
 ## `oclif-example apps:create [NAME]`
 
@@ -70,7 +70,11 @@ OPTIONS
   --improve_ai                                 Allow use of data for AI training? Read data collection disclosure -
                                                https://help.nexmo.com/hc/en-us/articles/4401914566036
 
+  --messages_inbound_http=GET|POST             Messages Inbound Webhook HTTP Method
+
   --messages_inbound_url=messages_inbound_url  Messages Inbound Webhook URL Address
+
+  --messages_status_http=GET|POST              Messages Status Webhook HTTP Method
 
   --messages_status_url=messages_status_url    Messages Status Webhook URL Address
 
@@ -93,7 +97,7 @@ EXAMPLES
   vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com
 ```
 
-_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/create.js)_
+_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/create.js)_
 
 ## `oclif-example apps:delete [APPID]`
 
@@ -111,7 +115,7 @@ EXAMPLES
   vonage apps:delete
 ```
 
-_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/delete.js)_
+_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/delete.js)_
 
 ## `oclif-example apps:link [APPID]`
 
@@ -126,7 +130,7 @@ OPTIONS
   --number=number  Owned number to be assigned
 ```
 
-_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/link.js)_
+_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/link.js)_
 
 ## `oclif-example apps:show [APPID]`
 
@@ -140,7 +144,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/show.js)_
+_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/show.js)_
 
 ## `oclif-example apps:unlink`
 
@@ -155,7 +159,7 @@ OPTIONS
   --number=number  Owned number to be unassigned
 ```
 
-_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/unlink.js)_
+_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/unlink.js)_
 
 ## `oclif-example apps:update [APPID]`
 
@@ -167,9 +171,10 @@ USAGE
 
 OPTIONS
   -h, --help                                   show CLI help
+  --messages_inbound_http=GET|POST             Messages Inbound Webhook HTTP Method
   --messages_inbound_url=messages_inbound_url  Messages Inbound Webhook URL Address
+  --messages_status_http=GET|POST              Messages Status Webhook HTTP Method
   --messages_status_url=messages_status_url    Messages Status Webhook URL Address
-  --name=name                                  Name of Vonage Application
   --rtc_event_http=GET|POST                    RTC Event Webhook HTTP Method
   --rtc_event_url=rtc_event_url                RTC Event Webhook URL Address
   --vbc                                        VBC Capabilities Enabled
@@ -183,5 +188,5 @@ EXAMPLES
   vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer
 ```
 
-_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.12/dist/commands/apps/update.js)_
+_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.13/dist/commands/apps/update.js)_
 <!-- commandsstop -->

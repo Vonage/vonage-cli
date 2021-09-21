@@ -3,6 +3,7 @@ import { prompt } from 'prompts'
 import { OutputFlags } from '@oclif/parser';
 
 import chalk from 'chalk'
+import { isConstructorDeclaration } from 'typescript';
 
 export default class ApplicationsShow extends AppCommand {
     static description = 'show Vonage application details';
@@ -45,6 +46,7 @@ export default class ApplicationsShow extends AppCommand {
             ])
 
         }
+
 
         let output = await this.getSingleApplication(response.appId);
         let indent = '  '
@@ -106,7 +108,12 @@ export default class ApplicationsShow extends AppCommand {
         this.log(output.keys.public_key)
         this.log('')
 
+
         this.exit();
+
     }
 
+    async catch(error: any) {
+        return super.catch(error);
+    }
 }

@@ -1,6 +1,7 @@
 import AppCommand from '../../app_base';
 import { flags } from '@oclif/parser';
 import { OutputFlags } from '@oclif/parser';
+import chalk from 'chalk';
 
 interface UnLinkFlags {
     number: any
@@ -38,6 +39,10 @@ export default class ApplicationsUnlink extends AppCommand {
             this.exit()
         }
 
+    }
+
+    async catch(error: any) {
+        return super.catch(error);
     }
 
 }

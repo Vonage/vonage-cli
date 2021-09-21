@@ -8,17 +8,20 @@ import cli from 'cli-ux';
 import chalk from 'chalk';
 
 interface UpdateFlags {
-    name: any,
     voice_answer_url: any,
     voice_answer_http: any,
     voice_event_url: any,
     voice_event_http: any,
     messages_inbound_url: any,
+    messages_inbound_http: any,
     messages_status_url: any,
+    messages_status_http: any,
     rtc_event_url: any,
     rtc_event_http: any,
     vbc: any
 }
+
+const kb_article = 'https://help.nexmo.com/hc/en-us/articles/4401914566036';
 
 export default class ApplicationsUpdate extends AppCommand {
     static description = 'update a Vonage application'
@@ -27,10 +30,6 @@ export default class ApplicationsUpdate extends AppCommand {
 
     static flags: OutputFlags<typeof AppCommand.flags> & UpdateFlags = {
         ...AppCommand.flags,
-        'name': flags.string({
-            description: 'Name of Vonage Application',
-            parse: input => `{"name": "${input}"}`
-        }),
         'voice_answer_url': flags.string({
             description: 'Voice Answer Webhook URL Address',
             parse: input => `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`
@@ -38,8 +37,7 @@ export default class ApplicationsUpdate extends AppCommand {
         'voice_answer_http': flags.string({
             description: 'Voice Answer Webhook HTTP Method',
             options: ['GET', 'POST'],
-            dependsOn: ['voice_answer_url'],
-            parse: input => `{"voice": {"webhooks": {"answer_url": {"method": "${input}"}}}}`
+            parse: input => `{"voice": {"webhooks": {"answer_url": {"http_method": "${input}"}}}}`
         }),
         'voice_event_url': flags.string({
             description: 'Voice Event Webhook URL Address',
@@ -48,16 +46,25 @@ export default class ApplicationsUpdate extends AppCommand {
         'voice_event_http': flags.string({
             description: 'Voice Event Webhook HTTP Method',
             options: ['GET', 'POST'],
-            dependsOn: ['voice_event_url'],
-            parse: input => `{"voice": {"webhooks": {"event_url": {"method": "${input}"}}}}`
+            parse: input => `{"voice": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`
         }),
         'messages_inbound_url': flags.string({
             description: 'Messages Inbound Webhook URL Address',
             parse: input => `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`
         }),
+        'messages_inbound_http': flags.string({
+            description: 'Messages Inbound Webhook HTTP Method',
+            options: ['GET', 'POST'],
+            parse: input => `{"messages": {"webhooks": {"inbound_url": {"http_method": "${input}"}}}}`
+        }),
         'messages_status_url': flags.string({
             description: 'Messages Status Webhook URL Address',
             parse: input => `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`
+        }),
+        'messages_status_http': flags.string({
+            description: 'Messages Status Webhook HTTP Method',
+            options: ['GET', 'POST'],
+            parse: input => `{"messages": {"webhooks": {"status_url": {"http_method": "${input}"}}}}`
         }),
         'rtc_event_url': flags.string({
             description: 'RTC Event Webhook URL Address',
@@ -66,13 +73,11 @@ export default class ApplicationsUpdate extends AppCommand {
         'rtc_event_http': flags.string({
             description: 'RTC Event Webhook HTTP Method',
             options: ['GET', 'POST'],
-            dependsOn: ['rtc_event_url'],
-            parse: input => `{"rtc": {"webhooks": {"event_url": {"method": "${input}"}}}}`
+            parse: input => `{"rtc": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`
         }),
         'vbc': flags.boolean({
             description: 'VBC Capabilities Enabled',
-        }),
-
+        })
     }
 
     static args = [
@@ -220,4 +225,7 @@ export default class ApplicationsUpdate extends AppCommand {
         cli.action.stop()
     }
 
+    async catch(error: any) {
+        return super.catch(error);
+    }
 }

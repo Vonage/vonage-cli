@@ -1,6 +1,7 @@
 import { flags } from '@oclif/parser';
 import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
+import chalk from 'chalk';
 
 interface LinkFlags {
     number: any
@@ -56,6 +57,10 @@ export default class ApplicationsLink extends AppCommand {
             this.log(`Number '${args.number}' is assigned to '${args.appId}'.`);
             this.exit()
         }
+    }
+
+    async catch(error: any) {
+        return super.catch(error);
     }
 
 }

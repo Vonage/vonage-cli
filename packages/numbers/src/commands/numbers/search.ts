@@ -1,8 +1,14 @@
 import NumberCommand from '../../number_base';
 import { OutputFlags, OutputArgs } from '@oclif/parser';
-import { flags } from '@oclif/command'
+import { flags } from '@oclif/command';
 
 import cli from 'cli-ux'
+
+
+//TODO - INTERACTIVE MODE
+//Add in ISO look up for Country codes
+//var countries = require("i18n-iso-countries");
+//console.log(countries.getNames("en", {select: "official"}));
 
 interface searchFlags {
   type?: any,
@@ -16,39 +22,24 @@ interface searchArgs {
   countryCode?: string
 }
 
-function parseFlags(flagData: searchFlags): any {
-  let searchResponse = {}
-  if (flagData.startsWith) {
-    searchResponse['pattern'] = flagData.startsWith;
-    searchResponse['search_pattern'] = 0
-    delete flagData.startsWith
-  }
-  if (flagData.endsWith) {
-    searchResponse['pattern'] = flagData.endsWith;
-    searchResponse['search_pattern'] = 2
-    delete flagData.endsWith
-  }
-  if (flagData.contains) {
-    searchResponse['pattern'] = flagData.contains;
-    searchResponse['search_pattern'] = 0
-    delete flagData.contains
-  }
-  return Object.assign({}, flagData, searchResponse)
-}
 
 export default class NumberSearch extends NumberCommand {
   static description = 'search for available Vonage numbers'
 
-  static examples = []
+  static examples = [
+    `vonage numbers:search US`,
+    `vonage numbers:search US --startsWith=1555`,
+    `vonage numbers:search US --features=VOICE,SMS --endsWith=1234`
+  ]
 
   static flags: OutputFlags<typeof NumberCommand.flags> & searchFlags = {
     ...NumberCommand.flags,
     'type': flags.string({
-      description: '',
+      description: 'Filter by type of number, such as mobile or landline',
       options: ['landline', 'mobile-lvn', 'landline-toll-free']
     }),
     'startsWith': flags.string({
-      description: '',
+      description: 'Search for numbers that start with certain numbers.',
       exclusive: ['endsWith', 'contains']
     }),
     'endsWith': flags.string({
@@ -71,21 +62,32 @@ export default class NumberSearch extends NumberCommand {
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
     const args = this.parsedArgs! as OutputArgs<typeof NumberCommand.args> & searchArgs;
-    let options = parseFlags(flags)
-    let resp = await this.numberSearch(args.countryCode, options);
-    cli.table(resp.numbers, {
-      country: {},
-      msisdn: {
-        header: "Number"
-      },
-      type: {},
-      cost: {},
-      features: {
-        get: (row: any) => row.features.join(',')
-      }
-    }, {
-      ...flags
-    });
+
+    let resp = await this.numberSearch(args.countryCode, flags);
+
+    try {
+      cli.table(resp.numbers, {
+        country: {},
+        msisdn: {
+          header: "Number"
+        },
+        type: {},
+        cost: {},
+        features: {
+          get: (row: any) => row.features.join(',')
+        }
+      }, {
+        ...flags
+      });
+    } catch (error) {
+      this.error('No results found.');
+    }
+
+
     this.exit();
+  }
+
+  async catch(error: any) {
+    return super.catch(error);
   }
 }

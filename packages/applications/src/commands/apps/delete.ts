@@ -73,7 +73,6 @@ export default class ApplicationsDelete extends AppCommand {
             this.log(`Application ${args.appId} deleted.`)
         }
 
-
         this.exit();
 
     }

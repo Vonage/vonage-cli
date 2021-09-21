@@ -1,6 +1,8 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
 
+
+
 export default abstract class NumberCommand extends BaseCommand {
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
@@ -13,9 +15,34 @@ export default abstract class NumberCommand extends BaseCommand {
         /* ... */
     ];
 
-    get allNumbers(): any {
+    async catch(error: any) {
+        this.error(error);
+    }
+
+    protected _parseParams(params): any {
+        let searchResponse = {}
+        if (params.startsWith) {
+            searchResponse['pattern'] = params.startsWith;
+            searchResponse['search_pattern'] = 0
+            delete params.startsWith
+        }
+        if (params.endsWith) {
+            searchResponse['pattern'] = params.endsWith;
+            searchResponse['search_pattern'] = 2
+            delete params.endsWith
+        }
+        if (params.contains) {
+            searchResponse['pattern'] = params.contains;
+            searchResponse['search_pattern'] = 0
+            delete params.contains
+        }
+        return Object.assign({}, params, searchResponse)
+    }
+
+
+    getAllNumbers(params): any {
         return new Promise((res, rej) => {
-            this.vonage.number.get({}, (error: any, response: any) => {
+            this.vonage.number.get(params, (error: any, response: any) => {
                 if (error) {
                     rej(error);
                 }
@@ -40,11 +67,11 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberSearch(countryCode: string, options: { type?: string, pattern?: string, search_pattern?: string, features?: [] }): any {
+    numberSearch(countryCode: string, options): any {
         return new Promise((res, rej) => {
             this.vonage.number.search(
                 countryCode,
-                options,
+                this._parseParams(options),
                 (error: any, response: any) => {
                     if (error) {
                         rej(error);
