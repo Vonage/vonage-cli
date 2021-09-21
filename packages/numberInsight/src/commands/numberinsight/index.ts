@@ -18,9 +18,7 @@ export default class NumberInsight extends NumberInsightCommand {
   static description = 'get details about a phone number'
 
   static examples = [
-    `$ vonage numberinsight 5555555555
-$ vonage numberinsight 5555555555 --level=advanced
-`,
+    `vonage numberinsight 15555555555`, `vonage numberinsight 15555555555 --level=advanced`
   ]
 
   static flags: OutputFlags<typeof NumberInsightCommand.flags> & NIFlags = {
