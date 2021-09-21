@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-users",
-    "version": "1.0.0-beta.13",
+    "version": "1.0.0-beta.14",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",
@@ -13,7 +13,7 @@
         "@types/lodash": "^4.14.172",
         "@types/node": "^16.6.1",
         "@vonage/auth": "^3.0.0-beta.0",
-        "@vonage/cli-utils": "^1.0.0-rc.0",
+        "@vonage/cli-utils": "^1.0.0-rc.1",
         "@vonage/jwt": "^3.0.0-beta.0",
         "@vonage/vetch": "^3.0.0-beta.0",
         "chalk": "^2.4.2",

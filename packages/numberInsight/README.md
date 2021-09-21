@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numberinsight
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numberinsight/1.0.0-rc.0 linux-x64 node-v12.18.2
+@vonage/cli-plugin-numberinsight/1.0.0-rc.1 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -28,25 +28,5 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example numberinsight NUMBER`](#oclif-example-numberinsight-number)
 
-## `oclif-example numberinsight NUMBER`
-
-get details about a phone number
-
-```
-USAGE
-  $ oclif-example numberinsight NUMBER
-
-OPTIONS
-  -h, --help                       show CLI help
-  -y, --confirm
-  --level=basic|standard|advanced  [default: basic]
-
-EXAMPLE
-  $ vonage numberinsight 5555555555
-  $ vonage numberinsight 5555555555 --level=advanced
-```
-
-_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0-rc.0/dist/commands/numberinsight/index.js)_
 <!-- commandsstop -->
