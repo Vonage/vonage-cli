@@ -18,6 +18,7 @@
         "@vonage/cli-plugin-applications": "^1.0.0",
         "@vonage/cli-plugin-numberinsight": "^1.0.0",
         "@vonage/cli-plugin-numbers": "^1.0.0",
+        "@vonage/cli-plugin-users": "^1.0.0",
         "@vonage/cli-utils": "^1.0.0",
         "cli-ux": "^5.6.3",
         "lodash": "^4.17.20",
@@ -48,7 +49,8 @@
             "@oclif/plugin-plugins",
             "@vonage/cli-plugin-applications",
             "@vonage/cli-plugin-numbers",
-            "@vonage/cli-plugin-numberinsight"
+            "@vonage/cli-plugin-numberinsight",
+            "@vonage/cli-plugin-users"
         ],
         "hooks": {
             "init": "./dist/hooks/init"
