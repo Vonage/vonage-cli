@@ -3,7 +3,6 @@ import { prompt } from 'prompts'
 import { OutputFlags } from '@oclif/parser';
 
 import chalk from 'chalk'
-import { isConstructorDeclaration } from 'typescript';
 
 export default class ApplicationsShow extends AppCommand {
     static description = 'show Vonage application details';

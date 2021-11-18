@@ -1,7 +1,6 @@
 import AppCommand from '../../app_base';
 import { flags } from '@oclif/parser';
 import { OutputFlags } from '@oclif/parser';
-import chalk from 'chalk';
 
 interface UnLinkFlags {
     number: any
