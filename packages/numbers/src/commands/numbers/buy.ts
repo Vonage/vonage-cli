@@ -1,6 +1,5 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags, OutputArgs } from '@oclif/parser';
-// import { flags } from '@oclif/command'
+import { OutputFlags } from '@oclif/parser';
 
 interface buyArgs {
   number: string,
@@ -27,7 +26,7 @@ export default class NumberBuy extends NumberCommand {
     const args = this.parsedArgs!;
 
     try {
-      let resp = await this.numberBuy(args);
+      await this.numberBuy(args);
       this.log(`Number ${args.number} has been purchased.`)
     } catch (error) {
       if (error.statusCode === 420) {

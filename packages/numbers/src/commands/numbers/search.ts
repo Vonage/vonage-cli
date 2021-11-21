@@ -1,5 +1,5 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags, OutputArgs } from '@oclif/parser';
+import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command';
 
 import cli from 'cli-ux'
