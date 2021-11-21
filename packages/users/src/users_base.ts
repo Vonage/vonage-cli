@@ -14,10 +14,6 @@ export default abstract class UsersCommand extends BaseCommand {
         ...BaseCommand.flags,
     };
 
-    static args = [
-        ...BaseCommand.args,
-    ];
-
     protected _defaultHttpOptions = {
         "method": HTTPMethods.GET,
         "headers": {},

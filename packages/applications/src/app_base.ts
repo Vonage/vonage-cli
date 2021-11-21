@@ -9,11 +9,6 @@ export default abstract class AppCommand extends BaseCommand {
         /* ... */
     };
 
-    static args = [
-        ...BaseCommand.args,
-        /* ... */
-    ];
-
     async catch(error: any) {
         if (error?.oclif?.exit === 0) return super.catch(error)
 

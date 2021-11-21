@@ -8,6 +8,8 @@ interface buyArgs {
 }
 
 export default class NumberBuy extends NumberCommand {
+  protected parsedArgs: buyArgs;
+
   static description = 'buy a Vonage number'
 
   static examples = []
@@ -16,13 +18,13 @@ export default class NumberBuy extends NumberCommand {
     ...NumberCommand.flags,
   }
 
-  static args: OutputArgs<typeof NumberCommand.args> = [
+  static args = [
     { name: 'number', required: false },
     { name: 'countryCode', required: false }
   ]
 
   async run() {
-    const args = this.parsedArgs! as OutputArgs<typeof NumberBuy.args> & buyArgs;
+    const args = this.parsedArgs!;
     let resp = await this.numberBuy(args);
     this.log(`Number ${args.number} has been purchased.`)
   }

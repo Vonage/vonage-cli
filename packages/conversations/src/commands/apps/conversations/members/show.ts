@@ -13,7 +13,6 @@ export default class ConversationMemberShow extends ConversationCommand {
     }
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'conversationID', required: false },
         { name: 'memberID', required: false }
     ]

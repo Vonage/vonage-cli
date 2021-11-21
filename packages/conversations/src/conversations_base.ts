@@ -15,10 +15,6 @@ export default abstract class ConversationsCommand extends BaseCommand {
         ...BaseCommand.flags,
     };
 
-    static args = [
-        ...BaseCommand.args,
-    ];
-
     protected _defaultHttpOptions = {
         "method": HTTPMethods.GET,
         "headers": {},
@@ -135,7 +131,7 @@ export default abstract class ConversationsCommand extends BaseCommand {
         return response
     }
 
-    async getConversationsByUser(params) { 
+    async getConversationsByUser(params) {
         const opts = merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._userBaseurl}/${params.userID}/conversations/`;
         opts['method'] = HTTPMethods.GET;

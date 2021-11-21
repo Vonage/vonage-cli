@@ -32,7 +32,7 @@ export default class NumberInsight extends NumberInsightCommand {
     confirm: flags.boolean({ char: 'y', required: false })
   }
 
-  static args: OutputArgs<typeof NumberInsightCommand.args> = [
+  static args = [
     { name: 'number', required: true },
   ]
 

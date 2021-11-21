@@ -14,7 +14,6 @@ export default class ConversationMemberRemove extends ConversationCommand {
     }
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'conversationID', required: false },
         { name: 'memberID', required: false }
     ]

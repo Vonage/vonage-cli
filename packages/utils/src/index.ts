@@ -44,12 +44,9 @@ export default abstract class BaseCommand extends Command {
     protected _keyFile!: any
     protected _userConfig!: UserConfig
 
-    protected parsedArgs?: OutputArgs<any>;
+    protected parsedArgs?: OutputArgs;
     protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
     protected globalFlags?: OutputFlags<any>;
-
-    // add global flags here
-    static args = [];
 
     // add global flags here
     static flags = {

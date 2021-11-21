@@ -23,7 +23,6 @@ export default class UsersCreate extends UserCommand {
     }
 
     static args = [
-        ...UserCommand.args,
         { name: 'name', required: false }
     ]
 

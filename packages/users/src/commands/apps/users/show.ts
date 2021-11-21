@@ -15,7 +15,6 @@ export default class UsersShow extends UserCommand {
     }
 
     static args = [
-        ...UserCommand.args,
         { name: 'userID', required: false }
     ]
 

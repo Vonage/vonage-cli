@@ -15,14 +15,14 @@ export default class NumberCancel extends NumberCommand {
     ...NumberCommand.flags,
   }
 
-  static args: OutputArgs<typeof NumberCommand.args> = [
+  static args = [
     { name: 'number', required: false },
     { name: 'countryCode', required: false }
   ]
 
   async run() {
     // const flags = this.parsedFlags as OutputFlags<typeof NumberBuy.flags>;
-    const args = this.parsedArgs! as OutputArgs<typeof NumberCancel.args> & cancelArgs;
+    const args = this.parsedArgs! as cancelArgs;
     let resp = await this.numberCancel(args);
     this.log(`Number ${args.number} has been cancelled.`)
   }

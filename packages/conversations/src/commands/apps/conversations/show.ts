@@ -8,7 +8,6 @@ export default class ConversationShow extends ConversationCommand {
     ]
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'conversationID', required: false }
     ]
 

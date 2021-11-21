@@ -25,7 +25,6 @@ export default class UsersUpdate extends UserCommand {
     }
 
     static args = [
-        ...UserCommand.args,
         { name: 'userID', required: false }
     ]
 

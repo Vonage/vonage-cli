@@ -10,11 +10,6 @@ export default abstract class NumberCommand extends BaseCommand {
         /* ... */
     };
 
-    static args = [
-        ...BaseCommand.args,
-        /* ... */
-    ];
-
     async catch(error: any) {
         this.error(error);
     }

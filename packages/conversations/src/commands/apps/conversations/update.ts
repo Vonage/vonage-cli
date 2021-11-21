@@ -25,7 +25,6 @@ export default class UserConversations extends ConversationCommand {
     }
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'conversationID', required: false }
     ]
 

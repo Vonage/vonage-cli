@@ -55,13 +55,13 @@ export default class NumberSearch extends NumberCommand {
     })
   }
 
-  static args: OutputArgs<typeof NumberCommand.args> = [
+  static args = [
     { name: 'countryCode', required: false }
   ]
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
-    const args = this.parsedArgs! as OutputArgs<typeof NumberCommand.args> & searchArgs;
+    const args = this.parsedArgs! as searchArgs;
 
     let resp = await this.numberSearch(args.countryCode, flags);
 

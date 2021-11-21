@@ -104,7 +104,6 @@ export default class ApplicationsCreate extends AppCommand {
     }
 
     static args = [
-        ...AppCommand.args,
         { name: 'name', required: false }
     ]
 
