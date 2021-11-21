@@ -105,9 +105,13 @@ export default abstract class BaseCommand extends Command {
         delete this.parsedFlags.apiSecret
         delete this.parsedFlags.trace
 
-        let rawConfig = readFileSync(path.join(this.config.configDir, 'vonage.config.json'))
+        try {
+            let rawConfig = readFileSync(path.join(this.config.configDir, 'vonage.config.json'))
+            this._userConfig = JSON.parse(rawConfig.toString());
+        } catch (error) {
+            // need something when no file exists - do we auto create? ask?
+        }
 
-        this._userConfig = JSON.parse(rawConfig.toString());
         let apiKey, apiSecret, appId, keyFile;
 
         // creds priority order -- flags > env > config

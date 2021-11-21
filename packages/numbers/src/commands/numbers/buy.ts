@@ -25,8 +25,16 @@ export default class NumberBuy extends NumberCommand {
 
   async run() {
     const args = this.parsedArgs!;
-    let resp = await this.numberBuy(args);
-    this.log(`Number ${args.number} has been purchased.`)
+
+    try {
+      let resp = await this.numberBuy(args);
+      this.log(`Number ${args.number} has been purchased.`)
+    } catch (error) {
+      if (error.statusCode === 420) {
+        this.log(error.body['error-code-label'])
+      }
+      this.catch(error);
+    }
   }
 
   async catch(error: any) {
