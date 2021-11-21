@@ -16,7 +16,6 @@ export default class ConfigSet extends BaseCommand {
     }
 
     static args = [
-        ...BaseCommand.args,
     ]
 
     async run() {
