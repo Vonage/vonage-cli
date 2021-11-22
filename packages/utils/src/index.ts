@@ -11,28 +11,28 @@ interface UserConfig {
 }
 
 
-interface IClaims {
-    application_id: string
-    iat?: number,
-    jti?: string,
-    sub?: string,
-    exp?: string,
-    acl?: {
-        paths?: {
-            "/*/users/**"?: any,
-            "/*/conversations/**"?: any,
-            "/*/sessions/**"?: any,
-            "/*/devices/**"?: any,
-            "/*/image/**"?: any,
-            "/*/media/**"?: any,
-            "/*/applications/**"?: any,
-            "/*/push/**"?: any,
-            "/*/knocking/**"?: any,
-            "/*/legs/**"?: any
-        }
-    },
+// interface IClaims {
+//     application_id: string
+//     iat?: number,
+//     jti?: string,
+//     sub?: string,
+//     exp?: string,
+//     acl?: {
+//         paths?: {
+//             "/*/users/**"?: any,
+//             "/*/conversations/**"?: any,
+//             "/*/sessions/**"?: any,
+//             "/*/devices/**"?: any,
+//             "/*/image/**"?: any,
+//             "/*/media/**"?: any,
+//             "/*/applications/**"?: any,
+//             "/*/push/**"?: any,
+//             "/*/knocking/**"?: any,
+//             "/*/legs/**"?: any
+//         }
+//     },
 
-}
+// }
 
 
 export default abstract class BaseCommand extends Command {
@@ -44,7 +44,7 @@ export default abstract class BaseCommand extends Command {
     protected _keyFile!: any
     protected _userConfig!: UserConfig
 
-    protected parsedArgs?: OutputArgs;
+    protected parsedArgs?: OutputArgs<any>;
     protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
     protected globalFlags?: OutputFlags<any>;
 

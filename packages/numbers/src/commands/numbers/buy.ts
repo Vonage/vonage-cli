@@ -1,14 +1,12 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags } from '@oclif/parser';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 
-interface buyArgs {
+interface buyArgs extends OutputArgs<any> {
   number: string,
   countryCode: string
 }
 
 export default class NumberBuy extends NumberCommand {
-  protected parsedArgs: buyArgs;
-
   static description = 'buy a Vonage number'
 
   static examples = []
@@ -23,7 +21,7 @@ export default class NumberBuy extends NumberCommand {
   ]
 
   async run() {
-    const args = this.parsedArgs!;
+    const args = this.parsedArgs! as buyArgs;
 
     try {
       await this.numberBuy(args);

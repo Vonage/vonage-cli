@@ -4,6 +4,7 @@ import { OutputFlags } from '@oclif/parser';
 
 
 export default abstract class NumberCommand extends BaseCommand {
+    protected parsedArgs
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
