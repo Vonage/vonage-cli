@@ -7,12 +7,6 @@ describe('numbers:buy', () => {
     'error-code-label': 'Numbers from this country can be requested from the Dashboard (https://dashboard.nexmo.com/buy-numbers) as they require a valid local address to be provided before being purchased.'
   };
 
-
-  // const updateResponse = {
-  //   "error-code": "200",
-  //   "error-code-label": "success"
-  // };
-
   test
     .env({ VONAGE_API_KEY: '12345', VONAGE_API_SECRET: 'ABCDE' })
     .nock('https://rest.nexmo.com/number', api => api

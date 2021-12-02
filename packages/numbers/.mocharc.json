@@ -2,7 +2,8 @@
     "require": [
         "__tests__/helpers/init.js",
         "ts-node/register",
-        "source-map-support/register"
+        "source-map-support/register",
+        "__tests__/setup.test.ts"
     ],
     "watch-extensions": ["ts"],
     "recursive": true,

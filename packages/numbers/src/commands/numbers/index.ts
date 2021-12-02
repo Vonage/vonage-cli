@@ -21,7 +21,13 @@ export default class NumberList extends NumberCommand {
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberList.flags>
-    let numberData = await this.getAllNumbers({});
+    let numberData;
+    try {
+      numberData = await this.getAllNumbers({});
+    } catch (error) {
+      console.log(error)
+    }
+
 
     try {
       cli.table(numberData.numbers, {
