@@ -1,7 +1,6 @@
-import { OutputFlags } from '@oclif/parser';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
-import cli from 'cli-ux';
 import chalk from 'chalk';
 import { VetchResponse } from '../../../types';
 
@@ -9,6 +8,10 @@ interface UpdateFlags {
     name: any
     display_name: any
     image_url: any
+}
+
+interface UpdateArgs extends OutputArgs<any> {
+    userID: string,
 }
 
 export default class UsersUpdate extends UserCommand {
@@ -30,12 +33,12 @@ export default class UsersUpdate extends UserCommand {
 
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs!;
+        const args = this.parsedArgs! as UpdateArgs;
 
 
         let response = await this.updateUser({ ...args, ...flags }) as VetchResponse;
 
-        this.log(chalk.magenta.underline.bold("User ID:"), args.id)
+        this.log(chalk.magenta.underline.bold("User ID:"), args.userID)
         this.log('')
         this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name})`)
         this.log('')

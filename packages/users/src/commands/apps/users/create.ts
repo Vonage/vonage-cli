@@ -1,4 +1,4 @@
-import { OutputFlags } from '@oclif/parser';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
@@ -8,6 +8,10 @@ import { VetchResponse } from '../../../types';
 interface CreateFlags {
     display_name: any
     image_url: any
+}
+
+interface CreateArgs extends OutputArgs<any> {
+    name: string,
 }
 
 export default class UsersCreate extends UserCommand {
@@ -28,7 +32,7 @@ export default class UsersCreate extends UserCommand {
 
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs!;
+        const args = this.parsedArgs! as CreateArgs;
 
         // check for name
 
