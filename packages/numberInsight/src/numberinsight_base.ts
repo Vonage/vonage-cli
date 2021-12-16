@@ -8,6 +8,10 @@ export default abstract class NumberInsightCommand extends BaseCommand {
         /* ... */
     };
 
+    async catch(error: any) {
+        return super.catch(error);
+    }
+
     getInsights(number, level = 'basic'): any {
         return new Promise((res, rej) => {
             this.vonage.numberInsight.get({ level: level, number: number }, (error: any, result: any) => {
