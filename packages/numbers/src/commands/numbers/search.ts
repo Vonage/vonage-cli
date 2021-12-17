@@ -39,19 +39,20 @@ export default class NumberSearch extends NumberCommand {
       options: ['landline', 'mobile-lvn', 'landline-toll-free']
     }),
     'startsWith': flags.string({
-      description: 'Search for numbers that start with certain numbers.',
+      description: 'Filter from the start of the phone number.',
       exclusive: ['endsWith', 'contains']
     }),
     'endsWith': flags.string({
-      description: '',
+      description: 'Filter from the end of the phone number.',
       exclusive: ['startsWith', 'contains']
     }),
     'contains': flags.string({
-      description: '',
+      description: 'Filter from anywhere in the phone number.',
       exclusive: ['endsWith', 'startsWith']
     }),
     'features': flags.string({
-      description: ''
+      description: 'Available features are SMS, VOICE and MMS. To look for numbers that support multiple features, use a comma-separated value: SMS,MMS,VOICE.',
+      options: ['SMS', 'VOICE', 'SMS,VOICE', 'MMS', 'SMS,MMS', 'VOICE,MMS', 'SMS,MMS,VOICE']
     })
   }
 
@@ -63,31 +64,25 @@ export default class NumberSearch extends NumberCommand {
     const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
     const args = this.parsedArgs! as searchArgs;
 
-    let resp = await this.numberSearch(args.countryCode, flags);
+    let numberData = await this.numberSearch(args.countryCode, flags);
+    cli.table(numberData.numbers, {
+      country: {},
+      msisdn: {
+        header: "Number"
+      },
+      type: {},
+      cost: {},
+      features: {
+        get: (row: any) => row.features.join(',')
+      }
+    }, {
+      ...flags
+    });
 
-    try {
-      cli.table(resp.numbers, {
-        country: {},
-        msisdn: {
-          header: "Number"
-        },
-        type: {},
-        cost: {},
-        features: {
-          get: (row: any) => row.features.join(',')
-        }
-      }, {
-        ...flags
-      });
-    } catch (error) {
-      this.error('No results found.');
-    }
-
-
-    this.exit();
   }
 
   async catch(error: any) {
+    console.log(error)
     return super.catch(error);
   }
 }

@@ -22,19 +22,18 @@ export default class NumberBuy extends NumberCommand {
 
   async run() {
     const args = this.parsedArgs! as buyArgs;
-
-    try {
-      await this.numberBuy(args);
-      this.log(`Number ${args.number} has been purchased.`)
-    } catch (error) {
-      if (error.statusCode === 420) {
-        this.log(error.body['error-code-label'])
-      }
-      this.catch(error);
-    }
+    await this.numberBuy(args);
+    this.log(`Number ${args.number} has been purchased.`)
   }
 
   async catch(error: any) {
+    if (error.statusCode === 420 && error.body['error-code-label'] !== "method failed") { // also handle method failed 420 response
+      this.error("Address Validation Required", {
+        code: "ADDR_VALID",
+        suggestions: [error.body['error-code-label']],
+      })
+    }
+
     return super.catch(error);
   }
 }

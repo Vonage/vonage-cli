@@ -21,36 +21,23 @@ export default class NumberList extends NumberCommand {
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberList.flags>
-    let numberData;
-    try {
-      numberData = await this.getAllNumbers({});
-    } catch (error) {
-      console.log(error)
-    }
-
-
-    try {
-      cli.table(numberData.numbers, {
-        country: {},
-        msisdn: {
-          header: "Number"
-        },
-        type: {},
-        features: {
-          get: (row: any) => row.features.join(',')
-        },
-        app_id: {
-          header: "Application",
-          get: (row: any) => row.app_id || ""
-        }
-      }, {
-        ...flags
-      });
-    } catch (error) {
-      this.error('No results found.')
-    }
-
-    this.exit();
+    let numberData = await this.getAllNumbers({});
+    cli.table(numberData.numbers, {
+      country: {},
+      msisdn: {
+        header: "Number"
+      },
+      type: {},
+      features: {
+        get: (row: any) => row.features.join(',')
+      },
+      app_id: {
+        header: "Application",
+        get: (row: any) => row.app_id || ""
+      }
+    }, {
+      ...flags
+    });
   }
 
   async catch(error: any) {

@@ -28,7 +28,7 @@ export default abstract class NumberCommand extends BaseCommand {
         }
         if (params.contains) {
             searchResponse['pattern'] = params.contains;
-            searchResponse['search_pattern'] = 0
+            searchResponse['search_pattern'] = 1
             delete params.contains
         }
         return Object.assign({}, params, searchResponse)

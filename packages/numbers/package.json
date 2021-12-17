@@ -55,7 +55,7 @@
         "postpack": "rm -f oclif.manifest.json",
         "posttes_delete": "eslint . --ext .ts --config .eslintrc",
         "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
-        "test": "mocha \"__tests__/*.test.ts\"",
+        "test": "mocha \"__tests__/commands/*.test.ts\"",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"

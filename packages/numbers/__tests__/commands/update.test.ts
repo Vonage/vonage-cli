@@ -1,20 +1,15 @@
 import { expect, test } from '@oclif/test';
-import { genericSuccess, genericAuthError, genericFailedError } from '../fixtures/api-responses';
+import { baseHost, genericBody, genericSuccess, genericAuthError, genericFailedError } from '../fixtures/api-responses';
 
 
 describe('numbers:update', async () => {
-    let baseHost = 'https://rest.nexmo.com/number';
-
     test
         .stdout()
         .nock(baseHost, api => api
             .post('/update')
             .query({
                 moHttpUrl: 'https://www.example.com',
-                msisdn: '447700900000',
-                country: 'GB',
-                api_key: '12345',
-                api_secret: 'ABCDE'
+                ...genericBody
             })
             .reply(200, genericSuccess))
         .command(['numbers:update', '447700900000', 'GB', '--url=https://www.example.com'])
@@ -24,42 +19,36 @@ describe('numbers:update', async () => {
 
     test
         .stdout()
-        .nock('https://rest.nexmo.com/number', api => api
+        .nock(baseHost, api => api
             .post('/update')
             .query({
                 moHttpUrl: 'https://www.example.com',
-                msisdn: '447700900000',
-                country: 'GB',
-                api_key: '12345',
-                api_secret: 'ABCDE'
+                ...genericBody
             })
             .reply(401, genericAuthError)
         )
         .command(['numbers:update', '447700900000', 'GB', '--url=https://www.example.com', '--apiKey=12345', '--apiSecret=ABCDE'])
         .catch(ctx => {
-            expect(ctx.message).to.equal(`Authentication failure`)
+            expect(ctx.message).to.equal(`Authentication Failure`);
         })
         .it('notifies on auth failure')
 
-    // //ideally - we would check and validate before this stage so we could provide better feedback
+    //ideally - we would check and validate before this stage so we could provide better feedback
     test
-        .stderr()
-        .nock('https://rest.nexmo.com/number', api => api
+        .stdout()
+        .nock(baseHost, api => api
             .post('/update')
             .query({
                 moHttpUrl: 'https://www.example.com',
-                msisdn: '447700900000',
-                country: 'GB',
-                api_key: '12345',
-                api_secret: 'ABCDE'
+                ...genericBody
             })
             .reply(420, genericFailedError)
         )
         .command(['numbers:update', '447700900000', 'GB', '--url=https://www.example.com', '--apiKey=12345', '--apiSecret=ABCDE'])
         .catch(ctx => {
-            expect(ctx.message).to.equal(`Method failed`)
+            expect(ctx.message).to.equal(`Method Failed`)
         })
-
+        .it('notifies on method failure')
 
 
 });

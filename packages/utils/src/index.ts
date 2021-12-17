@@ -140,17 +140,26 @@ export default abstract class BaseCommand extends Command {
 
 
     async catch(error: any) {
+
         if (error.oclif?.exit === 0) return;
         if (this.globalFlags?.trace) this.log(error.stack)
         if (error.statusCode === 401) {
-            this.error(
-                new Error('Invalid Credentials'),
-                {
-                    code: 'API_AUTH_ERR',
-                    suggestions: [
-                        'Check your config credentials are correct - vonage config',
-                    ]
-                }
+            this.error('Authentication Failure', {
+                code: 'API_AUTH_ERR',
+                suggestions: [
+                    "Verify your Api Key and Api Secret with 'vonage config'.",
+                ]
+            }
+            )
+        }
+
+        if (error.statusCode === 420 && error.body['error-code-label'] === 'method failed') {
+            this.error('Method Failed', {
+                code: 'API_MTHD_ERR',
+                suggestions: [
+                    'Check your inputs are correct.',
+                ]
+            }
             )
         }
 
