@@ -25,7 +25,12 @@ The standard `oclif` `./bin/run` script serves as your entry point to the CLI in
 
 ## Install and Run from Source
 
-Clone the repository to your local machine and then:
+Clone the repository to your local machine.
+
+This repository requires `lerna` to be installed globally. To do that:
+* Run `npm -i -g lerna`
+
+Next, install dependencies and run lerna:
 
 * Run `npm install`
 * Run `lerna bootstrap`
