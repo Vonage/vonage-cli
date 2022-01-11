@@ -28,24 +28,8 @@ export default class NumberUpdate extends NumberCommand {
     async run() {
         const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & webhookFlags;
         const args = this.parsedArgs!;
-        try {
-            await this.numberUpdate(args.number, args.countryCode, { moHttpUrl: flags.url })
-            this.log(`"${flags.url}" set for number ${args.number}`);
-        } catch (error) {
-            if (error.statusCode === 401) {
-                this.error("Authentication failure", {
-                    code: "AUTH_ERR",
-                    suggestions: ["Verify your Api Key and Api Secret with 'vonage config'."],
-                })
-            }
-            if (error.statusCode === 420) {
-                // this.error("Method failure", {
-                //     code: "METHOD_ERR",
-                //     suggestions: ["Check your inputs are correct."],
-                // })
-            }
-            // this.catch(error);
-        }
+        await this.numberUpdate(args.number, args.countryCode, { moHttpUrl: flags.url })
+        this.log(`"${flags.url}" set for number ${args.number}`);
     }
 
     async catch(error: any) {

@@ -27,6 +27,10 @@ export default abstract class UsersCommand extends BaseCommand {
         return;
     }
 
+    async catch(error: any) {
+        return super.catch(error);
+    }
+
     async init(): Promise<void> {
         await super.init();
         await this._generateJWT();
