@@ -1,6 +1,5 @@
 import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
-import chalk from 'chalk';
 import cli from 'cli-ux'
 
 export default class ApplicationsList extends AppCommand {

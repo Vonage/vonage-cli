@@ -3,5 +3,10 @@
     "version": "independent",
     "publishConfig": {
         "directory": "dist"
+    },
+    "command": {
+        "version": {
+            "message": "chore(release): publish %s"
+        }
     }
 }

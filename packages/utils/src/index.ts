@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command';
-import { Input, OutputArgs, OutputFlags } from '@oclif/parser';
+import { OutputArgs, OutputFlags } from '@oclif/parser';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
 import { readFileSync, writeFileSync } from 'fs';
@@ -11,28 +11,28 @@ interface UserConfig {
 }
 
 
-interface IClaims {
-    application_id: string
-    iat?: number,
-    jti?: string,
-    sub?: string,
-    exp?: string,
-    acl?: {
-        paths?: {
-            "/*/users/**"?: any,
-            "/*/conversations/**"?: any,
-            "/*/sessions/**"?: any,
-            "/*/devices/**"?: any,
-            "/*/image/**"?: any,
-            "/*/media/**"?: any,
-            "/*/applications/**"?: any,
-            "/*/push/**"?: any,
-            "/*/knocking/**"?: any,
-            "/*/legs/**"?: any
-        }
-    },
+// interface IClaims {
+//     application_id: string
+//     iat?: number,
+//     jti?: string,
+//     sub?: string,
+//     exp?: string,
+//     acl?: {
+//         paths?: {
+//             "/*/users/**"?: any,
+//             "/*/conversations/**"?: any,
+//             "/*/sessions/**"?: any,
+//             "/*/devices/**"?: any,
+//             "/*/image/**"?: any,
+//             "/*/media/**"?: any,
+//             "/*/applications/**"?: any,
+//             "/*/push/**"?: any,
+//             "/*/knocking/**"?: any,
+//             "/*/legs/**"?: any
+//         }
+//     },
 
-}
+// }
 
 
 export default abstract class BaseCommand extends Command {
@@ -44,12 +44,9 @@ export default abstract class BaseCommand extends Command {
     protected _keyFile!: any
     protected _userConfig!: UserConfig
 
-    protected parsedArgs?: OutputArgs<any>;
+    protected parsedArgs?: OutputArgs;
     protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
     protected globalFlags?: OutputFlags<any>;
-
-    // add global flags here
-    static args = [];
 
     // add global flags here
     static flags = {
@@ -96,8 +93,8 @@ export default abstract class BaseCommand extends Command {
     }
 
     async init(): Promise<void> {
-        const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
-
+        // const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
+        const { args, flags } = this.parse(this.constructor as any) as any;
         this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
         this.parsedArgs = args;
         this.parsedFlags = flags;
@@ -108,9 +105,13 @@ export default abstract class BaseCommand extends Command {
         delete this.parsedFlags.apiSecret
         delete this.parsedFlags.trace
 
-        let rawConfig = readFileSync(path.join(this.config.configDir, 'vonage.config.json'))
+        try {
+            let rawConfig = readFileSync(path.join(this.config.configDir, 'vonage.config.json'))
+            this._userConfig = JSON.parse(rawConfig.toString());
+        } catch (error) {
+            // need something when no file exists - do we auto create? ask?
+        }
 
-        this._userConfig = JSON.parse(rawConfig.toString());
         let apiKey, apiSecret, appId, keyFile;
 
         // creds priority order -- flags > env > config
@@ -139,17 +140,26 @@ export default abstract class BaseCommand extends Command {
 
 
     async catch(error: any) {
+
         if (error.oclif?.exit === 0) return;
         if (this.globalFlags?.trace) this.log(error.stack)
         if (error.statusCode === 401) {
-            this.error(
-                new Error('Invalid Credentials'),
-                {
-                    code: 'API_AUTH_ERR',
-                    suggestions: [
-                        'Check your config credentials are correct - vonage config',
-                    ]
-                }
+            this.error('Authentication Failure', {
+                code: 'API_AUTH_ERR',
+                suggestions: [
+                    "Verify your Api Key and Api Secret with 'vonage config'.",
+                ]
+            }
+            )
+        }
+
+        if (error.statusCode === 420 && error.body['error-code-label'] === 'method failed') {
+            this.error('Method Failed', {
+                code: 'API_MTHD_ERR',
+                suggestions: [
+                    'Check your inputs are correct.',
+                ]
+            }
             )
         }
 

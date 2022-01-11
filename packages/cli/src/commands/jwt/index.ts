@@ -44,7 +44,6 @@ export default class GenerateJWT extends BaseCommand {
     }
 
     static args = [
-        ...BaseCommand.args,
     ]
 
     async run() {

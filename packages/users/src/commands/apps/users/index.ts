@@ -2,7 +2,6 @@ import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
-import chalk from 'chalk';
 import { VetchResponse } from '../../../types';
 
 interface IndexFlags {
@@ -25,11 +24,8 @@ export default class UsersDefault extends UserCommand {
         'cursor': flags.string({ description: '', hidden: true }),
     }
 
-    static args = []
-
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs!;
         let response = await this.getAllUsers(flags) as VetchResponse;
         let userData = response.data._embedded.users;
 

@@ -25,7 +25,6 @@ export default class ConversationCreate extends ConversationCommand {
     }
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'name', required: false }
     ]
 

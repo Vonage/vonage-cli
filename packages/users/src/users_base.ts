@@ -14,10 +14,6 @@ export default abstract class UsersCommand extends BaseCommand {
         ...BaseCommand.flags,
     };
 
-    static args = [
-        ...BaseCommand.args,
-    ];
-
     protected _defaultHttpOptions = {
         "method": HTTPMethods.GET,
         "headers": {},
@@ -29,6 +25,10 @@ export default abstract class UsersCommand extends BaseCommand {
         let app_details = (JSON.parse(app_details_raw.toString()));
         this._token = await tokenGenerate(app_details.application_id, app_details.private_key)
         return;
+    }
+
+    async catch(error: any) {
+        return super.catch(error);
     }
 
     async init(): Promise<void> {

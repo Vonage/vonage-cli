@@ -1,22 +1,17 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
 
-
-
 export default abstract class NumberCommand extends BaseCommand {
+    protected parsedArgs
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
         /* ... */
     };
 
-    static args = [
-        ...BaseCommand.args,
-        /* ... */
-    ];
 
     async catch(error: any) {
-        this.error(error);
+        return super.catch(error);
     }
 
     protected _parseParams(params): any {
@@ -33,7 +28,7 @@ export default abstract class NumberCommand extends BaseCommand {
         }
         if (params.contains) {
             searchResponse['pattern'] = params.contains;
-            searchResponse['search_pattern'] = 0
+            searchResponse['search_pattern'] = 1
             delete params.contains
         }
         return Object.assign({}, params, searchResponse)
@@ -84,7 +79,7 @@ export default abstract class NumberCommand extends BaseCommand {
         })
     }
 
-    numberUpdate(number: string, countryCode: string, options: { voiceCallbackType: string, voiceCallbackValue: string, voiceStatusCallback: string, moHttpUrl: string }): any {
+    numberUpdate(number: string, countryCode: string, options: { voiceCallbackType?: string, voiceCallbackValue?: string, voiceStatusCallback?: string, moHttpUrl?: string }): any {
         return new Promise((res, rej) => {
             this.vonage.number.update(
                 countryCode,

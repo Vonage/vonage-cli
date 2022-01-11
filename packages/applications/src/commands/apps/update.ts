@@ -21,8 +21,6 @@ interface UpdateFlags {
     vbc: any
 }
 
-const kb_article = 'https://help.nexmo.com/hc/en-us/articles/4401914566036';
-
 export default class ApplicationsUpdate extends AppCommand {
     static description = 'update a Vonage application'
 
@@ -150,7 +148,7 @@ export default class ApplicationsUpdate extends AppCommand {
             let updateItem = menu.updateSelection;
 
             while (updateItem !== 'update' && updateItem !== 'cancel') {
-                let { voice, messages, rtc, vbc } = oldAppState.capabilities
+                let { voice, messages, rtc } = oldAppState.capabilities
 
                 if (updateItem === 'name') {
                     let { newAppName } = await prompt([
@@ -221,7 +219,7 @@ export default class ApplicationsUpdate extends AppCommand {
 
 
         cli.action.start(chalk.bold(`Updating "${newAppState.name}"`))
-        let output = await this.updateApplication(newAppState);
+        await this.updateApplication(newAppState);
         cli.action.stop()
     }
 

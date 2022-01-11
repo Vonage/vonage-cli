@@ -1,6 +1,5 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags, OutputArgs } from '@oclif/parser';
-// import { flags } from '@oclif/command'
+import { OutputFlags } from '@oclif/parser';
 
 interface cancelArgs {
   number: string,
@@ -15,15 +14,14 @@ export default class NumberCancel extends NumberCommand {
     ...NumberCommand.flags,
   }
 
-  static args: OutputArgs<typeof NumberCommand.args> = [
+  static args = [
     { name: 'number', required: false },
     { name: 'countryCode', required: false }
   ]
 
   async run() {
-    // const flags = this.parsedFlags as OutputFlags<typeof NumberBuy.flags>;
-    const args = this.parsedArgs! as OutputArgs<typeof NumberCancel.args> & cancelArgs;
-    let resp = await this.numberCancel(args);
+    const args = this.parsedArgs! as cancelArgs;
+    await this.numberCancel(args);
     this.log(`Number ${args.number} has been cancelled.`)
   }
 

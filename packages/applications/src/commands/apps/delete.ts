@@ -30,7 +30,7 @@ export default class ApplicationsDelete extends AppCommand {
     }
 
     async run() {
-        const flags = this.parsedFlags
+        // const flags = this.parsedFlags
         const args = this.parsedArgs!
 
         if (!args.appId) {

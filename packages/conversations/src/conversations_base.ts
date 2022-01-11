@@ -15,10 +15,6 @@ export default abstract class ConversationsCommand extends BaseCommand {
         ...BaseCommand.flags,
     };
 
-    static args = [
-        ...BaseCommand.args,
-    ];
-
     protected _defaultHttpOptions = {
         "method": HTTPMethods.GET,
         "headers": {},
@@ -30,6 +26,10 @@ export default abstract class ConversationsCommand extends BaseCommand {
         let app_details = (JSON.parse(app_details_raw.toString()));
         this._token = await tokenGenerate(app_details.application_id, app_details.private_key)
         return;
+    }
+
+    async catch(error: any) {
+        return super.catch(error);
     }
 
     async init(): Promise<void> {
@@ -135,7 +135,7 @@ export default abstract class ConversationsCommand extends BaseCommand {
         return response
     }
 
-    async getConversationsByUser(params) { 
+    async getConversationsByUser(params) {
         const opts = merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._userBaseurl}/${params.userID}/conversations/`;
         opts['method'] = HTTPMethods.GET;

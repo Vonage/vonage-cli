@@ -32,6 +32,7 @@ USAGE
 * [`oclif-example numbers:buy [NUMBER] [COUNTRYCODE]`](#oclif-example-numbersbuy-number-countrycode)
 * [`oclif-example numbers:cancel [NUMBER] [COUNTRYCODE]`](#oclif-example-numberscancel-number-countrycode)
 * [`oclif-example numbers:search [COUNTRYCODE]`](#oclif-example-numberssearch-countrycode)
+* [`oclif-example numbers:update NUMBER COUNTRYCODE --url=https://www.example.com`](#oclif-example-numbersupdate-number-countrycode---urlhttpswwwexamplecom)
 
 ## `oclif-example numbers`
 
@@ -53,7 +54,7 @@ EXAMPLE
   vonage number
 ```
 
-_See code: [dist/commands/numbers/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/index.js)_
+_See code: [dist/commands/numbers/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/index.ts)_
 
 ## `oclif-example numbers:buy [NUMBER] [COUNTRYCODE]`
 
@@ -67,7 +68,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/numbers/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/buy.js)_
+_See code: [dist/commands/numbers/buy.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/buy.ts)_
 
 ## `oclif-example numbers:cancel [NUMBER] [COUNTRYCODE]`
 
@@ -81,7 +82,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/numbers/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/cancel.js)_
+_See code: [dist/commands/numbers/cancel.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/cancel.ts)_
 
 ## `oclif-example numbers:search [COUNTRYCODE]`
 
@@ -92,12 +93,18 @@ USAGE
   $ oclif-example numbers:search [COUNTRYCODE]
 
 OPTIONS
-  -h, --help                                     show CLI help
-  --contains=contains
-  --endsWith=endsWith
-  --features=features
-  --startsWith=startsWith                        Search for numbers that start with certain numbers.
-  --type=landline|mobile-lvn|landline-toll-free  Filter by type of number, such as mobile or landline
+  -h, --help                                                          show CLI help
+  --contains=contains                                                 Filter from anywhere in the phone number.
+  --endsWith=endsWith                                                 Filter from the end of the phone number.
+
+  --features=SMS|VOICE|SMS,VOICE|MMS|SMS,MMS|VOICE,MMS|SMS,MMS,VOICE  Available features are SMS, VOICE and MMS. To look
+                                                                      for numbers that support multiple features, use a
+                                                                      comma-separated value: SMS,MMS,VOICE.
+
+  --startsWith=startsWith                                             Filter from the start of the phone number.
+
+  --type=landline|mobile-lvn|landline-toll-free                       Filter by type of number, such as mobile or
+                                                                      landline
 
 EXAMPLES
   vonage numbers:search US
@@ -105,5 +112,20 @@ EXAMPLES
   vonage numbers:search US --features=VOICE,SMS --endsWith=1234
 ```
 
-_See code: [dist/commands/numbers/search.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/search.js)_
+_See code: [dist/commands/numbers/search.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/search.ts)_
+
+## `oclif-example numbers:update NUMBER COUNTRYCODE --url=https://www.example.com`
+
+update a Vonage Number
+
+```
+USAGE
+  $ oclif-example numbers:update NUMBER COUNTRYCODE --url=https://www.example.com
+
+OPTIONS
+  -h, --help  show CLI help
+  --url=url   url for mobile inbound webhook
+```
+
+_See code: [dist/commands/numbers/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/update.ts)_
 <!-- commandsstop -->

@@ -46,7 +46,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/index.js)_
+_See code: [dist/commands/apps/users/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/index.ts)_
 
 ## `oclif-example apps:users:create [NAME]`
 
@@ -60,7 +60,7 @@ OPTIONS
   --image_url=image_url
 ```
 
-_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/create.js)_
+_See code: [dist/commands/apps/users/create.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/create.ts)_
 
 ## `oclif-example apps:users:delete [USERID]`
 
@@ -72,7 +72,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/delete.js)_
+_See code: [dist/commands/apps/users/delete.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/delete.ts)_
 
 ## `oclif-example apps:users:show [USERID]`
 
@@ -84,7 +84,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/show.js)_
+_See code: [dist/commands/apps/users/show.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/show.ts)_
 
 ## `oclif-example apps:users:update [USERID]`
 
@@ -99,5 +99,5 @@ OPTIONS
   --name=name
 ```
 
-_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/update.js)_
+_See code: [dist/commands/apps/users/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/apps/users/update.ts)_
 <!-- commandsstop -->

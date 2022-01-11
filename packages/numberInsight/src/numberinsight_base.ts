@@ -8,10 +8,9 @@ export default abstract class NumberInsightCommand extends BaseCommand {
         /* ... */
     };
 
-    static args = [
-        ...BaseCommand.args,
-        /* ... */
-    ];
+    async catch(error: any) {
+        return super.catch(error);
+    }
 
     getInsights(number, level = 'basic'): any {
         return new Promise((res, rej) => {

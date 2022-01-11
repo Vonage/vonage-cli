@@ -27,7 +27,6 @@ export default class ConversationUpdate extends ConversationCommand {
     }
 
     static args = [
-        ...ConversationCommand.args,
         { name: 'userID', required: false }
     ]
 
