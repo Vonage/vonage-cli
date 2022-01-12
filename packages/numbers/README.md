@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numbers
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numbers/1.0.0 linux-x64 node-v12.18.2
+@vonage/cli-plugin-numbers/1.1.0 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -54,7 +54,7 @@ EXAMPLE
   vonage number
 ```
 
-_See code: [dist/commands/numbers/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/index.ts)_
+_See code: [dist/commands/numbers/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numbers/index.ts)_
 
 ## `oclif-example numbers:buy [NUMBER] [COUNTRYCODE]`
 
@@ -68,7 +68,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/numbers/buy.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/buy.ts)_
+_See code: [dist/commands/numbers/buy.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numbers/buy.ts)_
 
 ## `oclif-example numbers:cancel [NUMBER] [COUNTRYCODE]`
 
@@ -82,7 +82,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/numbers/cancel.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/cancel.ts)_
+_See code: [dist/commands/numbers/cancel.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numbers/cancel.ts)_
 
 ## `oclif-example numbers:search [COUNTRYCODE]`
 
@@ -112,7 +112,7 @@ EXAMPLES
   vonage numbers:search US --features=VOICE,SMS --endsWith=1234
 ```
 
-_See code: [dist/commands/numbers/search.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/search.ts)_
+_See code: [dist/commands/numbers/search.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numbers/search.ts)_
 
 ## `oclif-example numbers:update NUMBER COUNTRYCODE --url=https://www.example.com`
 
@@ -127,5 +127,5 @@ OPTIONS
   --url=url   url for mobile inbound webhook
 ```
 
-_See code: [dist/commands/numbers/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0/dist/commands/numbers/update.ts)_
+_See code: [dist/commands/numbers/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numbers/update.ts)_
 <!-- commandsstop -->
