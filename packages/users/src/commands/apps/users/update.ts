@@ -1,4 +1,4 @@
-import { OutputArgs, OutputFlags } from '@oclif/parser';
+import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import chalk from 'chalk';
@@ -10,9 +10,6 @@ interface UpdateFlags {
     image_url: any
 }
 
-interface UpdateArgs extends OutputArgs {
-    userID: string,
-}
 
 export default class UsersUpdate extends UserCommand {
     static description = ""
@@ -33,7 +30,7 @@ export default class UsersUpdate extends UserCommand {
 
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs! as UpdateArgs;
+        const args = this.parsedArgs!;
 
 
         let response = await this.updateUser({ ...args, ...flags }) as VetchResponse;
