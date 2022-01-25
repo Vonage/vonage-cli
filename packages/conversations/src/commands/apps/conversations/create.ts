@@ -50,8 +50,6 @@ export default class ConversationCreate extends ConversationCommand {
     }
 
     async catch(error: any) {
-        console.log(error)
-
         return super.catch(error.response);
     }
 }
