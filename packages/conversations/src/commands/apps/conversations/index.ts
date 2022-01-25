@@ -30,19 +30,26 @@ export default class ConversationDefault extends ConversationCommand {
 
     async run() {
         const flags = this.parsedFlags
-        const args = this.parsedArgs!;
 
         let response = await this.getAllConversations(flags);
 
         let conversationsList = response.data?._embedded.conversations;
 
         cli.table(conversationsList, {
-            id: {},
+            display_name: {
+                header: 'Display Name',
+                get: row => row ? '' : row
+            },
+            id: {
+                header: 'ID'
+            },
             name: {},
         }, {
             ...flags
         })
+    }
 
-        this.exit();
+    async catch(error: any) {
+        return super.catch(error.response)
     }
 }

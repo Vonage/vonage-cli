@@ -17,14 +17,18 @@ export default class ConversationDelete extends ConversationCommand {
     ]
 
     async run() {
-        const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
         // validate proper response
         let response = await this.deleteConversation(args.conversationID);
+
         if (response.status === 204) {
-            this.log(`Conversation ${chalk.bold(args.conversationID)} deleted.`)
+            this.log(`Conversation ${chalk.bold(args.conversationID)} successfully deleted.`)
         }
 
+    }
+
+    async catch(error: any) {
+        return super.catch(error.response);
     }
 }

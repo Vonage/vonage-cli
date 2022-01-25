@@ -1,7 +1,6 @@
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import ConversationCommand from '../../../conversations_base';
-import cli from 'cli-ux';
 import chalk from 'chalk';
 
 interface CreateFlags {
@@ -32,24 +31,27 @@ export default class ConversationCreate extends ConversationCommand {
         const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
-
-        cli.action.start(chalk.bold('Creating Conversation'), 'Initializing', { stdout: true })
-
         let response = await this.createConversation({ ...flags, ...args });
 
-        cli.action.stop()
-
-        this.log(chalk.magenta.underline.bold("User ID:"), response.data.id)
+        this.log(chalk.magenta.underline.bold("Conversation Display Name:"), response.data.name, `(${response.data.display_name || `''`})`)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Name:"), response.data.name, `(${response.data.display_name || ""})`)
+        this.log(chalk.magenta.underline.bold("Conversation ID:"), response.data.id)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Image Url:"), response.data.image_url || "None")
+        this.log(chalk.magenta.underline.bold("Image Url:"), `'${response.data.image_url}'` || `'None'`)
         this.log('')
         this.log(chalk.magenta.underline.bold("State:"), response.data.state)
         this.log('')
-        this.log(chalk.magenta.underline.bold("Created:"), response.data.timestamp.created) // use moment here
+        this.log(chalk.magenta.underline.bold("Sequence Number:"), response.data.sequence_number)
         this.log('')
-        // this.log(chalk.magenta.underline.bold("TTL:"), response.data.properties.ttl, `(minutes remaining)`) // use moment here to get time remaining if > 0
-        // this.log('')
+        this.log(chalk.magenta.underline.bold("Created:"), response.data.timestamp.created)
+        this.log('')
+        this.log(chalk.magenta.underline.bold("Time to Live:"), response.data.properties.ttl)
+        this.log('')
+    }
+
+    async catch(error: any) {
+        console.log(error)
+
+        return super.catch(error.response);
     }
 }

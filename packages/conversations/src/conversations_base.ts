@@ -29,6 +29,41 @@ export default abstract class ConversationsCommand extends BaseCommand {
     }
 
     async catch(error: any) {
+        if (error.status === 400) {
+            this.error(error.statusText, {
+                code: error.data.code,
+                suggestions: [error.data.detail]
+            }
+            )
+        }
+
+        if (error.status === 401) {
+            this.error('Authentication Failure', {
+                code: 'API_AUTH_ERR',
+                suggestions: [
+                    "Check the 'vonage_app.json' and make sure the information is correct",
+                    "Verify your Api Key and Api Secret with 'vonage config'.",
+                ]
+            }
+            )
+        }
+
+        if (error.status === 404) {
+            this.error(error.statusText, {
+                code: error.data.code,
+                suggestions: [error.data.detail]
+            }
+            )
+        }
+
+        if (error.status === 500) {
+            this.error(error.statusText, {
+                code: error.data.code,
+                suggestions: [error.data.detail]
+            }
+            )
+        }
+
         return super.catch(error);
     }
 
@@ -69,6 +104,7 @@ export default abstract class ConversationsCommand extends BaseCommand {
         const opts = merge({}, this._defaultHttpOptions)
         opts['url'] = `${this._baseurl}/${params.conversationID}`;
         opts['method'] = HTTPMethods.PUT;
+        delete params.conversationID;
         opts['data'] = params;
         opts['headers']['Authorization'] = `Bearer ${this._token}`
         let response = await request(opts);
