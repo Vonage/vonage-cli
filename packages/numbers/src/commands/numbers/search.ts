@@ -18,10 +18,6 @@ interface searchFlags {
   features?: any
 }
 
-interface searchArgs {
-  countryCode?: string
-}
-
 
 export default class NumberSearch extends NumberCommand {
   static description = 'search for available Vonage numbers'
@@ -62,7 +58,7 @@ export default class NumberSearch extends NumberCommand {
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
-    const args = this.parsedArgs! as searchArgs;
+    const args = this.parsedArgs!;
 
     let numberData = await this.numberSearch(args.countryCode, flags);
     cli.table(numberData.numbers, {

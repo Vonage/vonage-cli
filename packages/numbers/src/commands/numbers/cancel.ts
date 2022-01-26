@@ -1,10 +1,7 @@
 import NumberCommand from '../../number_base';
 import { OutputFlags } from '@oclif/parser';
 
-interface cancelArgs {
-  number: string,
-  countryCode: string
-}
+
 export default class NumberCancel extends NumberCommand {
   static description = 'cancel a Vonage number'
 
@@ -20,7 +17,7 @@ export default class NumberCancel extends NumberCommand {
   ]
 
   async run() {
-    const args = this.parsedArgs! as cancelArgs;
+    const args = this.parsedArgs!;
     await this.numberCancel(args);
     this.log(`Number ${args.number} has been cancelled.`)
   }
