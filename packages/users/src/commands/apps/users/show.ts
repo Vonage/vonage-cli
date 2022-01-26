@@ -1,11 +1,8 @@
-import { OutputArgs, OutputFlags } from '@oclif/parser';
+import { OutputFlags } from '@oclif/parser';
 import UserCommand from '../../../users_base';
 import chalk from 'chalk';
 import { VetchResponse } from '../../../types';
 
-interface ShowArgs extends OutputArgs {
-    userID: string,
-}
 
 export default class UsersShow extends UserCommand {
     static description = ""
@@ -22,7 +19,7 @@ export default class UsersShow extends UserCommand {
     ]
 
     async run() {
-        const args = this.parsedArgs! as ShowArgs;
+        const args = this.parsedArgs!;
 
         let response = await this.getUserById(args.userID) as VetchResponse;
 

@@ -1,5 +1,5 @@
 import { Command, flags } from '@oclif/command';
-import { OutputArgs, OutputFlags } from '@oclif/parser';
+import { OutputFlags } from '@oclif/parser';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
 import { readFileSync, writeFileSync } from 'fs';
@@ -44,7 +44,7 @@ export default abstract class BaseCommand extends Command {
     protected _keyFile!: any
     protected _userConfig!: UserConfig
 
-    protected parsedArgs?: OutputArgs;
+    protected parsedArgs?;
     protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
     protected globalFlags?: OutputFlags<any>;
 

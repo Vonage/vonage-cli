@@ -1,5 +1,5 @@
 import NumberInsightCommand from '../../numberinsight_base';
-import { OutputFlags, OutputArgs, flags } from '@oclif/parser';
+import { OutputFlags, flags } from '@oclif/parser';
 import { startCase, toLower } from 'lodash';
 import { prompt } from 'prompts'
 import chalk from 'chalk';
