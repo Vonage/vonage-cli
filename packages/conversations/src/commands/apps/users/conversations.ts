@@ -47,4 +47,8 @@ export default class ConversationUpdate extends ConversationCommand {
             ...flags
         })
     }
+
+    async catch(error: any) {
+        return super.catch(error.response);
+    }
 }

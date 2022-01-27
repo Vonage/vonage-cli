@@ -1,5 +1,4 @@
 import { OutputFlags } from '@oclif/parser';
-import cli from 'cli-ux';
 import chalk from 'chalk';
 import ConversationCommand from '../../../../conversations_base';
 
@@ -19,11 +18,14 @@ export default class ConversationMemberRemove extends ConversationCommand {
     ]
 
     async run() {
-        const flags = this.parsedFlags
         const args = this.parsedArgs!;
 
-        let response = await this.removeMemberFromConversation(args);
+        await this.removeMemberFromConversation(args);
 
         this.log(`Member ${chalk.bold(args.memberID)} removed from Conversation ${chalk.bold(args.conversationID)}.`)
+    }
+
+    async catch(error: any) {
+        return super.catch(error.response);
     }
 }

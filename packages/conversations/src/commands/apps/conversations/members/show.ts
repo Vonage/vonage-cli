@@ -32,4 +32,8 @@ export default class ConversationMemberShow extends ConversationCommand {
         this.log(chalk.magenta.underline.bold("State:"), response.data.state)
         this.log('')
     }
+
+    async catch(error: any) {
+        return super.catch(error.response);
+    }
 }

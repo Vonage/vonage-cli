@@ -43,4 +43,8 @@ export default class ConversationMemberDefault extends ConversationCommand {
 
         this.exit();
     }
+
+    async catch(error: any) {
+        return super.catch(error.response);
+    }
 }

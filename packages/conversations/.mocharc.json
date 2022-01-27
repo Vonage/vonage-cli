@@ -1,0 +1,13 @@
+{
+    "require": [
+        "__tests__/init.js",
+        "__tests__/helpers.js",
+        "ts-node/register",
+        "source-map-support/register",
+        "__tests__/setup.test.ts"
+    ],
+    "watch-extensions": ["ts"],
+    "recursive": true,
+    "reporter": "list",
+    "timeout": 60000
+}
