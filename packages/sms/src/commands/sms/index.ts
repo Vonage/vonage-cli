@@ -1,6 +1,6 @@
 import BaseCommand from '@vonage/cli-utils';
 import { request } from '@vonage/vetch'
-import { flags, OutputFlags } from '@oclif/parser';;
+import { flags, OutputFlags } from '@oclif/parser';
 
 interface SMSFlags {
   to: any,
