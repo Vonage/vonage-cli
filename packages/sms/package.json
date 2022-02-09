@@ -41,7 +41,9 @@
     ],
     "homepage": "https://github.com/Vonage/vonage-cli",
     "keywords": [
-        "oclif-plugin"
+        "vonage-plugin",
+        "vonage",
+        "cli-plugin-sms"
     ],
     "license": "MIT",
     "oclif": {
