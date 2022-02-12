@@ -12,7 +12,11 @@ export default class SMSSend extends BaseCommand {
   static description = 'Send a simple SMS.'
 
   static examples = [
-    `vonage sms --to=15551234567 --from=15551234567 --message="Hello there!`,
+    `vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
+  ]
+
+  static usage = [
+    `vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
   ]
 
   static flags: OutputFlags<typeof BaseCommand.flags> & SMSFlags = {
@@ -31,7 +35,6 @@ export default class SMSSend extends BaseCommand {
   static args = []
 
   async sendSMS(params) {
-
     let opts = {};
     opts['url'] = `https://rest.nexmo.com/sms/json`;
     opts['method'] = 'POST'
@@ -40,6 +43,8 @@ export default class SMSSend extends BaseCommand {
     let response = await request(opts);
     return response;
   }
+
+
 
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof BaseCommand.flags> & SMSFlags;
