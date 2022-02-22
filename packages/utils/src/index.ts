@@ -94,9 +94,8 @@ export default abstract class BaseCommand extends Command {
 
     async init(): Promise<void> {
         // const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
-        const { args, flags } = this.parse(this.constructor as any) as any;
+        const { flags } = this.parse(this.constructor as any) as any;
         this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
-        this.parsedArgs = args;
         this.parsedFlags = flags;
         this.Vonage = Vonage;
 
