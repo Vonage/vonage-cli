@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numberinsight
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numberinsight/1.1.0 linux-x64 node-v12.18.2
+@vonage/cli-plugin-numberinsight/1.1.1 linux-x64 node-v12.18.2
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -48,5 +48,5 @@ EXAMPLES
   vonage numberinsight 15555555555 --level=advanced
 ```
 
-_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.1.0/dist/commands/numberinsight/index.js)_
+_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.1.1/dist/commands/numberinsight/index.js)_
 <!-- commandsstop -->

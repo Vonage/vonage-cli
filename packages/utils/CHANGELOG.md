@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/Vonage/vonage-cli/compare/@vonage/cli-utils@1.1.0...@vonage/cli-utils@1.2.0) (2022-02-22)
+
+
+### Bug Fixes
+
+* **utils:** Fix build issue with OutputArgs ([#47](https://github.com/Vonage/vonage-cli/issues/47)) ([73671ee](https://github.com/Vonage/vonage-cli/commit/73671eecccddf2be6eb8cbf992b402895ae1b40c))
+
+
+### Features
+
+* **sms:** Add SMS plugin ([#49](https://github.com/Vonage/vonage-cli/issues/49)) ([67947f9](https://github.com/Vonage/vonage-cli/commit/67947f977938a507ae5a1b922d67f6af975e779f))
+
+
+
+
+
 # [1.1.0](https://github.com/Vonage/vonage-cli/compare/@vonage/cli-utils@1.0.0...@vonage/cli-utils@1.1.0) (2022-01-12)
 
 

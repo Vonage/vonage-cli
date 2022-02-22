@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-users",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",
@@ -10,7 +10,7 @@
         "@oclif/config": "^1.17.0",
         "@oclif/parser": "^3.8.5",
         "@vonage/auth": "^3.0.0-beta.0",
-        "@vonage/cli-utils": "^1.1.0",
+        "@vonage/cli-utils": "^1.2.0",
         "@vonage/jwt": "^3.0.0-beta.0",
         "@vonage/vetch": "^3.0.0-beta.0",
         "chalk": "^2.4.2",
