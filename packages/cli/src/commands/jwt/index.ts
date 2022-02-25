@@ -38,7 +38,6 @@ export default class GenerateJWT extends BaseCommand {
         acl: flags.string({
             required: false,
             description: `Read more about it in the ACL overview - https://developer.vonage.com/conversation/guides/jwt-acl#acls`,
-            default: '{}'
         }),
         exp: flags.string({ required: false, description: "Expiration of created JWT - defaults to 24 hours." }),
     }
@@ -52,9 +51,10 @@ export default class GenerateJWT extends BaseCommand {
         let claims = {
             application_id: flags.app_id,
             sub: flags.subject,
-            acl: JSON.parse(flags.acl),
             exp: flags.exp || Date.now() + 21600
         }
+
+        flags.acl ? claims['acl'] = flags.acl : null;
 
         let jwt = this.Vonage.generateJwt(private_key, claims)
 
