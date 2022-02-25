@@ -94,9 +94,10 @@ export default abstract class BaseCommand extends Command {
 
     async init(): Promise<void> {
         // const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
-        const { flags } = this.parse(this.constructor as any) as any;
+        const { args, flags } = this.parse(this.constructor as any) as any;
         this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
         this.parsedFlags = flags;
+        this.parsedArgs = args;
         this.Vonage = Vonage;
 
         //this removes the global flags from the command, so checking for interactive mode is possible.

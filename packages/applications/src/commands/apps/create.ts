@@ -36,7 +36,7 @@ export default class ApplicationsCreate extends AppCommand {
     static description = 'create a new Vonage application'
 
     static examples = [
-        'vonage apps:create', 'vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com'
+        'vonage apps:create', 'vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com --voice_event_url=https://www.sample.com'
     ]
 
     static flags: OutputFlags<typeof AppCommand.flags> & CreateFlags = {
@@ -111,7 +111,6 @@ export default class ApplicationsCreate extends AppCommand {
         const flags = this.parsedFlags;
         const args = this.parsedArgs!;
         let response: any = { name: '', capabilities: {}, privacy: { improve_ai: false } };
-
 
         if (!args.name && Object.keys(flags).length > 0) {
             this.error(new Error('Argument \'name\' not provided'))
