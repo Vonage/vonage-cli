@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-conversations
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-conversations/1.0.0-beta.15 linux-x64 node-v12.18.2
+@vonage/cli-plugin-conversations/1.0.0-beta.16 linux-x64 node-v16.14.0
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -53,7 +53,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/index.ts)_
+_See code: [dist/commands/apps/conversations/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/index.ts)_
 
 ## `oclif-example apps:conversations:create [NAME]`
 
@@ -70,7 +70,7 @@ OPTIONS
   --ttl=ttl
 ```
 
-_See code: [dist/commands/apps/conversations/create.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/create.ts)_
+_See code: [dist/commands/apps/conversations/create.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/create.ts)_
 
 ## `oclif-example apps:conversations:delete [CONVERSATIONID]`
 
@@ -84,7 +84,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/delete.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/delete.ts)_
+_See code: [dist/commands/apps/conversations/delete.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/delete.ts)_
 
 ## `oclif-example apps:conversations:members [CONVERSATIONID]`
 
@@ -98,7 +98,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/members/index.ts)_
+_See code: [dist/commands/apps/conversations/members/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/members/index.ts)_
 
 ## `oclif-example apps:conversations:members:add [CONVERSATIONID] [USERID]`
 
@@ -112,7 +112,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/add.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/members/add.ts)_
+_See code: [dist/commands/apps/conversations/members/add.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/members/add.ts)_
 
 ## `oclif-example apps:conversations:members:remove [CONVERSATIONID] [MEMBERID]`
 
@@ -126,7 +126,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/remove.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/members/remove.ts)_
+_See code: [dist/commands/apps/conversations/members/remove.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/members/remove.ts)_
 
 ## `oclif-example apps:conversations:members:show [CONVERSATIONID] [MEMBERID]`
 
@@ -140,7 +140,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/members/show.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/members/show.ts)_
+_See code: [dist/commands/apps/conversations/members/show.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/members/show.ts)_
 
 ## `oclif-example apps:conversations:show [CONVERSATIONID]`
 
@@ -154,7 +154,7 @@ OPTIONS
   -h, --help  show CLI help
 ```
 
-_See code: [dist/commands/apps/conversations/show.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/show.ts)_
+_See code: [dist/commands/apps/conversations/show.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/show.ts)_
 
 ## `oclif-example apps:conversations:update [CONVERSATIONID]`
 
@@ -172,7 +172,7 @@ OPTIONS
   --ttl=ttl
 ```
 
-_See code: [dist/commands/apps/conversations/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/conversations/update.ts)_
+_See code: [dist/commands/apps/conversations/update.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/conversations/update.ts)_
 
 ## `oclif-example apps:users:conversations [USERID]`
 
@@ -189,5 +189,5 @@ OPTIONS
   --page_size=page_size
 ```
 
-_See code: [dist/commands/apps/users/conversations.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.15/dist/commands/apps/users/conversations.ts)_
+_See code: [dist/commands/apps/users/conversations.ts](https://github.com/Vonage/vonage-cli/blob/v1.0.0-beta.16/dist/commands/apps/users/conversations.ts)_
 <!-- commandsstop -->
