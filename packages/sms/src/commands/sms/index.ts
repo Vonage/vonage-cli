@@ -16,10 +16,10 @@ export default class SMSSend extends BaseCommand {
   ]
 
   static usage = [
-    `vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
+    `sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
   ]
 
-  static flags: OutputFlags<typeof BaseCommand.flags> & SMSFlags = {
+  static flags = {
     ...BaseCommand.flags,
     "to": flags.string({
       required: true
@@ -31,8 +31,6 @@ export default class SMSSend extends BaseCommand {
       default: "Hello from the Vonage CLI!"
     })
   }
-
-  static args = []
 
   async sendSMS(params) {
     let opts = {};
@@ -62,4 +60,5 @@ export default class SMSSend extends BaseCommand {
   async catch(error: any) {
     return super.catch(error);
   }
+
 }
