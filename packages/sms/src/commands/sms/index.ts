@@ -19,7 +19,7 @@ export default class SMSSend extends BaseCommand {
     `sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
   ]
 
-  static flags = {
+  static flags: OutputFlags<typeof BaseCommand.flags> & SMSFlags = {
     ...BaseCommand.flags,
     "to": flags.string({
       required: true
