@@ -1,5 +1,6 @@
 import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import UserCommand from '../../../users_base';
 import cli from 'cli-ux';
 import chalk from 'chalk';
@@ -10,7 +11,7 @@ interface CreateFlags {
     image_url: any
 }
 
-export default class UsersCreate extends UserCommand {
+export default class UsersCreate extends UserCommand<typeof UsersCreate.flags> {
     static description = ""
 
     static examples = [
@@ -22,7 +23,7 @@ export default class UsersCreate extends UserCommand {
         'image_url': flags.string({ description: '' }),
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'name', required: false }
     ]
 

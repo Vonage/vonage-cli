@@ -1,23 +1,16 @@
-import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
 import ConversationCommand from '../../../conversations_base';
 import cli from 'cli-ux';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
-interface IndexFlags {
-    date_start: any
-    date_end: any
-    page_size: any
-    order: any
-    cursor: any
-}
 
-export default class ConversationUpdate extends ConversationCommand {
+export default class ConversationUpdate extends ConversationCommand<typeof ConversationUpdate.flags> {
     static description = ""
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> & IndexFlags = {
+    static flags = {
         ...ConversationCommand.flags,
         'date_start': flags.string({ description: '' }), // make defaults
         'date_end': flags.string({ description: '' }),
@@ -26,7 +19,7 @@ export default class ConversationUpdate extends ConversationCommand {
         'cursor': flags.string({ description: '' }),
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'userID', required: false }
     ]
 

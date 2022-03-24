@@ -2,9 +2,10 @@ import { OutputFlags } from '@oclif/parser';
 import UserCommand from '../../../users_base';
 import chalk from 'chalk';
 import { VetchResponse } from '../../../types';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 
-export default class UsersShow extends UserCommand {
+export default class UsersShow extends UserCommand<typeof UsersShow.flags> {
     static description = ""
 
     static examples = [
@@ -14,7 +15,7 @@ export default class UsersShow extends UserCommand {
         ...UserCommand.flags
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'userID', required: false }
     ]
 

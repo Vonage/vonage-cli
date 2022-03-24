@@ -1,32 +1,28 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command';
+import { Flags } from '@oclif/core';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
-interface webhookFlags {
-    url: string
-}
-
-export default class NumberUpdate extends NumberCommand {
+export default class NumberUpdate extends NumberCommand<typeof NumberUpdate.flags> {
     static description = 'update a Vonage Number'
 
     static examples = []
 
     static flags = {
         ...NumberCommand.flags,
-        'url': flags.string({
+        'url': Flags.string({
             description: 'url for mobile inbound webhook',
         }),
     }
 
     static usage = ['numbers:update NUMBER COUNTRYCODE --url=https://www.example.com']
 
-    static args = [
+    static args: ArgInput = [
         { name: 'number', required: true },
         { name: 'countryCode', required: true }
     ]
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & webhookFlags;
+        const flags = this.parsedFlags;
         const args = this.parsedArgs!;
         await this.numberUpdate(args.number, args.countryCode, { moHttpUrl: flags.url })
         this.log(`"${flags.url}" set for number ${args.number}`);

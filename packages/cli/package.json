@@ -101,5 +101,8 @@
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
     },
-    "gitHead": "e04bdc633e101ef1c1fe0190ed5d2f8452253dc4"
+    "gitHead": "e04bdc633e101ef1c1fe0190ed5d2f8452253dc4",
+    "devDependencies": {
+        "@oclif/core": "^1.6.3"
+    }
 }

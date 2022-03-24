@@ -19,6 +19,7 @@
         "unique-names-generator": "^4.3.1"
     },
     "devDependencies": {
+        "@oclif/core": "^1.6.3",
         "@oclif/test": "^1.2.8",
         "@types/chai": "^4.2.22",
         "@types/lodash.merge": "^4.6.6",

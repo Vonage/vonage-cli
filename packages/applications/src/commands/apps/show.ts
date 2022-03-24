@@ -1,19 +1,18 @@
 import AppCommand from '../../app_base';
 import { prompt } from 'prompts'
-import { OutputFlags } from '@oclif/parser';
-
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import chalk from 'chalk'
 
-export default class ApplicationsShow extends AppCommand {
+export default class ApplicationsShow extends AppCommand<typeof ApplicationsShow.flags> {
     static description = 'show Vonage application details';
 
-    static flags: OutputFlags<typeof AppCommand.flags> = {
+    static flags = {
         ...AppCommand.flags,
     }
 
     static examples = []
 
-    static args = [
+    static args: ArgInput = [
         { name: 'appId', required: false },
     ]
 

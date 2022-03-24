@@ -1,18 +1,19 @@
-import { OutputFlags } from '@oclif/parser';
 import chalk from 'chalk';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import ConversationCommand from '../../../../conversations_base';
 
-export default class ConversationMemberShow extends ConversationCommand {
+
+export default class ConversationMemberShow extends ConversationCommand<typeof ConversationMemberShow.flags> {
     static description = "Show specific member"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> = {
+    static flags = {
         ...ConversationCommand.flags
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'conversationID', required: false },
         { name: 'memberID', required: false }
     ]

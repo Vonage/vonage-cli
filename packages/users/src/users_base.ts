@@ -1,17 +1,24 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import { tokenGenerate } from '@vonage/jwt';
 import { request } from '@vonage/vetch';
 import { readFileSync } from 'fs';
 import { merge } from 'lodash';
 import { HTTPMethods, ResponseTypes } from './types';
 
-export default abstract class UsersCommand extends BaseCommand {
+export default abstract class UsersCommand<T extends typeof BaseCommand.flags> extends BaseCommand<T> {
     protected _token!: string
     protected _baseurl = `https://api.nexmo.com/v0.3/users`;
+    protected parsedArgs
+    protected parsedFlags
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
+    };
+
+    static args: ArgInput = {
+        ...BaseCommand.args,
     };
 
     protected _defaultHttpOptions = {

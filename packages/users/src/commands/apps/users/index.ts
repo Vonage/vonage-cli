@@ -10,7 +10,7 @@ interface IndexFlags {
     cursor: any
 }
 
-export default class UsersDefault extends UserCommand {
+export default class UsersDefault extends UserCommand<typeof UsersDefault.flags> {
     static description = ""
 
     static examples = [

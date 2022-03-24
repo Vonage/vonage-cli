@@ -8,7 +8,7 @@ interface SMSFlags {
   message?: any
 }
 
-export default class SMSSend extends BaseCommand {
+export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
   static description = 'Send a simple SMS.'
 
   static examples = [

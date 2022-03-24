@@ -1,13 +1,13 @@
 import AppCommand from '../../app_base';
 import { prompt } from 'prompts'
-import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import chalk from 'chalk';
 import cli from 'cli-ux';
 
-export default class ApplicationsDelete extends AppCommand {
+export default class ApplicationsDelete extends AppCommand<typeof ApplicationsDelete.flags> {
     static description = 'delete a Vonage application'
 
-    static flags: OutputFlags<typeof AppCommand.flags> = {
+    static flags = {
         ...AppCommand.flags,
     }
 
@@ -16,7 +16,7 @@ export default class ApplicationsDelete extends AppCommand {
         `vonage apps:delete`
     ]
 
-    static args = [
+    static args: ArgInput = [
         { name: 'appId', required: false },
     ]
 

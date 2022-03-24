@@ -1,9 +1,10 @@
 import { OutputFlags } from '@oclif/parser';
 import UserCommand from '../../../users_base';
 import chalk from 'chalk';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 
-export default class UsersDelete extends UserCommand {
+export default class UsersDelete extends UserCommand<typeof UsersDelete.flags> {
     static description = ""
 
     static examples = [
@@ -13,7 +14,7 @@ export default class UsersDelete extends UserCommand {
         ...UserCommand.flags
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'userID', required: false },
     ]
 

@@ -47,5 +47,8 @@
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
         "build": "rm -rf ./dist && tsc -b"
+    },
+    "devDependencies": {
+        "@oclif/core": "^1.6.3"
     }
 }

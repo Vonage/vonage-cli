@@ -1,13 +1,19 @@
 import ConversationCommand from '../../../conversations_base';
 import chalk from 'chalk';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
-export default class ConversationShow extends ConversationCommand {
+export default class ConversationShow extends ConversationCommand<typeof ConversationShow.flags> {
     static description = "Show conversation details"
 
     static examples = [
     ]
 
-    static args = [
+    static flags = {
+        ...ConversationCommand.flags,
+        /* ... */
+    };
+
+    static args: ArgInput = [
         { name: 'conversationID', required: false }
     ]
 

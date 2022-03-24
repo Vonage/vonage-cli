@@ -1,17 +1,17 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 
-export default class NumberBuy extends NumberCommand {
+export default class NumberBuy extends NumberCommand<typeof NumberBuy.flags> {
   static description = 'buy a Vonage number'
 
   static examples = []
 
-  static flags: OutputFlags<typeof NumberCommand.flags> = {
+  static flags = {
     ...NumberCommand.flags,
   }
 
-  static args = [
+  static args: ArgInput = [
     { name: 'number', required: false },
     { name: 'countryCode', required: false }
   ]

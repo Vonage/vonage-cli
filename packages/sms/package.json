@@ -15,6 +15,7 @@
         "prompts": "^2.4.0"
     },
     "devDependencies": {
+        "@oclif/core": "^1.6.3",
         "@oclif/test": "^1.2.8",
         "@types/chai": "^4.2.22",
         "@types/inquirer": "^7.3.1",

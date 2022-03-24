@@ -1,6 +1,6 @@
 import NumberCommand from '../../number_base';
-import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 import cli from 'cli-ux'
 
@@ -10,16 +10,8 @@ import cli from 'cli-ux'
 //var countries = require("i18n-iso-countries");
 //console.log(countries.getNames("en", {select: "official"}));
 
-interface searchFlags {
-  type?: any,
-  startsWith?: any,
-  endsWith?: any,
-  contains?: any
-  features?: any
-}
 
-
-export default class NumberSearch extends NumberCommand {
+export default class NumberSearch extends NumberCommand<typeof NumberSearch.flags> {
   static description = 'search for available Vonage numbers'
 
   static examples = [
@@ -28,7 +20,7 @@ export default class NumberSearch extends NumberCommand {
     `vonage numbers:search US --features=VOICE,SMS --endsWith=1234`
   ]
 
-  static flags: OutputFlags<typeof NumberCommand.flags> & searchFlags = {
+  static flags = {
     ...NumberCommand.flags,
     'type': flags.string({
       description: 'Filter by type of number, such as mobile or landline',
@@ -52,12 +44,12 @@ export default class NumberSearch extends NumberCommand {
     })
   }
 
-  static args = [
+  static args: ArgInput = [
     { name: 'countryCode', required: false }
   ]
 
   async run() {
-    const flags = this.parsedFlags as OutputFlags<typeof NumberCommand.flags> & searchFlags
+    const flags = this.parsedFlags;
     const args = this.parsedArgs!;
 
     let numberData = await this.numberSearch(args.countryCode, flags);

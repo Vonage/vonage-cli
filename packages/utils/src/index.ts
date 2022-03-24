@@ -1,5 +1,5 @@
-import { Command, flags } from '@oclif/command';
-import { OutputFlags } from '@oclif/parser';
+import { Command, flags, } from '@oclif/command';
+import { FlagInput, OutputFlags, ParserOutput } from '@oclif/core/lib/interfaces';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
 import { readFileSync, writeFileSync } from 'fs';
@@ -34,8 +34,14 @@ interface UserConfig {
 
 // }
 
+export type InferredFlagsType<T> = T extends FlagInput<infer F>
+    ? F & {
+        json: boolean | undefined;
+    }
+    : any;
 
-export default abstract class BaseCommand extends Command {
+
+export default abstract class BaseCommand<T extends typeof BaseCommand.flags> extends Command {
     private _vonage!: any;
     protected Vonage!: any;
     protected _apiKey!: any;
@@ -43,10 +49,11 @@ export default abstract class BaseCommand extends Command {
     protected _appId!: any
     protected _keyFile!: any
     protected _userConfig!: UserConfig
-
-    protected parsedArgs?;
-    protected parsedFlags?: OutputFlags<typeof BaseCommand.flags>;
     protected globalFlags?: OutputFlags<any>;
+    protected parsedArgs: { [name: string]: any };
+    protected parsedFlags: InferredFlagsType<T>;
+    protected parsedOutput?: ParserOutput<any, any>;
+
 
     // add global flags here
     static flags = {
@@ -93,11 +100,13 @@ export default abstract class BaseCommand extends Command {
     }
 
     async init(): Promise<void> {
-        // const { args, flags } = this.parse(this.constructor as Input<typeof BaseCommand.flags>);
-        const { args, flags } = this.parse(this.constructor as any) as any;
+        this.parsedOutput = await this.parse(this.ctor);
+        this.parsedFlags = this.parsedOutput?.flags ?? {};
+        this.parsedArgs = this.parsedOutput?.args ?? {};
+
+        let flags = this.parsedFlags;
         this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
-        this.parsedFlags = flags;
-        this.parsedArgs = args;
+
         this.Vonage = Vonage;
 
         //this removes the global flags from the command, so checking for interactive mode is possible.

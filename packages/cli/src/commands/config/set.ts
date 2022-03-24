@@ -1,8 +1,9 @@
 import BaseCommand from '@vonage/cli-utils';
-import { flags } from '@oclif/command'
+import { flags } from '@oclif/command';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import { merge } from 'lodash';
 
-export default class ConfigSet extends BaseCommand {
+export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
     static description = 'set Vonage CLI config'
 
     static flags = {
@@ -15,8 +16,7 @@ export default class ConfigSet extends BaseCommand {
         })
     }
 
-    static args = [
-    ]
+    static args: ArgInput = []
 
     async run() {
         const flags = this.globalFlags

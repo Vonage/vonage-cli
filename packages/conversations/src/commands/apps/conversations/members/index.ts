@@ -1,28 +1,24 @@
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command'
+import { flags } from '@oclif/command';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import ConversationCommand from '../../../../conversations_base';
 import cli from 'cli-ux';
 
-interface IndexFlags {
-    page_size: any
-    order: any
-    cursor: any
-}
 
-export default class ConversationMemberDefault extends ConversationCommand {
+
+export default class ConversationMemberDefault extends ConversationCommand<typeof ConversationMemberDefault.flags> {
     static description = "View all members in a conversation"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> & IndexFlags = {
+    static flags = {
         ...ConversationCommand.flags,
         'page_size': flags.string({ description: '', hidden: true }),
         'order': flags.string({ description: '', hidden: true }),
         'cursor': flags.string({ description: '', hidden: true }),
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'conversationID', required: false }
     ]
 

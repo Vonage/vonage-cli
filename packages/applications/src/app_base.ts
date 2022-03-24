@@ -1,11 +1,18 @@
 import BaseCommand from '@vonage/cli-utils';
 import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
-export default abstract class AppCommand extends BaseCommand {
+export default abstract class AppCommand<T extends typeof BaseCommand.flags> extends BaseCommand<T> {
+    protected parsedArgs
+    protected parsedFlags
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,
         /* ... */
+    };
+
+    static args: ArgInput = {
+        ...BaseCommand.args,
     };
 
     async catch(error: any) {

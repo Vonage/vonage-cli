@@ -3,6 +3,7 @@ import { flags } from '@oclif/command'
 import UserCommand from '../../../users_base';
 import chalk from 'chalk';
 import { VetchResponse } from '../../../types';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 interface UpdateFlags {
     name: any
@@ -11,7 +12,7 @@ interface UpdateFlags {
 }
 
 
-export default class UsersUpdate extends UserCommand {
+export default class UsersUpdate extends UserCommand<typeof UsersUpdate.flags> {
     static description = ""
 
     static examples = [
@@ -24,7 +25,7 @@ export default class UsersUpdate extends UserCommand {
         'image_url': flags.string({ description: '' }),
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'userID', required: false }
     ]
 

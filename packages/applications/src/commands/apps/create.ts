@@ -1,5 +1,6 @@
 import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions, sanitizeFileName } from '../../helpers'
@@ -32,7 +33,7 @@ interface CreateFlags {
 
 const kb_article = 'https://help.nexmo.com/hc/en-us/articles/4401914566036';
 
-export default class ApplicationsCreate extends AppCommand {
+export default class ApplicationsCreate extends AppCommand<typeof ApplicationsCreate.flags> {
     static description = 'create a new Vonage application'
 
     static examples = [
@@ -103,7 +104,7 @@ export default class ApplicationsCreate extends AppCommand {
         })
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'name', required: false }
     ]
 

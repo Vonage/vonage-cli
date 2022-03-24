@@ -1,5 +1,6 @@
 import AppCommand from '../../app_base';
 import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import { flags } from '@oclif/command'
 import { prompt } from 'prompts'
 import { webhookQuestions } from '../../helpers'
@@ -21,7 +22,7 @@ interface UpdateFlags {
     vbc: any
 }
 
-export default class ApplicationsUpdate extends AppCommand {
+export default class ApplicationsUpdate extends AppCommand<typeof ApplicationsUpdate.flags> {
     static description = 'update a Vonage application'
 
     static examples = [`vonage apps:update`, 'vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer']
@@ -78,7 +79,7 @@ export default class ApplicationsUpdate extends AppCommand {
         })
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'appId', required: false },
     ]
 

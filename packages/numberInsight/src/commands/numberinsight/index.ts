@@ -1,27 +1,24 @@
 import NumberInsightCommand from '../../numberinsight_base';
-import { OutputFlags, flags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
+import { flags } from '@oclif/parser';
 import { startCase, toLower } from 'lodash';
 import { prompt } from 'prompts'
 import chalk from 'chalk';
 import cli from 'cli-ux'
 
-interface NIFlags {
-  level: any,
-  confirm: any
-}
 
 function notBasic(level) {
   return level === 'standard' || level === 'advancedSync';
 }
 
-export default class NumberInsight extends NumberInsightCommand {
+export default class NumberInsight extends NumberInsightCommand<typeof NumberInsight.flags> {
   static description = 'get details about a phone number'
 
   static examples = [
     `vonage numberinsight 15555555555`, `vonage numberinsight 15555555555 --level=advanced`
   ]
 
-  static flags: OutputFlags<typeof NumberInsightCommand.flags> & NIFlags = {
+  static flags = {
     ...NumberInsightCommand.flags,
     level: flags.string({
       required: false,
@@ -32,12 +29,12 @@ export default class NumberInsight extends NumberInsightCommand {
     confirm: flags.boolean({ char: 'y', required: false })
   }
 
-  static args = [
+  static args: ArgInput = [
     { name: 'number', required: true },
   ]
 
   async run() {
-    const flags = this.parsedFlags as OutputFlags<typeof NumberInsightCommand.flags> & NIFlags;
+    const flags = this.parsedFlags;
     const args = this.parsedArgs!;
 
 

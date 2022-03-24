@@ -1,8 +1,8 @@
 import AppCommand from '../../app_base';
-import { OutputFlags } from '@oclif/parser';
 import cli from 'cli-ux'
+import { OutputFlags } from '@oclif/parser';
 
-export default class ApplicationsList extends AppCommand {
+export default class ApplicationsLink extends AppCommand<typeof ApplicationsLink.flags> {
     static description = 'manage your Vonage applications'
 
     static examples = ['vonage apps', 'vonage apps --output=json']
@@ -15,7 +15,7 @@ export default class ApplicationsList extends AppCommand {
     }
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof ApplicationsList.flags>
+        const flags = this.parsedFlags
         let appData = await this.allApplications;
         let appList = appData['_embedded'].applications;
 

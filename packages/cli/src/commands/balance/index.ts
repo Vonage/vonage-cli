@@ -1,6 +1,6 @@
 import BaseCommand from '@vonage/cli-utils';
 
-export default class DisplayBalance extends BaseCommand {
+export default class DisplayBalance extends BaseCommand<typeof DisplayBalance.flags> {
     static description = "display your Vonage account balance"
 
     static examples = [

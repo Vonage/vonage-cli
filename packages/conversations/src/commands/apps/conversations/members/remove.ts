@@ -1,18 +1,19 @@
-import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import chalk from 'chalk';
 import ConversationCommand from '../../../../conversations_base';
 
-export default class ConversationMemberRemove extends ConversationCommand {
+
+export default class ConversationMemberRemove extends ConversationCommand<typeof ConversationMemberRemove.flags> {
     static description = "Remove a user from a conversation"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> = {
+    static flags = {
         ...ConversationCommand.flags
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'conversationID', required: false },
         { name: 'memberID', required: false }
     ]

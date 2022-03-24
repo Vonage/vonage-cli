@@ -1,9 +1,10 @@
 import NumberCommand from '../../number_base';
 import { OutputFlags } from '@oclif/parser';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
 import cli from 'cli-ux'
 
-export default class NumberList extends NumberCommand {
+export default class NumberList extends NumberCommand<typeof NumberList.flags> {
   static description = 'manage your Vonage numbers'
 
   static examples = [
@@ -17,10 +18,10 @@ export default class NumberList extends NumberCommand {
     })
   }
 
-  static args = []
+  static args: ArgInput = []
 
   async run() {
-    const flags = this.parsedFlags as OutputFlags<typeof NumberList.flags>
+    const flags = this.parsedFlags;
     let numberData = await this.getAllNumbers({});
     cli.table(numberData.numbers, {
       country: {},

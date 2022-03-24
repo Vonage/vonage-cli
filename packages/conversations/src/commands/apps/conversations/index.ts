@@ -1,23 +1,16 @@
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command'
+import { flags } from '@oclif/command';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import ConversationCommand from '../../../conversations_base';
 import cli from 'cli-ux';
 
-interface IndexFlags {
-    date_start: any
-    date_end: any
-    page_size: any
-    order: any
-    cursor: any
-}
 
-export default class ConversationDefault extends ConversationCommand {
+export default class ConversationDefault extends ConversationCommand<typeof ConversationDefault.flags> {
     static description = "Show all conversations"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> & IndexFlags = {
+    static flags = {
         ...ConversationCommand.flags,
         'date_start': flags.string({ description: '', hidden: true }), // make defaults
         'date_end': flags.string({ description: '', hidden: true }),
@@ -26,10 +19,10 @@ export default class ConversationDefault extends ConversationCommand {
         'cursor': flags.string({ description: '', hidden: true }),
     }
 
-    static args = []
+    static args: ArgInput = []
 
     async run() {
-        const flags = this.parsedFlags
+        const flags = this.parsedFlags;
 
         let response = await this.getAllConversations(flags);
 

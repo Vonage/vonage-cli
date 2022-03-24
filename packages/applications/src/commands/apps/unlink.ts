@@ -1,17 +1,16 @@
 import AppCommand from '../../app_base';
-import { flags } from '@oclif/parser';
-import { OutputFlags } from '@oclif/parser';
+import { OutputFlags, flags } from '@oclif/parser';
 
 interface UnLinkFlags {
     number: any
 }
 
-export default class ApplicationsUnlink extends AppCommand {
+export default class ApplicationsUnlink extends AppCommand<typeof ApplicationsUnlink.flags> {
     static description = 'unlink numbers from Vonage application'
 
     static examples = []
 
-    static flags: OutputFlags<typeof AppCommand.flags> & UnLinkFlags = {
+    static flags = {
         ...AppCommand.flags,
         number: flags.string({
             description: 'Owned number to be unassigned'

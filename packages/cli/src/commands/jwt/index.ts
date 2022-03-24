@@ -2,7 +2,7 @@ import BaseCommand from '@vonage/cli-utils';
 import { flags } from '@oclif/command';
 import { OutputFlags } from '@oclif/parser';
 import { readFileSync } from 'fs';
-import cli from 'cli-ux';
+
 
 
 interface GenerateJWTFlags {
@@ -14,7 +14,7 @@ interface GenerateJWTFlags {
 }
 
 
-export default class GenerateJWT extends BaseCommand {
+export default class GenerateJWT extends BaseCommand<typeof GenerateJWT.flags> {
 
     static description = 'generate a Vonage JWT token'
 
@@ -46,8 +46,8 @@ export default class GenerateJWT extends BaseCommand {
     ]
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof BaseCommand.flags> & GenerateJWTFlags
-        let private_key = readFileSync(flags.key_file.replace(/(\s+)/g, '\\$1'));
+        const flags = this.parsedFlags;
+        let private_key = typeof flags.key_file === 'string' ? readFileSync(flags.key_file.replace(/(\s+)/g, '\\$1')) : null;
         let claims = {
             application_id: flags.app_id,
             sub: flags.subject,

@@ -1,19 +1,19 @@
-import { OutputFlags } from '@oclif/parser';
 import cli from 'cli-ux';
 import chalk from 'chalk';
 import ConversationCommand from '../../../../conversations_base';
+import { ArgInput } from '@oclif/core/lib/interfaces';
 
-export default class ConversationMemberAdd extends ConversationCommand {
+export default class ConversationMemberAdd extends ConversationCommand<typeof ConversationMemberAdd.flags> {
     static description = "Add user to conversation"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> = {
+    static flags = {
         ...ConversationCommand.flags
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'conversationID', required: false },
         { name: 'userID', required: false }
     ]

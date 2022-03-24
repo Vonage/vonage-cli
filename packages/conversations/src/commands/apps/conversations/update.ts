@@ -1,22 +1,16 @@
-import { OutputFlags } from '@oclif/parser';
 import { flags } from '@oclif/command'
+import { ArgInput } from '@oclif/core/lib/interfaces';
 import ConversationCommand from '../../../conversations_base';
 import chalk from 'chalk';
 
-interface UpdateFlags {
-    name: any
-    display_name: any
-    image_url: any
-    ttl: any
-}
 
-export default class UserConversations extends ConversationCommand {
+export default class UserConversations extends ConversationCommand<typeof UserConversations.flags> {
     static description = "Modify a conversation"
 
     static examples = [
     ]
 
-    static flags: OutputFlags<typeof ConversationCommand.flags> & UpdateFlags = {
+    static flags = {
         ...ConversationCommand.flags,
         'name': flags.string({ description: '' }),
         'display_name': flags.string({ description: '' }),
@@ -24,7 +18,7 @@ export default class UserConversations extends ConversationCommand {
         'ttl': flags.string({ description: '' }),
     }
 
-    static args = [
+    static args: ArgInput = [
         { name: 'conversationID', required: false }
     ]
 
