@@ -54,7 +54,7 @@ export default class GenerateJWT extends BaseCommand<typeof GenerateJWT.flags> {
             exp: flags.exp || Date.now() + 21600
         }
 
-        flags.acl ? claims['acl'] = flags.acl : null;
+        flags.acl ? claims['acl'] = JSON.parse(flags.acl) : null;
 
         let jwt = this.Vonage.generateJwt(private_key, claims)
 
