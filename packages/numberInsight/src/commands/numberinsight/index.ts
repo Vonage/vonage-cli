@@ -90,18 +90,18 @@ export default class NumberInsight extends NumberInsightCommand<typeof NumberIns
       this.log(chalk.bold(`Current Carrier`));
       this.log(`Name: ${insights.current_carrier.name}`);
       this.log(`Country: ${insights.current_carrier.country}`);
-      this.log(`Network Type: ${insights.current_carrier.netowrk_type}`);
+      this.log(`Network Type: ${insights.current_carrier.network_type}`);
       this.log(`Network Code: ${insights.current_carrier.network_code}`);
       this.log();
       this.log(chalk.bold(`Original Carrier`));
       this.log(`Name: ${insights.original_carrier.name}`);
       this.log(`Country: ${insights.original_carrier.country}`);
-      this.log(`Network Type: ${insights.original_carrier.netowrk_type}`);
+      this.log(`Network Type: ${insights.original_carrier.network_type}`);
       this.log(`Network Code: ${insights.original_carrier.network_code}`);
       this.log();
       this.log(chalk.bold(`Ported: ${insights.ported}`))
       this.log();
-      this.log(chalk.bold(`Roaming Status: ${insights.roaming.status}`));
+      this.log(chalk.bold(`Roaming Status: ${insights.roaming.status || insights.roaming}`));
     }
     if (flags.level === 'advancedSync') {
       this.log();
