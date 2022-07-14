@@ -25,7 +25,7 @@ The standard `oclif` `./bin/run` script serves as your entry point to the CLI in
 
 ## Install via npm
 
-You can quickly install the Vonage CLI by running the command `npm install -g @vonage/cli`
+You can quickly install the Vonage CLI by running the command `npm install -g @vonage/cli`.
 
 ## Install and Run from Source
 
