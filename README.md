@@ -23,6 +23,10 @@ This project is built with [lerna](https://lerna.js.org/). The core plugins are 
 
 The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment. `./bin/run` is a symlink to the core package `./packages/cli/bin/run`.
 
+## Install via npm
+
+You can quickly install the Vonage CLI by running the command `npm install -g @vonage/cli`
+
 ## Install and Run from Source
 
 Clone the repository to your local machine.
