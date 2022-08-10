@@ -9,11 +9,16 @@ import { HTTPMethods, ResponseTypes } from './types';
 
 export default abstract class ConversationsCommand<T extends typeof BaseCommand.flags> extends BaseCommand<T> {
     protected _token!: string
-    protected _baseurl = `https://api.nexmo.com/v0.3/conversations`;
-    protected _userBaseurl = `https://api.nexmo.com/v0.3/users`;
     protected parsedArgs
     protected parsedFlags
 
+    get ['_baseurl']() {
+        return this._apiRegion ? `https://api-${this._apiRegion}.nexmo.com/v0.3/conversations` : 'https://api.nexmo.com/v0.3/conversations';
+    }
+
+    get ['_userBaseurl']() {
+        return 'https://api.nexmo.com/v0.3/users';
+    }
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {
         ...BaseCommand.flags,

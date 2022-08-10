@@ -12,7 +12,11 @@ export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
             description: 'Vonage API Key',
         }),
         'apiSecret': flags.string({
-            description: 'Vonage API Key',
+            description: 'Vonage API Secret',
+        }),
+        'apiRegion': flags.string({
+            description: 'Preferred Vonage API Region',
+            options: ['eu', 'us', 'sg-1']
         })
     }
 

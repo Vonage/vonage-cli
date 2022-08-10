@@ -8,31 +8,8 @@ import * as path from 'path';
 interface UserConfig {
     apiKey: string,
     apiSecret: string
+    apiRegion: string
 }
-
-
-// interface IClaims {
-//     application_id: string
-//     iat?: number,
-//     jti?: string,
-//     sub?: string,
-//     exp?: string,
-//     acl?: {
-//         paths?: {
-//             "/*/users/**"?: any,
-//             "/*/conversations/**"?: any,
-//             "/*/sessions/**"?: any,
-//             "/*/devices/**"?: any,
-//             "/*/image/**"?: any,
-//             "/*/media/**"?: any,
-//             "/*/applications/**"?: any,
-//             "/*/push/**"?: any,
-//             "/*/knocking/**"?: any,
-//             "/*/legs/**"?: any
-//         }
-//     },
-
-// }
 
 export type InferredFlagsType<T> = T extends FlagInput<infer F>
     ? F & {
@@ -46,6 +23,7 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
     protected Vonage!: any;
     protected _apiKey!: any;
     protected _apiSecret!: any
+    protected _apiRegion!: any
     protected _appId!: any
     protected _keyFile!: any
     protected _userConfig!: UserConfig
@@ -60,6 +38,7 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         help: flags.help({ char: 'h' }),
         apiKey: flags.string({ hidden: true, dependsOn: ['apiSecret'] }),
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] }),
+        apiRegion: flags.string({ hidden: true, dependsOn: ['apiRegion'] }),
         appId: flags.string({ hidden: true, dependsOn: ['keyFile'] }),
         keyFile: flags.string({ hidden: true, dependsOn: ['appId'] }),
         trace: flags.boolean({ hidden: true })
@@ -105,13 +84,14 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         this.parsedArgs = this.parsedOutput?.args ?? {};
 
         let flags = this.parsedFlags;
-        this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
+        this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, apiRegion: flags.apiRegion, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
 
         this.Vonage = Vonage;
 
         //this removes the global flags from the command, so checking for interactive mode is possible.
         delete this.parsedFlags.apiKey
         delete this.parsedFlags.apiSecret
+        delete this.parsedFlags.apiRegion
         delete this.parsedFlags.trace
 
         try {
@@ -143,6 +123,7 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
 
         this._apiKey = apiKey;
         this._apiSecret = apiSecret;
+        this._apiRegion = this._userConfig.apiRegion;
         this._appId = appId;
         this._keyFile = keyFile;
     }
