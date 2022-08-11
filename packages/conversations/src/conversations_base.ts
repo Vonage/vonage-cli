@@ -13,11 +13,11 @@ export default abstract class ConversationsCommand<T extends typeof BaseCommand.
     protected parsedFlags
 
     get ['_baseurl']() {
-        return this._apiRegion ? `https://api-${this._apiRegion}.nexmo.com/v0.3/conversations` : 'https://api.nexmo.com/v0.3/conversations';
+        return this._apiHost ? `https://${this._apiHost}/v0.3/conversations` : 'https://api.nexmo.com/v0.3/conversations';
     }
 
     get ['_userBaseurl']() {
-        return 'https://api.nexmo.com/v0.3/users';
+        return this._apiHost ? `https://${this._apiHost}/v0.3/users` : 'https://api.nexmo.com/v0.3/users';
     }
 
     static flags: OutputFlags<typeof BaseCommand.flags> = {

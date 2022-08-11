@@ -14,9 +14,14 @@ export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
         'apiSecret': flags.string({
             description: 'Vonage API Secret',
         }),
-        'apiRegion': flags.string({
-            description: 'Preferred Vonage API Region',
-            options: ['eu', 'us', 'sg-1']
+        'apiHost': flags.string({
+            description: 'Optional preferred Vonage API Host, e.g. api-us-1.nexmo.com'
+        }),
+        'restHost': flags.string({
+            description: 'Optional preferred Vonage Rest API Host, e.g. rest-us-1.nexmo.com'
+        }),
+        'videoHost': flags.string({
+            description: 'Optional preferred Vonage Video API Host'
         })
     }
 

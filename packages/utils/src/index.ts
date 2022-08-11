@@ -8,7 +8,9 @@ import * as path from 'path';
 interface UserConfig {
     apiKey: string,
     apiSecret: string
-    apiRegion: string
+    apiHost: string
+    restHost: string
+    videoHost: string
 }
 
 export type InferredFlagsType<T> = T extends FlagInput<infer F>
@@ -23,7 +25,9 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
     protected Vonage!: any;
     protected _apiKey!: any;
     protected _apiSecret!: any
-    protected _apiRegion!: any
+    protected _apiHost!: any
+    protected _restHost!: any
+    protected _videoHost!: any
     protected _appId!: any
     protected _keyFile!: any
     protected _userConfig!: UserConfig
@@ -38,7 +42,9 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         help: flags.help({ char: 'h' }),
         apiKey: flags.string({ hidden: true, dependsOn: ['apiSecret'] }),
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] }),
-        apiRegion: flags.string({ hidden: true, dependsOn: ['apiRegion'] }),
+        apiHost: flags.string({ hidden: true, dependsOn: ['apiHost'] }),
+        restHost: flags.string({ hidden: true, dependsOn: ['restHost'] }),
+        videoHost: flags.string({ hidden: true, dependsOn: ['videoHost'] }),
         appId: flags.string({ hidden: true, dependsOn: ['keyFile'] }),
         keyFile: flags.string({ hidden: true, dependsOn: ['appId'] }),
         trace: flags.boolean({ hidden: true })
@@ -52,7 +58,22 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
             apiSecret: this._apiSecret || ''
         }
 
-        this._vonage = new Vonage(credentials, { appendToUserAgent: "vonage-cli" });
+        let options = { appendToUserAgent: "vonage-cli" }
+
+        if (this._apiHost) {
+            options = { ...options, ...{ apihost: this._apiHost} }
+        }
+
+        if (this._restHost) {
+            options = { ...options, ...{ restHost: this._restHost} }
+        }
+
+        if (this._videoHost) {
+            options = { ...options, ...{ videoHost: this._videoHost} }
+        }
+
+        console.log(options)
+        this._vonage = new Vonage(credentials, options);
 
         return this._vonage
     }
@@ -84,14 +105,25 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         this.parsedArgs = this.parsedOutput?.args ?? {};
 
         let flags = this.parsedFlags;
-        this.globalFlags = { apiKey: flags.apiKey, apiSecret: flags.apiSecret, apiRegion: flags.apiRegion, appId: flags.appId, keyFile: flags.keyFile, trace: flags.trace };
+        this.globalFlags = { 
+            apiKey: flags.apiKey,
+            apiSecret: flags.apiSecret,
+            apiHost: flags.apiHost,
+            restHost: flags.restHost,
+            videoHost: flags.videoHost,
+            appId: flags.appId,
+            keyFile: flags.keyFile,
+            trace: flags.trace
+        };
 
         this.Vonage = Vonage;
 
         //this removes the global flags from the command, so checking for interactive mode is possible.
         delete this.parsedFlags.apiKey
         delete this.parsedFlags.apiSecret
-        delete this.parsedFlags.apiRegion
+        delete this.parsedFlags.apiHost
+        delete this.parsedFlags.restHost
+        delete this.parsedFlags.videoHost
         delete this.parsedFlags.trace
 
         try {
@@ -123,7 +155,9 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
 
         this._apiKey = apiKey;
         this._apiSecret = apiSecret;
-        this._apiRegion = this._userConfig.apiRegion;
+        this._apiHost = this._userConfig.apiHost;
+        this._restHost = this._userConfig.restHost;
+        this._videoHost = this._userConfig.videoHost;
         this._appId = appId;
         this._keyFile = keyFile;
     }
