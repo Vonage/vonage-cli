@@ -19,9 +19,6 @@ export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
         }),
         'restHost': flags.string({
             description: 'Optional preferred Vonage Rest API Host, e.g. rest-us-1.nexmo.com'
-        }),
-        'videoHost': flags.string({
-            description: 'Optional preferred Vonage Video API Host'
         })
     }
 

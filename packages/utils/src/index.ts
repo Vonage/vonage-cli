@@ -10,7 +10,6 @@ interface UserConfig {
     apiSecret: string
     apiHost: string
     restHost: string
-    videoHost: string
 }
 
 export type InferredFlagsType<T> = T extends FlagInput<infer F>
@@ -27,7 +26,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
     protected _apiSecret!: any
     protected _apiHost!: any
     protected _restHost!: any
-    protected _videoHost!: any
     protected _appId!: any
     protected _keyFile!: any
     protected _userConfig!: UserConfig
@@ -44,7 +42,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] }),
         apiHost: flags.string({ hidden: true, dependsOn: ['apiHost'] }),
         restHost: flags.string({ hidden: true, dependsOn: ['restHost'] }),
-        videoHost: flags.string({ hidden: true, dependsOn: ['videoHost'] }),
         appId: flags.string({ hidden: true, dependsOn: ['keyFile'] }),
         keyFile: flags.string({ hidden: true, dependsOn: ['appId'] }),
         trace: flags.boolean({ hidden: true })
@@ -68,11 +65,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
             options = { ...options, ...{ restHost: this._restHost} }
         }
 
-        if (this._videoHost) {
-            options = { ...options, ...{ videoHost: this._videoHost} }
-        }
-
-        console.log(options)
         this._vonage = new Vonage(credentials, options);
 
         return this._vonage
@@ -110,7 +102,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
             apiSecret: flags.apiSecret,
             apiHost: flags.apiHost,
             restHost: flags.restHost,
-            videoHost: flags.videoHost,
             appId: flags.appId,
             keyFile: flags.keyFile,
             trace: flags.trace
@@ -123,7 +114,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         delete this.parsedFlags.apiSecret
         delete this.parsedFlags.apiHost
         delete this.parsedFlags.restHost
-        delete this.parsedFlags.videoHost
         delete this.parsedFlags.trace
 
         try {
@@ -157,7 +147,6 @@ export default abstract class BaseCommand<T extends typeof BaseCommand.flags> ex
         this._apiSecret = apiSecret;
         this._apiHost = this._userConfig.apiHost;
         this._restHost = this._userConfig.restHost;
-        this._videoHost = this._userConfig.videoHost;
         this._appId = appId;
         this._keyFile = keyFile;
     }

@@ -31,7 +31,7 @@ export default class ConversationDefault extends ConversationCommand<typeof Conv
         cli.table(conversationsList, {
             display_name: {
                 header: 'Display Name',
-                get: row => row ? '' : row
+                get: row => row.display_name ? row.display_name : ''
             },
             id: {
                 header: 'ID'
