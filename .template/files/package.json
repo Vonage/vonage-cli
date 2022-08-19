@@ -5,7 +5,7 @@
   "author": "AUTHOR-NAME",
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
   "dependencies": {
-    "@oclif/command": "^1.8.0",
+    "@oclif/command": "^1.8.1",
     "@oclif/config": "^1.17.0",
     "tslib": "^2.1.0"
   },
