@@ -1,4 +1,4 @@
-const baseHost = 'https://api.nexmo.com/v0.3'
+const baseHost = 'https://api.nexmo.com/v0.3';
 
 const genericFailedError = {
     title: 'Bad request.',
@@ -12,7 +12,7 @@ const genericFailedError = {
             reason: '"date_start" must be a valid ISO 8601 date',
         },
     ],
-}
+};
 
 const genericAuthError = {
     title: 'Unauthorized.',
@@ -20,7 +20,7 @@ const genericAuthError = {
     code: 'system:error:invalid-token',
     detail: 'You did not provide a valid token. Please provide a valid token.',
     instance: '00a5916655d650e920ccf0daf40ef4ee',
-}
+};
 
 const notFoundError = {
     title: 'Not found.',
@@ -28,7 +28,7 @@ const notFoundError = {
     code: 'conversation:error:not-found',
     detail: 'Conversation does not exist, or you do not have access.',
     instance: '00a5916655d650e920ccf0daf40ef4ee',
-}
+};
 
 const internalError = {
     title: 'Internal Error.',
@@ -36,7 +36,7 @@ const internalError = {
     code: 'system:error:internal-error',
     detail: 'Something went wrong.',
     instance: '00a5916655d650e920ccf0daf40ef4ee',
-}
+};
 
 const listResponse = {
     page_size: 10,
@@ -72,11 +72,11 @@ const listResponse = {
             href: 'https://api.nexmo.com/v0.3/conversations?order=desc&page_size=10&cursor=7EjDNQrAcipmOnc0HCzpQRkhBULzY44ljGUX4lXKyUIVfiZay5pv9wg%3D',
         },
     },
-}
+};
 
 const listOutput = ` Display Name ID                                       Name          
  ──────────── ──────────────────────────────────────── ───────────── 
-              CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a customer_chat \n`
+              CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a customer_chat \n`;
 
 const conversationResponse = {
     id: 'CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a',
@@ -97,7 +97,7 @@ const conversationResponse = {
             href: 'https://api.nexmo.com/v0.3/conversations/CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a',
         },
     },
-}
+};
 
 const conversationInput = {
     name: 'customer_chat',
@@ -106,9 +106,9 @@ const conversationInput = {
     properties: {
         ttl: 60,
     },
-}
+};
 
-let showOutput = `Conversation Display Name: customer_chat (Customer Chat)
+const showOutput = `Conversation Display Name: customer_chat (Customer Chat)
 
 Conversation ID: CON-d66d47de-5bcb-4300-94f0-0c9d4b948e9a
 
@@ -121,7 +121,7 @@ Sequence Number: 0
 Created: 2019-09-03T18:40:24.324Z
 
 Time to Live: 60
-\n`
+\n`;
 
 module.exports = {
     baseHost,
@@ -134,4 +134,4 @@ module.exports = {
     showOutput,
     listResponse,
     listOutput,
-}
+};
