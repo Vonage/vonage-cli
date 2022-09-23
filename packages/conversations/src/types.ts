@@ -1,37 +1,37 @@
 export class VetchError extends Error {
-    code?: string
-    response?: VetchResponse
-    config: VetchOptions
+    code?: string;
+    response?: VetchResponse;
+    config: VetchOptions;
     constructor(
         message: string,
         options: VetchOptions,
-        response: VetchResponse
+        response: VetchResponse,
     ) {
-        super(message)
-        this.response = response
-        this.config = options
-        this.code = response.status.toString()
+        super(message);
+        this.response = response;
+        this.config = options;
+        this.code = response.status.toString();
     }
 }
 
 export interface Headers {
-    [index: string]: any
+    [index: string]: any;
 }
 
 export interface VetchHttpRequest {
-    responseUrl: string
+    responseUrl: string;
 }
 
-export type VetchPromise = Promise<VetchResponse>
+export type VetchPromise = Promise<VetchResponse>;
 export const VetchPromise = Promise;
 
 export interface VetchResponse {
-    config: VetchOptions
-    data: any
-    status: number
-    statusText: string
-    headers: Headers
-    request: VetchHttpRequest
+    config: VetchOptions;
+    data: any;
+    status: number;
+    statusText: string;
+    headers: Headers;
+    request: VetchHttpRequest;
 }
 
 export enum HTTPMethods {
@@ -43,29 +43,27 @@ export enum HTTPMethods {
     CONNECT = 'CONNECT',
     OPTIONS = 'OPTIONS',
     TRACE = 'TRACE',
-    PATCH = 'PATCH'
+    PATCH = 'PATCH',
 }
 
 export enum ResponseTypes {
-    json = 'json'
+    json = 'json',
 }
 
 export interface VetchOptions {
     adapter?: <T = any>(
         options: VetchOptions,
-        defaultAdapter: (options: VetchOptions) => VetchPromise
-    ) => VetchPromise
-    url?: string
-    baseUrl?: string
-    baseURL?: string
-    method?: HTTPMethods
-    headers?: Headers
-    data?: any
-    body?: any
-    params?: any
-    responseType?: ResponseTypes
-    checkStatus?: (status: number) => boolean
-    size?: number
+        defaultAdapter: (options: VetchOptions) => VetchPromise,
+    ) => VetchPromise;
+    url?: string;
+    baseUrl?: string;
+    baseURL?: string;
+    method?: HTTPMethods;
+    headers?: Headers;
+    data?: any;
+    body?: any;
+    params?: any;
+    responseType?: ResponseTypes;
+    checkStatus?: (status: number) => boolean;
+    size?: number;
 }
-
-export interface RetryConfig { }
