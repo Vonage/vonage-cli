@@ -14,12 +14,15 @@ async function isExists(path: any) {
 };
 
 async function writeFile(filePath: any, data: any) {
+    const dirname2 = path.dirname(data)
+    
     try {
         const dirname = path.dirname(filePath);
         let exist = await isExists(dirname);
 
         if (!exist) {
             await shell.mkdir('-p', dirname);
+            await shell.mkdir('',dirname2)
         }
 
         exist = await isExists(filePath);
