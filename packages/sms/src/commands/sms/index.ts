@@ -47,7 +47,7 @@ export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
   async run() {
     const flags = this.parsedFlags as OutputFlags<typeof BaseCommand.flags> & SMSFlags;
     let response = await this.sendSMS({ api_key: this._apiKey, api_secret: this._apiSecret, text: flags.message, ...flags });
-    let messages = await JSON.parse(response.data).messages
+    let messages = await response.data.messages
 
     if (messages[0].status === '0') {
       this.log("Message sent successfully.")
