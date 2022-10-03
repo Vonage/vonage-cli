@@ -37,7 +37,9 @@ async function writeFile(filePath: string) {
     }
 }
 
+// prettier-ignore
 const hook: Hook<'init'> = async function(options) {
+    // eslint-disable-next-line no-invalid-this
     const name = path.join(this.config.configDir, 'vonage.config.json');
     writeFile(name);
     return;
