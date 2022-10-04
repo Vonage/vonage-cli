@@ -1,18 +1,3 @@
 {
-    "compilerOptions": {
-        "declaration": true,
-        "sourceMap": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "strict": false,
-        "esModuleInterop": true,
-        "target": "es5",
-        "moduleResolution": "node",
-        "module": "commonjs",
-        "types": [],
-        "baseUrl": "../",
-        "outDir": "./dist",
-        "rootDir": "src"
-    },
-    "include": ["src/**/*"]
+    "extends": "../../tsconfig.json"
 }
