@@ -4,24 +4,24 @@ import { ArgInput } from '@oclif/core/lib/interfaces';
 import { merge } from 'lodash';
 
 export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
-    static description = 'set Vonage CLI config'
+    static description = 'set Vonage CLI config';
 
     static flags = {
         ...BaseCommand.flags,
-        'apiKey': flags.string({
+        apiKey: flags.string({
             description: 'Vonage API Key',
         }),
-        'apiSecret': flags.string({
+        apiSecret: flags.string({
             description: 'Vonage API Key',
-        })
-    }
+        }),
+    };
 
-    static args: ArgInput = []
+    static args: ArgInput = [];
 
     async run() {
-        const flags = this.globalFlags
-        //add start, stop process indicators
-        this.saveConfig(merge({}, this.userConfig, flags))
-        this.log('Configuration saved.')
+        const flags = this.globalFlags;
+        // add start, stop process indicators
+        this.saveConfig(merge({}, this.userConfig, flags));
+        this.log('Configuration saved.');
     }
 }

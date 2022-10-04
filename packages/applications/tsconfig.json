@@ -1,17 +1,14 @@
 {
+    "extends": "../../tsconfig.json",
+    "includes": [
+        "./src/**/*"
+    ],
+    "outDir": "../../dist/app",
     "compilerOptions": {
-        "declaration": true,
-        "importHelpers": true,
-        "noUnusedLocals": true,
-        "pretty": true,
-        "outDir": "dist",
-        "rootDir": "src",
-        "strict": false,
-        "module": "commonjs",
-        "target": "es6",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "skipLibCheck": true
+        "rootDir": "../"
     },
-    "include": ["src/**/*"]
+    "references": [
+        { "path": "../utils "},
+        { "path": "../cli "}
+    ]
 }
