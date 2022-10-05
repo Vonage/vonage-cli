@@ -53,7 +53,7 @@ export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
             text: flags.message,
             ...flags,
         });
-        const messages = await JSON.parse(response.data).messages;
+        const messages = await response.data.messages
 
         if (messages[0].status === '0') {
             this.log('Message sent successfully.');
