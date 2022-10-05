@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-sms
 $ oclif-example COMMAND
 running command...
 $ oclif-example (-v|--version|version)
-@vonage/cli-plugin-sms/1.1.1 linux-x64 node-v16.14.0
+@vonage/cli-plugin-sms/1.2.0 linux-x64 node-v16.15.1
 $ oclif-example --help [COMMAND]
 USAGE
   $ oclif-example COMMAND
@@ -50,5 +50,5 @@ EXAMPLE
   vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'
 ```
 
-_See code: [dist/commands/sms/index.ts](https://github.com/Vonage/vonage-cli/blob/v1.1.1/dist/commands/sms/index.ts)_
+_See code: [dist/commands/sms/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/sms/index.js)_
 <!-- commandsstop -->
