@@ -49,7 +49,7 @@
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf ./dist && tsc -b"
+        "build": "tsc -b"
     },
     "devDependencies": {
         "@oclif/test": "^2.1.1"
