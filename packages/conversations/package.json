@@ -48,7 +48,7 @@
         "test": "mocha \"__tests__/commands/**/*.test.ts\" -v",
         "test-watch": "",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf ./dist && tsc -b"
+        "build": "tsc -b"
     },
     "devDependencies": {
         "@oclif/test": "^2.1.1",

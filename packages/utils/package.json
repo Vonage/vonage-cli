@@ -31,6 +31,6 @@
         "prepack": "rm -rf dist && tsc -b",
         "test": "../../node_modules/.bin/jest test",
         "test-watch": "../../node_modules/.bin/jest test --watch",
-        "build": "rm -rf ./dist && tsc -b"
+        "build": "tsc -b"
     }
 }

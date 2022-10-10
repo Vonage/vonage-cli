@@ -41,7 +41,7 @@
         "test": "mocha \"__tests__/commands/*.test.ts\"",
         "test-watch": "mocha \"__tests__/commands/*.test.ts\" --watch --recursive",
         "version": "npx oclif-dev readme && git add README.md",
-        "build": "npx rimraf -rf ./dist && npx tsc -b"
+        "build": "tsc -b"
     },
     "devDependencies": {
         "@oclif/test": "^2.1.1",

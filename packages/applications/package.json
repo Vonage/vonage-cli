@@ -45,7 +45,7 @@
         "postpack": "rm -f oclif.manifest.json",
         "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
         "version": "oclif-dev readme && git add README.md",
-        "build": "rm -rf ./dist && tsc -b"
+        "build": "tsc -b"
     },
     "devDependencies": {
         "@oclif/test": "^2.1.1"
