@@ -1,7 +1,9 @@
-import cli from 'cli-ux';
 import chalk from 'chalk';
-import ConversationCommand from '../../../../conversations_base';
+import ConversationCommand from '../../../../conversations_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
+import { CliUx } from '@oclif/core';
+
+const cli = CliUx.ux;
 
 export default class ConversationMemberAdd extends ConversationCommand<
     typeof ConversationMemberAdd.flags

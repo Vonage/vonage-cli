@@ -1,22 +1,7 @@
-import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import VonageCommand from '@vonage/cli-utils';
 
-export default abstract class NumberInsightCommand<
-    T extends typeof BaseCommand.flags,
-> extends BaseCommand<T> {
-    protected parsedArgs;
-    protected parsedFlags;
-
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
-        ...BaseCommand.flags,
-        /* ... */
-    };
-
-    static args: ArgInput = {
-        ...BaseCommand.args,
-    };
-
+export default abstract class NumberInsightCommand<T>
+    extends VonageCommand<typeof NumberInsightCommand> {
     async catch(error: any) {
         return super.catch(error);
     }

@@ -1,7 +1,8 @@
-import { flags } from '@oclif/command';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import ConversationCommand from '../../../../conversations_base';
-import cli from 'cli-ux';
+import ConversationCommand from '../../../../conversations_base.js';
+import { Flags, CliUx } from '@oclif/core';
+
+const cli = CliUx.ux;
 
 export default class ConversationMemberDefault extends ConversationCommand<
     typeof ConversationMemberDefault.flags
@@ -12,9 +13,9 @@ export default class ConversationMemberDefault extends ConversationCommand<
 
     static flags = {
         ...ConversationCommand.flags,
-        page_size: flags.string({ description: '', hidden: true }),
-        order: flags.string({ description: '', hidden: true }),
-        cursor: flags.string({ description: '', hidden: true }),
+        page_size: Flags.string({ description: '', hidden: true }),
+        order: Flags.string({ description: '', hidden: true }),
+        cursor: Flags.string({ description: '', hidden: true }),
     };
 
     static args: ArgInput = [{ name: 'conversationID', required: false }];

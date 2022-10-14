@@ -1,9 +1,8 @@
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command';
-import UserCommand from '../../../users_base';
+import { Flags } from '@oclif/core';
+import UserCommand from '../../../users_base.js';
 import chalk from 'chalk';
-import { VetchResponse } from '../../../types';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import { VetchResponse } from '../../../types.js';
+import { ArgInput, OutputFlags } from '@oclif/core/lib/interfaces';
 
 interface UpdateFlags {
     name: any;
@@ -18,9 +17,9 @@ export default class UsersUpdate extends UserCommand<typeof UsersUpdate.flags> {
 
     static flags: OutputFlags<typeof UserCommand.flags> & UpdateFlags = {
         ...UserCommand.flags,
-        name: flags.string({ description: '' }),
-        display_name: flags.string({ description: '' }),
-        image_url: flags.string({ description: '' }),
+        name: Flags.string({ description: '' }),
+        display_name: Flags.string({ description: '' }),
+        image_url: Flags.string({ description: '' }),
     };
 
     static args: ArgInput = [{ name: 'userID', required: false }];

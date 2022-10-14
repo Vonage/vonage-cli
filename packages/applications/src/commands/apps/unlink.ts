@@ -1,27 +1,25 @@
-import AppCommand from '../../app_base';
-import { OutputFlags, flags } from '@oclif/parser';
+import AppCommand from '../../app_base.js';
+import { Flags } from '@oclif/core';
+import { VonageCliFlags } from '@vonage/cli-utils';
 
-interface UnLinkFlags {
-    number: any;
+interface AppUnlinkParams extends VonageCliFlags<typeof ApplicationsUnlink> {
+    number: string
 }
 
-export default class ApplicationsUnlink extends AppCommand<
-    typeof ApplicationsUnlink.flags
-> {
+export default class ApplicationsUnlink
+    extends AppCommand<typeof ApplicationsUnlink> {
     static description = 'unlink numbers from Vonage application';
 
     static examples = [];
 
     static flags = {
-        ...AppCommand.flags,
-        number: flags.string({
+        number: Flags.string({
             description: 'Owned number to be unassigned',
         }),
     };
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<typeof AppCommand.flags> &
-            UnLinkFlags;
+        const flags = this.parsedFlags as AppUnlinkParams;
 
         if (!flags.number) {
             this.error(new Error('Flag "number" not provided.'));

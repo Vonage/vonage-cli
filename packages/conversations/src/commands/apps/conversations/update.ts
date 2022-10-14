@@ -1,6 +1,6 @@
-import { flags } from '@oclif/command';
+import { Flags } from '@oclif/core';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import ConversationCommand from '../../../conversations_base';
+import ConversationCommand from '../../../conversations_base.js';
 import chalk from 'chalk';
 
 export default class UserConversations extends ConversationCommand<
@@ -12,10 +12,10 @@ export default class UserConversations extends ConversationCommand<
 
     static flags = {
         ...ConversationCommand.flags,
-        name: flags.string({ description: '' }),
-        display_name: flags.string({ description: '' }),
-        image_url: flags.string({ description: '' }),
-        ttl: flags.string({ description: '' }),
+        name: Flags.string({ description: '' }),
+        display_name: Flags.string({ description: '' }),
+        image_url: Flags.string({ description: '' }),
+        ttl: Flags.string({ description: '' }),
     };
 
     static args: ArgInput = [{ name: 'conversationID', required: false }];

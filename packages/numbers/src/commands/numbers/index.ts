@@ -1,8 +1,9 @@
-import NumberCommand from '../../number_base';
-import { OutputFlags } from '@oclif/parser';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import NumberCommand from '../../number_base.js';
+import { OutputFlags, ArgInput } from '@oclif/core/lib/interfaces';
+import { CliUx } from '@oclif/core';
 
-import cli from 'cli-ux';
+const cli = CliUx.ux;
+
 
 export default class NumberList extends NumberCommand<typeof NumberList.flags> {
     static description = 'manage your Vonage numbers';

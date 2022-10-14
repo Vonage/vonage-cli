@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import ConversationCommand from '../../../../conversations_base';
+import ConversationCommand from '../../../../conversations_base.js';
 
 export default class ConversationMemberShow extends ConversationCommand<
     typeof ConversationMemberShow.flags

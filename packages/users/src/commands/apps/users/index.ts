@@ -1,8 +1,9 @@
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command';
-import UserCommand from '../../../users_base';
-import cli from 'cli-ux';
-import { VetchResponse } from '../../../types';
+import { OutputFlags } from '@oclif/core/lib/interfaces';
+import { CliUx, Flags } from '@oclif/core';
+import UserCommand from '../../../users_base.js';
+import { VetchResponse } from '../../../types.js';
+
+const cli = CliUx.ux;
 
 interface IndexFlags {
     page_size: any;
@@ -19,9 +20,9 @@ export default class UsersDefault extends UserCommand<
 
     static flags: OutputFlags<typeof UserCommand.flags> & IndexFlags = {
         ...UserCommand.flags,
-        page_size: flags.string({ description: '', hidden: true }),
-        order: flags.string({ description: '', hidden: true }),
-        cursor: flags.string({ description: '', hidden: true }),
+        page_size: Flags.string({ description: '', hidden: true }),
+        order: Flags.string({ description: '', hidden: true }),
+        cursor: Flags.string({ description: '', hidden: true }),
     };
 
     async run() {

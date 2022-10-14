@@ -1,3 +1,26 @@
 {
-    "extends": "../../tsconfig.json"
+    "extends": "../../tsconfig.json",
+
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist"
+    },
+
+    "references": [
+        { "path": "../applications" },
+        { "path": "../conversations" },
+        { "path": "../numbers" },
+        { "path": "../numberInsight" },
+        { "path": "../users" },
+        { "path": "../sms" }
+    ],
+
+    "exclude": [
+        "__tests__",
+        "dist"
+    ],
+
+    "ts-node": {
+        "esm": true
+    }
 }

@@ -1,41 +1,31 @@
-import BaseCommand from '@vonage/cli-utils';
-import { flags } from '@oclif/command';
-import { OutputFlags } from '@oclif/parser';
+import VonageCommand from '@vonage/cli-utils';
+import { Flags } from '@oclif/core';
 import { readFileSync } from 'fs';
 
-interface GenerateJWTFlags {
-    app_id: any;
-    key_file: any;
-    subject?: any;
-    acl?: any;
-    exp?: any;
-}
-
-export default class GenerateJWT extends BaseCommand<typeof GenerateJWT.flags> {
+export default class GenerateJWT extends VonageCommand<typeof GenerateJWT> {
     static description = 'generate a Vonage JWT token';
 
     static examples = [
         `jwt --key_file='./testing.key' --app_id=31521081-e4c7-41fe-bccc-44af98879068`,
     ];
 
-    static flags: OutputFlags<typeof BaseCommand.flags> & GenerateJWTFlags = {
-        ...BaseCommand.flags,
-        app_id: flags.string({
+    static flags = {
+        app_id: Flags.string({
             required: true,
             description: 'Application ID to authenticate with',
         }),
-        key_file: flags.string({
+        key_file: Flags.string({
             required: true,
             description: 'Path to private key file location',
         }),
-        subject: flags.string({
+        subject: Flags.string({
             required: false,
         }),
-        acl: flags.string({
+        acl: Flags.string({
             required: false,
             description: `Read more about it in the ACL overview - https://developer.vonage.com/conversation/guides/jwt-acl#acls`,
         }),
-        exp: flags.string({
+        exp: Flags.string({
             required: false,
             description: 'Expiration of created JWT - defaults to 24 hours.',
         }),

@@ -1,10 +1,10 @@
-import { OutputFlags } from '@oclif/parser';
-import { flags } from '@oclif/command';
-import { ArgInput } from '@oclif/core/lib/interfaces';
-import UserCommand from '../../../users_base';
-import cli from 'cli-ux';
+import { CliUx, Flags } from '@oclif/core';
+import { OutputFlags, ArgInput } from '@oclif/core/lib/interfaces';
+import UserCommand from '../../../users_base.js';
 import chalk from 'chalk';
-import { VetchResponse } from '../../../types';
+import { VetchResponse } from '../../../types.js';
+
+const cli = CliUx.ux;
 
 interface CreateFlags {
     display_name: any;
@@ -18,8 +18,8 @@ export default class UsersCreate extends UserCommand<typeof UsersCreate.flags> {
 
     static flags: OutputFlags<typeof UserCommand.flags> & CreateFlags = {
         ...UserCommand.flags,
-        display_name: flags.string({ description: '' }),
-        image_url: flags.string({ description: '' }),
+        display_name: Flags.string({ description: '' }),
+        image_url: Flags.string({ description: '' }),
     };
 
     static args: ArgInput = [{ name: 'name', required: false }];

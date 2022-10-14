@@ -1,17 +1,13 @@
-import AppCommand from '../../app_base';
-import { prompt } from 'prompts';
+import AppCommand from '../../app_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
 import chalk from 'chalk';
 import _ from 'lodash';
+import { CliUx } from '@oclif/core';
 
-export default class ApplicationsShow extends AppCommand<
-    typeof ApplicationsShow.flags
-> {
+
+export default class ApplicationsShow
+    extends AppCommand<typeof ApplicationsShow> {
     static description = 'show Vonage application details';
-
-    static flags = {
-        ...AppCommand.flags,
-    };
 
     static examples = [];
 
@@ -31,18 +27,12 @@ export default class ApplicationsShow extends AppCommand<
         let response = args;
 
         if (!args.appId) {
-            const appData = await this.allApplications;
-            const appList = appData['_embedded'].applications;
-
-            response = await prompt([
+            response = await CliUx.ux.prompt(
+                'Your Applications',
                 {
-                    type: 'autocomplete',
-                    name: 'appId',
-                    message: 'Your Applications',
-                    choices: this.setQuestions(appList),
-                    initial: 0,
+                    required: true,
                 },
-            ]);
+            );
         }
 
         const output = await this.getSingleApplication(response.appId);

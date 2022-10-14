@@ -1,19 +1,19 @@
-import AppCommand from '../../app_base';
-import { OutputFlags } from '@oclif/parser';
+import AppCommand from '../../app_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import { flags } from '@oclif/command';
-import { prompt } from 'prompts';
-import { webhookQuestions, sanitizeFileName } from '../../helpers';
+import { Flags, CliUx } from '@oclif/core';
+import prompts from 'prompts';
+import { webhookQuestions, sanitizeFileName } from '../../helpers/index.js';
 import {
     uniqueNamesGenerator,
     adjectives,
     animals,
 } from 'unique-names-generator';
-import { merge } from 'lodash';
 import { writeFileSync } from 'fs';
-import cli from 'cli-ux';
-import chalk from 'chalk';
 import _ from 'lodash';
+import chalk from 'chalk';
+const { prompt } = prompts;
+
+const cli = CliUx.ux;
 
 const shortName = uniqueNamesGenerator({
     // colors can be omitted here as not used
@@ -21,26 +21,10 @@ const shortName = uniqueNamesGenerator({
     length: 2,
 });
 
-interface CreateFlags {
-    voice_answer_url: any;
-    voice_answer_http: any;
-    voice_event_url: any;
-    voice_event_http: any;
-    messages_inbound_url: any;
-    messages_inbound_http: any;
-    messages_status_url: any;
-    messages_status_http: any;
-    rtc_event_url: any;
-    rtc_event_http: any;
-    vbc: any;
-    improve_ai: any;
-}
-
 const kbArticle = 'https://help.nexmo.com/hc/en-us/articles/4401914566036';
 
-export default class ApplicationsCreate extends AppCommand<
-    typeof ApplicationsCreate.flags
-> {
+export default class ApplicationsCreate
+    extends AppCommand<typeof ApplicationsCreate> {
     static description = 'create a new Vonage application';
 
     static examples = [
@@ -48,75 +32,74 @@ export default class ApplicationsCreate extends AppCommand<
         'vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com --voice_event_url=https://www.sample.com',
     ];
 
-    static flags: OutputFlags<typeof AppCommand.flags> & CreateFlags = {
-        ...AppCommand.flags,
-        voice_answer_url: flags.string({
+    static flags = {
+        voice_answer_url: Flags.string({
             description: 'Voice Answer Webhook URL Address',
             dependsOn: ['voice_event_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`,
         }),
-        voice_answer_http: flags.string({
+        voice_answer_http: Flags.string({
             description: 'Voice Answer Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['voice_answer_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"answer_url": {"http_method": "${input}"}}}}`,
         }),
-        voice_event_url: flags.string({
+        voice_event_url: Flags.string({
             description: 'Voice Event Webhook URL Address',
             dependsOn: ['voice_answer_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"event_url": {"address": "${input}"}}}}`,
         }),
-        voice_event_http: flags.string({
+        voice_event_http: Flags.string({
             description: 'Voice Event Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['voice_event_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`,
         }),
-        messages_inbound_url: flags.string({
+        messages_inbound_url: Flags.string({
             description: 'Messages Inbound Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`,
         }),
-        messages_inbound_http: flags.string({
+        messages_inbound_http: Flags.string({
             description: 'Messages Inbound Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['messages_inbound_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"inbound_url": {"http_method": "${input}"}}}}`,
         }),
-        messages_status_url: flags.string({
+        messages_status_url: Flags.string({
             description: 'Messages Status Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`,
         }),
-        messages_status_http: flags.string({
+        messages_status_http: Flags.string({
             description: 'Messages Status Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['messages_status_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"status_url": {"http_method": "${input}"}}}}`,
         }),
-        rtc_event_url: flags.string({
+        rtc_event_url: Flags.string({
             description: 'RTC Event Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"rtc": {"webhooks": {"event_url": {"address": "${input}"}}}}`,
         }),
-        rtc_event_http: flags.string({
+        rtc_event_http: Flags.string({
             description: 'RTC Event Webhook HTTP Method',
             options: ['GET', 'POST'],
             dependsOn: ['rtc_event_url'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"rtc": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`,
         }),
-        vbc: flags.boolean({
+        vbc: Flags.boolean({
             description: 'VBC Capabilities Enabled',
-            parse: () => `{"vbc": {}}`,
+            parse: async () => `{"vbc": {}}`,
         }),
-        improve_ai: flags.boolean({
+        improve_ai: Flags.boolean({
             description: `Allow use of data for AI training? Read data collection disclosure - ${kbArticle}`,
         }),
     };
@@ -149,7 +132,7 @@ export default class ApplicationsCreate extends AppCommand<
                 [],
             );
 
-            merge(response.capabilities, ...tobeAssigned);
+            _.merge(response.capabilities, ...tobeAssigned);
 
             response.name = args.name;
         }

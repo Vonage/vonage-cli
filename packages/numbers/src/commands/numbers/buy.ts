@@ -1,4 +1,4 @@
-import NumberCommand from '../../number_base';
+import NumberCommand from '../../number_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
 
 export default class NumberBuy extends NumberCommand<typeof NumberBuy.flags> {
