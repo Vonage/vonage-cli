@@ -17,11 +17,9 @@
     },
     "plugins": [
         "@typescript-eslint",
-        "deprecation",
-        "prettier"
+        "deprecation"
     ],
     "rules": {
-        "prettier/prettier": "error",
         "indent": [
             "error",
             4
