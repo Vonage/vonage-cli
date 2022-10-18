@@ -13,7 +13,10 @@ async function isExists(path: string) {
         return false;
     }
 }
-
+async function writeFile(path: string){
+    
+ const xd34 = path.dirname(filePath);   
+}
 async function writeFile(filePath: string) {
     try {
         const dirname = path.dirname(filePath);
