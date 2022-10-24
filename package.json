@@ -6,9 +6,6 @@
         "packages/*"
     ],
     "devDependencies": {
-        "@oclif/core": "1.16.3",
-        "@oclif/dev-cli": "1.26.10",
-        "@oclif/test": "2.1.1",
         "@types/jest": "29.0.3",
         "@typescript-eslint/eslint-plugin": "5.38.0",
         "@typescript-eslint/parser": "5.38.0",

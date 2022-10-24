@@ -1,4 +1,4 @@
-import { Hook } from '@oclif/config';
+import { Hook } from '@oclif/core';
 import { promises as fs } from 'fs';
 import { writeFileSync, constants } from 'fs';
 import * as path from 'path';

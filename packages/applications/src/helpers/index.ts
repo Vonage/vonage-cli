@@ -1,6 +1,6 @@
-import { prompt } from 'prompts';
+import prompts from 'prompts';
 import { filenamifyPath } from 'filenamify';
-
+const { prompt } = prompts;
 interface WebhookQuestions {
     name: string;
     url?: string;

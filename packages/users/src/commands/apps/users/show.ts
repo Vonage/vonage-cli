@@ -1,8 +1,7 @@
-import { OutputFlags } from '@oclif/parser';
-import UserCommand from '../../../users_base';
+import UserCommand from '../../../users_base.js';
 import chalk from 'chalk';
-import { VetchResponse } from '../../../types';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import { VetchResponse } from '../../../types.js';
+import { ArgInput, OutputFlags } from '@oclif/core/lib/interfaces';
 
 export default class UsersShow extends UserCommand<typeof UsersShow.flags> {
     static description = '';

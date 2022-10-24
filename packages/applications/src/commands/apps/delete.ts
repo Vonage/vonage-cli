@@ -1,8 +1,11 @@
-import AppCommand from '../../app_base';
-import { prompt } from 'prompts';
+import AppCommand from '../../app_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
 import chalk from 'chalk';
-import cli from 'cli-ux';
+import { CliUx } from '@oclif/core';
+import prompts from 'prompts';
+
+const { prompt } = prompts;
+const cli = CliUx.ux;
 
 export default class ApplicationsDelete extends AppCommand<
     typeof ApplicationsDelete.flags

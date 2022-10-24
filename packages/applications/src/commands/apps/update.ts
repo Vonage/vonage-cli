@@ -1,15 +1,17 @@
-import AppCommand from '../../app_base';
-import { OutputFlags } from '@oclif/parser';
+import AppCommand from '../../app_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import { flags } from '@oclif/command';
-import { prompt } from 'prompts';
-import { webhookQuestions } from '../../helpers';
-import { merge } from 'lodash';
-import cli from 'cli-ux';
+import { CliUx, Flags } from '@oclif/core';
+import { webhookQuestions } from '../../helpers/index.js';
 import chalk from 'chalk';
 import _ from 'lodash';
+import { VonageCliFlags } from '@vonage/cli-utils';
+import prompts from 'prompts';
 
-interface UpdateFlags {
+const { prompt } = prompts;
+
+const cli = CliUx.ux;
+
+interface UpdateFlags extends VonageCliFlags<typeof ApplicationsUpdate>{
     voice_answer_url: any;
     voice_answer_http: any;
     voice_event_url: any;
@@ -33,64 +35,63 @@ export default class ApplicationsUpdate extends AppCommand<
         'vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer',
     ];
 
-    static flags: OutputFlags<typeof AppCommand.flags> & UpdateFlags = {
-        ...AppCommand.flags,
-        voice_answer_url: flags.string({
+    static flags = {
+        voice_answer_url: Flags.string({
             description: 'Voice Answer Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"answer_url": {"address": "${input}"}}}}`,
         }),
-        voice_answer_http: flags.string({
+        voice_answer_http: Flags.string({
             description: 'Voice Answer Webhook HTTP Method',
             options: ['GET', 'POST'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"answer_url": {"http_method": "${input}"}}}}`,
         }),
-        voice_event_url: flags.string({
+        voice_event_url: Flags.string({
             description: 'Voice Event Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"event_url": {"address": "${input}"}}}}`,
         }),
-        voice_event_http: flags.string({
+        voice_event_http: Flags.string({
             description: 'Voice Event Webhook HTTP Method',
             options: ['GET', 'POST'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"voice": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`,
         }),
-        messages_inbound_url: flags.string({
+        messages_inbound_url: Flags.string({
             description: 'Messages Inbound Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"inbound_url": {"address": "${input}"}}}}`,
         }),
-        messages_inbound_http: flags.string({
+        messages_inbound_http: Flags.string({
             description: 'Messages Inbound Webhook HTTP Method',
             options: ['GET', 'POST'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"inbound_url": {"http_method": "${input}"}}}}`,
         }),
-        messages_status_url: flags.string({
+        messages_status_url: Flags.string({
             description: 'Messages Status Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"status_url": {"address": "${input}"}}}}`,
         }),
-        messages_status_http: flags.string({
+        messages_status_http: Flags.string({
             description: 'Messages Status Webhook HTTP Method',
             options: ['GET', 'POST'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"messages": {"webhooks": {"status_url": {"http_method": "${input}"}}}}`,
         }),
-        rtc_event_url: flags.string({
+        rtc_event_url: Flags.string({
             description: 'RTC Event Webhook URL Address',
-            parse: (input) =>
+            parse: async (input) =>
                 `{"rtc": {"webhooks": {"event_url": {"address": "${input}"}}}}`,
         }),
-        rtc_event_http: flags.string({
+        rtc_event_http: Flags.string({
             description: 'RTC Event Webhook HTTP Method',
             options: ['GET', 'POST'],
-            parse: (input) =>
+            parse: async (input) =>
                 `{"rtc": {"webhooks": {"event_url": {"http_method": "${input}"}}}}`,
         }),
-        vbc: flags.boolean({
+        vbc: Flags.boolean({
             description: 'VBC Capabilities Enabled',
         }),
     };
@@ -125,7 +126,7 @@ export default class ApplicationsUpdate extends AppCommand<
     }
 
     async run() {
-        const flags = this.parsedFlags;
+        const flags = this.parsedFlags as UpdateFlags;
         const args = this.parsedArgs!;
         let response = args;
 
@@ -150,13 +151,13 @@ export default class ApplicationsUpdate extends AppCommand<
         if (Object.keys(flags).length > 0) {
             // merge flags into new object
             const tobeAssigned = Object.keys(flags).map(
-                (value: string, index) => {
+                (value: string) => {
                     return JSON.parse(flags[value]);
                 },
                 [],
             );
 
-            merge(newAppState.capabilities, ...tobeAssigned);
+            _.merge(newAppState.capabilities, ...tobeAssigned);
         } else {
             // run interactive
 

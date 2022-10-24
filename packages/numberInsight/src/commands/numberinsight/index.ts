@@ -1,10 +1,13 @@
-import NumberInsightCommand from '../../numberinsight_base';
+import NumberInsightCommand from '../../numberinsight_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import { flags } from '@oclif/parser';
-import { startCase, toLower } from 'lodash';
-import { prompt } from 'prompts';
+import _ from 'lodash';
+import prompts from 'prompts';
 import chalk from 'chalk';
-import cli from 'cli-ux';
+import { CliUx, Flags } from '@oclif/core';
+
+const { prompt } = prompts;
+
+const cli = CliUx.ux;
 
 function notBasic(level) {
     return level === 'standard' || level === 'advancedSync';
@@ -22,13 +25,13 @@ export default class NumberInsight extends NumberInsightCommand<
 
     static flags = {
         ...NumberInsightCommand.flags,
-        level: flags.string({
+        level: Flags.string({
             required: false,
             default: 'basic',
-            parse: (input) => (input === 'advanced' ? `advancedSync` : input),
+            parse: async (input) => (input === 'advanced' ? `advancedSync` : input),
             options: ['basic', 'standard', 'advanced'],
         }),
-        confirm: flags.boolean({ char: 'y', required: false }),
+        confirm: Flags.boolean({ char: 'y', required: false }),
     };
 
     static args: ArgInput = [{ name: 'number', required: true }];
@@ -66,7 +69,7 @@ export default class NumberInsight extends NumberInsightCommand<
 
         this.log(
             chalk.underline.bold.inverse(
-                `Number Insights - ${startCase(toLower(flags.level))}`,
+                `Number Insights - ${_.startCase(_.toLower(flags.level))}`,
             ),
         );
         this.log();

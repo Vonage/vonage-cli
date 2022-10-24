@@ -1,14 +1,8 @@
-import BaseCommand from '@vonage/cli-utils';
+import VonageCommand from '@vonage/cli-utils';
 import { request } from '@vonage/vetch';
-import { flags, OutputFlags } from '@oclif/parser';
+import { Flags } from '@oclif/core';
 
-interface SMSFlags {
-    to: any;
-    from: any;
-    message?: any;
-}
-
-export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
+export default class SMSSend extends VonageCommand<typeof SMSSend> {
     static description = 'Send a simple SMS.';
 
     static examples = [
@@ -19,15 +13,13 @@ export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
         `sms --to=15551234567 --from=15551234567 --message='Hello there!'`,
     ];
 
-    static flags: OutputFlags<typeof BaseCommand.flags> & SMSFlags = {
-        ...BaseCommand.flags,
-        to: flags.string({
+    static flags = {
+        to: Flags.string({
             required: true,
         }),
-        from: flags.string({
+        from: Flags.string({
             required: true,
-        }),
-        message: flags.string({
+        }), message: Flags.string({
             default: 'Hello from the Vonage CLI!',
         }),
     };
@@ -43,17 +35,13 @@ export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
     }
 
     async run() {
-        const flags = this.parsedFlags as OutputFlags<
-            typeof BaseCommand.flags
-        > &
-            SMSFlags;
         const response = await this.sendSMS({
             api_key: this._apiKey,
             api_secret: this._apiSecret,
-            text: flags.message,
-            ...flags,
+            text: this.flags.message,
+            ...this.flags,
         });
-        const messages = await response.data.messages
+        const messages = await response.data.messages;
 
         if (messages[0].status === '0') {
             this.log('Message sent successfully.');
@@ -62,9 +50,5 @@ export default class SMSSend extends BaseCommand<typeof SMSSend.flags> {
                 `Message failed with error: ${messages[0]['error-text']}`,
             );
         }
-    }
-
-    async catch(error: any) {
-        return super.catch(error);
     }
 }

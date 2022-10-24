@@ -1,26 +1,7 @@
-import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import VonageCommand from '@vonage/cli-utils';
 
-export default abstract class AppCommand<
-    T extends typeof BaseCommand.flags,
-> extends BaseCommand<T> {
-    protected parsedArgs;
-    protected parsedFlags;
-
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
-        ...BaseCommand.flags,
-        /* ... */
-    };
-
-    static args: ArgInput = {
-        ...BaseCommand.args,
-    };
-
-    async catch(error: any) {
-        return super.catch(error);
-    }
-
+export default abstract class AppCommand<T>
+    extends VonageCommand<typeof AppCommand> {
     get allApplications(): any {
         return new Promise((res, rej) => {
             this.vonage.applications.get(

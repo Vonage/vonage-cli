@@ -1,29 +1,15 @@
-import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import VonageCommand from '@vonage/cli-utils';
 import { tokenGenerate } from '@vonage/jwt';
 import { request } from '@vonage/vetch';
 import { readFileSync } from 'fs';
-import { merge } from 'lodash';
-import { HTTPMethods, ResponseTypes } from './types';
+import _ from 'lodash';
+import { HTTPMethods, ResponseTypes } from './types.js';
 
-export default abstract class ConversationsCommand<
-    T extends typeof BaseCommand.flags,
-> extends BaseCommand<T> {
+export default abstract class ConversationsCommand<T>
+    extends VonageCommand<typeof ConversationsCommand> {
     protected _token!: string;
     protected _baseurl = `https://api.nexmo.com/v0.3/conversations`;
     protected _userBaseurl = `https://api.nexmo.com/v0.3/users`;
-    protected parsedArgs
-    protected parsedFlags
-
-
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
-        ...BaseCommand.flags,
-    };
-
-    static args: ArgInput = {
-        ...BaseCommand.args,
-    };
 
     protected _defaultHttpOptions = {
         method: HTTPMethods.GET,
@@ -85,7 +71,7 @@ export default abstract class ConversationsCommand<
     }
 
     async getAllConversations(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}`;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
         const response = await request(opts);
@@ -93,7 +79,7 @@ export default abstract class ConversationsCommand<
     }
 
     async createConversation(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}`;
         opts['method'] = HTTPMethods.POST;
         opts['data'] = params;
@@ -103,7 +89,7 @@ export default abstract class ConversationsCommand<
     }
 
     async getConversationById(id) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${id}`;
         opts['method'] = HTTPMethods.GET;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
@@ -112,7 +98,7 @@ export default abstract class ConversationsCommand<
     }
 
     async updateConversation(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${params.conversationID}`;
         opts['method'] = HTTPMethods.PUT;
         delete params.conversationID;
@@ -123,7 +109,7 @@ export default abstract class ConversationsCommand<
     }
 
     async deleteConversation(id) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${id}`;
         opts['method'] = HTTPMethods.DELETE;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
@@ -132,7 +118,7 @@ export default abstract class ConversationsCommand<
     }
 
     async getAllMembersInConversation(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${params.conversationID}/members`;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
         const response = await request(opts);
@@ -140,7 +126,7 @@ export default abstract class ConversationsCommand<
     }
 
     async getMemberById(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts[
             'url'
         ] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
@@ -161,7 +147,7 @@ export default abstract class ConversationsCommand<
             },
         };
 
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${params.conversationID}/members`;
         opts['method'] = HTTPMethods.POST;
         opts['data'] = data;
@@ -175,7 +161,7 @@ export default abstract class ConversationsCommand<
             state: 'left',
         };
 
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts[
             'url'
         ] = `${this._baseurl}/${params.conversationID}/members/${params.memberID}`;
@@ -187,7 +173,7 @@ export default abstract class ConversationsCommand<
     }
 
     async getConversationsByUser(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._userBaseurl}/${params.userID}/conversations/`;
         opts['method'] = HTTPMethods.GET;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;

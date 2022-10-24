@@ -1,4 +1,4 @@
-import NumberCommand from '../../number_base';
+import NumberCommand from '../../number_base.js';
 import { Flags } from '@oclif/core';
 import { ArgInput } from '@oclif/core/lib/interfaces';
 

@@ -1,6 +1,5 @@
-import { Command, flags } from '@oclif/command';
+import { Command, Flags, Interfaces } from '@oclif/core';
 import {
-    FlagInput,
     OutputFlags,
     ParserOutput,
 } from '@oclif/core/lib/interfaces';
@@ -9,44 +8,68 @@ import { CredentialsObject } from '@vonage/server-sdk';
 import { readFileSync, writeFileSync } from 'fs';
 import * as path from 'path';
 
-interface UserConfig {
+/**
+ * @deprecated
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface UserConfig extends ApiConfig{
+}
+
+interface ApiConfig {
     apiKey: string;
     apiSecret: string;
 }
 
-export type InferredFlagsType<T> = T extends FlagInput<infer F>
-    ? F & {
-          json: boolean | undefined;
-      }
-    : any;
+export type VonageCliFlags<T extends typeof Command> = Interfaces.InferredFlags<
+    typeof VonageCommand['globalFlags'] & T['flags']
+>
 
-export default abstract class BaseCommand<
-    T extends typeof BaseCommand.flags,
-> extends Command {
+export default abstract class VonageCommand<T extends typeof Command>
+    extends Command {
     private _vonage!: any;
     protected Vonage!: any;
-    protected _apiKey!: any;
-    protected _apiSecret!: any;
-    protected _appId!: any;
-    protected _keyFile!: any;
+    protected _apiKey!: string;
+    protected _apiSecret!: string;
+    protected _appId!: string;
+    protected _keyFile!: string;
     protected _userConfig!: UserConfig;
     protected globalFlags?: OutputFlags<any>;
-    protected parsedArgs: { [name: string]: any };
-    protected parsedFlags: InferredFlagsType<T>;
+    protected parsedArgs: { [name: string]: string};
+    /**
+     * @deprecated
+     */
+    protected parsedFlags: VonageCliFlags<T>;
     protected parsedOutput?: ParserOutput<any, any>;
 
+    protected flags!: VonageCliFlags<T>;
+
     // add global flags here
-    static flags = {
-        help: flags.help({ char: 'h' }),
-        apiKey: flags.string({ hidden: true, dependsOn: ['apiSecret'] }),
-        apiSecret: flags.string({ hidden: true, dependsOn: ['apiKey'] }),
-        appId: flags.string({ hidden: true, dependsOn: ['keyFile'] }),
-        keyFile: flags.string({ hidden: true, dependsOn: ['appId'] }),
-        trace: flags.boolean({ hidden: true }),
+    static globalFlags = {
+        apiKey: Flags.string({
+            helpGroup: 'Vonage API Flags',
+            dependsOn: ['apiSecret'],
+        }),
+        apiSecret: Flags.string({
+            helpGroup: 'Vonage API Flags',
+            dependsOn: ['apiKey'],
+        }),
+        appId: Flags.string({
+            helpGroup: 'Vonage Application Flags',
+            dependsOn: ['keyFile'],
+        }),
+        keyFile: Flags.string({
+            helpGroup: 'Vonage Application Flags',
+            dependsOn: ['appId'],
+        }),
+        trace: Flags.boolean({
+            hidden: true,
+        }),
     };
 
     get vonage() {
-        if (this._vonage) return this._vonage;
+        if (this._vonage) {
+            return this._vonage;
+        }
 
         const credentials: CredentialsObject = {
             apiKey: this._apiKey || '',
@@ -60,11 +83,7 @@ export default abstract class BaseCommand<
         return this._vonage;
     }
 
-    get userConfig() {
-        return this._userConfig;
-    }
-
-    saveConfig(newConfig: UserConfig): void {
+    saveConfig(newConfig: ApiConfig): void {
         writeFileSync(
             path.join(this.config.configDir, 'vonage.config.json'),
             JSON.stringify(newConfig),
@@ -85,26 +104,14 @@ export default abstract class BaseCommand<
     }
 
     async init(): Promise<void> {
-        this.parsedOutput = await this.parse(this.ctor);
-        this.parsedFlags = this.parsedOutput?.flags ?? {};
-        this.parsedArgs = this.parsedOutput?.args ?? {};
-
-        const flags = this.parsedFlags;
-        this.globalFlags = {
-            apiKey: flags.apiKey,
-            apiSecret: flags.apiSecret,
-            appId: flags.appId,
-            keyFile: flags.keyFile,
-            trace: flags.trace,
-        };
+        await super.init();
+        const { flags, args } = await this.parse(
+            this.constructor as Interfaces.Command.Class,
+        );
+        this.flags = this.parsedFlags = flags;
+        this.parsedArgs = args;
 
         this.Vonage = Vonage;
-
-        // this removes the global flags from the command, so checking for
-        // interactive mode is possible.
-        delete this.parsedFlags.apiKey;
-        delete this.parsedFlags.apiSecret;
-        delete this.parsedFlags.trace;
 
         try {
             const rawConfig = readFileSync(
@@ -115,42 +122,44 @@ export default abstract class BaseCommand<
             // need something when no file exists - do we auto create? ask?
         }
 
-        let apiKey;
-        let apiSecret;
-        let appId;
-        let keyFile;
+        this.initApiConfig();
 
-        // creds priority order -- flags > env > config
-        // todo - need a better interface for this
-        // prettier-ignore
-        if (flags?.apiKey && flags?.apiSecret) {
-            apiKey = flags.apiKey;
-            apiSecret = flags.apiSecret;
-        } else if (
+        if (flags?.appId && flags?.keyFile) {
+            this._appId = flags.appId;
+            this._keyFile = flags.keyFile;
+        }
+    }
+
+    private initApiConfig(): void {
+        // Order is Flags -> Env -> Config
+        if (this.flags.apiKey && this.flags.apiSecret) {
+            this._apiKey = this.flags.apiKey;
+            this._apiSecret = this.flags.apiSecret;
+            return;
+        }
+
+        if (
             process.env.VONAGE_API_KEY
             && process.env.VONAGE_API_SECRET
         ) {
-            apiKey = process.env.VONAGE_API_KEY;
-            apiSecret = process.env.VONAGE_API_SECRET;
-        } else {
-            apiKey = this._userConfig.apiKey;
-            apiSecret = this._userConfig.apiSecret;
+            this._apiKey = process.env.VONAGE_API_KEY;
+            this._apiSecret = process.env.VONAGE_API_SECRET;
+            return;
         }
 
-        if (flags?.appId && flags?.keyFile) {
-            appId = flags.appId;
-            keyFile = flags.keyFile;
-        }
-
-        this._apiKey = apiKey;
-        this._apiSecret = apiSecret;
-        this._appId = appId;
-        this._keyFile = keyFile;
+        this._apiKey = this._userConfig.apiKey;
+        this._apiSecret = this._userConfig.apiSecret;
     }
 
     async catch(error: any) {
-        if (error.oclif?.exit === 0) return;
-        if (this.globalFlags?.trace) this.log(error.stack);
+        if (error.oclif?.exit === 0) {
+            return;
+        }
+
+        if (this.flags?.trace) {
+            this.log(error.stack);
+        }
+
         if (error.statusCode === 401) {
             this.error('Authentication Failure', {
                 code: 'API_AUTH_ERR',
@@ -160,9 +169,7 @@ export default abstract class BaseCommand<
             });
         }
 
-        // prettier-ignore
-        if (
-            error.statusCode === 420
+        if (error.statusCode === 420
             && error.body['error-code-label'] === 'method failed'
         ) {
             this.error('Method Failed', {
@@ -173,8 +180,11 @@ export default abstract class BaseCommand<
 
         return super.catch(error);
     }
+}
 
-    async finally(error) {
-        return super.finally(error);
-    }
+/**
+ * @deprecated Use VonageCommand instead
+ */
+export abstract class BaseCommand extends VonageCommand<typeof BaseCommand> {
+
 }

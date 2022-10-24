@@ -1,8 +1,8 @@
-import NumberCommand from '../../number_base';
-import { flags } from '@oclif/command';
+import NumberCommand from '../../number_base.js';
 import { ArgInput } from '@oclif/core/lib/interfaces';
+import { CliUx, Flags } from '@oclif/core';
 
-import cli from 'cli-ux';
+const cli = CliUx.ux;
 
 // TODO - INTERACTIVE MODE
 // Add in ISO look up for Country codes
@@ -22,23 +22,23 @@ export default class NumberSearch extends NumberCommand<
 
     static flags = {
         ...NumberCommand.flags,
-        type: flags.string({
+        type: Flags.string({
             description: 'Filter by type of number, such as mobile or landline',
             options: ['landline', 'mobile-lvn', 'landline-toll-free'],
         }),
-        startsWith: flags.string({
+        startsWith: Flags.string({
             description: 'Filter from the start of the phone number.',
             exclusive: ['endsWith', 'contains'],
         }),
-        endsWith: flags.string({
+        endsWith: Flags.string({
             description: 'Filter from the end of the phone number.',
             exclusive: ['startsWith', 'contains'],
         }),
-        contains: flags.string({
+        contains: Flags.string({
             description: 'Filter from anywhere in the phone number.',
             exclusive: ['endsWith', 'startsWith'],
         }),
-        features: flags.string({
+        features: Flags.string({
             description:
                 // eslint-disable-next-line max-len
                 'Available features are SMS, VOICE and MMS. To look for numbers that support multiple features, use a comma-separated value: SMS,MMS,VOICE.',

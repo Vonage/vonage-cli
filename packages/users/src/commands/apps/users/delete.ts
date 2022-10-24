@@ -1,7 +1,6 @@
-import { OutputFlags } from '@oclif/parser';
-import UserCommand from '../../../users_base';
+import UserCommand from '../../../users_base.js';
 import chalk from 'chalk';
-import { ArgInput } from '@oclif/core/lib/interfaces';
+import { OutputFlags, ArgInput } from '@oclif/core/lib/interfaces';
 
 export default class UsersDelete extends UserCommand<typeof UsersDelete.flags> {
     static description = '';

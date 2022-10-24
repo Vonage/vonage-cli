@@ -1,20 +1,17 @@
 {
     "extends": "../../tsconfig.json",
-
+    
     "compilerOptions": {
-        "composite": true,
         "rootDir": "src",
         "outDir": "dist",
-        "noEmit": false
-
     },
-
-    "includes": [
-        "src/**/*"
-    ],
 
     "exclude": [
         "__tests__",
         "dist"
-    ]
+    ],
+
+    "ts-node": {
+        "esm": true
+    }
 }

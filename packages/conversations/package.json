@@ -5,21 +5,17 @@
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
-    "module": true,
+    "type": "module",
     "dependencies": {
-        "@oclif/command": "1.8.16",
-        "@oclif/config": "1.18.3",
-        "@oclif/core": "1.16.3",
-        "@oclif/parser": "3.8.7",
-        "@vonage/cli-utils": "^1.3.0",
+        "@oclif/core": "1.19.0",
+        "@vonage/cli-utils": "1.3.0",
         "@vonage/jwt": "3.0.0-beta.1",
         "@vonage/vetch": "3.0.0-beta.3",
-        "chalk": "5.0.1",
-        "cli-ux": "5.6.3",
-        "lodash": "^4.17.21"
+        "chalk": "5.1.2",
+        "lodash": "4.17.21"
     },
     "engines": {
-        "node": ">=12.0.0"
+        "node": ">=14.0.0"
     },
     "files": [
         "/dist",
@@ -36,22 +32,12 @@
         "oclif-plugin"
     ],
     "oclif": {
-        "commands": "./dist/commands",
-        "bin": "oclif-example",
-        "devPlugins": [
-            "@oclif/plugin-help"
-        ]
+        "commands": "./dist/commands"
     },
     "scripts": {
-        "postpack": "rm -f oclif.manifest.json",
-        "prepack": "rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
-        "test": "mocha \"__tests__/commands/**/*.test.ts\" -v",
-        "test-watch": "",
+        "postpack": "npx shx rm -f oclif.manifest.json",
+        "prepack": "npx shx rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
         "version": "oclif-dev readme && git add README.md",
-        "build": "tsc -b"
-    },
-    "devDependencies": {
-        "@oclif/test": "^2.1.1",
-        "nock": "^13.2.9"
+        "build": "npx shx rm -rf dist tsconfig.tsbuildinfo && tsc --build --verbose"
     }
 }

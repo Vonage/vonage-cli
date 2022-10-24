@@ -21,7 +21,10 @@
         "prettier"
     ],
     "rules": {
-        "prettier/prettier": "error",
+        "curly": [
+            "error",
+            "all"
+        ],
         "indent": [
             "error",
             4

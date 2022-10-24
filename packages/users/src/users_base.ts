@@ -1,27 +1,16 @@
-import BaseCommand from '@vonage/cli-utils';
-import { OutputFlags } from '@oclif/parser';
-import { ArgInput } from '@oclif/core/lib/interfaces';
 import { tokenGenerate } from '@vonage/jwt';
 import { request } from '@vonage/vetch';
 import { readFileSync } from 'fs';
-import { merge } from 'lodash';
-import { HTTPMethods, ResponseTypes } from './types';
+import _ from 'lodash';
+import { HTTPMethods, ResponseTypes } from './types.js';
+import VonageCommand from '@vonage/cli-utils';
 
-export default abstract class UsersCommand<
-    T extends typeof BaseCommand.flags,
-> extends BaseCommand<T> {
+export default abstract class UsersCommand<T>
+    extends VonageCommand<typeof UsersCommand> {
     protected _token!: string;
     protected _baseurl = `https://api.nexmo.com/v0.3/users`;
     protected parsedArgs;
     protected parsedFlags;
-
-    static flags: OutputFlags<typeof BaseCommand.flags> = {
-        ...BaseCommand.flags,
-    };
-
-    static args: ArgInput = {
-        ...BaseCommand.args,
-    };
 
     protected _defaultHttpOptions = {
         method: HTTPMethods.GET,
@@ -50,7 +39,7 @@ export default abstract class UsersCommand<
     }
 
     async getAllUsers(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}`;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
         const response = await request(opts);
@@ -58,7 +47,7 @@ export default abstract class UsersCommand<
     }
 
     async getUserById(id) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${id}`;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;
         const response = await request(opts);
@@ -66,7 +55,7 @@ export default abstract class UsersCommand<
     }
 
     async createUser(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}`;
         opts['method'] = HTTPMethods.POST;
         opts['data'] = params;
@@ -76,7 +65,7 @@ export default abstract class UsersCommand<
     }
 
     async updateUser(params) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${params.userID}`;
         opts['method'] = HTTPMethods.PATCH;
         opts['data'] = params;
@@ -86,7 +75,7 @@ export default abstract class UsersCommand<
     }
 
     async deleteUser(id) {
-        const opts = merge({}, this._defaultHttpOptions);
+        const opts = _.merge({}, this._defaultHttpOptions);
         opts['url'] = `${this._baseurl}/${id}`;
         opts['method'] = HTTPMethods.DELETE;
         opts['headers']['Authorization'] = `Bearer ${this._token}`;

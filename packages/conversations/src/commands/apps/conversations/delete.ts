@@ -1,5 +1,5 @@
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import ConversationCommand from '../../../conversations_base';
+import ConversationCommand from '../../../conversations_base.js';
 import chalk from 'chalk';
 
 export default class ConversationDelete extends ConversationCommand<

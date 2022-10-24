@@ -1,16 +1,15 @@
-import AppCommand from '../../app_base';
-import cli from 'cli-ux';
-import { OutputFlags } from '@oclif/parser';
+import AppCommand from '../../app_base.js';
+import { CliUx } from '@oclif/core';
 
-export default class ApplicationsLink extends AppCommand<
-    typeof ApplicationsLink.flags
-> {
+const cli = CliUx.ux;
+
+export default class ApplicationsLink
+    extends AppCommand<typeof ApplicationsLink> {
     static description = 'manage your Vonage applications';
 
     static examples = ['vonage apps', 'vonage apps --output=json'];
 
-    static flags: OutputFlags<typeof AppCommand.flags> = {
-        ...AppCommand.flags,
+    static flags = {
         ...cli.table.flags({
             except: ['columns', 'no-truncate', 'csv', 'extended', 'no-header'],
         }),

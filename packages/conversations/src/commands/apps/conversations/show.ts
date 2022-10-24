@@ -1,4 +1,4 @@
-import ConversationCommand from '../../../conversations_base';
+import ConversationCommand from '../../../conversations_base.js';
 import chalk from 'chalk';
 import { ArgInput } from '@oclif/core/lib/interfaces';
 

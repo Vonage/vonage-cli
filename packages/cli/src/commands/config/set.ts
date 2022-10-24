@@ -1,17 +1,17 @@
-import BaseCommand from '@vonage/cli-utils';
-import { flags } from '@oclif/command';
+import VonageCommand from '@vonage/cli-utils';
+import { Flags } from '@oclif/core';
 import { ArgInput } from '@oclif/core/lib/interfaces';
-import { merge } from 'lodash';
+import _ from 'lodash';
 
-export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
+export default class ConfigSet
+    extends VonageCommand<typeof ConfigSet> {
     static description = 'set Vonage CLI config';
 
     static flags = {
-        ...BaseCommand.flags,
-        apiKey: flags.string({
+        apiKey: Flags.string({
             description: 'Vonage API Key',
         }),
-        apiSecret: flags.string({
+        apiSecret: Flags.string({
             description: 'Vonage API Key',
         }),
     };
@@ -21,7 +21,7 @@ export default class ConfigSet extends BaseCommand<typeof ConfigSet.flags> {
     async run() {
         const flags = this.globalFlags;
         // add start, stop process indicators
-        this.saveConfig(merge({}, this.userConfig, flags));
+        this.saveConfig(_.merge({}, this._userConfig, flags));
         this.log('Configuration saved.');
     }
 }
