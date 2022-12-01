@@ -91,6 +91,8 @@ export default class NumberInsight extends NumberInsightCommand<
         this.log(`Prefix: ${insights.country_prefix}`);
 
         if (notBasic(flags.level)) {
+            const { roaming } = insights;
+
             this.log();
             this.log(chalk.bold(`Current Carrier`));
             this.log(`Name: ${insights.current_carrier.name}`);
@@ -106,13 +108,28 @@ export default class NumberInsight extends NumberInsightCommand<
             this.log();
             this.log(chalk.bold(`Ported: ${insights.ported}`));
             this.log();
-            this.log(
-                chalk.bold(
-                    `Roaming Status: ${
-                        insights.roaming.status || insights.roaming
-                    }`,
-                ),
-            );
+
+            if (typeof roaming === 'string' ) {
+                this.log(chalk.bold(`Roaming: ${roaming}`));
+            } else if (null !== roaming) {
+                this.log(chalk.bold(`Roaming`));
+                this.log(
+                    chalk.bold(
+                        `Status: ${
+                            insights?.roaming?.status || insights.roaming
+                        }`,
+                    ),
+                );
+                this.log(
+                    chalk.bold(
+                        `Country Code ${
+                            insights?.roaming?.country_code|| insights.roaming
+                        }`,
+                    ),
+                );
+            } else {
+                this.log(chalk.bold('Roaming: null'));
+            }
         }
         if (flags.level === 'advancedSync') {
             this.log();
