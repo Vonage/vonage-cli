@@ -24,10 +24,10 @@ export default class ApplicationsShow
 
     async run() {
         const args = this.parsedArgs!;
-        let response = args;
+        const response = args;
 
         if (!args.appId) {
-            response = await CliUx.ux.prompt(
+            response.appId = await CliUx.ux.prompt(
                 'Your Applications',
                 {
                     required: true,

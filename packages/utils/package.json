@@ -5,28 +5,29 @@
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",
     "dependencies": {
-        "@oclif/core": "1.19.0",
-        "@types/node": "18.11.0",
+        "@oclif/core": "1.20.4",
+        "@types/node": "18.11.11",
         "@vonage/server-sdk": "2.11.2"
     },
     "engines": {
         "node": ">=14.0.0"
     },
     "files": [
-        "/dist",
-        "/npm-shrinkwrap.json"
+        "bin",
+        "dist/**",
+        "/oclif.manifest.json"
     ],
     "homepage": "https://github.com/Vonage/vonage-cli",
     "keywords": [
         "cli"
     ],
-    "main": "dist/index",
+    "main": "dist/index.js",
     "license": "MIT",
     "repository": "Vonage/vonage-cli",
     "scripts": {
         "postpack": "npx shx rm -f oclif.manifest.json",
-        "prepack": "npx shx rm -rf dist && tsc -b && oclif-dev manifest && oclif-dev readme",
-        "version": "oclif-dev readme && git add README.md",
+        "prepack": "npm run build",
+        "version": "npx oclif readme && git add README.md",
         "build": "npx shx rm -rf dist tsconfig.tsbuildinfo && tsc --build --verbose"
     }
 }
