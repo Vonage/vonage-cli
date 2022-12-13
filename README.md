@@ -21,7 +21,7 @@ This is the next generation Node-based Vonage CLI.  The goals of this project we
 
 This project is built with [lerna](https://lerna.js.org/). The core plugins are located in [./packages](./packages).
 
-The standard `oclif` `./bin/run` script serves as your entry point to the CLI in your local development environment. `./bin/run` is a symlink to the core package `./packages/cli/bin/run`.
+The standard `oclif` `./bin/run.cjs` script serves as your entry point to the CLI in your local development environment. `./bin/run.cjs` is a symlink to the core package `./packages/cli/bin/run.cjs`.
 
 ## Install via npm
 
@@ -41,7 +41,7 @@ Next, install dependencies and post-install will run `lerna bootstrap`:
 
 You will need to repeat these steps when you change branches or pull fresh code from the repository.
 
-Run `bin/run` to run the tool, in place of the `vonage` command that this project uses when packaged.
+Run `bin/run.cjs` to run the tool, in place of the `vonage` command that this project uses when packaged.
 
 # Contributing
 
@@ -59,7 +59,7 @@ When naming the package, it should be named `@vonage/cli-plugin-{plugin-name}`.
 
 ### Install it to `@vonage/cli`
 
-To run the plugin in the CLI, you need to configure it with lerna as a local package. 
+To run the plugin in the CLI, you need to configure it with lerna as a local package.
 
 First change directory `cd packages/cli`. Next, run `lerna add @vonage/cli-plugin-{plugin-name} --scope=@vonage/cli` to add the new package to the core.
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env NODE_NO_WARNINGS=1 node 
+#!/usr/bin/env -S NODE_NO_WARNINGS=1 node 
 
 const oclif = require('@oclif/core')
 

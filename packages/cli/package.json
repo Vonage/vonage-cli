@@ -4,7 +4,7 @@
     "version": "1.2.0",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
-        "vonage": "./bin/run"
+        "vonage": "./bin/run.cjs"
     },
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",

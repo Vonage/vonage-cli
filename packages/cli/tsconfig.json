@@ -17,7 +17,8 @@
 
     "exclude": [
         "__tests__",
-        "dist"
+        "dist",
+        "bin/*"
     ],
 
     "ts-node": {
