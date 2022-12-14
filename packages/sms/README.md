@@ -16,13 +16,13 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @vonage/cli-plugin-sms
-$ oclif-example COMMAND
+$ @vonage/cli-plugin-sms COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@vonage/cli-plugin-sms/1.2.0 linux-x64 node-v16.15.1
-$ oclif-example --help [COMMAND]
+$ @vonage/cli-plugin-sms (--version)
+@vonage/cli-plugin-sms/1.2.2 darwin-arm64 node-v16.18.1
+$ @vonage/cli-plugin-sms --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ @vonage/cli-plugin-sms COMMAND
 ...
 ```
 <!-- usagestop -->
@@ -30,25 +30,35 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`oclif-example sms --to=15551234567 --from=15551234567 --message='Hello there!'`](#oclif-example-sms---to15551234567---from15551234567---messagehello-there)
+* [`@vonage/cli-plugin-sms sms --to=15551234567 --from=15551234567 --message='Hello there!'`](#vonagecli-plugin-sms-sms---to15551234567---from15551234567---messagehello-there)
 
-## `oclif-example sms --to=15551234567 --from=15551234567 --message='Hello there!'`
+## `@vonage/cli-plugin-sms sms --to=15551234567 --from=15551234567 --message='Hello there!'`
 
 Send a simple SMS.
 
 ```
 USAGE
-  $ oclif-example sms --to=15551234567 --from=15551234567 --message='Hello there!'
+  $ @vonage/cli-plugin-sms sms --to=15551234567 --from=15551234567 --message='Hello there!'
 
-OPTIONS
-  -h, --help         show CLI help
-  --from=from        (required)
-  --message=message  [default: Hello from the Vonage CLI!]
-  --to=to            (required)
+FLAGS
+  --from=<value>     (required)
+  --message=<value>  [default: Hello from the Vonage CLI!]
+  --to=<value>       (required)
 
-EXAMPLE
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
+
+DESCRIPTION
+  Send a simple SMS.
+
+EXAMPLES
   vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'
 ```
 
-_See code: [dist/commands/sms/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/sms/index.js)_
+_See code: [dist/commands/sms/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/sms/index.js)_
 <!-- commandsstop -->

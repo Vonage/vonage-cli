@@ -16,37 +16,50 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @vonage/cli-plugin-numberinsight
-$ oclif-example COMMAND
+$ @vonage/cli-plugin-numberinsight COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@vonage/cli-plugin-numberinsight/1.2.0 linux-x64 node-v16.15.1
-$ oclif-example --help [COMMAND]
+$ @vonage/cli-plugin-numberinsight (--version)
+@vonage/cli-plugin-numberinsight/1.2.2 darwin-arm64 node-v16.18.1
+$ @vonage/cli-plugin-numberinsight --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ @vonage/cli-plugin-numberinsight COMMAND
 ...
 ```
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`oclif-example numberinsight NUMBER`](#oclif-example-numberinsight-number)
+* [`@vonage/cli-plugin-numberinsight numberinsight NUMBER`](#vonagecli-plugin-numberinsight-numberinsight-number)
 
-## `oclif-example numberinsight NUMBER`
+## `@vonage/cli-plugin-numberinsight numberinsight NUMBER`
 
 get details about a phone number
 
 ```
 USAGE
-  $ oclif-example numberinsight NUMBER
+  $ @vonage/cli-plugin-numberinsight numberinsight [NUMBER] [--apiKey <value> --apiSecret <value>] [--appId <value>
+    --keyFile <value>] [--level basic|standard|advanced] [-y]
 
-OPTIONS
-  -h, --help                       show CLI help
+FLAGS
   -y, --confirm
-  --level=basic|standard|advanced  [default: basic]
+  --level=<option>  [default: basic]
+                    <options: basic|standard|advanced>
+
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
+
+DESCRIPTION
+  get details about a phone number
 
 EXAMPLES
   vonage numberinsight 15555555555
+
   vonage numberinsight 15555555555 --level=advanced
 ```
 
-_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/numberinsight/index.js)_
+_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/numberinsight/index.js)_
 <!-- commandsstop -->

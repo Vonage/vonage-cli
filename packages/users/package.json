@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-users",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",

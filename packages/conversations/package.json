@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-conversations",
-    "version": "1.0.0-beta.17",
+    "version": "1.0.1",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "homepage": "https://github.com/vonage/vonage-cli",
     "license": "MIT",
