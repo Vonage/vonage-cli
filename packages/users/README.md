@@ -16,13 +16,13 @@
 <!-- usage -->
 ```sh-session
 $ npm install -g @vonage/cli-plugin-users
-$ oclif-example COMMAND
+$ @vonage/cli-plugin-users COMMAND
 running command...
-$ oclif-example (-v|--version|version)
-@vonage/cli-plugin-users/1.2.0 linux-x64 node-v16.15.1
-$ oclif-example --help [COMMAND]
+$ @vonage/cli-plugin-users (--version)
+@vonage/cli-plugin-users/1.2.2 darwin-arm64 node-v16.18.1
+$ @vonage/cli-plugin-users --help [COMMAND]
 USAGE
-  $ oclif-example COMMAND
+  $ @vonage/cli-plugin-users COMMAND
 ...
 ```
 <!-- usagestop -->
@@ -30,61 +30,108 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`oclif-example apps:users:create [NAME]`](#oclif-example-appsuserscreate-name)
-* [`oclif-example apps:users:delete [USERID]`](#oclif-example-appsusersdelete-userid)
-* [`oclif-example apps:users:show [USERID]`](#oclif-example-appsusersshow-userid)
-* [`oclif-example apps:users:update [USERID]`](#oclif-example-appsusersupdate-userid)
+* [`@vonage/cli-plugin-users apps:users`](#vonagecli-plugin-users-appsusers)
+* [`@vonage/cli-plugin-users apps:users:create [NAME]`](#vonagecli-plugin-users-appsuserscreate-name)
+* [`@vonage/cli-plugin-users apps:users:delete [USERID]`](#vonagecli-plugin-users-appsusersdelete-userid)
+* [`@vonage/cli-plugin-users apps:users:show [USERID]`](#vonagecli-plugin-users-appsusersshow-userid)
+* [`@vonage/cli-plugin-users apps:users:update [USERID]`](#vonagecli-plugin-users-appsusersupdate-userid)
 
-## `oclif-example apps:users:create [NAME]`
-
-```
-USAGE
-  $ oclif-example apps:users:create [NAME]
-
-OPTIONS
-  -h, --help                   show CLI help
-  --display_name=display_name
-  --image_url=image_url
-```
-
-_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/apps/users/create.js)_
-
-## `oclif-example apps:users:delete [USERID]`
+## `@vonage/cli-plugin-users apps:users`
 
 ```
 USAGE
-  $ oclif-example apps:users:delete [USERID]
+  $ @vonage/cli-plugin-users apps:users [--apiKey <value> --apiSecret <value>] [--appId <value> --keyFile
+    <value>]
 
-OPTIONS
-  -h, --help  show CLI help
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/apps/users/delete.js)_
+_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/users/index.js)_
 
-## `oclif-example apps:users:show [USERID]`
-
-```
-USAGE
-  $ oclif-example apps:users:show [USERID]
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/apps/users/show.js)_
-
-## `oclif-example apps:users:update [USERID]`
+## `@vonage/cli-plugin-users apps:users:create [NAME]`
 
 ```
 USAGE
-  $ oclif-example apps:users:update [USERID]
+  $ @vonage/cli-plugin-users apps:users:create [NAME] [--apiKey <value> --apiSecret <value>] [--appId <value> --keyFile
+    <value>] [--display_name <value>] [--image_url <value>]
 
-OPTIONS
-  -h, --help                   show CLI help
-  --display_name=display_name
-  --image_url=image_url
-  --name=name
+FLAGS
+  --display_name=<value>
+  --image_url=<value>
+
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.0/dist/commands/apps/users/update.js)_
+_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/users/create.js)_
+
+## `@vonage/cli-plugin-users apps:users:delete [USERID]`
+
+```
+USAGE
+  $ @vonage/cli-plugin-users apps:users:delete [USERID] [--apiKey <value> --apiSecret <value>] [--appId <value>
+    --keyFile <value>]
+
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
+```
+
+_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/users/delete.js)_
+
+## `@vonage/cli-plugin-users apps:users:show [USERID]`
+
+```
+USAGE
+  $ @vonage/cli-plugin-users apps:users:show [USERID] [--apiKey <value> --apiSecret <value>] [--appId <value>
+    --keyFile <value>]
+
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
+```
+
+_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/users/show.js)_
+
+## `@vonage/cli-plugin-users apps:users:update [USERID]`
+
+```
+USAGE
+  $ @vonage/cli-plugin-users apps:users:update [USERID] [--apiKey <value> --apiSecret <value>] [--appId <value>
+    --keyFile <value>] [--name <value>] [--display_name <value>] [--image_url <value>]
+
+FLAGS
+  --display_name=<value>
+  --image_url=<value>
+  --name=<value>
+
+VONAGE API FLAGS FLAGS
+  --apiKey=<value>
+  --apiSecret=<value>
+
+VONAGE APPLICATION FLAGS FLAGS
+  --appId=<value>
+  --keyFile=<value>
+```
+
+_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/users/update.js)_
 <!-- commandsstop -->
