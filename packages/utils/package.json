@@ -5,9 +5,9 @@
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",
     "dependencies": {
-        "@oclif/core": "1.20.4",
-        "@types/node": "18.11.11",
-        "@vonage/server-sdk": "2.11.2"
+        "@oclif/core": "^1.20.4",
+        "@types/node": "^18.11.11",
+        "@vonage/server-sdk": "^2.11.2"
     },
     "engines": {
         "node": ">=14.0.0"
