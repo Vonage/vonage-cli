@@ -5,7 +5,7 @@ import {
 } from '@oclif/core/lib/interfaces';
 import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import * as path from 'path';
 
 /**
@@ -81,14 +81,6 @@ export default abstract class VonageCommand<T extends typeof Command>
         });
 
         return this._vonage;
-    }
-
-    saveConfig(newConfig: ApiConfig): void {
-        writeFileSync(
-            path.join(this.config.configDir, 'vonage.config.json'),
-            JSON.stringify(newConfig),
-        );
-        return;
     }
 
     async displayBalance(): Promise<any> {
