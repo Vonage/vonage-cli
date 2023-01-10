@@ -1,7 +1,7 @@
 {
     "name": "@vonage/cli",
     "description": "CLI to interact with Vonage APIs",
-    "version": "1.2.3-0",
+    "version": "1.2.4-alpha.0",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bin": {
         "vonage": "./bin/run.cjs"
