@@ -51,5 +51,6 @@
     },
     "bugs": {
         "url": "https://github.com/Vonage/vonage-cli/issues"
-    }
+    },
+    "version": "0.0.1-0"
 }
