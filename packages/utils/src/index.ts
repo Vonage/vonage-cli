@@ -76,6 +76,7 @@ export default abstract class VonageCommand<T extends typeof Command>
             apiSecret: this._apiSecret || '',
         };
 
+        this.debug('Creds:', credentials);
         this._vonage = new Vonage(credentials, {
             appendToUserAgent: 'vonage-cli',
         });
@@ -110,7 +111,10 @@ export default abstract class VonageCommand<T extends typeof Command>
                 path.join(this.config.configDir, 'vonage.config.json'),
             );
             this._userConfig = JSON.parse(rawConfig.toString());
+            this.debug('Loaded config', this._userConfig);
         } catch (error) {
+            this.debug('Failed to load config');
+            console.error(error);
             // need something when no file exists - do we auto create? ask?
         }
 
@@ -127,6 +131,7 @@ export default abstract class VonageCommand<T extends typeof Command>
         if (this.flags.apiKey && this.flags.apiSecret) {
             this._apiKey = this.flags.apiKey;
             this._apiSecret = this.flags.apiSecret;
+            this.debug('Loaded from flags', this._apiKey, this._apiSecret);
             return;
         }
 
@@ -136,11 +141,13 @@ export default abstract class VonageCommand<T extends typeof Command>
         ) {
             this._apiKey = process.env.VONAGE_API_KEY;
             this._apiSecret = process.env.VONAGE_API_SECRET;
+            this.debug('Loaded from env', this._apiKey, this._apiSecret);
             return;
         }
 
         this._apiKey = this._userConfig.apiKey;
         this._apiSecret = this._userConfig.apiSecret;
+        this.debug('Loaded from config', this._apiKey, this._apiSecret);
     }
 
     async catch(error: any) {

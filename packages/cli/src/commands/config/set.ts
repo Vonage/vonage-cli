@@ -25,14 +25,21 @@ export default class ConfigSet
             'vonage.config.json',
         );
         const { flags } = await this.parse(ConfigSet);
+        this.debug('Flags', flags);
         const newConfig = {
             ...this._userConfig,
             ...flags,
         };
-        writeFileSync(
-            configFile,
-            JSON.stringify(newConfig),
-        );
-        this.log('Configuration saved.', newConfig);
+        this.debug(`Writing new config to ${configFile}`, newConfig);
+        try {
+            writeFileSync(
+                configFile,
+                JSON.stringify(newConfig),
+            );
+            this.log('Configuration saved.', newConfig);
+        } catch (error) {
+            this.debug('Failed to write file');
+            this.error(error);
+        }
     }
 }
