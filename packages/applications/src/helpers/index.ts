@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import { filenamifyPath } from 'filenamify';
+import snakeCase from 'lodash.snakecase';
 const { prompt } = prompts;
 interface WebhookQuestions {
     name: string;
@@ -35,5 +35,5 @@ export async function webhookQuestions({
 }
 
 export function sanitizeFileName(filename, replacement = '_') {
-    return filenamifyPath(filename, { replacement: replacement });
+    return snakeCase(filename);
 }
