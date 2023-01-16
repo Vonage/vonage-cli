@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-sms
 $ @vonage/cli-plugin-sms COMMAND
 running command...
 $ @vonage/cli-plugin-sms (--version)
-@vonage/cli-plugin-sms/1.2.2 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-sms/1.2.3 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-sms --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-sms COMMAND
@@ -60,5 +60,5 @@ EXAMPLES
   vonage sms --to=15551234567 --from=15551234567 --message='Hello there!'
 ```
 
-_See code: [dist/commands/sms/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/sms/index.js)_
+_See code: [dist/commands/sms/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/sms/index.js)_
 <!-- commandsstop -->

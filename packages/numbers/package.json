@@ -1,12 +1,12 @@
 {
     "name": "@vonage/cli-plugin-numbers",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",
     "dependencies": {
         "@oclif/core": "^1.20.4",
-        "@vonage/cli-utils": "^1.3.0"
+        "@vonage/cli-utils": "^1.3.3"
     },
     "engines": {
         "node": ">=14.0.0"

@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numberinsight
 $ @vonage/cli-plugin-numberinsight COMMAND
 running command...
 $ @vonage/cli-plugin-numberinsight (--version)
-@vonage/cli-plugin-numberinsight/1.2.2 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-numberinsight/1.2.3 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-numberinsight --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-numberinsight COMMAND
@@ -61,5 +61,5 @@ EXAMPLES
   vonage numberinsight 15555555555 --level=advanced
 ```
 
-_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/numberinsight/index.js)_
+_See code: [dist/commands/numberinsight/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numberinsight/index.js)_
 <!-- commandsstop -->

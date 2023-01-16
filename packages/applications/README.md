@@ -18,7 +18,7 @@ $ npm install -g @vonage/cli-plugin-applications
 $ @vonage/cli-plugin-applications COMMAND
 running command...
 $ @vonage/cli-plugin-applications (--version)
-@vonage/cli-plugin-applications/1.2.2 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-applications/1.2.3 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-applications --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-applications COMMAND
@@ -67,7 +67,7 @@ EXAMPLES
   vonage apps --output=json
 ```
 
-_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/index.js)_
+_See code: [dist/commands/apps/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/index.js)_
 
 ## `@vonage/cli-plugin-applications apps:create [NAME]`
 
@@ -118,7 +118,7 @@ EXAMPLES
   vonage apps:create APP_NAME --voice_answer_url=https://www.sample.com --voice_event_url=https://www.sample.com
 ```
 
-_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/create.js)_
+_See code: [dist/commands/apps/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/create.js)_
 
 ## `@vonage/cli-plugin-applications apps:delete [APPID]`
 
@@ -146,7 +146,7 @@ EXAMPLES
   vonage apps:delete
 ```
 
-_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/delete.js)_
+_See code: [dist/commands/apps/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/delete.js)_
 
 ## `@vonage/cli-plugin-applications apps:link [APPID] --number=[NUMBER]`
 
@@ -171,7 +171,7 @@ DESCRIPTION
   link numbers to Vonage application
 ```
 
-_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/link.js)_
+_See code: [dist/commands/apps/link.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/link.js)_
 
 ## `@vonage/cli-plugin-applications apps:show [APPID]`
 
@@ -194,7 +194,7 @@ DESCRIPTION
   show Vonage application details
 ```
 
-_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/show.js)_
+_See code: [dist/commands/apps/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/show.js)_
 
 ## `@vonage/cli-plugin-applications apps:unlink`
 
@@ -220,7 +220,7 @@ DESCRIPTION
   unlink numbers from Vonage application
 ```
 
-_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/unlink.js)_
+_See code: [dist/commands/apps/unlink.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/unlink.js)_
 
 ## `@vonage/cli-plugin-applications apps:update [APPID]`
 
@@ -269,5 +269,5 @@ EXAMPLES
   vonage apps:update APP_ID --voice_answer_url="https://www.example.com/answer
 ```
 
-_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.2/dist/commands/apps/update.js)_
+_See code: [dist/commands/apps/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/update.js)_
 <!-- commandsstop -->
