@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-utils",
-    "version": "1.3.3",
+    "version": "1.3.4",
     "author": "Kelly Andrews @kellyjandrews",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",

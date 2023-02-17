@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-conversations
 $ @vonage/cli-plugin-conversations COMMAND
 running command...
 $ @vonage/cli-plugin-conversations (--version)
-@vonage/cli-plugin-conversations/1.0.2 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-conversations/1.0.3 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-conversations --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-conversations COMMAND
@@ -62,7 +62,7 @@ DESCRIPTION
   Show all conversations
 ```
 
-_See code: [dist/commands/apps/conversations/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/index.js)_
+_See code: [dist/commands/apps/conversations/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/index.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:create [NAME]`
 
@@ -90,7 +90,7 @@ DESCRIPTION
   Create conversations
 ```
 
-_See code: [dist/commands/apps/conversations/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/create.js)_
+_See code: [dist/commands/apps/conversations/create.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/create.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:delete [CONVERSATIONID]`
 
@@ -113,7 +113,7 @@ DESCRIPTION
   Delete a conversation
 ```
 
-_See code: [dist/commands/apps/conversations/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/delete.js)_
+_See code: [dist/commands/apps/conversations/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/delete.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:members [CONVERSATIONID]`
 
@@ -136,7 +136,7 @@ DESCRIPTION
   View all members in a conversation
 ```
 
-_See code: [dist/commands/apps/conversations/members/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/members/index.js)_
+_See code: [dist/commands/apps/conversations/members/index.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/members/index.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:members:add [CONVERSATIONID] [USERID]`
 
@@ -159,7 +159,7 @@ DESCRIPTION
   Add user to conversation
 ```
 
-_See code: [dist/commands/apps/conversations/members/add.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/members/add.js)_
+_See code: [dist/commands/apps/conversations/members/add.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/members/add.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:members:remove [CONVERSATIONID] [MEMBERID]`
 
@@ -182,7 +182,7 @@ DESCRIPTION
   Remove a user from a conversation
 ```
 
-_See code: [dist/commands/apps/conversations/members/remove.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/members/remove.js)_
+_See code: [dist/commands/apps/conversations/members/remove.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/members/remove.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:members:show [CONVERSATIONID] [MEMBERID]`
 
@@ -205,7 +205,7 @@ DESCRIPTION
   Show specific member
 ```
 
-_See code: [dist/commands/apps/conversations/members/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/members/show.js)_
+_See code: [dist/commands/apps/conversations/members/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/members/show.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:show [CONVERSATIONID]`
 
@@ -228,7 +228,7 @@ DESCRIPTION
   Show conversation details
 ```
 
-_See code: [dist/commands/apps/conversations/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/show.js)_
+_See code: [dist/commands/apps/conversations/show.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/show.js)_
 
 ## `@vonage/cli-plugin-conversations apps:conversations:update [CONVERSATIONID]`
 
@@ -257,7 +257,7 @@ DESCRIPTION
   Modify a conversation
 ```
 
-_See code: [dist/commands/apps/conversations/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/conversations/update.js)_
+_See code: [dist/commands/apps/conversations/update.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/conversations/update.js)_
 
 ## `@vonage/cli-plugin-conversations apps:users:conversations [USERID]`
 
@@ -283,5 +283,5 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/conversations.js](https://github.com/Vonage/vonage-cli/blob/v1.0.2/dist/commands/apps/users/conversations.js)_
+_See code: [dist/commands/apps/users/conversations.js](https://github.com/Vonage/vonage-cli/blob/v1.0.3/dist/commands/apps/users/conversations.js)_
 <!-- commandsstop -->

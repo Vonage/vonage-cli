@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-numbers
 $ @vonage/cli-plugin-numbers COMMAND
 running command...
 $ @vonage/cli-plugin-numbers (--version)
-@vonage/cli-plugin-numbers/1.2.3 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-numbers/1.2.4 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-numbers --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-numbers COMMAND
@@ -66,7 +66,7 @@ EXAMPLES
   vonage number
 ```
 
-_See code: [dist/commands/numbers/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numbers/index.js)_
+_See code: [dist/commands/numbers/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/numbers/index.js)_
 
 ## `@vonage/cli-plugin-numbers numbers:buy [NUMBER] [COUNTRYCODE]`
 
@@ -89,7 +89,7 @@ DESCRIPTION
   buy a Vonage number
 ```
 
-_See code: [dist/commands/numbers/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numbers/buy.js)_
+_See code: [dist/commands/numbers/buy.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/numbers/buy.js)_
 
 ## `@vonage/cli-plugin-numbers numbers:cancel [NUMBER] [COUNTRYCODE]`
 
@@ -112,7 +112,7 @@ DESCRIPTION
   cancel a Vonage number
 ```
 
-_See code: [dist/commands/numbers/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numbers/cancel.js)_
+_See code: [dist/commands/numbers/cancel.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/numbers/cancel.js)_
 
 ## `@vonage/cli-plugin-numbers numbers:search [COUNTRYCODE]`
 
@@ -153,7 +153,7 @@ EXAMPLES
   vonage numbers:search US --features=VOICE,SMS --endsWith=1234
 ```
 
-_See code: [dist/commands/numbers/search.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numbers/search.js)_
+_See code: [dist/commands/numbers/search.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/numbers/search.js)_
 
 ## `@vonage/cli-plugin-numbers numbers:update NUMBER COUNTRYCODE --url=https://www.example.com`
 
@@ -178,5 +178,5 @@ DESCRIPTION
   update a Vonage Number
 ```
 
-_See code: [dist/commands/numbers/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/numbers/update.js)_
+_See code: [dist/commands/numbers/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/numbers/update.js)_
 <!-- commandsstop -->

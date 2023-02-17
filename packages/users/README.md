@@ -19,7 +19,7 @@ $ npm install -g @vonage/cli-plugin-users
 $ @vonage/cli-plugin-users COMMAND
 running command...
 $ @vonage/cli-plugin-users (--version)
-@vonage/cli-plugin-users/1.2.3 darwin-arm64 node-v16.18.1
+@vonage/cli-plugin-users/1.2.4 darwin-arm64 node-v16.18.1
 $ @vonage/cli-plugin-users --help [COMMAND]
 USAGE
   $ @vonage/cli-plugin-users COMMAND
@@ -52,7 +52,7 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/users/index.js)_
+_See code: [dist/commands/apps/users/index.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/apps/users/index.js)_
 
 ## `@vonage/cli-plugin-users apps:users:create [NAME]`
 
@@ -74,7 +74,7 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/users/create.js)_
+_See code: [dist/commands/apps/users/create.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/apps/users/create.js)_
 
 ## `@vonage/cli-plugin-users apps:users:delete [USERID]`
 
@@ -92,7 +92,7 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/users/delete.js)_
+_See code: [dist/commands/apps/users/delete.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/apps/users/delete.js)_
 
 ## `@vonage/cli-plugin-users apps:users:show [USERID]`
 
@@ -110,7 +110,7 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/users/show.js)_
+_See code: [dist/commands/apps/users/show.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/apps/users/show.js)_
 
 ## `@vonage/cli-plugin-users apps:users:update [USERID]`
 
@@ -133,5 +133,5 @@ VONAGE APPLICATION FLAGS FLAGS
   --keyFile=<value>
 ```
 
-_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.3/dist/commands/apps/users/update.js)_
+_See code: [dist/commands/apps/users/update.js](https://github.com/Vonage/vonage-cli/blob/v1.2.4/dist/commands/apps/users/update.js)_
 <!-- commandsstop -->

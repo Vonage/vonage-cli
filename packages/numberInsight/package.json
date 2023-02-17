@@ -1,6 +1,6 @@
 {
     "name": "@vonage/cli-plugin-numberinsight",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "bugs": "https://github.com/Vonage/vonage-cli/issues",
     "type": "module",
