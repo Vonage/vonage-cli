@@ -2,18 +2,9 @@
     "extends": "../../tsconfig.json",
 
     "compilerOptions": {
-        "rootDir": "src",
+        "rootDir": "lib",
         "outDir": "dist"
     },
-
-    "references": [
-        { "path": "../applications" },
-        { "path": "../conversations" },
-        { "path": "../numbers" },
-        { "path": "../numberInsight" },
-        { "path": "../users" },
-        { "path": "../sms" }
-    ],
 
     "exclude": [
         "__tests__",
