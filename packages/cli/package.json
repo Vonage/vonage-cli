@@ -25,7 +25,10 @@
         "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
         "compile": "npx tsc --build --verbose"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@oclif/core": "^2.7.1",
+        "ts-node": "^10.9.1"
+    },
     "engines": {
         "node": ">=14.0.0"
     },

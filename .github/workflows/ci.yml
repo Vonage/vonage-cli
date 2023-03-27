@@ -1,0 +1,31 @@
+name: Vonage
+
+on:
+  push:
+    branches: [ 3.x ]
+  pull_request:
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [14.x, 16.x, 18.x]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node }}
+
+    - name: Install dependencies
+      run: npm install -g typescript npm@8.3.1 && npm install
+
+    - name: Lint, Compile, Test
+      run: npm run compile && npm run test -- --coverage
+
+    - name: Run codecov
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./coverage
