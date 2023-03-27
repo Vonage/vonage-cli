@@ -3,44 +3,26 @@
         "sourceMap": true,
         "removeComments": true,
         "lib": [
-            "ES6"
+            "ES2022"
         ],
 
-        "strict": false,
-        "target": "ES2021",
-        "module": "ES2020",
+        "target": "ES2022",
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "skipLibCheck": true,
-        "allowJs": true,
         "pretty": true,
         "preserveSymlinks": true,
+        "resolveJsonModule": true,
 
-        "noImplicitAny": false,
-        "noUnusedLocals": true,
-        "importHelpers": true,
+        "types": [
+            "jest",
+            "node"
+        ],
 
         "declaration": true,
         "composite": true,
         "noEmit": false,
-        "baseUrl": ".",
-        "paths": {
-            "@vonage/*": [
-                "packages/*"
-            ]
-        }
+        "baseUrl": "."
     },
-
-    "includes": [
-        "src"
-    ],
-
-    "exclude": [
-        "./dist",
-        "**/__tests__",
-        "node_modules",
-        "**/*.test.*"
-    ],
 
     "ts-node": {
         "esm": true

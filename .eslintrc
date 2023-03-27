@@ -3,12 +3,16 @@
     "env": {
         "es6": true,
         "es2021": true,
-        "node": true
+        "node": true,
+        "jest/globals": true
     },
     "extends": [
         "eslint:recommended",
         "google",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:jest/recommended",
+        "plugin:jest-formatting/recommended",
+        "prettier"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -18,16 +22,26 @@
     "plugins": [
         "@typescript-eslint",
         "deprecation",
+        "jest",
+        "jest-extended",
+        "jest-formatting",
         "prettier"
     ],
     "rules": {
+        "semi": "warn",
+        "comma-dangle": "warn",
+        "jest-extended/prefer-to-be-true": "warn",
+        "jest-extended/prefer-to-be-false": "error",
+        "jest-formatting/padding-around-describe-blocks": 2,
+        "jest-formatting/padding-around-test-blocks": 2,
+        "jest/expect-expect": "error",
         "curly": [
             "error",
             "all"
         ],
         "indent": [
             "error",
-            4
+            2
         ],
         "object-curly-spacing": [
             "error",
@@ -50,7 +64,8 @@
                 "code": 80,
                 "ignoreUrls": true,
                 "ignoreTemplateLiterals": true,
-                "ignoreRegExpLiterals": true
+                "ignoreRegExpLiterals": true,
+                "ignorePattern": "^import.+|test"
             }
         ]
     }
