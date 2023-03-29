@@ -1,28 +1,47 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "removeComments": true,
         "lib": [
             "ES2022"
         ],
 
         "target": "ES2022",
+        "module": "ES2022",
         "moduleResolution": "node",
+
+        "strict": false,
         "esModuleInterop": true,
+        "sourceMap": true,
+        "removeComments": true,
+        "skipLibCheck": true,
+        "allowJs": true,
         "pretty": true,
         "preserveSymlinks": true,
-        "resolveJsonModule": true,
 
-        "types": [
-            "jest",
-            "node"
-        ],
+        "noImplicitAny": false,
+        "noUnusedLocals": true,
+        "importHelpers": true,
 
         "declaration": true,
         "composite": true,
         "noEmit": false,
-        "baseUrl": "."
+        "baseUrl": ".",
+        "paths": {
+            "@vonage/*": [
+                "packages/*"
+            ]
+        }
     },
+
+    "includes": [
+        "lib"
+    ],
+
+    "exclude": [
+        "./dist",
+        "**/__tests__",
+        "node_modules",
+        "**/*.test.*"
+    ],
 
     "ts-node": {
         "esm": true

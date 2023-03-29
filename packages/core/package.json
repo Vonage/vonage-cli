@@ -1,0 +1,44 @@
+{
+  "name": "@vonage/cli-core",
+  "version": "2.0.0",
+  "description": "Core utilities for vonage CLI's ",
+  "keywords": [
+    "vonage"
+  ],
+  "homepage": "https://github.com/Vonage/vonage-cli/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/Vonage/vonage-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vonage/vonage-cli.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Chuck MANCHUCK Reeves <chuck@manchuck.com>",
+  "type": "module",
+  "module": true,
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist/**",
+    "/oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
+    "compile": "npx tsc --build --verbose"
+  },
+  "dependencies": {
+    "@oclif/core": "^2.7.1"
+  },
+  "oclif": {
+    "commands": "./dist/commands",
+    "topics": {
+      "config": {
+        "description": "Manage Vonage config"
+      }
+    }
+  }
+}

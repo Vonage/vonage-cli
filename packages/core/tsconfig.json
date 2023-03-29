@@ -7,13 +7,8 @@
     },
 
     "exclude": [
-      "bin",
-      "__tests__",
-      "dist"
-    ],
-
-    "references": [
-        { "path": "../core" }
+        "__tests__",
+        "dist"
     ],
 
     "ts-node": {

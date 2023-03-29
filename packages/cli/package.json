@@ -12,6 +12,7 @@
     "author": "Vonage Dev Rel <devrel@vonage.com>",
     "type": "module",
     "main": "dist/index.js",
+    "module": true,
     "bin": {
         "vonage": "./bin/run.cjs"
     },
@@ -27,10 +28,21 @@
     },
     "dependencies": {
         "@oclif/core": "^2.7.1",
+        "@oclif/plugin-commands": "^2.2.12",
+        "@oclif/plugin-help": "^5.2.8",
+        "@oclif/plugin-not-found": "^2.3.22",
+        "@vonage/cli-core": "^2.0.0",
         "ts-node": "^10.9.1"
     },
     "engines": {
         "node": ">=14.0.0"
     },
-    "oclif": {}
+    "oclif": {
+        "bin": "vonage",
+        "plugins": [
+            "@oclif/plugin-help",
+            "@oclif/plugin-commands",
+            "@vonage/cli-core"
+        ]
+    }
 }
