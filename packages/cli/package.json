@@ -40,8 +40,6 @@
     "oclif": {
         "bin": "vonage",
         "plugins": [
-            "@oclif/plugin-help",
-            "@oclif/plugin-commands",
             "@vonage/cli-core"
         ]
     }

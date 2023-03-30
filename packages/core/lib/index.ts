@@ -1,1 +1,1 @@
-export * from './vonageCommand';
+export * from './vonageCommand.js';

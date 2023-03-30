@@ -1,38 +1,16 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
+import { VonageConfig } from './vonageConfig.js';
 
-// eslint-disable-next-line max-len
+// Create custom type to allow merging child flags
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<
     (typeof VonageCommand)['baseFlags'] & T['flags']
 >
 
+// Create custom type to allow merging child arguments
 export type Args<T extends typeof Command> = Interfaces.InferredArgs<T['args']>
 
 export abstract class VonageCommand<T extends typeof Command> extends Command {
-  // add the --json flag
-  static enableJsonFlag = true;
-
-  // define flags that can be inherited by any command that extends BaseCommand
-  static baseFlags = {
-    'api-key': Flags.string({
-      summary: 'API Key to use',
-      helpGroup: 'GLOBAL',
-    }),
-    'api-secret': Flags.string({
-      summary: 'API Secret to use',
-      helpGroup: 'GLOBAL',
-      dependsOn: ['api-key'],
-    }),
-    'private-key': Flags.file({
-      summary: 'Private key file to use',
-      helpGroup: 'GLOBAL',
-      dependsOn: ['api-key'],
-    }),
-    'application-id': Flags.file({
-      aliases: ['app-id'],
-      summary: 'Application id to use',
-      helpGroup: 'GLOBAL',
-    }),
-  };
+  protected vonageConfig: VonageConfig;
 
   protected flags!: Flags<T>;
 
@@ -48,6 +26,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     });
     this.flags = flags as Flags<T>;
     this.args = args as Args<T>;
+    this.vonageConfig = new VonageConfig(this.config.configDir, this.flags);
   }
 
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {
@@ -57,9 +36,33 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
   }
 
   protected async finally(_: Error | undefined): Promise<any> {
-    console.log('Here');
     // called after run and catch regardless of whether or not the
     // command errored
     return super.finally(_);
   }
 }
+
+// ES2022 Transpiling is a bit borked with static memebers
+// @see https://github.com/oclif/oclif/issues/1100#issuecomment-1454910926
+VonageCommand.enableJsonFlag = true;
+VonageCommand.baseFlags = {
+  'api-key': Flags.string({
+    summary: 'API Key to use',
+    helpGroup: 'GLOBAL',
+  }),
+  'api-secret': Flags.string({
+    summary: 'API Secret to use',
+    helpGroup: 'GLOBAL',
+    dependsOn: ['api-key'],
+  }),
+  'private-key': Flags.file({
+    summary: 'Private key file to use',
+    helpGroup: 'GLOBAL',
+    dependsOn: ['application-id', 'api-key'],
+  }),
+  'application-id': Flags.file({
+    aliases: ['app-id'],
+    summary: 'Application id to use',
+    helpGroup: 'GLOBAL',
+  }),
+};

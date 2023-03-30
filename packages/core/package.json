@@ -31,7 +31,10 @@
     "compile": "npx tsc --build --verbose"
   },
   "dependencies": {
-    "@oclif/core": "^2.7.1"
+    "@oclif/core": "^2.7.1",
+    "debug": "^4.3.4",
+    "lodash.compact": "^3.0.1",
+    "terminal-kit": "^3.0.0"
   },
   "oclif": {
     "commands": "./dist/commands",
