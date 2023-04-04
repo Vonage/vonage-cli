@@ -1,1 +1,1 @@
-export * from './configData.js';
+export * from './configData';

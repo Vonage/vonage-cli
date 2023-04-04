@@ -1,17 +1,18 @@
 {
-    "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.json",
 
-    "compilerOptions": {
-        "rootDir": "lib",
-        "outDir": "dist"
-    },
+  "compilerOptions": {
+    "rootDir": "lib",
+    "outDir": "dist",
+    "baseUrl": "."
+  },
 
-    "exclude": [
-        "__tests__",
-        "dist"
-    ],
+  "includes": [
+    "lib"
+  ],
 
-    "ts-node": {
-        "esm": true
-    }
+  "exclude": [
+    "dist",
+    "__tests__"
+  ]
 }

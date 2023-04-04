@@ -10,11 +10,9 @@
     "repository": "Vonage/vonage-cli",
     "license": "Apache 2.0",
     "author": "Vonage Dev Rel <devrel@vonage.com>",
-    "type": "module",
     "main": "dist/index.js",
-    "module": true,
     "bin": {
-        "vonage": "./bin/run.cjs"
+        "vonage": "./bin/run.js"
     },
     "files": [
         "bin",
@@ -42,5 +40,8 @@
         "plugins": [
             "@vonage/cli-core"
         ]
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.192"
     }
 }

@@ -1,49 +1,23 @@
 {
-    "compilerOptions": {
-        "lib": [
-            "ES2022"
-        ],
+  "compilerOptions": {
+    "target": "ES2019",
+    "moduleResolution": "node",
+    "module": "commonjs",
 
-        "target": "ES2021",
-        "module": "ES2020",
-        "moduleResolution": "node",
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "composite": true,
+    "allowJs": true,
+    "esModuleInterop": true
+  },
 
-        "strict": false,
-        "esModuleInterop": true,
-        "sourceMap": true,
-        "removeComments": true,
-        "skipLibCheck": true,
-        "allowJs": true,
-        "pretty": true,
-        "preserveSymlinks": true,
+  "includes": [
+    "lib"
+  ],
 
-        "noImplicitAny": false,
-        "noUnusedLocals": true,
-        "importHelpers": true,
-
-        "declaration": true,
-        "composite": true,
-        "noEmit": false,
-        "baseUrl": ".",
-        "paths": {
-            "@vonage/*": [
-                "packages/*"
-            ]
-        }
-    },
-
-    "includes": [
-        "lib"
-    ],
-
-    "exclude": [
-        "./dist",
-        "**/__tests__",
-        "node_modules",
-        "**/*.test.*"
-    ],
-
-    "ts-node": {
-        "esm": true
-    }
+  "exclude": [
+    "dist",
+    "__tests__"
+  ]
 }

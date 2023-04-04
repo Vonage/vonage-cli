@@ -1,2 +1,2 @@
-export * from './configEnv.js';
-export * from './configParams.js';
+export * from './configEnv';
+export * from './configParams';

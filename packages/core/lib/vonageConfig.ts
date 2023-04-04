@@ -1,9 +1,10 @@
-import { ConfigParams, ConfigEnv } from './enums/index.js';
-import { ConfigData } from './types/index.js';
+import { ConfigParams, ConfigEnv } from './enums/index';
+import { ConfigData } from './types/index';
 import { readFileSync, existsSync } from 'fs';
-import debug from 'debug';
+// import debug from 'debug';
 
-const log = debug('vonage:cli:config');
+// const log = debug('vonage:cli:config');
+const log = console.log;
 
 export class VonageConfig {
   static CONFIG_SCHEMA_VERSION = '2022-03-30';
@@ -25,7 +26,7 @@ export class VonageConfig {
       this.fileData = this.configData = fileContents
         ? JSON.parse(fileContents)
         : {};
-      log('Loaded config data', this.configData);
+      log('Loaded config from file', this.configData);
     }
 
     this.argVars = {
@@ -35,6 +36,7 @@ export class VonageConfig {
       [ConfigParams.APPLICATION_ID]: flags['application-id'],
     };
 
+    log('Loaded args values', this.argVars);
     this.envVars = {
       [ConfigParams.API_KEY]: process.env[ConfigEnv.API_KEY],
       [ConfigParams.API_SECRET]: process.env[ConfigEnv.API_SECRET],
@@ -43,7 +45,15 @@ export class VonageConfig {
                 process.env[ConfigEnv.APPLICATION_ID],
     };
 
+    log('Loaded env values', this.envVars);
+    this.configData = {
+      [ConfigParams.API_KEY]: this.fileData?.apiKey,
+      [ConfigParams.API_SECRET]: this.fileData?.apiSecret,
+      [ConfigParams.PRIVATE_KEY]: this.fileData?.privateKey,
+      [ConfigParams.APPLICATION_ID]: this.fileData?.applicationId,
+    };
     this.updateConfigData();
+    log('Config file data', this.configData);
   }
 
   public getVar(which: ConfigParams): string {
@@ -67,7 +77,8 @@ export class VonageConfig {
   }
 
   public getConfigVar(which: ConfigParams): string {
-    return this.configData[which];
+    console.log(this.configData);
+    return this?.configData[which];
   }
 
   public getConfigSchemaVersion(): string {
