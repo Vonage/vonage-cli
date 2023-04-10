@@ -1,10 +1,9 @@
 import { ConfigParams, ConfigEnv } from './enums/index';
 import { ConfigData } from './types/index';
 import { readFileSync, existsSync } from 'fs';
-// import debug from 'debug';
+import debug from 'debug';
 
-// const log = debug('vonage:cli:config');
-const log = console.log;
+const log = debug('vonage:cli:config');
 
 export class VonageConfig {
   static CONFIG_SCHEMA_VERSION = '2022-03-30';
@@ -77,7 +76,6 @@ export class VonageConfig {
   }
 
   public getConfigVar(which: ConfigParams): string {
-    console.log(this.configData);
     return this?.configData[which];
   }
 
@@ -98,7 +96,7 @@ export class VonageConfig {
       return;
     }
 
-    // TODO break out to account for multiple versions
+    // TODO break out in to own function to account for multiple config versions
     this.configData = {
       [ConfigParams.API_KEY]: this.fileData.apiKey,
       [ConfigParams.API_SECRET]: this.fileData.apiSecret,

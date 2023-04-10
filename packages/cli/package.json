@@ -40,8 +40,5 @@
         "plugins": [
             "@vonage/cli-core"
         ]
-  },
-  "devDependencies": {
-    "@types/lodash": "4.14.192"
     }
 }
