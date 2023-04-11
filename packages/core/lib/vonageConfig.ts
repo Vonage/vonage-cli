@@ -13,7 +13,7 @@ export class VonageConfig {
   protected configData: ConfigData;
 
   public readonly configFile: string;
-  protected fileData: Record<string, null | string>;
+  protected readonly fileData: Record<string, null | string>;
 
   constructor(configDir: string, flags: Record<string, null | string>) {
     this.configFile = `${configDir}/vonage.config.json`;
@@ -46,13 +46,15 @@ export class VonageConfig {
 
     log('Loaded env values', this.envVars);
     this.configData = {
-      [ConfigParams.API_KEY]: this.fileData?.apiKey,
-      [ConfigParams.API_SECRET]: this.fileData?.apiSecret,
-      [ConfigParams.PRIVATE_KEY]: this.fileData?.privateKey,
-      [ConfigParams.APPLICATION_ID]: this.fileData?.applicationId,
+      [ConfigParams.API_KEY]: this.fileData[ConfigParams.API_KEY],
+      [ConfigParams.API_SECRET]: this.fileData[ConfigParams.API_SECRET],
+      [ConfigParams.PRIVATE_KEY]: this.fileData[ConfigParams.PRIVATE_KEY],
+      [ConfigParams.APPLICATION_ID]:
+                this.fileData[ConfigParams.APPLICATION_ID],
     };
-    this.updateConfigData();
     log('Config file data', this.configData);
+    this.updateConfigData();
+    log('Updated config data', this.configData);
   }
 
   public getVar(which: ConfigParams): string {
@@ -79,8 +81,8 @@ export class VonageConfig {
     return this?.configData[which];
   }
 
-  public getConfigSchemaVersion(): string {
-    return this.configData[ConfigParams.CONFIG_SCHEMA_VERSION];
+  public getConfigFileSchemaVersion(): string {
+    return this.fileData[ConfigParams.CONFIG_SCHEMA_VERSION];
   }
 
   protected updateConfigData(): void {
@@ -89,12 +91,16 @@ export class VonageConfig {
       return;
     }
 
+    log(`Config schema is ${this.getConfigFileSchemaVersion()}`);
     if (
-      this.getConfigSchemaVersion() === VonageConfig.CONFIG_SCHEMA_VERSION
+      this.getConfigFileSchemaVersion()
+            === VonageConfig.CONFIG_SCHEMA_VERSION
     ) {
       log('Config schema is up to date');
       return;
     }
+
+    log('Updating config schema [in memory only]');
 
     // TODO break out in to own function to account for multiple config versions
     this.configData = {
