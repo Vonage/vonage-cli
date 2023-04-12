@@ -1,6 +1,6 @@
 import { ConfigParams, ConfigEnv } from './enums/index';
 import { ConfigData } from './types/index';
-import { readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync } from 'fs';
 import debug from 'debug';
 
 const log = debug('vonage:cli:config');
@@ -18,6 +18,7 @@ export class VonageConfig {
   constructor(configDir: string, flags: Record<string, null | string>) {
     this.configFile = `${configDir}/vonage.config.json`;
     log(`Vonage config file ${this.configFile}`);
+    this.fileData = {};
     if (existsSync(this.configFile)) {
       log('Config file exists');
       const fileContents = readFileSync(this.configFile).toString();
@@ -57,6 +58,22 @@ export class VonageConfig {
     log('Updated config data', this.configData);
   }
 
+  public getConfig(): Record<string, string> {
+    return this.configData;
+  }
+
+  public saveConfig(): void {
+    const configData = {
+      ...this.configData,
+      [ConfigParams.CONFIG_SCHEMA_VERSION]:
+                VonageConfig.CONFIG_SCHEMA_VERSION,
+    };
+    log(`Saiving config ${this.configFile}`);
+    log(configData);
+    writeFileSync(this.configFile, JSON.stringify(configData, null, 2));
+    log(`Config file written`);
+  }
+
   public getVar(which: ConfigParams): string {
     if (this.getArgVar(which)) {
       return this.getArgVar(which);
@@ -67,6 +84,10 @@ export class VonageConfig {
     }
 
     return this.getConfigVar(which);
+  }
+
+  public setConfigVar(which: ConfigParams, value: string): void {
+    this.configData[which] = value;
   }
 
   public getArgVar(which: ConfigParams): string {

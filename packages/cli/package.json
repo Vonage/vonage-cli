@@ -1,44 +1,47 @@
 {
-    "name": "@vonage/cli",
-    "version": "2.0.0",
-    "description": "CLI to interact with Vonage APIs",
-    "keywords": [
-        "vonage"
-    ],
-    "homepage": "https://github.com/Vonage/vonage-cli",
-    "bugs": "https://github.com/Vonage/vonage-cli/issues",
-    "repository": "Vonage/vonage-cli",
-    "license": "Apache 2.0",
-    "author": "Vonage Dev Rel <devrel@vonage.com>",
-    "main": "dist/index.js",
-    "bin": {
-        "vonage": "./bin/run.js"
-    },
-    "files": [
-        "bin",
-        "dist/**",
-        "/oclif.manifest.json"
-    ],
-    "scripts": {
-        "build": "npm run clean && npm run compile",
-        "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
-        "compile": "npx tsc --build --verbose"
-    },
-    "dependencies": {
-        "@oclif/core": "^2.7.1",
-        "@oclif/plugin-commands": "^2.2.12",
-        "@oclif/plugin-help": "^5.2.8",
-        "@oclif/plugin-not-found": "^2.3.22",
-        "@vonage/cli-core": "^2.0.0",
-        "ts-node": "^10.9.1"
-    },
-    "engines": {
-        "node": ">=14.0.0"
-    },
-    "oclif": {
-        "bin": "vonage",
-        "plugins": [
-            "@vonage/cli-core"
-        ]
-    }
+  "name": "@vonage/cli",
+  "version": "2.0.0",
+  "description": "CLI to interact with Vonage APIs",
+  "keywords": [
+    "vonage"
+  ],
+  "homepage": "https://github.com/Vonage/vonage-cli",
+  "bugs": "https://github.com/Vonage/vonage-cli/issues",
+  "repository": "Vonage/vonage-cli",
+  "license": "Apache 2.0",
+  "author": "Vonage Dev Rel <devrel@vonage.com>",
+  "main": "dist/index.js",
+  "bin": {
+    "vonage": "./bin/run.js"
+  },
+  "files": [
+    "bin",
+    "dist/**",
+    "/oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
+    "compile": "npx tsc --build --verbose"
+  },
+  "dependencies": {
+    "@oclif/core": "^2.7.1",
+    "@oclif/plugin-commands": "^2.2.12",
+    "@oclif/plugin-help": "^5.2.8",
+    "@oclif/plugin-not-found": "^2.3.22",
+    "@vonage/cli-core": "^2.0.0",
+    "ts-node": "^10.9.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "oclif": {
+    "bin": "vonage",
+    "plugins": [
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-help",
+      "@oclif/plugin-not-found",
+      "@vonage/cli-core"
+    ]
+  }
 }

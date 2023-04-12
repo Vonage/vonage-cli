@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2019",
     "moduleResolution": "node",
-    "module": "commonjs",
+    "module": "nodeNext",
 
     "isolatedModules": true,
     "skipLibCheck": true,
