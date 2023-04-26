@@ -261,7 +261,7 @@ export default class ApplicationsCreate
 
             const improveAi = await prompt({
                 type: 'confirm',
-                name: 'improveAi',
+                name: 'improve_ai',
                 message: `Allow use of data for AI training? Read data collection disclosure - ${kbArticle}`,
             });
 
