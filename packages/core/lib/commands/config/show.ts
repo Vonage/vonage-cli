@@ -1,152 +1,332 @@
-import { ux } from '@oclif/core';
+import { Flags } from '@oclif/core';
 import chalk from 'chalk';
 import { VonageCommand } from '../../vonageCommand';
 import { ConfigParams } from '../../enums/index';
-import curry from 'lodash.curry';
+import { existsSync } from 'fs';
+import { truncate } from '../../ui';
+import kebabcase from 'lodash.kebabcase';
+import snakecase from 'lodash.snakecase';
 
-export enum ConfigSettings {
-    API_KEY = 'api-key',
-    API_SECRET = 'api-secret',
-    PRIVATE_KEY = 'private-key',
-    APPLICATION_ID = 'application-id',
+enum DisplayedSetting {
+    API_KEY = 'API key',
+    API_SECRET = 'API secret',
+    PRIVATE_KEY = 'private key',
+    APPLICATION_ID = 'application ID',
 }
 
-const showValue = curry(
-  (which, chalk, value) => value[which] || chalk('Not Set'),
-);
+const truncatePrivateKey = (privateKey: string): string =>
+  existsSync(privateKey) ? privateKey : showValue(truncate(privateKey));
 
-const yellowChalk = chalk.dim.yellow;
+const showValue = (value): string => value || chalk.dim.yellow('Not Set');
 
-const noChalk = (value) => value;
+const echoSetting = (
+  setting: ConfigParams,
+  part: 'global' | 'local' | 'environment' | 'arguments' | 'derived',
+  value: string | null,
+): string =>
+  chalk.bold(`The ${part} ${DisplayedSetting[setting]} is`)
+    + ': '
+    + showValue(value);
 
 export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   static summary = 'Display the current configuration';
 
   static flags = {
-    ...ux.table.flags(),
+    part: Flags.string({
+      summary: 'Only show the value from this domain',
+      options: ['global', 'local', 'environment', 'arguments', 'derived'],
+      multiple: true,
+    }),
+    setting: Flags.string({
+      summary: 'Only show this setting',
+      multiple: true,
+      options: Object.values(ConfigParams).map(kebabcase),
+    }),
   };
 
-  public async run(): Promise<Array<Record<string, string>>> {
-    const { output } = this.flags;
-    const chalkToUse = output ? noChalk : yellowChalk;
+  async run(): Promise<void> {
+    this.dumpGlobalConfig();
+    this.dumpLocalConfig();
+    this.dumpEnvConfig();
+    this.dumpArgsConfig();
+    this.dumpDerivedConfig();
+  }
 
-    const data = [
-      {
-        name: 'From Arguments',
-        ...this.getArgs(),
-      },
-      {
-        name: 'From Environment',
-        ...this.getEnv(),
-      },
-      {
-        name: 'From Config File',
-        ...this.getConfig(),
-      },
-      {
-        name: 'Derived value',
-        ...this.getDerived(),
-      },
-    ];
-
-    ux.table(
-      data,
-      {
-        name: {
-          minWidth: 7,
-          extended: true,
-        },
-        [ConfigParams.API_KEY]: {
-          get: showValue(ConfigParams.API_KEY, chalkToUse),
-        },
-        [ConfigParams.API_SECRET]: {
-          get: showValue(ConfigParams.API_SECRET, chalkToUse),
-        },
-        [ConfigParams.PRIVATE_KEY]: {
-          get: showValue(ConfigParams.PRIVATE_KEY, chalkToUse),
-        },
-        [ConfigParams.APPLICATION_ID]: {
-          get: showValue(ConfigParams.APPLICATION_ID, chalkToUse),
-        },
-      },
-      {
-        ...this.flags,
-        extended: !output ? true : this.flags.extended,
-      },
-    );
-
-    if (!output) {
-      this.log(`Config file located at: ${this.vonageConfig.configFile}`);
+  protected getSettings() {
+    if (!this.flags?.setting) {
+      return Object.values(ConfigParams);
     }
 
-    return data;
+    return this.flags.setting.map((value) => snakecase(value).toUpperCase());
   }
 
-  protected getDerived(): Record<string, string> {
-    return {
-      [ConfigParams.API_KEY]: this.vonageConfig.getVar(
-        ConfigParams.API_KEY,
-      ),
-      [ConfigParams.API_SECRET]: this.vonageConfig.getVar(
-        ConfigParams.API_SECRET,
-      ),
-      [ConfigParams.PRIVATE_KEY]: this.vonageConfig.getVar(
-        ConfigParams.PRIVATE_KEY,
-      ),
-      [ConfigParams.APPLICATION_ID]: this.vonageConfig.getVar(
-        ConfigParams.APPLICATION_ID,
-      ),
-    };
+  dumpGlobalConfig(): void {
+    const { part } = this.flags;
+    if (part && !part.includes('global')) {
+      return;
+    }
+
+    const setting = this.getSettings();
+
+    if (setting.includes(ConfigParams.API_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_KEY,
+          'global',
+          this.vonageConfig.getGlobalConfigVar(ConfigParams.API_KEY),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.API_SECRET)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_SECRET,
+          'global',
+          this.vonageConfig.getGlobalConfigVar(
+            ConfigParams.API_SECRET,
+          ),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.APPLICATION_ID)) {
+      this.log(
+        echoSetting(
+          ConfigParams.APPLICATION_ID,
+          'global',
+          this.vonageConfig.getGlobalConfigVar(
+            ConfigParams.APPLICATION_ID,
+          ),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.PRIVATE_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.PRIVATE_KEY,
+          'global',
+          truncatePrivateKey(
+            this.vonageConfig.getGlobalConfigVar(
+              ConfigParams.PRIVATE_KEY,
+            ),
+          ),
+        ),
+      );
+    }
+    this.log('');
   }
 
-  protected getConfig(): Record<string, string> {
-    return {
-      [ConfigParams.API_KEY]: this.vonageConfig.getConfigVar(
-        ConfigParams.API_KEY,
-      ),
-      [ConfigParams.API_SECRET]: this.vonageConfig.getConfigVar(
-        ConfigParams.API_SECRET,
-      ),
-      [ConfigParams.PRIVATE_KEY]: this.vonageConfig.getConfigVar(
-        ConfigParams.PRIVATE_KEY,
-      ),
-      [ConfigParams.APPLICATION_ID]: this.vonageConfig.getConfigVar(
-        ConfigParams.APPLICATION_ID,
-      ),
-    };
+  dumpLocalConfig(): void {
+    const { part } = this.flags;
+    if (part && !part.includes('local')) {
+      return;
+    }
+
+    const setting = this.getSettings();
+
+    if (setting.includes(ConfigParams.API_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_KEY,
+          'local',
+          this.vonageConfig.getLocalConfigVar(ConfigParams.API_KEY),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.API_SECRET)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_SECRET,
+          'local',
+          this.vonageConfig.getLocalConfigVar(ConfigParams.API_SECRET),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.APPLICATION_ID)) {
+      this.log(
+        echoSetting(
+          ConfigParams.APPLICATION_ID,
+          'local',
+          this.vonageConfig.getLocalConfigVar(
+            ConfigParams.APPLICATION_ID,
+          ),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.PRIVATE_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.PRIVATE_KEY,
+          'local',
+          truncatePrivateKey(
+            this.vonageConfig.getLocalConfigVar(
+              ConfigParams.PRIVATE_KEY,
+            ),
+          ),
+        ),
+      );
+    }
+    this.log('');
   }
 
-  protected getEnv(): Record<string, string> {
-    return {
-      [ConfigParams.API_KEY]: this.vonageConfig.getEnvVar(
-        ConfigParams.API_KEY,
-      ),
-      [ConfigParams.API_SECRET]: this.vonageConfig.getEnvVar(
-        ConfigParams.API_SECRET,
-      ),
-      [ConfigParams.PRIVATE_KEY]: this.vonageConfig.getEnvVar(
-        ConfigParams.PRIVATE_KEY,
-      ),
-      [ConfigParams.APPLICATION_ID]: this.vonageConfig.getEnvVar(
-        ConfigParams.APPLICATION_ID,
-      ),
-    };
+  dumpEnvConfig(): void {
+    const { part } = this.flags;
+    if (part && !part.includes('environment')) {
+      return;
+    }
+
+    const setting = this.getSettings();
+
+    if (setting.includes(ConfigParams.API_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_KEY,
+          'environment',
+          this.vonageConfig.getEnvVar(ConfigParams.API_KEY),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.API_SECRET)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_SECRET,
+          'environment',
+          this.vonageConfig.getEnvVar(ConfigParams.API_SECRET),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.APPLICATION_ID)) {
+      this.log(
+        echoSetting(
+          ConfigParams.APPLICATION_ID,
+          'environment',
+          this.vonageConfig.getEnvVar(ConfigParams.APPLICATION_ID),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.PRIVATE_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.PRIVATE_KEY,
+          'environment',
+          truncatePrivateKey(
+            this.vonageConfig.getEnvVar(ConfigParams.PRIVATE_KEY),
+          ),
+        ),
+      );
+    }
+    this.log('');
   }
 
-  protected getArgs(): Record<string, string> {
-    return {
-      [ConfigParams.API_KEY]: this.vonageConfig.getArgVar(
-        ConfigParams.API_KEY,
-      ),
-      [ConfigParams.API_SECRET]: this.vonageConfig.getArgVar(
-        ConfigParams.API_SECRET,
-      ),
-      [ConfigParams.PRIVATE_KEY]: this.vonageConfig.getArgVar(
-        ConfigParams.PRIVATE_KEY,
-      ),
-      [ConfigParams.APPLICATION_ID]: this.vonageConfig.getArgVar(
-        ConfigParams.APPLICATION_ID,
-      ),
-    };
+  dumpArgsConfig(): void {
+    const { part } = this.flags;
+    if (part && !part.includes('arguments')) {
+      return;
+    }
+
+    const setting = this.getSettings();
+
+    if (setting.includes(ConfigParams.API_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_KEY,
+          'arguments',
+          this.vonageConfig.getArgVar(ConfigParams.API_KEY),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.API_SECRET)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_SECRET,
+          'arguments',
+          this.vonageConfig.getArgVar(ConfigParams.API_SECRET),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.APPLICATION_ID)) {
+      this.log(
+        echoSetting(
+          ConfigParams.APPLICATION_ID,
+          'arguments',
+          this.vonageConfig.getArgVar(ConfigParams.APPLICATION_ID),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.PRIVATE_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.PRIVATE_KEY,
+          'arguments',
+          truncatePrivateKey(
+            this.vonageConfig.getArgVar(ConfigParams.PRIVATE_KEY),
+          ),
+        ),
+      );
+    }
+    this.log('');
+  }
+
+  dumpDerivedConfig(): void {
+    const { part } = this.flags;
+    if (part && !part.includes('derived')) {
+      return;
+    }
+
+    const setting = this.getSettings();
+
+    if (setting.includes(ConfigParams.API_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_KEY,
+          'derived',
+          this.vonageConfig.getVar(ConfigParams.API_KEY),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.API_SECRET)) {
+      this.log(
+        echoSetting(
+          ConfigParams.API_SECRET,
+          'derived',
+          this.vonageConfig.getVar(ConfigParams.API_SECRET),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.APPLICATION_ID)) {
+      this.log(
+        echoSetting(
+          ConfigParams.APPLICATION_ID,
+          'derived',
+          this.vonageConfig.getVar(ConfigParams.APPLICATION_ID),
+        ),
+      );
+    }
+
+    if (setting.includes(ConfigParams.PRIVATE_KEY)) {
+      this.log(
+        echoSetting(
+          ConfigParams.PRIVATE_KEY,
+          'derived',
+          truncatePrivateKey(
+            this.vonageConfig.getVar(ConfigParams.PRIVATE_KEY),
+          ),
+        ),
+      );
+    }
+    this.log('');
   }
 }

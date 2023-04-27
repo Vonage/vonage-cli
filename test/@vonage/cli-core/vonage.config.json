@@ -1,8 +1,0 @@
-{
-  "API_KEY": "config-api-key",
-  "API_SECRET": "config-api-secret",
-  "APPLICATION_ID": "config-app-id",
-  "PRIVATE_KEY": "config-private-key",
-  "CONFIG_SCHEMA_VERSION": "2022-03-30"
-}
-

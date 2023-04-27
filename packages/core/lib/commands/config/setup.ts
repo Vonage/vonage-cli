@@ -51,7 +51,7 @@ export default class Config extends VonageCommand<typeof Config> {
       ? apiKey
       : await ux.prompt(`${chalk.bold('API Key')}`, {
         required: true,
-        default: this.vonageConfig.getConfigVar(ConfigParams.API_KEY),
+        default: this.vonageConfig.getGlobalConfigVar(ConfigParams.API_KEY),
       });
   }
 
@@ -61,7 +61,7 @@ export default class Config extends VonageCommand<typeof Config> {
       ? apiSecret
       : await ux.prompt(`${chalk.bold('API Secret')}`, {
         required: true,
-        default: this.vonageConfig.getConfigVar(
+        default: this.vonageConfig.getGlobalConfigVar(
           ConfigParams.API_SECRET,
         ),
       });
@@ -73,7 +73,7 @@ export default class Config extends VonageCommand<typeof Config> {
       ? privateKey
       : await ux.prompt(`${chalk.bold('Private Key File')}`, {
         required: true,
-        default: this.vonageConfig.getConfigVar(
+        default: this.vonageConfig.getGlobalConfigVar(
           ConfigParams.PRIVATE_KEY,
         ),
       });
@@ -87,14 +87,14 @@ export default class Config extends VonageCommand<typeof Config> {
       ? applicationId
       : await ux.prompt(`${chalk.bold('Application Id')}`, {
         required: true,
-        default: this.vonageConfig.getConfigVar(
+        default: this.vonageConfig.getGlobalConfigVar(
           ConfigParams.APPLICATION_ID,
         ),
       });
   }
 
   protected async checkConfigDirectory(): Promise<boolean> {
-    const { dir: directory } = parse(this.vonageConfig.configFile);
+    const { dir: directory } = parse(this.vonageConfig.globalConfigFile);
     if (existsSync(directory)) {
       return true;
     }
@@ -136,7 +136,7 @@ export default class Config extends VonageCommand<typeof Config> {
     this.vonageConfig.saveConfig();
     this.log(
       `${chalk.bold('Config file written to')} ${
-        this.vonageConfig.configFile
+        this.vonageConfig.globalConfigFile
       }`,
     );
   }

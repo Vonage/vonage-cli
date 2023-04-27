@@ -1,9 +1,9 @@
-import { diff } from 'jest-diff';
+import { diff, diffStringsUnified } from 'jest-diff';
 import { expect } from '@jest/globals';
 import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import type { MatcherFunction } from 'expect';
 
-// disable chalk colors
+// disable colors for chalk
 process.env.FORCE_COLOR = '0';
 
 // Set these here to ensure calls to API will fail
@@ -11,14 +11,16 @@ process.env.VONAGE_API_KEY = 'env-key';
 process.env.VONAGE_API_SECRET = 'env-secret';
 process.env.VONAGE_PRIVATE_KEY = 'env-private-key';
 process.env.VONAGE_APPLICATION_ID = 'env-app-id';
-process.env.XDG_CONFIG_HOME = __dirname;
+
+// Make sure we do not load am actual config file
+process.env.XDG_CONFIG_HOME = `${process.cwd()}/test`;
 
 let stdout: Array<string>;
 
 beforeEach(() => {
   stdout = [];
   jest.spyOn(process.stdout, 'write').mockImplementation(
-    (val: unknown): boolean =>
+    (val: string): boolean =>
     // Record each line of stdout to allow checking lines
       !!stdout.push(`${val}`.trim()),
   );
@@ -26,10 +28,11 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.restoreAllMocks();
+  process.env.VONAGE_API_KEY = 'env-key';
+  process.env.VONAGE_API_SECRET = 'env-secret';
+  process.env.VONAGE_PRIVATE_KEY = 'env-private-key';
+  process.env.VONAGE_APPLICATION_ID = 'env-app-id';
 });
-
-const matchStdout = (text: string): Array<string> =>
-  stdout.join('\n').match(new RegExp(`${text}`, 'gm'));
 
 const getStdOutLine = (lineNumber: number): string => {
   if (lineNumber < 1) {
@@ -58,7 +61,7 @@ const matchesOutput: MatcherFunction<[actual: string]> = (actual: string) => {
     throw new Error('Actual must be a string');
   }
 
-  const pass = matchStdout(actual);
+  const pass = stdout.join('\n').match(new RegExp(`${actual}`, 'gm'));
   return {
     message: (): string =>
       `expected string ${printExpected(
@@ -68,7 +71,7 @@ const matchesOutput: MatcherFunction<[actual: string]> = (actual: string) => {
   };
 };
 
-const isOnLine: MatcherFunction<[expected: unknown, line: number]> = (
+const wasOutputOnLine: MatcherFunction<[expected: unknown, line: number]> = (
   expected: string,
   lineNumber: number,
 ) => {
@@ -84,9 +87,10 @@ const isOnLine: MatcherFunction<[expected: unknown, line: number]> = (
     const line = getStdOutLine(lineNumber);
     const pass = line === expected;
     const diffString = diff(line, expected, { expand: true });
+
     return {
       message: (): string =>
-        matcherHint('isOnLine')
+        matcherHint('wasOutputOnLine')
                 + '\n\n'
                 + (diffString && diffString.includes('- Expect')
                   ? `Difference:\n\n${diffString}`
@@ -120,9 +124,9 @@ const matchesOutputOnLine: MatcherFunction<[actual: unknown, line: number]> = (
     const pass = `${line}`.match(new RegExp(actual, 'g'));
     return {
       message: (): string =>
-        `expected string ${printExpected(
+        `expected string:\n${printExpected(
           actual,
-        )} was not output on line ${lineNumber}:\n ${printReceived(
+        )}\n\nWas not matched on line ${lineNumber}:\n ${printReceived(
           line,
         )}`,
       pass: !!pass,
@@ -135,16 +139,41 @@ const matchesOutputOnLine: MatcherFunction<[actual: unknown, line: number]> = (
   }
 };
 
+const wasOutput: MatcherFunction<[actual: string | Array<string>]> = (
+  actual: Array<string>,
+) => {
+  if (!Array.isArray(actual)) {
+    throw new Error('Actual must be an array of strings');
+  }
+
+  const pass = stdout.join('\n') === actual.join('\n');
+  const diffString = diff(stdout, actual, { expand: true });
+
+  return {
+    message: (): string =>
+      matcherHint('wasOutput')
+            + '\n\n'
+            + (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${printExpected(
+                actual,
+              )}\nReceived: ${printReceived(actual)}`),
+    pass: !!pass,
+  };
+};
+
 expect.extend({
   matchesOutput,
   matchesOutputOnLine,
-  isOnLine,
+  wasOutputOnLine,
+  wasOutput,
 });
 
 declare module 'expect' {
     interface Matchers<R> {
         matchesOutput(): R
         matchesOutputOnLine(line: number): R
-        isOnLine(line: number): R
+        wasOutputOnLine(line: number): R
+        wasOutput(): R
     }
 }
