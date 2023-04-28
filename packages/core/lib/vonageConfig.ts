@@ -48,22 +48,22 @@ export class VonageConfig {
     log('Loaded local values', this.localConfig);
   }
 
-  public getConfig(): Record<string, string> {
-    return this.globalConfigData;
+  public saveGlobalConfig(): void {
+    this.saveConfigFile(this.globalConfigFile, this.globalConfigData);
+  }
+  public saveLocalConfig(): void {
+    this.saveConfigFile(this.localConfigFile, this.localConfig);
   }
 
-  public saveConfig(): void {
-    const globalConfigData = {
-      ...this.globalConfigData,
+  protected saveConfigFile(file: string, data: ConfigData): void {
+    const saveConfigData = {
+      ...data,
       [ConfigParams.CONFIG_SCHEMA_VERSION]:
                 VonageConfig.CONFIG_SCHEMA_VERSION,
     };
-    log(`Saiving config ${this.globalConfigFile}`);
-    log(globalConfigData);
-    writeFileSync(
-      this.globalConfigFile,
-      JSON.stringify(globalConfigData, null, 2),
-    );
+    log(`Saiving config ${file}`);
+    log(saveConfigData);
+    writeFileSync(file, JSON.stringify(saveConfigData, null, 2));
     log(`Config file written`);
   }
 
@@ -81,6 +81,10 @@ export class VonageConfig {
     }
 
     return this.getGlobalConfigVar(which);
+  }
+
+  public setLocalConfigVar(which: ConfigParams, value: string): void {
+    this.localConfig[which] = value;
   }
 
   public setConfigVar(which: ConfigParams, value: string): void {
