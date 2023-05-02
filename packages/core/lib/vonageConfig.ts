@@ -34,8 +34,7 @@ export class VonageConfig {
       [ConfigParams.API_KEY]: process.env[ConfigEnv.API_KEY],
       [ConfigParams.API_SECRET]: process.env[ConfigEnv.API_SECRET],
       [ConfigParams.PRIVATE_KEY]: process.env[ConfigEnv.PRIVATE_KEY],
-      [ConfigParams.APPLICATION_ID]:
-                process.env[ConfigEnv.APPLICATION_ID],
+      [ConfigParams.APPLICATION_ID]: process.env[ConfigEnv.APPLICATION_ID],
     };
     log('Loaded env values', this.envVars);
 
@@ -86,10 +85,10 @@ export class VonageConfig {
   }
 
   public getLocalConfigVar(which: ConfigParams): string {
-    return this?.localConfig[which];
+    return this.localConfig[which];
   }
 
   public getGlobalConfigVar(which: ConfigParams): string {
-    return this?.globalConfigData[which];
+    return this.globalConfigData[which];
   }
 }

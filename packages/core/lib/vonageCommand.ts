@@ -1,14 +1,14 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { VonageConfig } from './vonageConfig';
 import { outputColorJson } from './jsonColor';
-import * as ui from './ui';
+import chalk from 'chalk';
 
 export type VonageFlags<T extends typeof Command> = Interfaces.InferredFlags<
-    (typeof VonageCommand)['baseFlags'] & T['flags']
+  (typeof VonageCommand)['baseFlags'] & T['flags']
 >
 
 export type VonageArgs<T extends typeof Command> = Interfaces.InferredArgs<
-    T['args']
+  T['args']
 >
 
 export abstract class VonageCommand<T extends typeof Command> extends Command {
@@ -34,11 +34,12 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
       summary: 'Application id to use',
       helpGroup: 'GLOBAL',
     }),
-  };
-
-  protected ui = {
-    outputColorJson,
-    ...ui,
+    truncate: Flags.boolean({
+      summary: 'Truncate long string [when applicable]',
+      helpGroup: 'GLOBAL',
+      default: true,
+      allowNo: true,
+    }),
   };
 
   protected vonageConfig: VonageConfig;
@@ -61,6 +62,12 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
   }
 
   public outputObject(data: unknown): void {
-    this.log(this.ui.outputColorJson(data));
+    this.log(outputColorJson(data));
+  }
+
+  public truncate(value: string, length = 25): string {
+    return this.flags.truncate && `${value}`.length > length
+      ? value.substring(0, length) + chalk.dim(' ...truncated')
+      : value;
   }
 }

@@ -1,21 +1,10 @@
 import { Flags } from '@oclif/core';
 import chalk from 'chalk';
 import { VonageCommand } from '../../vonageCommand';
-import { ConfigParams } from '../../enums/index';
+import { ConfigParams, DisplayedSetting } from '../../enums/index';
 import { existsSync } from 'fs';
-import { truncate } from '../../ui';
 import kebabcase from 'lodash.kebabcase';
 import snakecase from 'lodash.snakecase';
-
-enum DisplayedSetting {
-    API_KEY = 'API key',
-    API_SECRET = 'API secret',
-    PRIVATE_KEY = 'private key',
-    APPLICATION_ID = 'application ID',
-}
-
-const truncatePrivateKey = (privateKey: string): string =>
-  existsSync(privateKey) ? privateKey : showValue(truncate(privateKey));
 
 const showValue = (value): string => value || chalk.dim.yellow('Not Set');
 
@@ -25,8 +14,8 @@ const echoSetting = (
   value: string | null,
 ): string =>
   chalk.bold(`The ${part} ${DisplayedSetting[setting]} is`)
-    + ': '
-    + showValue(value);
+  + ': '
+  + showValue(value);
 
 export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   static summary = 'Display the current configuration';
@@ -53,11 +42,17 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   }
 
   protected getSettings() {
-    if (!this.flags?.setting) {
+    if (!this.flags.setting) {
       return Object.values(ConfigParams);
     }
 
     return this.flags.setting.map((value) => snakecase(value).toUpperCase());
+  }
+
+  protected truncatePrivateKey(privateKey: string): string {
+    return existsSync(privateKey)
+      ? privateKey
+      : showValue(this.truncate(privateKey));
   }
 
   dumpGlobalConfig(): void {
@@ -83,9 +78,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.API_SECRET,
           'global',
-          this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.API_SECRET,
-          ),
+          this.vonageConfig.getGlobalConfigVar(ConfigParams.API_SECRET),
         ),
       );
     }
@@ -95,9 +88,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.APPLICATION_ID,
           'global',
-          this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.APPLICATION_ID,
-          ),
+          this.vonageConfig.getGlobalConfigVar(ConfigParams.APPLICATION_ID),
         ),
       );
     }
@@ -107,10 +98,8 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.PRIVATE_KEY,
           'global',
-          truncatePrivateKey(
-            this.vonageConfig.getGlobalConfigVar(
-              ConfigParams.PRIVATE_KEY,
-            ),
+          this.truncatePrivateKey(
+            this.vonageConfig.getGlobalConfigVar(ConfigParams.PRIVATE_KEY),
           ),
         ),
       );
@@ -151,9 +140,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.APPLICATION_ID,
           'local',
-          this.vonageConfig.getLocalConfigVar(
-            ConfigParams.APPLICATION_ID,
-          ),
+          this.vonageConfig.getLocalConfigVar(ConfigParams.APPLICATION_ID),
         ),
       );
     }
@@ -163,10 +150,8 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.PRIVATE_KEY,
           'local',
-          truncatePrivateKey(
-            this.vonageConfig.getLocalConfigVar(
-              ConfigParams.PRIVATE_KEY,
-            ),
+          this.truncatePrivateKey(
+            this.vonageConfig.getLocalConfigVar(ConfigParams.PRIVATE_KEY),
           ),
         ),
       );
@@ -217,7 +202,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.PRIVATE_KEY,
           'environment',
-          truncatePrivateKey(
+          this.truncatePrivateKey(
             this.vonageConfig.getEnvVar(ConfigParams.PRIVATE_KEY),
           ),
         ),
@@ -269,7 +254,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.PRIVATE_KEY,
           'arguments',
-          truncatePrivateKey(
+          this.truncatePrivateKey(
             this.vonageConfig.getArgVar(ConfigParams.PRIVATE_KEY),
           ),
         ),
@@ -321,7 +306,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
         echoSetting(
           ConfigParams.PRIVATE_KEY,
           'derived',
-          truncatePrivateKey(
+          this.truncatePrivateKey(
             this.vonageConfig.getVar(ConfigParams.PRIVATE_KEY),
           ),
         ),

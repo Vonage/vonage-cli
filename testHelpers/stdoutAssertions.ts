@@ -1,7 +1,6 @@
 import { diff } from 'jest-diff';
 import { expect } from '@jest/globals';
 import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
-import type { MatcherFunction } from 'expect';
 
 // disable colors for chalk
 process.env.FORCE_COLOR = '0';
@@ -22,20 +21,12 @@ beforeEach(() => {
   jest.mock('@oclif/core', () => {
     return {
       ...jest.requireActual('@oclif/core'),
-      ux: {
-        prompt: (message) => {
-          return 'test';
-        },
-        confirm: (question) => {
-          return false;
-        },
-      },
     };
   });
 
   jest.spyOn(process.stdout, 'write').mockImplementation(
     (val: string): boolean =>
-    // Record each line of stdout to allow checking lines
+      // Record each line of stdout to allow checking lines
       !!stdout.push(`${val}`.trim()),
   );
 });
@@ -61,133 +52,118 @@ const getStdOutLine = (lineNumber: number): string => {
     throw new Error(
       `Line number ${printReceived(
         lineNumber,
-      )} exceeds length of lines outputted ${printExpected(
-        stdout.length,
-      )}`,
+      )} exceeds length of lines outputted ${printExpected(stdout.length)}`,
     );
   }
 
   return stdout[lineNumber - 1];
 };
 
-const matchesOutput: MatcherFunction<[actual: string]> = (actual: string) => {
-  if (typeof actual !== 'string') {
-    throw new Error('Actual must be a string');
-  }
-
-  const pass = stdout.join('\n').match(new RegExp(`${actual}`, 'gm'));
-  return {
-    message: (): string =>
-      `expected string ${printExpected(
-        actual,
-      )} was not output: ${printReceived(stdout.join('\n'))}`,
-    pass: !!pass,
-  };
-};
-
-const wasOutputOnLine: MatcherFunction<[expected: unknown, line: number]> = (
-  expected: string,
-  lineNumber: number,
-) => {
-  if (typeof lineNumber !== 'number') {
-    throw new Error('Line must be a number');
-  }
-
-  if (typeof expected !== 'string') {
-    throw new Error('Actual must be a string');
-  }
-
-  try {
-    const line = getStdOutLine(lineNumber);
-    const pass = line === expected;
-    const diffString = diff(line, expected, { expand: true });
-
-    return {
-      message: (): string =>
-        matcherHint('wasOutputOnLine')
-                + '\n\n'
-                + (diffString && diffString.includes('- Expect')
-                  ? `Difference:\n\n${diffString}`
-                  : `Expected: ${printExpected(
-                    expected,
-                  )}\nReceived: ${printReceived(line)}`),
-      pass: !!pass,
-    };
-  } catch (error) {
-    return {
-      message: (): string => error.message,
-      pass: false,
-    };
-  }
-};
-
-const matchesOutputOnLine: MatcherFunction<[actual: unknown, line: number]> = (
-  actual: string,
-  lineNumber: number,
-) => {
-  if (typeof lineNumber !== 'number') {
-    throw new Error('Line must be a number');
-  }
-
-  if (typeof actual !== 'string') {
-    throw new Error('Actual must be a string');
-  }
-
-  try {
-    const line = getStdOutLine(lineNumber);
-    const pass = `${line}`.match(new RegExp(actual, 'g'));
-    return {
-      message: (): string =>
-        `expected string:\n${printExpected(
-          actual,
-        )}\n\nWas not matched on line ${lineNumber}:\n ${printReceived(
-          line,
-        )}`,
-      pass: !!pass,
-    };
-  } catch (error) {
-    return {
-      message: (): string => error.message,
-      pass: false,
-    };
-  }
-};
-
-const wasOutput: MatcherFunction<[actual: string | Array<string>]> = (
-  actual: Array<string>,
-) => {
-  if (!Array.isArray(actual)) {
-    throw new Error('Actual must be an array of strings');
-  }
-
-  const pass = stdout.join('\n') === actual.join('\n');
-  const diffString = diff(stdout, actual, { expand: true });
-
-  return {
-    message: (): string =>
-      matcherHint('wasOutput')
-            + '\n\n'
-            + (diffString && diffString.includes('- Expect')
-              ? `Difference:\n\n${diffString}`
-              : `Expected: ${printExpected(
-                actual,
-              )}\nReceived: ${printReceived(actual)}`),
-    pass: !!pass,
-  };
-};
-
 expect.extend({
-  matchesOutput,
-  matchesOutputOnLine,
-  wasOutputOnLine,
-  wasOutput,
+  matchesOutput(actual: string) {
+    if (typeof actual !== 'string') {
+      throw new Error('Actual must be a string');
+    }
+
+    const pass = stdout.join('\n').match(new RegExp(`${actual}`, 'gm'));
+    return {
+      message: (): string =>
+        `expected string ${printExpected(
+          actual,
+        )} was not output: ${printReceived(stdout.join('\n'))}`,
+      pass: !!pass,
+    };
+  },
+
+  wasOutputOnLine(expected: string, lineNumber: number) {
+    if (typeof lineNumber !== 'number') {
+      throw new Error('Line must be a number');
+    }
+
+    if (typeof expected !== 'string') {
+      throw new Error('Actual must be a string');
+    }
+
+    try {
+      const line = getStdOutLine(lineNumber);
+      const pass = line === expected;
+      const diffString = diff(line, expected, { expand: true });
+
+      return {
+        message: (): string =>
+          matcherHint('wasOutputOnLine')
+          + '\n\n'
+          + (diffString && diffString.includes('- Expect')
+            ? `Difference:\n\n${diffString}`
+            : `Expected: ${printExpected(expected)}\nReceived: ${printReceived(
+              line,
+            )}`),
+        pass: !!pass,
+      };
+    } catch (error) {
+      return {
+        message: (): string => error.message,
+        pass: false,
+      };
+    }
+  },
+
+  matchesOutputOnLine(actual: string, lineNumber: number) {
+    if (typeof lineNumber !== 'number') {
+      throw new Error('Line must be a number');
+    }
+
+    if (typeof actual !== 'string') {
+      throw new Error('Actual must be a string');
+    }
+
+    try {
+      const line = getStdOutLine(lineNumber);
+      const pass = `${line}`.match(new RegExp(actual, 'g'));
+      return {
+        message: (): string =>
+          `expected string:\n${printExpected(
+            actual,
+          )}\n\nWas not matched on line ${lineNumber}:\n ${printReceived(
+            line,
+          )}`,
+        pass: !!pass,
+      };
+    } catch (error) {
+      return {
+        message: (): string => error.message,
+        pass: false,
+      };
+    }
+  },
+
+  wasOutput(actual: Array<string>) {
+    if (!Array.isArray(actual)) {
+      throw new Error('Actual must be an array of strings');
+    }
+
+    const pass = stdout.join('\n') === actual.join('\n');
+    const diffString = diff(stdout, actual, { expand: true });
+
+    return {
+      message: (): string =>
+        matcherHint('wasOutput')
+        + '\n\n'
+        + (diffString && diffString.includes('- Expect')
+          ? `Difference:\n\n${diffString}`
+          : `Expected: ${printExpected(actual)}\nReceived: ${printReceived(
+            actual,
+          )}`),
+      pass: !!pass,
+    };
+  },
 });
 
 declare module 'expect' {
-    interface Matchers<R> {
-        matchesOutput(): R
-        matchesOutputOnLine(line: number): R
-        wasOutputOnLine(line: number): R
-        wasOutput(): R
-    }
+  interface Matchers<R> {
+    matchesOutput(): R
+    matchesOutputOnLine(line: number): R
+    wasOutputOnLine(line: number): R
+    wasOutput(): R
+  }
 }

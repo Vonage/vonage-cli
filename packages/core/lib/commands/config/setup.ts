@@ -1,11 +1,13 @@
-import { existsSync, mkdirSync } from 'fs';
+import { existsSync } from 'fs';
 import { parse } from 'path';
 import { VonageCommand } from '../../vonageCommand';
 import { ux, Flags } from '@oclif/core';
-import { ConfigParams } from '../../enums/index';
+import { ConfigParams, DisplayedSetting } from '../../enums/index';
 import chalk from 'chalk';
 import { icon } from '../../logo';
 import { ConfigData } from '../../types';
+import { checkDirectory, makeDirectory } from '../../config/writer';
+import startcase from 'lodash.startcase';
 
 export default class Config extends VonageCommand<typeof Config> {
   static summary = 'Vonage CLI configuration wizard';
@@ -35,16 +37,16 @@ You can use the command line flags to skip interactive mode`;
     this.welcome();
 
     this.debug('Getting API key');
-    await this.getAPIKey();
+    await this.getNewSetting(ConfigParams.API_KEY);
 
     this.debug('Getting API secret');
-    await this.getAPISecret();
+    await this.getNewSetting(ConfigParams.API_SECRET);
 
     this.debug('Getting private key');
-    await this.getPrivateKey();
+    await this.getNewSetting(ConfigParams.PRIVATE_KEY, ' file');
 
     this.debug('Getting application id');
-    await this.getApplicationId();
+    await this.getNewSetting(ConfigParams.APPLICATION_ID);
 
     if (this.flags.global) {
       this.debug('Wirting global config');
@@ -79,127 +81,39 @@ You can use the command line flags to skip interactive mode`;
     this.log(`The ${file} with be created`);
   }
 
-  protected async getAPIKey(): Promise<void> {
-    const apiKey = this.vonageConfig.getArgVar(ConfigParams.API_KEY);
-    const newApiKey = apiKey
-      ? apiKey
-      : await ux.prompt(`${chalk.bold('API Key')}`, {
-        required: true,
-        default: this.flags.global
-          ? this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.API_KEY,
-          )
-          : this.vonageConfig.getLocalConfigVar(
-            ConfigParams.API_KEY,
-          ),
-      });
-
-    if (this.flags.global) {
-      this.vonageConfig.setConfigVar(ConfigParams.API_KEY, newApiKey);
-      return;
-    }
-
-    this.vonageConfig.setLocalConfigVar(ConfigParams.API_KEY, newApiKey);
-  }
-
-  protected async getAPISecret(): Promise<void> {
-    const apiSecret = this.vonageConfig.getArgVar(ConfigParams.API_SECRET);
-    const newApiSecret = apiSecret
-      ? apiSecret
-      : await ux.prompt(`${chalk.bold('API Secret')}`, {
-        required: true,
-        default: this.flags.global
-          ? this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.API_SECRET,
-          )
-          : this.vonageConfig.getLocalConfigVar(
-            ConfigParams.API_SECRET,
-          ),
-      });
-
-    if (this.flags.global) {
-      this.vonageConfig.setConfigVar(
-        ConfigParams.API_SECRET,
-        newApiSecret,
+  protected async getNewSetting(
+    setting: ConfigParams,
+    append = '',
+  ): Promise<void> {
+    const currentSetting = this.vonageConfig.getArgVar(setting);
+    const newSetting = currentSetting
+      ? currentSetting
+      : await ux.prompt(
+        chalk.bold(startcase(`${DisplayedSetting[setting]}${append}`)),
+        {
+          required: true,
+          default: this.flags.global
+            ? this.vonageConfig.getGlobalConfigVar(setting)
+            : this.vonageConfig.getLocalConfigVar(setting),
+        },
       );
-      return;
-    }
-
-    this.vonageConfig.setLocalConfigVar(
-      ConfigParams.API_SECRET,
-      newApiSecret,
-    );
-  }
-
-  protected async getPrivateKey(): Promise<void> {
-    const privateKey = this.vonageConfig.getArgVar(ConfigParams.PRIVATE_KEY);
-    const newPrivateKey = privateKey
-      ? privateKey
-      : await ux.prompt(`${chalk.bold('Private Key File')}`, {
-        required: true,
-        default: this.flags.global
-          ? this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.PRIVATE_KEY,
-          )
-          : this.vonageConfig.getLocalConfigVar(
-            ConfigParams.PRIVATE_KEY,
-          ),
-      });
 
     if (this.flags.global) {
-      this.vonageConfig.setConfigVar(
-        ConfigParams.PRIVATE_KEY,
-        newPrivateKey,
-      );
+      this.vonageConfig.setConfigVar(setting, newSetting);
       return;
     }
 
-    this.vonageConfig.setLocalConfigVar(
-      ConfigParams.PRIVATE_KEY,
-      newPrivateKey,
-    );
-  }
-
-  protected async getApplicationId(): Promise<void> {
-    const applicationId = this.vonageConfig.getArgVar(
-      ConfigParams.APPLICATION_ID,
-    );
-    const newApplicationId = applicationId
-      ? applicationId
-      : await ux.prompt(`${chalk.bold('Application Id')}`, {
-        required: true,
-        default: this.flags.global
-          ? this.vonageConfig.getGlobalConfigVar(
-            ConfigParams.APPLICATION_ID,
-          )
-          : this.vonageConfig.getLocalConfigVar(
-            ConfigParams.APPLICATION_ID,
-          ),
-      });
-
-    if (this.flags.global) {
-      this.vonageConfig.setConfigVar(
-        ConfigParams.APPLICATION_ID,
-        newApplicationId,
-      );
-      return;
-    }
-
-    this.vonageConfig.setLocalConfigVar(
-      ConfigParams.APPLICATION_ID,
-      newApplicationId,
-    );
+    this.vonageConfig.setLocalConfigVar(setting, newSetting);
   }
 
   protected async checkConfigDirectory(file: string): Promise<boolean> {
-    const { dir: directory } = parse(file);
-    this.debug(`Checking if ${directory} for config file exists`);
-
-    if (existsSync(directory)) {
+    this.debug(`Checking if directory exsits before writing ${file}`);
+    if (checkDirectory(file)) {
       this.debug('Directory exists');
       return true;
     }
 
+    const { dir: directory } = parse(file);
     const touchDirectory = await ux.confirm(
       `${chalk.bold(`Directory`)} [${directory}] ${chalk.bold(
         `does not exist create?`,
@@ -212,7 +126,8 @@ You can use the command line flags to skip interactive mode`;
       return false;
     }
 
-    mkdirSync(directory, { recursive: true });
+    makeDirectory(file);
+
     this.debug('Directory created');
     return true;
   }
@@ -282,9 +197,7 @@ You can use the command line flags to skip interactive mode`;
     if (!this.flags.yes) {
       this.debug('Yes flag is not set');
       this.outputObject(data);
-      confirmWrite = await ux.confirm(
-        `${chalk.bold('Confirm settings')} [y/n]`,
-      );
+      confirmWrite = await ux.confirm(`${chalk.bold('Confirm settings')} [y/n]`);
     }
 
     this.debug(`Can write file? ${confirmWrite}`);

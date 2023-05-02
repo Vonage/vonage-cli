@@ -33,7 +33,8 @@
     "chalk": "4",
     "debug": "^4.3.4",
     "lodash.kebabcase": "^4.1.1",
-    "lodash.snakecase": "^4.1.1"
+    "lodash.snakecase": "^4.1.1",
+    "lodash.startcase": "^4.4.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
