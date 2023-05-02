@@ -83,7 +83,7 @@ const argsNotSet = [
 export default [
   {
     label: 'use global config',
-    commandArgs: [],
+    commandArgs: ['--verbose'],
     config: globalConfig,
     expected: [
       ...globalSet,
@@ -100,7 +100,7 @@ export default [
   },
   {
     label: 'use local config',
-    commandArgs: [],
+    commandArgs: ['--verbose'],
     config: localConfig,
     expected: [
       ...globalNotSet,
@@ -117,7 +117,7 @@ export default [
   },
   {
     label: 'use environment variables ',
-    commandArgs: [],
+    commandArgs: ['--verbose'],
     config: {},
     expected: [
       ...globalNotSet,
@@ -135,6 +135,7 @@ export default [
   {
     label: 'use argument flags',
     commandArgs: [
+      '--verbose',
       '--api-key=args-key',
       '--api-secret=args-secret',
       '--app-id=args-app-id',
@@ -157,6 +158,7 @@ export default [
   {
     label: 'follow config precedence',
     commandArgs: [
+      '--verbose',
       '--api-key=args-key',
       '--api-secret=args-secret',
       '--app-id=args-app-id',
@@ -181,7 +183,7 @@ export default [
   },
   {
     label: 'only output global',
-    commandArgs: ['--part=global'],
+    commandArgs: ['--part=global', '--verbose'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -191,7 +193,7 @@ export default [
   },
   {
     label: 'only output local',
-    commandArgs: ['--part=local'],
+    commandArgs: ['--verbose', '--part=local'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -201,7 +203,7 @@ export default [
   },
   {
     label: 'only output environment',
-    commandArgs: ['--part=environment'],
+    commandArgs: ['--verbose', '--part=environment'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -212,6 +214,7 @@ export default [
   {
     label: 'only output arguments',
     commandArgs: [
+      '--verbose',
       '--part=arguments',
       '--api-key=args-key',
       '--api-secret=args-secret',
@@ -228,6 +231,7 @@ export default [
   {
     label: 'output environment and arguments',
     commandArgs: [
+      '--verbose',
       '--part=arguments',
       '--part=environment',
       '--api-key=args-key',
@@ -244,7 +248,7 @@ export default [
   },
   {
     label: 'output API key only',
-    commandArgs: ['--setting=api-key', '--api-key=args-key'],
+    commandArgs: ['--verbose', '--setting=api-key', '--api-key=args-key'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -266,6 +270,7 @@ export default [
   {
     label: 'output API secret only',
     commandArgs: [
+      '--verbose',
       '--setting=api-secret',
       '--api-key=args-key',
       '--api-secret=args-secret',
@@ -290,7 +295,11 @@ export default [
   },
   {
     label: 'output application id only ',
-    commandArgs: ['--setting=application-id', '--app-id=args-app-id'],
+    commandArgs: [
+      '--verbose',
+      '--setting=application-id',
+      '--app-id=args-app-id',
+    ],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -312,6 +321,7 @@ export default [
   {
     label: 'output private key only ',
     commandArgs: [
+      '--verbose',
       '--setting=private-key',
       '--api-key=args-key',
       '--application-id=args-app-id',

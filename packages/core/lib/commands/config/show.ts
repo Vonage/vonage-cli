@@ -19,11 +19,12 @@ const echoSetting = (
 
 export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   static summary = 'Display the current configuration';
+  static enableJsonFlag = false;
 
   static flags = {
     part: Flags.string({
       summary: 'Only show the value from this domain',
-      options: ['global', 'local', 'environment', 'arguments', 'derived'],
+      options: Object.values(ConfigParts),
       multiple: true,
     }),
     setting: Flags.string({
@@ -31,13 +32,20 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
       multiple: true,
       options: Object.values(ConfigParams).map(kebabcase),
     }),
+    verbose: Flags.boolean({
+      summary: 'Show detailed configuration information',
+      allowNo: false,
+      default: false,
+    }),
   };
 
   async run(): Promise<void> {
-    this.dumpConfig(ConfigParts.GLOBAL);
-    this.dumpConfig(ConfigParts.LOCAL);
-    this.dumpConfig(ConfigParts.ENVIROMENT);
-    this.dumpConfig(ConfigParts.ARGUMENTS);
+    if (this.flags.verbose) {
+      this.dumpConfig(ConfigParts.GLOBAL);
+      this.dumpConfig(ConfigParts.LOCAL);
+      this.dumpConfig(ConfigParts.ENVIROMENT);
+      this.dumpConfig(ConfigParts.ARGUMENTS);
+    }
     this.dumpConfig();
   }
 
