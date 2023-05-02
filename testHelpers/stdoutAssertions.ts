@@ -1,4 +1,4 @@
-import { diff, diffStringsUnified } from 'jest-diff';
+import { diff } from 'jest-diff';
 import { expect } from '@jest/globals';
 import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import type { MatcherFunction } from 'expect';
@@ -19,6 +19,20 @@ let stdout: Array<string>;
 
 beforeEach(() => {
   stdout = [];
+  jest.mock('@oclif/core', () => {
+    return {
+      ...jest.requireActual('@oclif/core'),
+      ux: {
+        prompt: (message) => {
+          return 'test';
+        },
+        confirm: (question) => {
+          return false;
+        },
+      },
+    };
+  });
+
   jest.spyOn(process.stdout, 'write').mockImplementation(
     (val: string): boolean =>
     // Record each line of stdout to allow checking lines

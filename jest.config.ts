@@ -9,7 +9,10 @@ const config: Config.InitialOptions = {
   ],
   projects: [
     {
-      setupFilesAfterEnv: ['<rootDir>/testHelpers/customAssertions.ts'],
+      setupFilesAfterEnv: [
+        '<rootDir>/testHelpers/stdoutAssertions.ts',
+        '<rootDir>/testHelpers/stdinAssertions.ts',
+      ],
       preset: 'ts-jest',
       displayName: 'CORE',
       testMatch: ['<rootDir>/packages/core/__tests__/**/*.test.ts'],

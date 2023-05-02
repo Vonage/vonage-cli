@@ -1,14 +1,12 @@
 import { ConfigParams, ConfigEnv } from './enums/index';
 import { ConfigData } from './types/index';
-import { writeFileSync } from 'fs';
 import debug from 'debug';
 import { loadConfigFile } from './config/loader';
+import { saveConfigFile } from './config/writer';
 
 const log = debug('vonage:cli:config');
 
 export class VonageConfig {
-  static CONFIG_SCHEMA_VERSION = '2022-03-30';
-
   protected argVars: ConfigData;
   protected envVars: ConfigData;
   protected localConfig: ConfigData;
@@ -49,22 +47,10 @@ export class VonageConfig {
   }
 
   public saveGlobalConfig(): void {
-    this.saveConfigFile(this.globalConfigFile, this.globalConfigData);
+    saveConfigFile(this.globalConfigFile, this.globalConfigData);
   }
   public saveLocalConfig(): void {
-    this.saveConfigFile(this.localConfigFile, this.localConfig);
-  }
-
-  protected saveConfigFile(file: string, data: ConfigData): void {
-    const saveConfigData = {
-      ...data,
-      [ConfigParams.CONFIG_SCHEMA_VERSION]:
-                VonageConfig.CONFIG_SCHEMA_VERSION,
-    };
-    log(`Saiving config ${file}`);
-    log(saveConfigData);
-    writeFileSync(file, JSON.stringify(saveConfigData, null, 2));
-    log(`Config file written`);
+    saveConfigFile(this.localConfigFile, this.localConfig);
   }
 
   public getVar(which: ConfigParams): string {

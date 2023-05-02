@@ -33,12 +33,21 @@ You can use the command line flags to skip interactive mode`;
 
   public async run(): Promise<void> {
     this.welcome();
+
+    this.debug('Getting API key');
     await this.getAPIKey();
+
+    this.debug('Getting API secret');
     await this.getAPISecret();
+
+    this.debug('Getting private key');
     await this.getPrivateKey();
+
+    this.debug('Getting application id');
     await this.getApplicationId();
 
     if (this.flags.global) {
+      this.debug('Wirting global config');
       await this.writeGlobalConfigFile();
       return;
     }
@@ -184,8 +193,10 @@ You can use the command line flags to skip interactive mode`;
 
   protected async checkConfigDirectory(file: string): Promise<boolean> {
     const { dir: directory } = parse(file);
+    this.debug(`Checking if ${directory} for config file exists`);
 
     if (existsSync(directory)) {
+      this.debug('Directory exists');
       return true;
     }
 
@@ -195,11 +206,14 @@ You can use the command line flags to skip interactive mode`;
       )} [y/n]`,
     );
 
+    this.debug(`Ok to write directory ${touchDirectory}`);
     if (!touchDirectory) {
+      this.debug('User declied creating directory');
       return false;
     }
 
     mkdirSync(directory, { recursive: true });
+    this.debug('Directory created');
     return true;
   }
 
@@ -253,6 +267,7 @@ You can use the command line flags to skip interactive mode`;
       return;
     }
 
+    this.debug(`Writing local config ${file}`, config);
     this.vonageConfig.saveLocalConfig();
     this.log(`${chalk.bold('Config file written to')} ${file}`);
   }
@@ -261,15 +276,18 @@ You can use the command line flags to skip interactive mode`;
     file: string,
     data: ConfigData,
   ): Promise<boolean> {
+    this.debug('Confirming if ok to write');
     let confirmWrite = true;
     this.log('');
     if (!this.flags.yes) {
+      this.debug('Yes flag is not set');
       this.outputObject(data);
       confirmWrite = await ux.confirm(
         `${chalk.bold('Confirm settings')} [y/n]`,
       );
     }
 
+    this.debug(`Can write file? ${confirmWrite}`);
     if (!confirmWrite) {
       this.log(chalk.yellow('Not saving configuration'));
       return false;

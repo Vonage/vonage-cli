@@ -68,9 +68,7 @@ export const dumpValue = (value: string | number): string => {
 
 export const dumpKey = (key: string): string => `"${chalk.bold(key)}"`;
 
-export const outputColorJson = (data: unknown): void =>
-  console.log(
-    [chalk.yellow('{'), ...objectDump(data).flat(), chalk.yellow('}')].join(
-      '\n',
-    ),
+export const outputColorJson = (data: unknown): string =>
+  [chalk.yellow('{'), ...objectDump(data).flat(), chalk.yellow('}')].join(
+    '\n',
   );

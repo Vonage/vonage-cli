@@ -61,6 +61,6 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
   }
 
   public outputObject(data: unknown): void {
-    this.ui.outputColorJson(data);
+    this.log(this.ui.outputColorJson(data));
   }
 }

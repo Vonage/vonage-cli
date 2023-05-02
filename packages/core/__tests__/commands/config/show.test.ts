@@ -1,6 +1,7 @@
 import { expect } from '@jest/globals';
+// Include this in every test file to ensure TS compiles
 // eslint-disable-next-line
-import * as custom from '../../../../../testHelpers/customAssertions'
+import * as custom from '../../../../../testHelpers/stdoutAssertions'
 import ShowConfig from '../../../lib/commands/config/show';
 import testCases from '../../__dataSets__/showCommand';
 
