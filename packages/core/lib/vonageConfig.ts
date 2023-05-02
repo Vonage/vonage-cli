@@ -78,10 +78,8 @@ export class VonageConfig {
     case ConfigParts.GLOBAL:
       return this.globalConfigData[which];
     case ConfigParts.ENVIROMENT:
-    case ConfigParts.ENV:
       return this.envVars[which];
     case ConfigParts.ARGUMENTS:
-    case ConfigParts.ARGS:
       return this.argVars[which];
     default:
       return this.getVar(which);
@@ -97,11 +95,11 @@ export class VonageConfig {
   }
 
   public getArgVar(which: ConfigParams): string {
-    return this.getVariableFrom(which, ConfigParts.ARGS);
+    return this.getVariableFrom(which, ConfigParts.ARGUMENTS);
   }
 
   public getEnvVar(which: ConfigParams): string {
-    return this.getVariableFrom(which, ConfigParts.ENV);
+    return this.getVariableFrom(which, ConfigParts.ENVIROMENT);
   }
 
   public getLocalConfigVar(which: ConfigParams): string {

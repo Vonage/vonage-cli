@@ -19,6 +19,7 @@ const echoSetting = (
 
 export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   static summary = 'Display the current configuration';
+
   static enableJsonFlag = false;
 
   static flags = {
@@ -34,6 +35,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
     }),
     verbose: Flags.boolean({
       summary: 'Show detailed configuration information',
+      char: 'v',
       allowNo: false,
       default: false,
     }),

@@ -31,7 +31,7 @@ export const checkDirectory = (file: string) => {
 export const saveConfigFile = (file: string, data: ConfigData): void => {
   const saveConfigData = {
     ...data,
-    [ConfigParams.CONFIG_SCHEMA_VERSION]: CONFIG_SCHEMA_VERSION,
+    CONFIG_SCHEMA_VERSION: CONFIG_SCHEMA_VERSION,
   };
   log(`Saiving config ${file}`);
   log(saveConfigData);
