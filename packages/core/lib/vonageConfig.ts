@@ -1,4 +1,4 @@
-import { ConfigParams, ConfigEnv } from './enums/index';
+import { ConfigParts, ConfigParams, ConfigEnv } from './enums/index';
 import { ConfigData } from './types/index';
 import debug from 'debug';
 import { loadConfigFile } from './config/loader';
@@ -68,6 +68,26 @@ export class VonageConfig {
     return this.getGlobalConfigVar(which);
   }
 
+  public getVariableFrom(
+    which: ConfigParams | null,
+    from: ConfigParts,
+  ): string {
+    switch (from) {
+    case ConfigParts.LOCAL:
+      return this.localConfig[which];
+    case ConfigParts.GLOBAL:
+      return this.globalConfigData[which];
+    case ConfigParts.ENVIROMENT:
+    case ConfigParts.ENV:
+      return this.envVars[which];
+    case ConfigParts.ARGUMENTS:
+    case ConfigParts.ARGS:
+      return this.argVars[which];
+    default:
+      return this.getVar(which);
+    }
+  }
+
   public setLocalConfigVar(which: ConfigParams, value: string): void {
     this.localConfig[which] = value;
   }
@@ -77,18 +97,18 @@ export class VonageConfig {
   }
 
   public getArgVar(which: ConfigParams): string {
-    return this.argVars[which];
+    return this.getVariableFrom(which, ConfigParts.ARGS);
   }
 
   public getEnvVar(which: ConfigParams): string {
-    return this.envVars[which];
+    return this.getVariableFrom(which, ConfigParts.ENV);
   }
 
   public getLocalConfigVar(which: ConfigParams): string {
-    return this.localConfig[which];
+    return this.getVariableFrom(which, ConfigParts.LOCAL);
   }
 
   public getGlobalConfigVar(which: ConfigParams): string {
-    return this.globalConfigData[which];
+    return this.getVariableFrom(which, ConfigParts.GLOBAL);
   }
 }

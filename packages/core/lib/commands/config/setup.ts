@@ -9,7 +9,7 @@ import { ConfigData } from '../../types';
 import { checkDirectory, makeDirectory } from '../../config/writer';
 import startcase from 'lodash.startcase';
 
-export default class Config extends VonageCommand<typeof Config> {
+export default class SetupConfig extends VonageCommand<typeof SetupConfig> {
   static summary = 'Vonage CLI configuration wizard';
 
   static description = `This wizard will setup a config file for the CLI
@@ -61,7 +61,7 @@ You can use the command line flags to skip interactive mode`;
     this.log(chalk.rgb(153, 65, 255)(icon.replace(/^ {20}/gm, '')));
     this.log(chalk.bold(`${' '.repeat(20)}Welcome to Vonage!`));
     this.log('');
-    this.log(chalk.bold(Config.description));
+    this.log(chalk.bold(SetupConfig.description));
     this.log(chalk.dim('Type "vonage config --help" for more information'));
     this.log('');
     this.welcomeFile(
