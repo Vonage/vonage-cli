@@ -48,6 +48,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       false,
     );
@@ -71,6 +72,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       false,
     );
@@ -94,6 +96,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       true,
     );
@@ -117,6 +120,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       true,
     );
@@ -143,6 +147,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       true,
     );
@@ -168,6 +173,7 @@ describe('Setup Command', () => {
         [ConfigParams.API_SECRET]: 'api secret',
         [ConfigParams.PRIVATE_KEY]: '/path/to/key',
         [ConfigParams.APPLICATION_ID]: 'app-id',
+        CONFIG_SCHEMA_VERSION: '2023-03-30',
       },
       true,
     );

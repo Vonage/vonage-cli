@@ -4,6 +4,7 @@ import { ux } from '@oclif/core';
 import { parse } from 'path';
 import debug from 'debug';
 import chalk from 'chalk';
+import { dumpValue } from './ux';
 
 const log = debug('vonage:cli:fs');
 
@@ -43,7 +44,7 @@ export const makeDirectory = async (
 
   if (!pathExists(directory) && !force) {
     okToMake = await ux.confirm(
-      chalk.bold(`Directory ${directory} does not exist. Create it?`),
+      chalk.bold(`Directory ${directory} does not exist. Create it? [y/n]`),
     );
   }
 
@@ -63,26 +64,29 @@ export const saveFile = async (
   force = false,
 ): Promise<boolean> => {
   log(`Saiving file ${file}. Forcing? ${force}`);
-  let okToWrite = !checkDirectoryExistsForFile(file)
-    ? await makeDirectoryForFile(file, force)
-    : true;
+  const fileExistsWarning = pathExists(file)
+    ? chalk.yellow('This will overwrite the file')
+    : chalk.yellow('This will create the file');
 
-  // Check directory and ask to create
+  let okToWrite = false;
+  if (!force) {
+    ux.log('Confirm saving');
+    ux.log(dumpValue(data));
+    okToWrite = await ux.confirm(`To ${file} (${fileExistsWarning}) [y/n]`);
+  }
 
   if (!okToWrite) {
-    log(`Not saving file ${file}: directory does not exist`);
+    log(`Not saving file ${file}: User declined saving`);
     return false;
   }
 
-  // Check if file exists and ask to overwrite
-  if (pathExists(file) && !force) {
-    okToWrite = await ux.confirm(
-      chalk.bold(`File ${file} exists. Overwite it?`) + ' [y/n]',
-    );
-  }
+  // Check directory and ask to create
+  okToWrite = !checkDirectoryExistsForFile(file)
+    ? await makeDirectoryForFile(file, force)
+    : true;
 
   if (!okToWrite) {
-    log(`Not saving file ${file}: file exists`);
+    log(`Not saving file ${file}: directory does not exist`);
     return false;
   }
 

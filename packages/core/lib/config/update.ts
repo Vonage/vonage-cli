@@ -4,19 +4,21 @@ import debug from 'debug';
 
 const log = debug('vonage:cli:config:update');
 
-type Latest = {
-  CONFIG_SCHEMA_VERSION: string
+export const LatestVersion = '2023-03-30';
+
+export type Latest = {
+  CONFIG_SCHEMA_VERSION: '2023-03-30'
 } & ConfigData
 
-type Version20220330 = {
+export type Version20220330 = {
   API_KEY: string
   API_SECRET: string
   PRIVATE_KEY: string
   APPLICATION_ID: string
-  CONFIG_SCHEMA_VERSION: string
+  CONFIG_SCHEMA_VERSION: '2023-03-30'
 }
 
-type VersionZero = {
+export type VersionZero = {
   apiKey: string
   apiSecret: string
   privateKey: string
@@ -24,7 +26,7 @@ type VersionZero = {
   CONFIG_SCHEMA_VERSION: never
 }
 
-type Versions = VersionZero | Version20220330 | Latest
+export type Versions = VersionZero | Version20220330 | Latest
 
 const updateFrom0To20220330 = (data: VersionZero): ConfigData => ({
   [ConfigParams.API_KEY]: data?.apiKey || null,
@@ -46,8 +48,10 @@ export const updateConfigData = (data: Versions): ConfigData => {
 
   switch (dataVersion) {
   case 0:
-    return updateFrom0To20220330(data as VersionZero);
+    log('Updating from version 0');
+    return updateFrom0To20220330(data as unknown as VersionZero);
   default:
+    log('Data is up to data');
     return data as ConfigData;
   }
 };

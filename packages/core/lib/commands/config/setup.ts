@@ -3,6 +3,7 @@ import { BaseSetCommand } from '../../config/baseSetCommand';
 import { ConfigParams } from '../../enums/index';
 import chalk from 'chalk';
 import { icon } from '../../logo';
+import { ux } from '@oclif/core';
 
 export default class SetupConfig extends BaseSetCommand<typeof SetupConfig> {
   static summary = 'Vonage CLI configuration wizard';

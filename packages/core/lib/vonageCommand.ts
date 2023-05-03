@@ -1,7 +1,6 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { VonageConfig } from './vonageConfig';
-import { outputColorJson } from './jsonColor';
-import chalk from 'chalk';
+import ux from './ux';
 
 export type VonageFlags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof VonageCommand)['baseFlags'] & T['flags']
@@ -48,6 +47,8 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
 
   protected args!: VonageArgs<T>;
 
+  protected ux;
+
   public async init(): Promise<void> {
     await super.init();
     const { args, flags } = await this.parse({
@@ -59,15 +60,6 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     this.flags = flags as VonageFlags<T>;
     this.args = args as VonageArgs<T>;
     this.vonageConfig = new VonageConfig(this.config.configDir, this.flags);
-  }
-
-  public outputObject(data: unknown): void {
-    this.log(outputColorJson(data));
-  }
-
-  public truncate(value: string, length = 25): string {
-    return this.flags.truncate && `${value}`.length > length
-      ? value.substring(0, length) + chalk.dim(' ...truncated')
-      : value;
+    this.ux = ux(this.flags);
   }
 }

@@ -28,18 +28,25 @@ export abstract class BaseSetCommand<
     append = '',
   ): Promise<void> {
     const argumentSetting = this.vonageConfig.getArgVar(setting);
+
+    const defaultSetting = this.vonageConfig.getVariableFrom(
+      setting,
+      this.flags.global ? 'global' : 'local',
+    );
+
+    this.debug(`${setting} from argument ${argumentSetting}`);
+    this.debug(`Current ${setting} ${defaultSetting}`);
     const newSetting = argumentSetting
       ? argumentSetting
       : await ux.prompt(
         chalk.bold(startcase(`${DisplayedSetting[setting]}${append}`)),
         {
           required: true,
-          default: this.flags.global
-            ? this.vonageConfig.getGlobalConfigVar(setting)
-            : this.vonageConfig.getLocalConfigVar(setting),
+          default: defaultSetting,
         },
       );
 
+    this.debug(`New ${setting} ${newSetting}`);
     if (this.flags.global) {
       this.vonageConfig.setConfigVar(setting, newSetting);
       return;

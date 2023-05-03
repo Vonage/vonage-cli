@@ -3,6 +3,7 @@ import { ConfigData } from './types/index';
 import debug from 'debug';
 import { loadConfigFile } from './config/loader';
 import { saveFile } from './fs';
+import { LatestVersion } from './config/update';
 
 const log = debug('vonage:cli:config');
 
@@ -46,10 +47,25 @@ export class VonageConfig {
   }
 
   public saveGlobalConfig(force = false): Promise<boolean> {
-    return saveFile(this.globalConfigFile, this.globalConfigData, force);
+    return saveFile(
+      this.globalConfigFile,
+      {
+        ...this.globalConfigData,
+        CONFIG_SCHEMA_VERSION: LatestVersion,
+      },
+      force,
+    );
   }
+
   public saveLocalConfig(force = false): Promise<boolean> {
-    return saveFile(this.localConfigFile, this.localConfig, force);
+    return saveFile(
+      this.localConfigFile,
+      {
+        ...this.localConfig,
+        CONFIG_SCHEMA_VERSION: LatestVersion,
+      },
+      force,
+    );
   }
 
   public getVar(which: ConfigParams | string): string {

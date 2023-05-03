@@ -6,17 +6,6 @@ import { existsSync } from 'fs';
 import kebabcase from 'lodash.kebabcase';
 import snakecase from 'lodash.snakecase';
 
-const showValue = (value): string => value || chalk.dim.yellow('Not Set');
-
-const echoSetting = (
-  setting: ConfigParams,
-  part: ConfigParts | null,
-  value: string | null,
-): string =>
-  chalk.bold(`The ${part ? `${part} ` : ''}${DisplayedSetting[setting]} is`)
-  + ': '
-  + showValue(value);
-
 export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   static summary = 'Display the current configuration';
 
@@ -62,7 +51,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   protected truncatePrivateKey(privateKey: string): string {
     return existsSync(privateKey)
       ? privateKey
-      : showValue(this.truncate(privateKey));
+      : this.ux.dumpValue(this.ux.truncate(privateKey));
   }
 
   protected dumpConfig(from: ConfigParts | null = null): void {
@@ -75,7 +64,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
 
     if (setting.includes(ConfigParams.API_KEY)) {
       this.log(
-        echoSetting(
+        this.echoSetting(
           ConfigParams.API_KEY,
           from,
           this.vonageConfig.getVariableFrom(ConfigParams.API_KEY, from),
@@ -85,7 +74,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
 
     if (setting.includes(ConfigParams.API_SECRET)) {
       this.log(
-        echoSetting(
+        this.echoSetting(
           ConfigParams.API_SECRET,
           from,
           this.vonageConfig.getVariableFrom(ConfigParams.API_SECRET, from),
@@ -95,7 +84,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
 
     if (setting.includes(ConfigParams.APPLICATION_ID)) {
       this.log(
-        echoSetting(
+        this.echoSetting(
           ConfigParams.APPLICATION_ID,
           from,
           this.vonageConfig.getVariableFrom(ConfigParams.APPLICATION_ID, from),
@@ -105,7 +94,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
 
     if (setting.includes(ConfigParams.PRIVATE_KEY)) {
       this.log(
-        echoSetting(
+        this.echoSetting(
           ConfigParams.PRIVATE_KEY,
           from,
           this.truncatePrivateKey(
@@ -115,5 +104,19 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
       );
     }
     this.log('');
+  }
+
+  protected echoSetting(
+    setting: ConfigParams,
+    part: ConfigParts | null,
+    value: string | null,
+  ): string {
+    return (
+      chalk.bold(
+        `The ${part ? `${part} ` : ''}${DisplayedSetting[setting]} is`,
+      )
+      + ': '
+      + this.ux.dumpValue(value)
+    );
   }
 }
