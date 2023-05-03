@@ -11,8 +11,6 @@ export default class SetupConfig extends BaseSetCommand<typeof SetupConfig> {
 
 You can use the command line flags to skip interactive mode`;
 
-  static enableJsonFlag = false;
-
   static aliases = ['setup', 'config'];
 
   public async run(): Promise<void> {
@@ -30,13 +28,15 @@ You can use the command line flags to skip interactive mode`;
     this.debug('Getting application id');
     await this.getNewSetting(ConfigParams.APPLICATION_ID);
 
-    if (this.flags.global) {
-      this.debug('Wirting global config');
-      await this.writeGlobalConfigFile();
-      return;
-    }
+    const result = this.flags.global
+      ? await this.vonageConfig.saveGlobalConfig(this.flags.yes)
+      : await this.vonageConfig.saveLocalConfig(this.flags.yes);
 
-    await this.writeLocalConfigFile();
+    this.log(
+      result
+        ? 'Config file saved! ✅'
+        : chalk.bold.red('Config file not saved ❌'),
+    );
   }
 
   protected welcome(): void {

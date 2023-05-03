@@ -60,9 +60,12 @@ beforeEach(() => {
 afterEach(() => {
   jest.restoreAllMocks();
   inputCount = 0;
-  const notCalled = !!inputs.find(({ called }) => !called);
-  if (!errored && notCalled) {
-    throw new Error('There are still open inputs');
+  const notCalled = inputs.filter(({ called }) => !called);
+  if (!errored && notCalled.length > 0) {
+    throw new Error(
+      `There are still (${notCalled.length}) open inputs waiting\n `
+        + notCalled.map(({ message }) => message).join('\n'),
+    );
   }
   inputs = [];
 });

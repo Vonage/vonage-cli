@@ -2,7 +2,7 @@ import { ConfigParts, ConfigParams, ConfigEnv } from './enums/index';
 import { ConfigData } from './types/index';
 import debug from 'debug';
 import { loadConfigFile } from './config/loader';
-import { saveConfigFile } from './config/writer';
+import { saveFile } from './fs';
 
 const log = debug('vonage:cli:config');
 
@@ -45,14 +45,14 @@ export class VonageConfig {
     log('Loaded local values', this.localConfig);
   }
 
-  public saveGlobalConfig(): void {
-    saveConfigFile(this.globalConfigFile, this.globalConfigData);
+  public saveGlobalConfig(force = false): Promise<boolean> {
+    return saveFile(this.globalConfigFile, this.globalConfigData, force);
   }
-  public saveLocalConfig(): void {
-    saveConfigFile(this.localConfigFile, this.localConfig);
+  public saveLocalConfig(force = false): Promise<boolean> {
+    return saveFile(this.localConfigFile, this.localConfig, force);
   }
 
-  public getVar(which: ConfigParams): string {
+  public getVar(which: ConfigParams | string): string {
     if (this.getArgVar(which)) {
       return this.getArgVar(which);
     }
@@ -69,8 +69,8 @@ export class VonageConfig {
   }
 
   public getVariableFrom(
-    which: ConfigParams | null,
-    from: ConfigParts,
+    which: ConfigParams | string | null,
+    from: ConfigParts | string,
   ): string {
     switch (from) {
     case ConfigParts.LOCAL:
@@ -94,19 +94,19 @@ export class VonageConfig {
     this.globalConfigData[which] = value;
   }
 
-  public getArgVar(which: ConfigParams): string {
+  public getArgVar(which: ConfigParams | string): string {
     return this.getVariableFrom(which, ConfigParts.ARGUMENTS);
   }
 
-  public getEnvVar(which: ConfigParams): string {
+  public getEnvVar(which: ConfigParams | string): string {
     return this.getVariableFrom(which, ConfigParts.ENVIROMENT);
   }
 
-  public getLocalConfigVar(which: ConfigParams): string {
+  public getLocalConfigVar(which: ConfigParams | string): string {
     return this.getVariableFrom(which, ConfigParts.LOCAL);
   }
 
-  public getGlobalConfigVar(which: ConfigParams): string {
+  public getGlobalConfigVar(which: ConfigParams | string): string {
     return this.getVariableFrom(which, ConfigParts.GLOBAL);
   }
 }
