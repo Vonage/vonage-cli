@@ -1,26 +1,35 @@
 import chalk from 'chalk';
+import debug from 'debug';
 
-// eslint-disable-next-line max-len
+const log = debug('vonage:cli:ux');
+
 export const objectDump = (data: unknown, indent = 2): Array<string> =>
   Object.entries(data)
     .map(([key, value]) => {
       const varType = Array.isArray(value) ? 'array' : typeof value;
+      if (value === undefined || value === null) {
+        return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpValue(value)}`;
+      }
+
       switch (varType) {
       case 'object':
+        log('recurision');
         return [
           `${' '.repeat(indent)}${dumpKey(key)}: ${chalk.yellow('{')}`,
           objectDump(value, indent + 2),
           `${' '.repeat(indent)}${chalk.yellow('}')}`,
         ];
+
       case 'array':
+        log('array');
         return [
           `${' '.repeat(indent)}${dumpKey(key)}: ${chalk.yellow('[')}`,
           ...dumpArray(value, indent + 2),
           `${' '.repeat(indent)}${chalk.yellow(']')}`,
         ];
-        break;
 
       default:
+        log('normal');
         return `${' '.repeat(indent)}${dumpKey(key)}: "${dumpValue(value)}"`;
       }
     })
@@ -44,20 +53,38 @@ export const dumpArray = (data: Array<unknown>, indent = 2) =>
       ].join('\n');
 
     default:
-      return `${' '.repeat(indent)}"${dumpValue(value as string | number)}"`;
+      return `${' '.repeat(indent)}"${dumpValue(value)}"`;
     }
   });
 
-export const dumpValue = (value: string | number | unknown): string => {
-  switch (typeof value) {
-  case 'object':
-    return outputColorJson(value);
-  case 'string':
-    return `${chalk.blue(value)}`;
-  case 'number':
-    return `${chalk.dim(value)}`;
-  default:
+export const dumpValue = (
+  value: Array<unknown> | string | number | unknown,
+): string => {
+  const varType = Array.isArray(value) ? 'array' : typeof value;
+
+  if (value === undefined || value === null) {
+    log('Value not set');
     return `${chalk.dim.yellow('Not Set')}`;
+  }
+
+  switch (varType) {
+  case 'number':
+    log('Dumping number');
+    return `${chalk.dim(value)}`;
+
+  case 'string':
+    log('Dumping string');
+    return `${chalk.blue(value)}`;
+
+  case 'array':
+    return dumpArray(value as Array<unknown>);
+  case 'object':
+    log('Dumping object');
+    return outputColorJson(value);
+
+  default:
+    log('Just dumping');
+    return `${chalk.blue(value)}`;
   }
 };
 

@@ -84,6 +84,20 @@ export class VonageConfig {
     return this.getGlobalConfigVar(which);
   }
 
+  public setVariableFrom(
+    which: ConfigParams | string | null,
+    from: ConfigParts | string,
+    value: string,
+  ): void {
+    switch (from) {
+    case ConfigParts.LOCAL:
+      return this.setLocalConfigVar(which as ConfigParams, value);
+    case ConfigParts.GLOBAL:
+      return this.setConfigVar(which as ConfigParams, value);
+    default:
+      throw new Error(`Cannot set ${which} for ${from}`);
+    }
+  }
   public getVariableFrom(
     which: ConfigParams | string | null,
     from: ConfigParts | string,
