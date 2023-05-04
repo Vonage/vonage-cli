@@ -32,11 +32,11 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
     this.debug(`Checking if ${checkFile} exists`);
     if (!pathExists(checkFile)) {
       this.log(
-        `You need to run ${chalk.green('vonage config:setup')}${
+        `You need to run "${chalk.green('vonage config:setup')}${
           global ? chalk.green(' --global') : ''
-        } before setting a value`,
+        }" before you can set a value`,
       );
-      this.exit(1);
+      process.exit(1);
       return;
     }
 
@@ -55,8 +55,8 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
 
     this.log(
       result
-        ? 'Config file saved! ✅'
-        : chalk.bold.red('Config file not saved ❌'),
+        ? 'Config file updated! ✅'
+        : chalk.bold.red('Config file not updated ❌'),
     );
   }
 }
