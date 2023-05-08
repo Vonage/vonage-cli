@@ -1,7 +1,7 @@
 import { ConfigData } from '../types/index';
 import { readFileSync, existsSync } from 'fs';
 import debug from 'debug';
-import { updateConfigData, defaultConfig }  from './update';
+import { updateConfigData, defaultConfig } from './update';
 
 const log = debug('vonage:cli:config:loader');
 

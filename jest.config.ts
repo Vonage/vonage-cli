@@ -15,7 +15,7 @@ const config: Config.InitialOptions = {
       ],
       preset: 'ts-jest',
       displayName: 'CORE',
-      testMatch: ['<rootDir>/packages/core/__tests__/**/*.test.ts'],
+      testMatch: ['<rootDir>/packages/cli-core/__tests__/**/*.test.ts'],
     },
   ],
   moduleNameMapper: {
