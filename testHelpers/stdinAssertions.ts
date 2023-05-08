@@ -6,6 +6,7 @@ export type InputExpectation = {
   type: 'confirm' | 'prompt'
   called: boolean
 }
+import stripAnsi from 'strip-ansi';
 
 let inputs: Array<InputExpectation> = [];
 let inputCount = 0;
@@ -15,7 +16,9 @@ jest.mock('@oclif/core', () => {
   const testInput = (question: string, expectedType: 'confirm' | 'prompt') => {
     const inputIndex = inputs.findIndex(
       ({ message, called, type }) =>
-        !called && type == expectedType && message === question,
+        !called
+        && type == expectedType
+        && stripAnsi(message) === stripAnsi(question),
     );
 
     if (inputIndex < 0) {

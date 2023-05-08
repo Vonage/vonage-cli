@@ -1,29 +1,17 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env node
 
-/* eslint-disable node/shebang */
+const oclif = require('@oclif/core')
 
-import oclif from '@oclif/core'
-import path from 'node:path'
-import url from 'node:url'
-// eslint-disable-next-line node/no-unpublished-import
-import { register } from 'ts-node'
+const path = require('path')
+const project = path.join(__dirname, '..', 'tsconfig.json')
 
 // In dev mode -> use ts-node and dev plugins
 process.env.NODE_ENV = 'development'
 
-register({
-    project: path.join(
-        path.dirname(url.fileURLToPath(import.meta.url)),
-        '..',
-        'tsconfig.json'
-    ),
-})
+require('ts-node').register({ project })
 
 // In dev mode, always show stack traces
 oclif.settings.debug = true
 
 // Start the CLI
-oclif
-    .run(process.argv.slice(2), import.meta.url)
-    .then(oclif.flush)
-    .catch(oclif.Errors.handle)
+oclif.run().then(oclif.flush).catch(oclif.Errors.handle)

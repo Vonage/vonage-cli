@@ -1,21 +1,36 @@
 import type { Config } from '@jest/types';
 
+const projectDefault = {
+  setupFilesAfterEnv: [
+    '<rootDir>/testHelpers/stdoutAssertions.ts',
+    '<rootDir>/testHelpers/stdinAssertions.ts',
+  ],
+  preset: 'ts-jest',
+};
 const config: Config.InitialOptions = {
   coverageDirectory: '<rootDir>/coverage/',
   coveragePathIgnorePatterns: [
     'node_modules',
-    '<rootDir>/packages/**/__tests__',
+    '<rootDir>/testHelpers/*',
     '<rootDir>/packages/cli/bin',
   ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: -10,
+    },
+  },
   projects: [
     {
-      setupFilesAfterEnv: [
-        '<rootDir>/testHelpers/stdoutAssertions.ts',
-        '<rootDir>/testHelpers/stdinAssertions.ts',
-      ],
-      preset: 'ts-jest',
+      ...projectDefault,
       displayName: 'CORE',
       testMatch: ['<rootDir>/packages/cli-core/__tests__/**/*.test.ts'],
+      coveragePathIgnorePatterns: [
+        'node_modules',
+        '<rootDir>/packages/cli-core/__tests__',
+      ],
     },
   ],
   moduleNameMapper: {

@@ -1,61 +1,66 @@
 import chalk from 'chalk';
-import debug from 'debug';
 
-const log = debug('vonage:cli:ux');
+const flags = { truncate: true };
 
-export const objectDump = (data: unknown, indent = 2): Array<string> =>
-  Object.entries(data)
-    .map(([key, value]) => {
-      const varType = Array.isArray(value) ? 'array' : typeof value;
+const dumpObject = (data: unknown, indent = 2): string =>
+  [
+    `${' '.repeat(indent - 2)}${chalk.yellow('{')}`,
+    ...Object.entries(data).map(([key, value]) => {
       if (value === undefined || value === null) {
         return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpValue(value)}`;
       }
 
+      const varType = Array.isArray(value) ? 'array' : typeof value;
       switch (varType) {
       case 'object':
-        log('recurision');
-        return [
-          `${' '.repeat(indent)}${dumpKey(key)}: ${chalk.yellow('{')}`,
-          objectDump(value, indent + 2),
-          `${' '.repeat(indent)}${chalk.yellow('}')}`,
-        ];
+        return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpObject(
+          value,
+          indent + 2,
+        ).trimStart()}`;
 
       case 'array':
-        log('array');
-        return [
-          `${' '.repeat(indent)}${dumpKey(key)}: ${chalk.yellow('[')}`,
-          ...dumpArray(value, indent + 2),
-          `${' '.repeat(indent)}${chalk.yellow(']')}`,
-        ];
+        return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpArray(
+          value,
+          indent + 2,
+        ).trimStart()}`;
 
       default:
-        log('normal');
-        return `${' '.repeat(indent)}${dumpKey(key)}: "${dumpValue(value)}"`;
+        return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpValue(value)}`;
       }
-    })
-    .flat();
+    }),
+    `${' '.repeat(indent - 2)}${chalk.yellow('}')}`,
+  ].join('\n');
 
-export const dumpArray = (data: Array<unknown>, indent = 2) =>
-  data.map((value) => {
-    const varType = Array.isArray(value) ? 'array' : typeof value;
-    switch (varType) {
-    case 'object':
-      return [
-        `${' '.repeat(indent)}${chalk.yellow('{')}`,
-        objectDump(value, indent + 2),
-        `${' '.repeat(indent)}${chalk.yellow('}')}`,
-      ].join('\n');
-    case 'array':
-      return [
-        `${' '.repeat(indent)}${chalk.yellow('[')}`,
-        dumpArray(value as Array<unknown>, indent + 2).join('\n'),
-        `${' '.repeat(indent)}${chalk.yellow(']')}`,
-      ].join('\n');
+const dumpArray = (data: Array<unknown>, indent = 2): string =>
+  [
+    `${' '.repeat(indent - 2)}${chalk.yellow('[')}`,
+    ...data.map((value) => {
+      if (value === undefined || value === null) {
+        return `${' '.repeat(indent)}${dumpValue(value)}`;
+      }
 
-    default:
-      return `${' '.repeat(indent)}"${dumpValue(value)}"`;
-    }
-  });
+      const varType = Array.isArray(value) ? 'array' : typeof value;
+      switch (varType) {
+      case 'object':
+        return `${' '.repeat(indent)}${dumpObject(
+          value,
+          indent + 2,
+        ).trimStart()}`;
+
+      case 'array':
+        return `${' '.repeat(indent)}${dumpArray(
+            value as Array<unknown>,
+            indent + 2,
+        ).trimStart()}`;
+
+      default:
+        return `${' '.repeat(indent)}${dumpValue(value)}`;
+      }
+    }),
+    `${' '.repeat(indent - 2)}${chalk.yellow(']')}`,
+  ].join('\n');
+
+const dumpKey = (key: string): string => `${chalk.bold(key)}`;
 
 export const dumpValue = (
   value: Array<unknown> | string | number | unknown,
@@ -63,45 +68,27 @@ export const dumpValue = (
   const varType = Array.isArray(value) ? 'array' : typeof value;
 
   if (value === undefined || value === null) {
-    log('Value not set');
     return `${chalk.dim.yellow('Not Set')}`;
   }
 
   switch (varType) {
   case 'number':
-    log('Dumping number');
     return `${chalk.dim(value)}`;
-
-  case 'string':
-    log('Dumping string');
-    return `${chalk.blue(value)}`;
 
   case 'array':
     return dumpArray(value as Array<unknown>);
-  case 'object':
-    log('Dumping object');
-    return outputColorJson(value);
 
+  case 'object':
+    return dumpObject(value);
+
+  case 'string':
+    // falls through
   default:
-    log('Just dumping');
     return `${chalk.blue(value)}`;
   }
 };
 
-export const dumpKey = (key: string): string => `"${chalk.bold(key)}"`;
-
-export const outputColorJson = (data: unknown): string =>
-  [chalk.yellow('{'), ...objectDump(data).flat(), chalk.yellow('}')].join('\n');
-
-export default (flags) => ({
-  dumpKey,
-  dumpArray,
-  dumpValue,
-  outputColorJson,
-  truncate: (value: string, length = 25): string => {
-    return flags.truncate && `${value}`.length > length
-      ? value.substring(0, length) + chalk.dim(' ...truncated')
-      : dumpValue(value);
-  },
-  objectDump,
-});
+export const truncateString = (value: string, length = 25): string =>
+  flags.truncate && `${value}`.length > length
+    ? dumpValue(value.substring(0, length)) + chalk.dim(' ...value truncated')
+    : dumpValue(value);

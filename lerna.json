@@ -1,15 +1,15 @@
 {
-    "packages": [
-        "packages/*"
-    ],
-    "version": "independent",
-    "useWorkspaces": true,
-    "publishConfig": {
-        "directory": "dist"
-    },
-    "command": {
-        "version": {
-            "message": "release: publish %s"
-        }
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "useWorkspaces": true,
+  "publishConfig": {
+    "directory": "dist"
+  },
+  "command": {
+    "version": {
+      "message": "release: publish %s"
     }
+  }
 }

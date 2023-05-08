@@ -1,6 +1,6 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { VonageConfig } from './vonageConfig';
-import ux from './ux';
+import * as ux from './ux';
 
 export type VonageFlags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof VonageCommand)['baseFlags'] & T['flags']
@@ -47,7 +47,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
 
   protected args!: VonageArgs<T>;
 
-  protected ux;
+  protected ux = ux;
 
   public async init(): Promise<void> {
     await super.init();
@@ -60,6 +60,5 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     this.flags = flags as VonageFlags<T>;
     this.args = args as VonageArgs<T>;
     this.vonageConfig = new VonageConfig(this.config.configDir, this.flags);
-    this.ux = ux(this.flags);
   }
 }

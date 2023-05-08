@@ -51,7 +51,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   protected truncatePrivateKey(privateKey: string): string {
     return existsSync(privateKey)
       ? privateKey
-      : this.ux.dumpValue(this.ux.truncate(privateKey));
+      : this.ux.dumpValue(this.ux.truncateString(privateKey));
   }
 
   protected dumpConfig(from: ConfigParts | null = null): void {

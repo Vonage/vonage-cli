@@ -1,9 +1,7 @@
 import { diff } from 'jest-diff';
 import { expect } from '@jest/globals';
 import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
-
-// disable colors for chalk
-process.env.FORCE_COLOR = '0';
+import stripAnsi from 'strip-ansi';
 
 // Set these here to ensure calls to API will fail
 process.env.VONAGE_API_KEY = 'env-key';
@@ -27,7 +25,7 @@ beforeEach(() => {
   jest.spyOn(process.stdout, 'write').mockImplementation(
     (val: string): boolean =>
       // Record each line of stdout to allow checking lines
-      !!stdout.push(`${val}`.trim()),
+      !!stdout.push(`${stripAnsi(val)}`.trim()),
   );
 });
 

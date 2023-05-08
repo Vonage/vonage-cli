@@ -38,7 +38,8 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@types/chalk": "^2.2.0"
+    "@types/chalk": "^2.2.0",
+    "expect-type": "^0.15.0"
   },
   "oclif": {
     "commands": "./dist/commands",
