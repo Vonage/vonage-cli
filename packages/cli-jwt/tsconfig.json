@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json",
+
+  "compilerOptions": {
+    "rootDir": "lib",
+    "outDir": "dist"
+  },
+
+  "includes": [
+    "bin"
+  ],
+
+  "exclude": [
+    "dist",
+    "__tests__"
+  ],
+
+  "references": [
+    { "path": "../cli-core" }
+  ],
+
+  "ts-node": {
+    "esm": true
+  }
+}

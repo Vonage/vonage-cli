@@ -7,6 +7,7 @@ const projectDefault = {
   ],
   preset: 'ts-jest',
 };
+
 const config: Config.InitialOptions = {
   coverageDirectory: '<rootDir>/coverage/',
   coveragePathIgnorePatterns: [
@@ -28,8 +29,19 @@ const config: Config.InitialOptions = {
       displayName: 'CORE',
       testMatch: ['<rootDir>/packages/cli-core/__tests__/**/*.test.ts'],
       coveragePathIgnorePatterns: [
+        'dist',
         'node_modules',
         '<rootDir>/packages/cli-core/__tests__',
+      ],
+    },
+    {
+      ...projectDefault,
+      displayName: 'JWT',
+      testMatch: ['<rootDir>/packages/cli-jwt/__tests__/**/*.test.ts'],
+      coveragePathIgnorePatterns: [
+        'dist',
+        'node_modules',
+        '<rootDir>/packages/cli-jwt/__tests__',
       ],
     },
   ],
