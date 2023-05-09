@@ -30,6 +30,7 @@
     "@oclif/plugin-help": "^5.2.8",
     "@oclif/plugin-not-found": "^2.3.22",
     "@vonage/cli-core": "^2.0.0",
+    "@vonage/cli-jwt": "^2.0.0",
     "ts-node": "^10.9.1"
   },
   "engines": {
@@ -41,7 +42,8 @@
       "@oclif/plugin-not-found",
       "@oclif/plugin-help",
       "@oclif/plugin-not-found",
-      "@vonage/cli-core"
+      "@vonage/cli-core",
+      "@vonage/cli-jwt"
     ]
   }
 }
