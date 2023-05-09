@@ -8,11 +8,11 @@ import { dumpValue } from './ux';
 
 const log = debug('vonage:cli:fs');
 
-export const loadFile = (file: string): string => {
+export const loadFile = (file: string): string | null => {
   log(`Loading file ${file}`);
   if (!pathExists(file)) {
     log(`${file} does not exist`);
-    return '';
+    return null;
   }
 
   const fileContents = readFileSync(file).toString();

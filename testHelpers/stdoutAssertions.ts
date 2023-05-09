@@ -3,6 +3,8 @@ import { expect } from '@jest/globals';
 import { printReceived, printExpected, matcherHint } from 'jest-matcher-utils';
 import stripAnsi from 'strip-ansi';
 
+export const keyFile = `${__dirname}/private.test.key`;
+
 // Set these here to ensure calls to API will fail
 process.env.VONAGE_API_KEY = 'env-key';
 process.env.VONAGE_API_SECRET = 'env-secret';
@@ -37,7 +39,7 @@ afterEach(() => {
   process.env.VONAGE_APPLICATION_ID = 'env-app-id';
 });
 
-const getStdOutLine = (lineNumber: number): string => {
+export const getStdOutLine = (lineNumber: number): string => {
   if (lineNumber < 1) {
     throw new Error(
       `Line number ${printReceived(
@@ -141,7 +143,7 @@ expect.extend({
     }
 
     const pass = stdout.join('\n') === actual.join('\n');
-    const diffString = diff(stdout, actual, { expand: true });
+    const diffString = diff(actual, stdout, { expand: true });
 
     return {
       message: (): string =>

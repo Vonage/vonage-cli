@@ -2,6 +2,7 @@ import { Command, Flags, Interfaces } from '@oclif/core';
 import { VonageConfig } from './vonageConfig';
 import { ConfigEnv } from './enums/index';
 import * as ux from './ux';
+import * as fs from './fs';
 import chalk from 'chalk';
 import {
   MissingApplicationIdError,
@@ -59,6 +60,8 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
 
   protected ux = ux;
 
+  protected fs = fs;
+
   public async init(): Promise<void> {
     await super.init();
     const { args, flags } = await this.parse({
@@ -72,6 +75,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     this.vonageConfig = new VonageConfig(this.config.configDir, this.flags);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected async catch(err: Error & { exitCode?: number }): Promise<any> {
     switch (err.constructor.name) {
     case InvalidPrivateKeyError.name:
@@ -82,7 +86,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
       this.log(
         `${chalk.bold(
           'Note:',
-        )} The private key can be a path the file or the value of the private key`,
+        )} The private key can be a path to the file or the value of the private key`,
       );
       return;
 
@@ -91,7 +95,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
       this.log(
         `${chalk.bold(
           'Note:',
-        )} The private key can be a path the file or the value of the private key`,
+        )} The private key can be a path to the file or the value of the private key`,
       );
       this.log('');
       this.log('To fix this error you can:');
@@ -99,7 +103,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
         `1. Run ${chalk.green('vonage config:set private-key <value>')}`,
       );
       this.log(
-        `2. Run this command again and Pass in the private key using ${chalk.green(
+        `2. Run this command again and pass in the private key using ${chalk.green(
           '--private-key=<value>',
         )}`,
       );
@@ -136,7 +140,7 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
       return;
 
     default:
-      this.log('An error occurred!');
+      this.log(`An error occurred: ${err.message}`);
       this.log('');
     }
 
