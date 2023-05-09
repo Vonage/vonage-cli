@@ -42,6 +42,11 @@ export const defaultConfig = {
   [ConfigParams.APPLICATION_ID]: null,
 };
 
+export const defaultConfigWithSchema = {
+  ...defaultConfig,
+  CONFIG_SCHEMA_VERSION: '2023-03-30',
+};
+
 export const updateConfigData = (data: Versions): ConfigData => {
   const dataVersion = data.CONFIG_SCHEMA_VERSION || 0;
   log(`Data version is ${dataVersion}`);

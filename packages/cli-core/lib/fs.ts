@@ -1,5 +1,5 @@
 /* istanbul ignore file: Mocking the filesystem is not fun  */
-import { mkdirSync, writeFileSync, existsSync } from 'fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'fs';
 import { ux } from '@oclif/core';
 import { parse } from 'path';
 import debug from 'debug';
@@ -7,6 +7,18 @@ import chalk from 'chalk';
 import { dumpValue } from './ux';
 
 const log = debug('vonage:cli:fs');
+
+export const loadFile = (file: string): string => {
+  log(`Loading file ${file}`);
+  if (!pathExists(file)) {
+    log(`${file} does not exist`);
+    return '';
+  }
+
+  const fileContents = readFileSync(file).toString();
+  log(`Contents of ${file}: `, fileContents);
+  return fileContents;
+};
 
 export const pathExists = (path: string) => {
   log(`Checking if ${path} exists`);
