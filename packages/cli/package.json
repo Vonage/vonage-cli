@@ -10,9 +10,10 @@
   "repository": "Vonage/vonage-cli",
   "license": "Apache 2.0",
   "author": "Vonage Dev Rel <devrel@vonage.com>",
+  "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "vonage": "./bin/run.js"
+    "vonage": "./bin/run.mjs"
   },
   "files": [
     "bin",
