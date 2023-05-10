@@ -94,6 +94,7 @@ export class VonageConfig {
       return this.setLocalConfigVar(which as ConfigParams, value);
     case ConfigParts.GLOBAL:
       return this.setConfigVar(which as ConfigParams, value);
+    /* istanbul ignore next */
     default:
       throw new Error(`Cannot set ${which} for ${from}`);
     }

@@ -39,7 +39,7 @@
   "oclif": {
     "commands": "./dist/commands",
     "topics": {
-      "config": {
+      "jwt": {
         "description": "Vonage JWT commands"
       }
     }

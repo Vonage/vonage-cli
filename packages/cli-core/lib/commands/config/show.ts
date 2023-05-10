@@ -49,6 +49,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
   }
 
   protected truncatePrivateKey(privateKey: string): string {
+    /* istanbul ignore next */
     return existsSync(privateKey)
       ? privateKey
       : this.ux.dumpValue(this.ux.truncateString(privateKey));

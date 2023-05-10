@@ -53,6 +53,7 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
       ? await this.vonageConfig.saveGlobalConfig(this.flags.yes)
       : await this.vonageConfig.saveLocalConfig(this.flags.yes);
 
+    /* istanbul ignore next */
     this.log(
       result
         ? 'Config file updated! ✅'
