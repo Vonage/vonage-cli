@@ -1,6 +1,6 @@
 {
   "name": "@vonage/cli",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "CLI to interact with Vonage APIs",
   "keywords": [
     "vonage"
@@ -13,7 +13,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "vonage": "./bin/run.mjs"
+    "vonage": "./bin/run.js"
   },
   "files": [
     "bin",
