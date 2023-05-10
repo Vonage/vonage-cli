@@ -1,1 +1,1 @@
-ignores: ['@oclif/plugin-commands', '@oclif/plugin-help', '@oclif/plugin-not-found', '@vonage/cli-core', '@vonage/cli-jwt']
+ignores: ['@oclif/plugin-*', '@vonage/cli-*' ]

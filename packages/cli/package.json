@@ -22,13 +22,16 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
-    "compile": "npx tsc --build --verbose"
+    "compile": "npx tsc --build --verbose",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@oclif/core": "^2.7.1",
-    "@oclif/plugin-commands": "^2.2.12",
-    "@oclif/plugin-help": "^5.2.8",
-    "@oclif/plugin-not-found": "^2.3.22",
+    "@oclif/core": "^2.8.5",
+    "@oclif/plugin-autocomplete": "^2.2.0",
+    "@oclif/plugin-commands": "^2.2.15",
+    "@oclif/plugin-help": "^5.2.9",
+    "@oclif/plugin-not-found": "^2.3.23",
+    "@oclif/plugin-which": "^2.2.20",
     "@vonage/cli-core": "^2.0.0",
     "@vonage/cli-jwt": "^2.0.0",
     "ts-node": "^10.9.1"
@@ -41,7 +44,9 @@
     "plugins": [
       "@oclif/plugin-not-found",
       "@oclif/plugin-help",
-      "@oclif/plugin-not-found",
+      "@oclif/plugin-commands",
+      "@oclif/plugin-autocomplete",
+      "@oclif/plugin-which",
       "@vonage/cli-core",
       "@vonage/cli-jwt"
     ]

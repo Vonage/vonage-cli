@@ -1,7 +1,6 @@
 import { Flags } from '@oclif/core';
 import { ConfigParams, VonageCommand } from '@vonage/cli-core';
 import { tokenGenerate } from '@vonage/jwt';
-
 type JwtOptions = {
   sub?: string
   acl?: string
@@ -25,7 +24,7 @@ export default class JWTCommand extends VonageCommand<typeof JWTCommand> {
     }),
     exp: Flags.integer({
       summary: 'Time to expire the token (defaults to 24 hours)',
-      description: `"Expiration time" This is the time in the future that the JWT will expire, in unix epoch time.`,
+      description: `"Expiration time" This is the time in the future that the JWT will expire, as a unix timestamp.`,
     }),
   };
 

@@ -1,11 +1,17 @@
 import type { Config } from '@jest/types';
 
 const projectDefault = {
+  testEnvironment: 'node',
   setupFilesAfterEnv: [
     '<rootDir>/testHelpers/stdoutAssertions.ts',
     '<rootDir>/testHelpers/stdinAssertions.ts',
   ],
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/js-with-ts',
+  moduleNameMapper: {
+    // We have to be explict for each path so it does not interfere with the SDK
+    '@vonage/cli-core': '<rootDir>/packages/cli-core/lib',
+    '@vonage/cli-(.+)': '<rootDir>/packages/cli-$1/lib',
+  },
 };
 
 const config: Config.InitialOptions = {
@@ -22,6 +28,14 @@ const config: Config.InitialOptions = {
       lines: 80,
       statements: -10,
     },
+  },
+  transform: {
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        // ts-jest configuration goes here
+      },
+    ],
   },
   projects: [
     {
@@ -45,9 +59,6 @@ const config: Config.InitialOptions = {
       ],
     },
   ],
-  moduleNameMapper: {
-    '@vonage/(.+)': '<rootDir>/packages/$1/lib',
-  },
 };
 
 export default config;

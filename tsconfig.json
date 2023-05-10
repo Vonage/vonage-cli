@@ -7,9 +7,17 @@
     "isolatedModules": true,
     "skipLibCheck": true,
     "noEmit": false,
+    "declaration": true,
     "composite": true,
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@vonage/cli-*": [
+        "packages/cli-*/lib"
+      ]
+    }
   },
 
   "includes": [

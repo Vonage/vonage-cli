@@ -7,7 +7,7 @@
   },
 
   "includes": [
-    "bin"
+    "lib"
   ],
 
   "exclude": [

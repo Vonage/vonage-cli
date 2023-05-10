@@ -24,7 +24,8 @@
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
-    "compile": "npx tsc --build --verbose"
+    "compile": "npx tsc --build --verbose",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@oclif/core": "^2.8.5",
