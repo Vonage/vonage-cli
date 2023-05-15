@@ -5,30 +5,33 @@ import { parse } from 'path';
 import debug from 'debug';
 import chalk from 'chalk';
 import { dumpValue } from './ux';
+import { normalize } from 'path';
 
 const log = debug('vonage:cli:fs');
 
 export const loadFile = (file: string): string | null => {
+  const normalFile = normalize(file);
   log(`Loading file ${file}`);
-  if (!pathExists(file)) {
+  if (!pathExists(normalFile)) {
     log(`${file} does not exist`);
     return null;
   }
 
-  const fileContents = readFileSync(file).toString();
-  log(`Contents of ${file}: `, fileContents);
+  const fileContents = readFileSync(normalFile).toString();
+  log(`Contents of ${normalFile}: `, fileContents);
   return fileContents;
 };
 
 export const pathExists = (path: string) => {
-  log(`Checking if ${path} exists`);
+  const normalPath = normalize(path);
+  log(`Checking if ${normalPath} exists`);
 
-  if (existsSync(path)) {
-    log(`${path} exists`);
+  if (existsSync(normalPath)) {
+    log(`${normalPath} exists`);
     return true;
   }
 
-  log(`${path} does not exist`);
+  log(`${normalPath} does not exist`);
   return false;
 };
 
@@ -75,8 +78,10 @@ export const saveFile = async (
   data: string | unknown,
   force = false,
 ): Promise<boolean> => {
-  log(`Saiving file ${file}. Forcing? ${force}`);
-  const fileExistsWarning = pathExists(file)
+  const normalFile = normalize(file);
+
+  log(`Saiving file ${normalFile}. Forcing? ${force}`);
+  const fileExistsWarning = pathExists(normalFile)
     ? chalk.yellow('This will overwrite the file')
     : chalk.yellow('This will create the file');
 
