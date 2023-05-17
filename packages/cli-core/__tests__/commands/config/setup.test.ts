@@ -6,11 +6,15 @@ import * as stdin from '../../../../../testHelpers/stdinAssertions'
 import SetupConfig from '../../../lib/commands/config/setup';
 import { makeDirectory, saveFile, pathExists } from '../../../lib/fs';
 import { ConfigParams } from '../../../lib/enums';
+import { normalize } from 'path';
 
-const globalConfigDir = `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`;
-const globalConfigFile = `${globalConfigDir}/vonage.config.json`;
-const localConfigDir = process.cwd();
-const localConfigFile = `${localConfigDir}/vonage_app.json`;
+const globalConfigDir = normalize(
+  `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`,
+);
+
+const globalConfigFile = normalize(`${globalConfigDir}/vonage.config.json`);
+const localConfigDir = normalize(process.cwd());
+const localConfigFile = normalize(`${localConfigDir}/vonage_app.json`);
 
 let configFile = {};
 
@@ -21,7 +25,7 @@ jest.mock('../../../lib/fs', () => ({
 }));
 
 jest.mock('../../../lib/config/loader', () => ({
-  loadConfigFile: (file) => configFile[file] || {},
+  loadConfigFile: (file) => configFile[normalize(file)] || {},
 }));
 
 describe('Setup Command', () => {

@@ -1,7 +1,8 @@
 import { ConfigParams } from '../../lib/enums';
+import { normalize } from 'path';
 
 const globalConfig = {
-  [`${process.cwd()}/test/@vonage/cli-core/vonage.config.json`]: {
+  [normalize(`${process.cwd()}/test/@vonage/cli-core/vonage.config.json`)]: {
     [ConfigParams.API_KEY]: 'global-key',
     [ConfigParams.API_SECRET]: 'global-secret',
     [ConfigParams.APPLICATION_ID]: 'global-application',
@@ -10,7 +11,7 @@ const globalConfig = {
 };
 
 const localConfig = {
-  [`${process.cwd()}/vonage_app.json`]: {
+  [normalize(`${process.cwd()}/vonage_app.json`)]: {
     [ConfigParams.API_KEY]: 'local-key',
     [ConfigParams.API_SECRET]: 'local-secret',
     [ConfigParams.APPLICATION_ID]: 'local-application',
