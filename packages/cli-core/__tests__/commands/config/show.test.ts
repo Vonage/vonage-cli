@@ -4,10 +4,11 @@ import { expect } from '@jest/globals';
 import * as custom from '../../../../../testHelpers/stdoutAssertions'
 import ShowConfig from '../../../lib/commands/config/show';
 import testCases from '../../__dataSets__/showCommand';
+import { normalize } from 'path';
 
 let configFile = {};
 jest.mock('../../../lib/config/loader', () => ({
-  loadConfigFile: (file) => configFile[file] || {},
+  loadConfigFile: (file) => configFile[normalize(file)] || {},
 }));
 
 describe('Config Command', () => {

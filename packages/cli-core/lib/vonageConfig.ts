@@ -4,6 +4,7 @@ import debug from 'debug';
 import { loadConfigFile } from './config/loader';
 import { saveFile } from './fs';
 import { LatestVersion } from './config/update';
+import { normalize } from 'path';
 
 const log = debug('vonage:cli:config');
 
@@ -17,8 +18,8 @@ export class VonageConfig {
   public readonly localConfigFile: string;
 
   constructor(configDir: string, flags: Record<string, null | string>) {
-    this.localConfigFile = `${process.cwd()}/vonage_app.json`;
-    this.globalConfigFile = `${configDir}/vonage.config.json`;
+    this.localConfigFile = normalize(`${process.cwd()}/vonage_app.json`);
+    this.globalConfigFile = normalize(`${configDir}/vonage.config.json`);
 
     log(`Vonage local config file ${this.localConfigFile}`);
     log(`Vonage config file ${this.globalConfigFile}`);
@@ -94,7 +95,7 @@ export class VonageConfig {
       return this.setLocalConfigVar(which as ConfigParams, value);
     case ConfigParts.GLOBAL:
       return this.setConfigVar(which as ConfigParams, value);
-    /* istanbul ignore next */
+      /* istanbul ignore next */
     default:
       throw new Error(`Cannot set ${which} for ${from}`);
     }

@@ -1,4 +1,5 @@
 import { ConfigParams } from '../../lib/enums';
+import { normalize } from 'path';
 
 const config = Object.freeze({
   [ConfigParams.API_KEY]: 'api key',
@@ -10,11 +11,13 @@ const config = Object.freeze({
 
 import kebabcase from 'lodash.kebabcase';
 
-const globalConfigDir = `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`;
-const globalConfigFile = `${globalConfigDir}/vonage.config.json`;
+const globalConfigDir = normalize(
+  `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`,
+);
+const globalConfigFile = normalize(`${globalConfigDir}/vonage.config.json`);
 
 const localConfigDir = process.cwd();
-const localConfigFile = `${localConfigDir}/vonage_app.json`;
+const localConfigFile = normalize(`${localConfigDir}/vonage_app.json`);
 
 export default [
   ...Object.values(ConfigParams)
