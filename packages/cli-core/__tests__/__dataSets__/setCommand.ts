@@ -1,5 +1,6 @@
 import { ConfigParams } from '../../lib/enums';
 import { normalize } from 'path';
+import { dumpValue, dumpCommand } from '../../lib/ux';
 
 const config = Object.freeze({
   [ConfigParams.API_KEY]: 'api key',
@@ -37,9 +38,9 @@ export default [
           false,
         ],
         expectedOutput: [
-          `Setting global ${value} to: foo`,
-          `The current setting is: ${config[value]}`,
-          'Config file updated! ✅',
+          [`Setting global ${value} to: foo`],
+          [`The current setting is: ${dumpValue(config[value])}`],
+          ['Config file updated! ✅'],
         ],
       },
       {
@@ -57,9 +58,9 @@ export default [
           false,
         ],
         expectedOutput: [
-          `Setting local ${value} to: foo`,
-          `The current setting is: ${config[value]}`,
-          'Config file updated! ✅',
+          [`Setting local ${value} to: foo`],
+          [`The current setting is: ${dumpValue(config[value])}`],
+          ['Config file updated! ✅'],
         ],
       },
     ])
@@ -72,7 +73,13 @@ export default [
     config: { ...config },
     expectedConfig: false,
     expectedOutput: [
-      'You need to run "vonage config:setup" before you can set a value',
+      [
+        `You need to run ${dumpCommand(
+          'vonage config:setup',
+        )} before you can set a value`,
+      ],
+      [''],
+      ['You can set DEBUG=* for more information'],
     ],
   },
   {
@@ -83,8 +90,13 @@ export default [
     config: { ...config },
     expectedConfig: false,
     expectedOutput: [
-      // eslint-disable-next-line max-len
-      'You need to run "vonage config:setup --global" before you can set a value',
+      [
+        `You need to run ${dumpCommand(
+          'vonage config:setup --global',
+        )} before you can set a value`,
+      ],
+      [''],
+      ['You can set DEBUG=* for more information'],
     ],
   },
 ];

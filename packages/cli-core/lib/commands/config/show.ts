@@ -52,7 +52,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
     /* istanbul ignore next */
     return existsSync(privateKey)
       ? privateKey
-      : this.ux.dumpValue(this.ux.truncateString(privateKey));
+      : this.ux.truncateString(privateKey);
   }
 
   protected dumpConfig(from: ConfigParts | null = null): void {
@@ -101,6 +101,7 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
           this.truncatePrivateKey(
             this.vonageConfig.getVariableFrom(ConfigParams.PRIVATE_KEY, from),
           ),
+          true,
         ),
       );
     }
@@ -111,13 +112,14 @@ export default class ShowConfig extends VonageCommand<typeof ShowConfig> {
     setting: ConfigParams,
     part: ConfigParts | null,
     value: string | null,
+    noColor = false,
   ): string {
     return (
       chalk.bold(
         `The ${part ? `${part} ` : ''}${DisplayedSetting[setting]} is`,
       )
       + ': '
-      + this.ux.dumpValue(value)
+      + (noColor ? value : this.ux.dumpValue(value))
     );
   }
 }

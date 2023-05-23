@@ -1,12 +1,14 @@
+import { ux } from '@oclif/core';
 import { expect } from '@jest/globals';
 import { loadFile, loadJSON, saveFile } from '../lib/fs';
-import { ux } from '@oclif/core';
 import { dumpValue } from '../lib/ux';
 import { readFile, dirExists, writeFile, createDir } from '../lib/fsUtils';
 import chalk from 'chalk';
+import { asMock } from '../../../testHelpers/helpers';
 
 jest.mock('@oclif/core', () => ({
   __esModule: true,
+  ...jest.requireActual('@oclif/core'),
   ux: {
     log: jest.fn(),
     confirm: jest.fn(),
@@ -20,11 +22,6 @@ jest.mock('../lib/fsUtils', () => ({
   writeFile: jest.fn(),
   createDir: jest.fn(),
 }));
-
-type MockableFunction = (...args: any[]) => any
-
-const asMock = <Func extends MockableFunction>(mockedFunc: Func) =>
-  mockedFunc as jest.MockedFunction<typeof mockedFunc>;
 
 const mockReadFile = asMock(readFile);
 const mockDirExists = asMock(dirExists);

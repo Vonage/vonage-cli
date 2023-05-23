@@ -2,10 +2,7 @@ import type { Config } from '@jest/types';
 
 const projectDefault = {
   testEnvironment: 'node',
-  setupFilesAfterEnv: [
-    '<rootDir>/testHelpers/stdoutAssertions.ts',
-    '<rootDir>/testHelpers/stdinAssertions.ts',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/testHelpers/helpers.ts'],
   preset: 'ts-jest/presets/js-with-ts',
   moduleNameMapper: {
     // We have to be explict for each path so it does not interfere with the SDK
@@ -30,12 +27,7 @@ const config: Config.InitialOptions = {
     },
   },
   transform: {
-    '^.+\\.[tj]sx?$': [
-      'ts-jest',
-      {
-        // ts-jest configuration goes here
-      },
-    ],
+    '^.+\\.[tj]sx?$': ['ts-jest', {}],
   },
   projects: [
     {

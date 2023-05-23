@@ -4,8 +4,8 @@ import kebabcase from 'lodash.kebabcase';
 import snakecase from 'lodash.snakecase';
 import { ConfigParams } from '../../enums/index';
 import { pathExists } from '../../fs';
-
 import chalk from 'chalk';
+import { ConfigFileMissing } from '../../config/error';
 
 export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
   static summary = 'Set config variable';
@@ -24,6 +24,7 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
   };
 
   public async run(): Promise<void> {
+    super.run();
     const { global } = this.flags;
     const checkFile = global
       ? this.vonageConfig.globalConfigFile
@@ -31,13 +32,7 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
 
     this.debug(`Checking if ${checkFile} exists`);
     if (!pathExists(checkFile)) {
-      this.log(
-        `You need to run "${chalk.green('vonage config:setup')}${
-          global ? chalk.green(' --global') : ''
-        }" before you can set a value`,
-      );
-      process.exit(1);
-      return;
+      throw new ConfigFileMissing();
     }
 
     const { setting, value } = this.args;
