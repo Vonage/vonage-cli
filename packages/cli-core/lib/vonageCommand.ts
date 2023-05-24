@@ -1,15 +1,8 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
 import { VonageConfig } from './vonageConfig';
-import { ConfigEnv } from './enums/index';
+import { commonErrors } from './errorHelp';
 import * as ux from './ux';
 import * as fs from './fs';
-import chalk from 'chalk';
-import {
-  MissingApplicationIdError,
-  MissingPrivateKeyError,
-  InvalidApplicationIdError,
-  InvalidPrivateKeyError,
-} from '@vonage/jwt';
 
 export type VonageFlags<T extends typeof Command> = Interfaces.InferredFlags<
   (typeof VonageCommand)['baseFlags'] & T['flags']
@@ -52,6 +45,8 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     }),
   };
 
+  protected errors: Record<string, Array<string>>;
+
   protected vonageConfig: VonageConfig;
 
   protected flags!: VonageFlags<T>;
@@ -75,76 +70,20 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
     this.vonageConfig = new VonageConfig(this.config.configDir, this.flags);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected async catch(err: Error & { exitCode?: number }): Promise<any> {
-    switch (err.constructor.name) {
-    case InvalidPrivateKeyError.name:
-      this.log('The private key is invalid!');
-      this.log(
-        `Check that you have the correcte private key and run this command again`,
-      );
-      this.log(
-        `${chalk.bold(
-          'Note:',
-        )} The private key can be a path to the file or the value of the private key`,
-      );
-      return;
+  protected async catch(err: Error & { exitCode?: number }): Promise<void> {
+    const messages = {
+      ...commonErrors,
+      ...this.errors,
+    }[err.constructor.name] || [`An error occurred: ${err.message}`];
 
-    case MissingPrivateKeyError.name:
-      this.log('You do not have the private key set!');
-      this.log(
-        `${chalk.bold(
-          'Note:',
-        )} The private key can be a path to the file or the value of the private key`,
-      );
-      this.log('');
-      this.log('To fix this error you can:');
-      this.log(
-        `1. Run ${chalk.green('vonage config:set private-key <value>')}`,
-      );
-      this.log(
-        `2. Run this command again and pass in the private key using ${chalk.green(
-          '--private-key=<value>',
-        )}`,
-      );
-      this.log(
-        `3. Set the ${chalk.green(
-          ConfigEnv.PRIVATE_KEY,
-        )} environment variable`,
-      );
-      return;
+    messages.forEach(
+      function (msg: string) {
+        this.log(msg);
+      }.bind(this),
+    );
 
-    case MissingApplicationIdError.name:
-      this.log('You do not have an application id set!');
-      this.log('');
-      this.log('To fix this error you can:');
-      this.log(
-        `1. Run ${chalk.green('vonage config:set application-id <value>')}`,
-      );
-      this.log(
-        `2. Run this command again and pass in the application id using ${chalk.green(
-          '--application-id=<value>',
-        )}`,
-      );
-      this.log(
-        `3. Set the ${chalk.green(
-          ConfigEnv.APPLICATION_ID,
-        )} environment variable`,
-      );
-      return;
-
-    case InvalidApplicationIdError.name:
-      this.log('The application id is invalid!');
-      this.log('');
-      this.log('Check that you have the correct application id and try again');
-      return;
-
-    default:
-      this.log(`An error occurred: ${err.message}`);
-      this.log('');
-    }
+    this.log('');
 
     this.log('You can set DEBUG=* for more information');
-    return super.catch(err);
   }
 }

@@ -1,5 +1,7 @@
 import { ConfigParams } from '../../lib/enums';
 import { normalize } from 'path';
+import { dumpValue } from '../../lib/ux';
+import chalk from 'chalk';
 
 const globalConfig = {
   [normalize(`${process.cwd()}/test/@vonage/cli-core/vonage.config.json`)]: {
@@ -20,66 +22,103 @@ const localConfig = {
 };
 
 const globalSet = [
-  'The global API key is: global-key',
-  'The global API secret is: global-secret',
-  'The global application ID is: global-application',
-  'The global private key is: global-private-key',
-  '',
+  [`${chalk.bold('The global API key is')}: ${dumpValue('global-key')}`],
+  [`${chalk.bold('The global API secret is')}: ${dumpValue('global-secret')}`],
+  [
+    `${chalk.bold('The global application ID is')}: ${dumpValue(
+      'global-application',
+    )}`,
+  ],
+  [
+    `${chalk.bold('The global private key is')}: ${dumpValue(
+      'global-private-key',
+    )}`,
+  ],
+  [''],
 ];
 
 const globalNotSet = [
-  'The global API key is: Not Set',
-  'The global API secret is: Not Set',
-  'The global application ID is: Not Set',
-  'The global private key is: Not Set',
-  '',
+  [`${chalk.bold('The global API key is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The global API secret is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The global application ID is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The global private key is')}: ${dumpValue(null)}`],
+  [''],
 ];
 
 const localSet = [
-  'The local API key is: local-key',
-  'The local API secret is: local-secret',
-  'The local application ID is: local-application',
-  'The local private key is: local-private-key',
-  '',
+  [`${chalk.bold('The local API key is')}: ${dumpValue('local-key')}`],
+  [`${chalk.bold('The local API secret is')}: ${dumpValue('local-secret')}`],
+  [
+    `${chalk.bold('The local application ID is')}: ${dumpValue(
+      'local-application',
+    )}`,
+  ],
+  [
+    `${chalk.bold('The local private key is')}: ${dumpValue(
+      'local-private-key',
+    )}`,
+  ],
+  [''],
 ];
+
 const localNotSet = [
-  'The local API key is: Not Set',
-  'The local API secret is: Not Set',
-  'The local application ID is: Not Set',
-  'The local private key is: Not Set',
-  '',
+  [`${chalk.bold('The local API key is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The local API secret is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The local application ID is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The local private key is')}: ${dumpValue(null)}`],
+  [''],
 ];
 
 const envSet = [
-  'The environment API key is: env-key',
-  'The environment API secret is: env-secret',
-  'The environment application ID is: env-app-id',
-  'The environment private key is: env-private-key',
-  '',
+  [`${chalk.bold('The environment API key is')}: ${dumpValue('env-key')}`],
+  [
+    `${chalk.bold('The environment API secret is')}: ${dumpValue(
+      'env-secret',
+    )}`,
+  ],
+  [
+    `${chalk.bold('The environment application ID is')}: ${dumpValue(
+      'env-app-id',
+    )}`,
+  ],
+  [
+    `${chalk.bold('The environment private key is')}: ${dumpValue(
+      'env-private-key',
+    )}`,
+  ],
+  [''],
 ];
 
 const envNotSet = [
-  'The environment API key is: Not Set',
-  'The environment API secret is: Not Set',
-  'The environment application ID is: Not Set',
-  'The environment private key is: Not Set',
-  '',
+  [`${chalk.bold('The environment API key is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The environment API secret is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The environment application ID is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The environment private key is')}: ${dumpValue(null)}`],
+  [''],
 ];
 
 const argsSet = [
-  'The arguments API key is: args-key',
-  'The arguments API secret is: args-secret',
-  'The arguments application ID is: args-app-id',
-  'The arguments private key is: args-private-key',
-  '',
+  [`${chalk.bold('The arguments API key is')}: ${dumpValue('args-key')}`],
+  [`${chalk.bold('The arguments API secret is')}: ${dumpValue('args-secret')}`],
+  [
+    `${chalk.bold('The arguments application ID is')}: ${dumpValue(
+      'args-app-id',
+    )}`,
+  ],
+  [
+    `${chalk.bold('The arguments private key is')}: ${dumpValue(
+      'args-private-key',
+    )}`,
+  ],
+  [''],
 ];
 
 const argsNotSet = [
-  'The arguments API key is: Not Set',
-  'The arguments API secret is: Not Set',
-  'The arguments application ID is: Not Set',
-  'The arguments private key is: Not Set',
-  '',
+  [`${chalk.bold('The arguments API key is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The arguments API secret is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The arguments application ID is')}: ${dumpValue(null)}`],
+  [`${chalk.bold('The arguments private key is')}: ${dumpValue(null)}`],
+  [''],
 ];
 export default [
   {
@@ -91,11 +130,19 @@ export default [
       ...localNotSet,
       ...envNotSet,
       ...argsNotSet,
-      'The API key is: global-key',
-      'The API secret is: global-secret',
-      'The application ID is: global-application',
-      'The private key is: global-private-key',
-      '',
+      [`${chalk.bold('The API key is')}: ${dumpValue('global-key')}`],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('global-secret')}`],
+      [
+        `${chalk.bold('The application ID is')}: ${dumpValue(
+          'global-application',
+        )}`,
+      ],
+      [
+        `${chalk.bold('The private key is')}: ${dumpValue(
+          'global-private-key',
+        )}`,
+      ],
+      [''],
     ],
     clearEnv: true,
   },
@@ -108,11 +155,19 @@ export default [
       ...localSet,
       ...envNotSet,
       ...argsNotSet,
-      'The API key is: local-key',
-      'The API secret is: local-secret',
-      'The application ID is: local-application',
-      'The private key is: local-private-key',
-      '',
+      [`${chalk.bold('The API key is')}: ${dumpValue('local-key')}`],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('local-secret')}`],
+      [
+        `${chalk.bold('The application ID is')}: ${dumpValue(
+          'local-application',
+        )}`,
+      ],
+      [
+        `${chalk.bold('The private key is')}: ${dumpValue(
+          'local-private-key',
+        )}`,
+      ],
+      [''],
     ],
     clearEnv: true,
   },
@@ -125,11 +180,11 @@ export default [
       ...localNotSet,
       ...envSet,
       ...argsNotSet,
-      'The API key is: env-key',
-      'The API secret is: env-secret',
-      'The application ID is: env-app-id',
-      'The private key is: env-private-key',
-      '',
+      [`${chalk.bold('The API key is')}: ${dumpValue('env-key')}`],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('env-secret')}`],
+      [`${chalk.bold('The application ID is')}: ${dumpValue('env-app-id')}`],
+      [`${chalk.bold('The private key is')}: ${dumpValue('env-private-key')}`],
+      [''],
     ],
     clearEnv: false,
   },
@@ -148,11 +203,11 @@ export default [
       ...localNotSet,
       ...envNotSet,
       ...argsSet,
-      'The API key is: args-key',
-      'The API secret is: args-secret',
-      'The application ID is: args-app-id',
-      'The private key is: args-private-key',
-      '',
+      [`${chalk.bold('The API key is')}: ${dumpValue('args-key')}`],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('args-secret')}`],
+      [`${chalk.bold('The application ID is')}: ${dumpValue('args-app-id')}`],
+      [`${chalk.bold('The private key is')}: ${dumpValue('args-private-key')}`],
+      [''],
     ],
     clearEnv: true,
   },
@@ -174,11 +229,11 @@ export default [
       ...localSet,
       ...envSet,
       ...argsSet,
-      'The API key is: args-key',
-      'The API secret is: args-secret',
-      'The application ID is: args-app-id',
-      'The private key is: args-private-key',
-      '',
+      [`${chalk.bold('The API key is')}: ${dumpValue('args-key')}`],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('args-secret')}`],
+      [`${chalk.bold('The application ID is')}: ${dumpValue('args-app-id')}`],
+      [`${chalk.bold('The private key is')}: ${dumpValue('args-private-key')}`],
+      [''],
     ],
     clearEnv: false,
   },
@@ -256,15 +311,15 @@ export default [
     },
     expected: [
       globalSet[0],
-      '',
+      [''],
       localSet[0],
-      '',
+      [''],
       envSet[0],
-      '',
+      [''],
       argsSet[0],
-      '',
-      'The API key is: args-key',
-      '',
+      [''],
+      [`${chalk.bold('The API key is')}: ${dumpValue('args-key')}`],
+      [''],
     ],
     clearEnv: false,
   },
@@ -282,15 +337,15 @@ export default [
     },
     expected: [
       globalSet[1],
-      '',
+      [''],
       localSet[1],
-      '',
+      [''],
       envSet[1],
-      '',
+      [''],
       argsSet[1],
-      '',
-      'The API secret is: args-secret',
-      '',
+      [''],
+      [`${chalk.bold('The API secret is')}: ${dumpValue('args-secret')}`],
+      [''],
     ],
     clearEnv: false,
   },
@@ -307,15 +362,15 @@ export default [
     },
     expected: [
       globalSet[2],
-      '',
+      [''],
       localSet[2],
-      '',
+      [''],
       envSet[2],
-      '',
+      [''],
       argsSet[2],
-      '',
-      'The application ID is: args-app-id',
-      '',
+      [''],
+      [`${chalk.bold('The application ID is')}: ${dumpValue('args-app-id')}`],
+      [''],
     ],
     clearEnv: false,
   },
@@ -334,15 +389,15 @@ export default [
     },
     expected: [
       globalSet[3],
-      '',
+      [''],
       localSet[3],
-      '',
+      [''],
       envSet[3],
-      '',
+      [''],
       argsSet[3],
-      '',
-      'The private key is: args-private-key',
-      '',
+      [''],
+      [`${chalk.bold('The private key is')}: ${dumpValue('args-private-key')}`],
+      [''],
     ],
     clearEnv: false,
   },

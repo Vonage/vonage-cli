@@ -1,11 +1,10 @@
-/* istanbul ignore file: Mocking the filesystem is not fun  */
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'fs';
 import { ux } from '@oclif/core';
 import { parse } from 'path';
 import debug from 'debug';
 import chalk from 'chalk';
 import { dumpValue } from './ux';
 import { normalize } from 'path';
+import { readFile, dirExists, writeFile, createDir } from './fsUtils';
 
 const log = debug('vonage:cli:fs');
 
@@ -17,16 +16,19 @@ export const loadFile = (file: string): string | null => {
     return null;
   }
 
-  const fileContents = readFileSync(normalFile).toString();
+  const fileContents = readFile(normalFile);
   log(`Contents of ${normalFile}: `, fileContents);
   return fileContents;
 };
+
+export const loadJSON = (file: string): unknown =>
+  JSON.parse(loadFile(file) || '{}');
 
 export const pathExists = (path: string) => {
   const normalPath = normalize(path);
   log(`Checking if ${normalPath} exists`);
 
-  if (existsSync(normalPath)) {
+  if (dirExists(normalPath)) {
     log(`${normalPath} exists`);
     return true;
   }
@@ -68,7 +70,7 @@ export const makeDirectory = async (
     return false;
   }
 
-  mkdirSync(directory, { recursive: true });
+  createDir(directory);
   log('Directory created');
   return true;
 };
@@ -85,9 +87,9 @@ export const saveFile = async (
     ? chalk.yellow('This will overwrite the file')
     : chalk.yellow('This will create the file');
 
-  let okToWrite = false;
+  let okToWrite = true;
   if (!force) {
-    ux.log('Confirm saving');
+    ux.log('Confirm saving:');
     ux.log(dumpValue(data));
     okToWrite = await ux.confirm(`To ${file} (${fileExistsWarning}) [y/n]`);
   }
@@ -111,8 +113,9 @@ export const saveFile = async (
   const dataToWrite
     = typeof data !== 'string' ? JSON.stringify(data, null, 2) : data;
 
+  writeFile(file, dataToWrite);
+
   log(`Saiving file ${file}`);
-  writeFileSync(file, dataToWrite);
   log(`File written`);
   return true;
 };

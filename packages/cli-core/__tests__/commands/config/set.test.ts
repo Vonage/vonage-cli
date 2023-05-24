@@ -1,11 +1,12 @@
 import { expect } from '@jest/globals';
-// eslint-disable-next-line
-import * as stdout from '../../../../../testHelpers/stdoutAssertions'
-// eslint-disable-next-line
-import * as stdin from '../../../../../testHelpers/stdinAssertions'
 import SetConfig from '../../../lib/commands/config/set';
 import { makeDirectory, saveFile, pathExists } from '../../../lib/fs';
 import tests from '../../__dataSets__/setCommand';
+import { Command } from '@oclif/core';
+import { asMock } from '../../../../../testHelpers/helpers';
+
+const logMock = jest.fn();
+Command.prototype.log = logMock;
 
 let configFile = {};
 
@@ -19,17 +20,12 @@ jest.mock('../../../lib/config/loader', () => ({
   loadConfigFile: () => configFile || {},
 }));
 
-const realProcessExit = process.exit;
-// eslint-disable-next-line
-// @ts-ignore
-process.exit = jest.fn();
+const existsMock = asMock(pathExists);
+const saveMock = asMock(saveFile);
+const dirMock = asMock(makeDirectory);
 
 describe('Set Command', () => {
   const OLD_ENV = Object.assign({}, process.env);
-
-  afterAll(() => {
-    process.exit = realProcessExit;
-  });
 
   afterEach(() => {
     process.env = OLD_ENV;
@@ -47,19 +43,15 @@ describe('Set Command', () => {
       expectedConfig,
       expectedOutput,
     }) => {
-      // eslint-disable-next-line
-      // @ts-ignore
-      pathExists.mockReturnValue(mockPathExists);
-      // eslint-disable-next-line
-      // @ts-ignore
-      saveFile.mockReturnValue(mockSaveFile);
+      existsMock.mockReturnValue(mockPathExists);
+      saveMock.mockResolvedValue(mockSaveFile);
 
       configFile = config;
 
       await SetConfig.run(commandArgs);
 
-      expect(makeDirectory).not.toHaveBeenCalled();
-      expect(expectedOutput).wasOutput();
+      expect(dirMock).not.toHaveBeenCalled();
+      expect(logMock.mock.calls).toEqual(expectedOutput);
       if (expectedConfig === false) {
         return;
       }

@@ -1,4 +1,3 @@
-import { existsSync } from 'fs';
 import { BaseSetCommand } from '../../config/baseSetCommand';
 import { ConfigParams } from '../../enums/index';
 import chalk from 'chalk';
@@ -7,7 +6,7 @@ import { icon } from '../../logo';
 export default class SetupConfig extends BaseSetCommand<typeof SetupConfig> {
   static summary = 'Vonage CLI configuration wizard';
 
-  static description = `This wizard will setup a config file for the CLI
+  static description = `This wizard will setup a config file for the Vonage CLI
 
 You can use the command line flags to skip interactive mode`;
 
@@ -57,8 +56,8 @@ You can use the command line flags to skip interactive mode`;
 
   protected welcomeFile(file: string): void {
     /* istanbul ignore next */
-    existsSync(file)
-      ? this.log(`The config file: ${file} with be updated`)
-      : this.log(`The ${file} with be created`);
+    this.fs.pathExists(file)
+      ? this.log(`The config file: ${file} will be updated`)
+      : this.log(`The ${file} will be created`);
   }
 }

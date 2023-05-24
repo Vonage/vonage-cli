@@ -88,6 +88,8 @@ export const dumpValue = (
   }
 };
 
+export const dumpCommand = (command: string): string => chalk.green(command);
+
 export const truncateString = (value: string, length = 25): string =>
   flags.truncate && `${value}`.length > length
     ? dumpValue(value.substring(0, length)) + chalk.dim(' ...value truncated')

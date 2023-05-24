@@ -4,6 +4,8 @@ import { ux } from '@oclif/core';
 import { ConfigParams, DisplayedSetting } from '../enums/index';
 import chalk from 'chalk';
 import startcase from 'lodash.startcase';
+import { ConfigFileMissing } from './error';
+import { dumpCommand } from '../ux';
 
 export abstract class BaseSetCommand<
   T extends typeof Command
@@ -22,6 +24,17 @@ export abstract class BaseSetCommand<
   };
 
   static enableJsonFlag = false;
+
+  public async run(): Promise<void> {
+    const addGlobal = this.flags.global ? ' --global' : '';
+    this.errors = {
+      [ConfigFileMissing.name]: [
+        `You need to run ${dumpCommand(
+          `vonage config:setup${addGlobal}`,
+        )} before you can set a value`,
+      ],
+    };
+  }
 
   protected async getNewSetting(
     setting: ConfigParams,
