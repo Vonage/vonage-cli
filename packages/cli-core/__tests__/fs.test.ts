@@ -5,7 +5,7 @@ import { dumpValue } from '../lib/ux';
 import { readFile, dirExists, writeFile, createDir } from '../lib/fsUtils';
 import chalk from 'chalk';
 import { asMock } from '../../../testHelpers/helpers';
-
+import { normalize } from 'path';
 jest.mock('@oclif/core', () => ({
   __esModule: true,
   ...jest.requireActual('@oclif/core'),
@@ -82,8 +82,8 @@ describe('File System tests', () => {
     ]);
 
     expect(mockDirExists.mock.calls).toEqual([
-      ['/path/to/test.txt'],
-      ['/path/to'],
+      [normalize('/path/to/test.txt')],
+      [normalize('/path/to')],
     ]);
 
     expect(mockWriteFile.mock.calls).toEqual([
@@ -113,8 +113,8 @@ describe('File System tests', () => {
     ]);
 
     expect(mockDirExists.mock.calls).toEqual([
-      ['/path/to/test.txt'],
-      ['/path/to'],
+      [normalize('/path/to/test.txt')],
+      [normalize('/path/to')],
     ]);
 
     expect(mockWriteFile.mock.calls).toEqual([
@@ -144,8 +144,8 @@ describe('File System tests', () => {
     ]);
 
     expect(mockDirExists.mock.calls).toEqual([
-      ['/path/to/test.txt'],
-      ['/path/to'],
+      [normalize('/path/to/test.txt')],
+      [normalize('/path/to')],
     ]);
 
     expect(mockWriteFile.mock.calls).toEqual([
