@@ -32,6 +32,7 @@
     "@oclif/plugin-commands": "^2.2.15",
     "@oclif/plugin-help": "^5.2.9",
     "@oclif/plugin-not-found": "^2.3.23",
+    "@oclif/plugin-plugins": "^3.0.1",
     "@oclif/plugin-which": "^2.2.20",
     "@vonage/cli-core": "^2.0.1",
     "@vonage/cli-jwt": "^2.0.0",
@@ -45,6 +46,7 @@
     "plugins": [
       "@oclif/plugin-not-found",
       "@oclif/plugin-help",
+      "@oclif/plugin-plugins",
       "@oclif/plugin-commands",
       "@oclif/plugin-autocomplete",
       "@oclif/plugin-which",
