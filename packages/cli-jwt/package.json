@@ -1,6 +1,6 @@
 {
   "name": "@vonage/cli-jwt",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "CLI Plugin to create JWT tokens for Vonage applications",
   "homepage": "https://github.com/Vonage/vonage-cli/tree/main/packages/cli-jwt#readme",
   "bugs": {
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@oclif/core": "^2.8.5",
-    "@vonage/cli-core": "^2.0.1",
+    "@vonage/cli-core": "^2.1.0",
     "@vonage/jwt": "^1.3.0"
   },
   "devDependencies": {
