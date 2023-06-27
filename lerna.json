@@ -3,7 +3,6 @@
     "packages/*"
   ],
   "version": "independent",
-  "useWorkspaces": true,
   "publishConfig": {
     "directory": "dist"
   },

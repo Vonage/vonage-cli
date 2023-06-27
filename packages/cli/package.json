@@ -27,13 +27,13 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@oclif/core": "^2.8.5",
-    "@oclif/plugin-autocomplete": "^2.2.0",
-    "@oclif/plugin-commands": "^2.2.15",
-    "@oclif/plugin-help": "^5.2.9",
-    "@oclif/plugin-not-found": "^2.3.23",
-    "@oclif/plugin-plugins": "^3.0.1",
-    "@oclif/plugin-which": "^2.2.20",
+    "@oclif/core": "^2.8.8",
+    "@oclif/plugin-autocomplete": "^2.3.1",
+    "@oclif/plugin-commands": "^2.2.16",
+    "@oclif/plugin-help": "^5.2.10",
+    "@oclif/plugin-not-found": "^2.3.26",
+    "@oclif/plugin-plugins": "^3.1.5",
+    "@oclif/plugin-which": "^2.2.22",
     "@vonage/cli-core": "^2.1.0",
     "@vonage/cli-jwt": "^2.1.0",
     "ts-node": "^10.9.1"
