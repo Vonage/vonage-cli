@@ -3,10 +3,12 @@ import type { Config } from '@jest/types';
 const projectDefault = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/testHelpers/helpers.ts'],
-  preset: 'ts-jest/presets/js-with-ts',
+  preset: 'ts-jest/presets/default-esm',
   moduleNameMapper: {
-    // We have to be explict for each path so it does not interfere with the SDK
-    '@vonage/cli-core': '<rootDir>/packages/cli-core/lib',
+    // We have to be explict for core since we are cheating.
+    // Its a long explaination that I will have to write up why
+    // So just leave this so I can keep my lovely long hair
+    '@vonage/cli-core': '<rootDir>/packages/cli-core/lib/index.ts',
     '@vonage/cli-(.+)': '<rootDir>/packages/cli-$1/lib',
   },
 };
@@ -27,7 +29,12 @@ const config: Config.InitialOptions = {
     },
   },
   transform: {
-    '^.+\\.[tj]sx?$': ['ts-jest', {}],
+    '^.+\\.[t]sx?$': [
+      'ts-jest',
+      {
+        module: 'node16',
+      },
+    ],
   },
   projects: [
     {

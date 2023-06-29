@@ -1,5 +1,5 @@
 /* istanbul ignore file: Mocking the filesystem is not fun  */
-import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'fs';
+import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 
 export const readFile = (file: string): string => readFileSync(file).toString();
 

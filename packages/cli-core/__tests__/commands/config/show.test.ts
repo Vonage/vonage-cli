@@ -1,16 +1,29 @@
-import { expect } from '@jest/globals';
-import ShowConfig from '../../../lib/commands/config/show';
+import { jest, expect } from '@jest/globals';
 import testCases from '../../__dataSets__/showCommand';
-import { normalize } from 'path';
-import { Command } from '@oclif/core';
+import { asMock } from '../../../../../testHelpers/helpers';
+import { ConfigParams } from '../../../lib/enums';
 
-let configFile = {};
-jest.mock('../../../lib/config/loader', () => ({
-  loadConfigFile: (file: string) => configFile[normalize(file)] || {},
+jest.unstable_mockModule('../../../lib/config/loader', () => ({
+  loadConfigFile: jest.fn(),
 }));
+
+const { Command } = await import('@oclif/core');
 
 const logMock = jest.fn();
 Command.prototype.log = logMock;
+
+const { loadConfigFile } = await import('../../../lib/config/loader');
+const { default: ShowConfig } = await import(
+  '../../../lib/commands/config/show'
+);
+const loadConfigMock = asMock(loadConfigFile);
+
+const defaultConfig = {
+  [ConfigParams.API_KEY]: null,
+  [ConfigParams.API_SECRET]: null,
+  [ConfigParams.APPLICATION_ID]: null,
+  [ConfigParams.PRIVATE_KEY]: null,
+};
 
 describe('Config Command', () => {
   const OLD_ENV = Object.assign({}, process.env);
@@ -25,13 +38,14 @@ describe('Config Command', () => {
   afterEach(() => {
     process.env = OLD_ENV;
     jest.resetAllMocks();
-    configFile = {};
   });
 
   test.each(testCases)(
     'Will $label',
-    async ({ commandArgs, config, expected, clearEnv }) => {
-      configFile = config;
+    async ({ commandArgs, expected, clearEnv, config }) => {
+      loadConfigMock.mockImplementation((file: string) => {
+        return config[file] || defaultConfig;
+      });
       if (clearEnv) {
         delete process.env.VONAGE_API_KEY;
         delete process.env.VONAGE_API_SECRET;

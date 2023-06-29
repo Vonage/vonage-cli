@@ -1,3 +1,6 @@
+import path from 'node:path';
+import url from 'node:url';
+
 // Set these here to ensure calls to API will fail
 process.env.VONAGE_API_KEY = 'env-key';
 process.env.VONAGE_API_SECRET = 'env-secret';
@@ -13,4 +16,6 @@ type MockableFunction = (...args: any[]) => any
 export const asMock = <Func extends MockableFunction>(mockedFunc: Func) =>
   mockedFunc as jest.MockedFunction<typeof mockedFunc>;
 
-export const keyFile = `${__dirname}/private.test.key`;
+export const keyFile = `${path.dirname(
+  url.fileURLToPath(import.meta.url),
+)}/private.test.key`;

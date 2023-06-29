@@ -12,9 +12,7 @@ const config = Object.freeze({
 
 import kebabcase from 'lodash.kebabcase';
 
-const globalConfigDir = normalize(
-  `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`,
-);
+const globalConfigDir = normalize(`${process.env.XDG_CONFIG_HOME}/@oclif/core`);
 const globalConfigFile = normalize(`${globalConfigDir}/vonage.config.json`);
 
 const localConfigDir = process.cwd();

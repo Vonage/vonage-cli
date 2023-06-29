@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 import { keyFile } from '../../../../testHelpers/helpers';
 import JWTCommand from '../../lib/commands/jwt';
 import { readFileSync } from 'fs';

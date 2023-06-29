@@ -1,32 +1,37 @@
-import { ux } from '@oclif/core';
-import { expect } from '@jest/globals';
-import { loadFile, loadJSON, saveFile } from '../lib/fs';
+import { jest, expect } from '@jest/globals';
 import { dumpValue } from '../lib/ux';
-import { readFile, dirExists, writeFile, createDir } from '../lib/fsUtils';
 import chalk from 'chalk';
 import { asMock } from '../../../testHelpers/helpers';
 import { normalize } from 'path';
-jest.mock('@oclif/core', () => ({
+
+jest.unstable_mockModule('@oclif/core', () => ({
   __esModule: true,
-  ...jest.requireActual('@oclif/core'),
+  ...(jest.requireActual('@oclif/core') as Record<string, unknown>),
   ux: {
     log: jest.fn(),
     confirm: jest.fn(),
   },
 }));
 
-jest.mock('../lib/fsUtils', () => ({
+jest.unstable_mockModule('node:fs', () => ({
   __esModule: true,
-  readFile: jest.fn(),
-  dirExists: jest.fn(),
-  writeFile: jest.fn(),
-  createDir: jest.fn(),
+  writeFileSync: jest.fn(),
+  existsSync: jest.fn(),
+  readFileSync: jest.fn(),
+  mkdirSync: jest.fn(),
 }));
 
-const mockReadFile = asMock(readFile);
-const mockDirExists = asMock(dirExists);
-const mockWriteFile = asMock(writeFile);
-const mockCreateDir = asMock(createDir);
+const { readFileSync, mkdirSync, writeFileSync, existsSync } = await import(
+  'node:fs'
+);
+
+const { ux } = await import('@oclif/core');
+
+const { loadFile, loadJSON, saveFile } = await import('../lib/fs');
+const mockReadFile = asMock(readFileSync);
+const mockDirExists = asMock(existsSync);
+const mockWriteFile = asMock(writeFileSync);
+const mockCreateDir = asMock(mkdirSync);
 const mockConfirm = asMock(ux.confirm);
 const mockLog = asMock(ux.log);
 
@@ -175,7 +180,9 @@ describe('File System tests', () => {
       [chalk.bold(`Directory /path/to does not exist. Create it? [y/n]`)],
     ]);
 
-    expect(mockCreateDir.mock.calls).toEqual([['/path/to']]);
+    expect(mockCreateDir.mock.calls).toEqual([
+      ['/path/to', { recursive: true }],
+    ]);
 
     expect(mockWriteFile.mock.calls).toEqual([
       ['/path/to/test.txt', "Ford I think I'm a couch"],
@@ -194,7 +201,9 @@ describe('File System tests', () => {
 
     expect(mockConfirm).not.toHaveBeenCalled();
 
-    expect(mockCreateDir.mock.calls).toEqual([['/path/to']]);
+    expect(mockCreateDir.mock.calls).toEqual([
+      ['/path/to', { recursive: true }],
+    ]);
 
     expect(mockWriteFile.mock.calls).toEqual([
       ['/path/to/test.txt', "Ford I think I'm a couch"],

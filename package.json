@@ -10,6 +10,7 @@
     "url": "git+https://github.com/Vonage/vonage-cli.git"
   },
   "license": "Apache 2.0",
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],

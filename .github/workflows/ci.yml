@@ -6,6 +6,9 @@ on:
   pull_request:
 jobs:
   test:
+    env:
+      NODE_NO_WARNINGS: 1
+      NODE_OPTIONS: --experimental-vm-modules
     continue-on-error: ${{ matrix.experimental }}
     runs-on: ${{ matrix.os }}
     strategy:

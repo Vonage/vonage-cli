@@ -2,9 +2,10 @@ import { ConfigParams } from '../../lib/enums';
 import { normalize } from 'path';
 import { dumpValue } from '../../lib/ux';
 import chalk from 'chalk';
+import { ConfigData } from '../../lib/types';
 
-const globalConfig = {
-  [normalize(`${process.cwd()}/test/@vonage/cli-core/vonage.config.json`)]: {
+const globalConfig: Record<string, ConfigData> = {
+  [normalize(`${process.cwd()}/test/@oclif/core/vonage.config.json`)]: {
     [ConfigParams.API_KEY]: 'global-key',
     [ConfigParams.API_SECRET]: 'global-secret',
     [ConfigParams.APPLICATION_ID]: 'global-application',
@@ -12,7 +13,7 @@ const globalConfig = {
   },
 };
 
-const localConfig = {
+const localConfig: Record<string, ConfigData> = {
   [normalize(`${process.cwd()}/vonage_app.json`)]: {
     [ConfigParams.API_KEY]: 'local-key',
     [ConfigParams.API_SECRET]: 'local-secret',

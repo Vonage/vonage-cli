@@ -1,28 +1,30 @@
-import { expect } from '@jest/globals';
-import SetConfig from '../../../lib/commands/config/set';
-import { makeDirectory, saveFile, pathExists } from '../../../lib/fs';
+import { expect, jest } from '@jest/globals';
 import tests from '../../__dataSets__/setCommand';
-import { Command } from '@oclif/core';
 import { asMock } from '../../../../../testHelpers/helpers';
 
-const logMock = jest.fn();
-Command.prototype.log = logMock;
-
-let configFile = {};
-
-jest.mock('../../../lib/fs', () => ({
+jest.unstable_mockModule('../../../lib/fs', () => ({
   saveFile: jest.fn(),
   pathExists: jest.fn(),
   makeDirectory: jest.fn(),
 }));
 
-jest.mock('../../../lib/config/loader', () => ({
-  loadConfigFile: () => configFile || {},
+jest.unstable_mockModule('../../../lib/config/loader', () => ({
+  loadConfigFile: jest.fn(),
 }));
+
+const { Command } = await import('@oclif/core');
+
+const logMock = jest.fn();
+Command.prototype.log = logMock;
+
+const { makeDirectory, saveFile, pathExists } = await import('../../../lib/fs');
+const { loadConfigFile } = await import('../../../lib/config/loader');
+const SetConfig = await import('../../../lib/commands/config/set');
 
 const existsMock = asMock(pathExists);
 const saveMock = asMock(saveFile);
 const dirMock = asMock(makeDirectory);
+const loadConfigMock = asMock(loadConfigFile);
 
 describe('Set Command', () => {
   const OLD_ENV = Object.assign({}, process.env);
@@ -30,7 +32,6 @@ describe('Set Command', () => {
   afterEach(() => {
     process.env = OLD_ENV;
     jest.resetAllMocks();
-    configFile = {};
   });
 
   test.each(tests)(
@@ -45,10 +46,9 @@ describe('Set Command', () => {
     }) => {
       existsMock.mockReturnValue(mockPathExists);
       saveMock.mockResolvedValue(mockSaveFile);
+      loadConfigMock.mockReturnValue(config);
 
-      configFile = config;
-
-      await SetConfig.run(commandArgs);
+      await SetConfig.default.run(commandArgs);
 
       expect(dirMock).not.toHaveBeenCalled();
       expect(logMock.mock.calls).toEqual(expectedOutput);

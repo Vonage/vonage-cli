@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { jest, expect } from '@jest/globals';
 import { Command } from '@oclif/core';
 import { VonageCommand } from '../lib/vonageCommand';
 import testCases from './__dataSets__/vonageCommand';

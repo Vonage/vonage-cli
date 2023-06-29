@@ -1,42 +1,48 @@
-import { expect } from '@jest/globals';
+import { jest, expect } from '@jest/globals';
 import chalk from 'chalk';
-import { ux } from '@oclif/core';
-import SetupConfig from '../../../lib/commands/config/setup';
-import * as fs from '../../../lib/fs';
 import { ConfigParams } from '../../../lib/enums';
-import { Command } from '@oclif/core';
 import { asMock } from '../../../../../testHelpers/helpers';
 import { normalize } from 'path';
 
-jest.mock('@oclif/core', () => ({
+const promptMock = jest.fn();
+jest.unstable_mockModule('../../../lib/fs', () => ({
   __esModule: true,
-  ...jest.requireActual('@oclif/core'),
-  ux: {
-    log: jest.fn(),
-    prompt: jest.fn(),
-  },
+  pathExists: jest.fn(),
+  saveFile: jest.fn(),
+  loadFile: jest.fn(),
 }));
 
-jest.mock('../../../lib/fs', () => ({
-  saveFile: jest.fn(),
-  pathExists: jest.fn(),
-  makeDirectory: jest.fn(),
-}));
+jest.unstable_mockModule('@oclif/core', () => {
+  const actual = jest.requireActual('@oclif/core') as any;
+  return {
+    __esModule: true,
+    ...actual,
+    ux: {
+      ...actual.ux,
+      prompt: promptMock,
+    },
+  };
+});
+
+const { Command, ux } = await import('@oclif/core');
 
 const logMock = jest.fn();
 Command.prototype.log = logMock;
 
-const globalConfigDir = normalize(
-  `${process.env.XDG_CONFIG_HOME}/@vonage/cli-core`,
-);
+const globalConfigDir = normalize(`${process.env.XDG_CONFIG_HOME}/@oclif/core`);
 
 const globalConfigFile = normalize(`${globalConfigDir}/vonage.config.json`);
 const localConfigDir = normalize(process.cwd());
 const localConfigFile = normalize(`${localConfigDir}/vonage_app.json`);
-const promptMock = asMock(ux.prompt);
 
-const existsMock = asMock(fs.pathExists);
-const saveMock = asMock(fs.saveFile);
+const { pathExists, saveFile } = await import('../../../lib/fs');
+const existsMock = asMock(pathExists);
+const saveMock = asMock(saveFile);
+const promptAsMock = asMock(ux.prompt);
+
+const { default: SetupConfig } = await import(
+  '../../../lib/commands/config/setup'
+);
 
 const intro = [
   [chalk.bold(`${' '.repeat(20)}Welcome to Vonage!`)],
@@ -55,7 +61,7 @@ describe('Setup Command', () => {
   });
 
   test('Will setup global config', async () => {
-    promptMock
+    promptAsMock
       .mockResolvedValueOnce('api key')
       .mockResolvedValueOnce('api secret')
       .mockResolvedValueOnce('/path/to/key')
@@ -84,7 +90,7 @@ describe('Setup Command', () => {
   });
 
   test('Will setup local config', async () => {
-    promptMock
+    promptAsMock
       .mockResolvedValueOnce('api key')
       .mockResolvedValueOnce('api secret')
       .mockResolvedValueOnce('/path/to/key')
