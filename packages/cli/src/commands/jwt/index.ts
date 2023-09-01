@@ -25,7 +25,7 @@ export default class GenerateJWT extends VonageCommand<typeof GenerateJWT> {
             required: false,
             description: `Read more about it in the ACL overview - https://developer.vonage.com/conversation/guides/jwt-acl#acls`,
         }),
-        exp: Flags.string({
+        exp: Flags.integer({
             required: false,
             description: 'Expiration of created JWT - defaults to 24 hours.',
         }),
