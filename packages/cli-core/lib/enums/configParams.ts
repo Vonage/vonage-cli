@@ -1,6 +1,0 @@
-export enum ConfigParams {
-  API_KEY = 'API_KEY',
-  API_SECRET = 'API_SECRET',
-  APPLICATION_ID = 'APPLICATION_ID',
-  PRIVATE_KEY = 'PRIVATE_KEY',
-}

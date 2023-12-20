@@ -1,0 +1,16 @@
+FROM node:latest
+
+LABEL maintainer="Vitor Alexandre <vitor.alexandre@pedbot.com.br>"
+
+COPY . /usr/src/app
+COPY package*.json ./
+
+WORKDIR /usr/src/app
+
+RUN npm install
+
+ENV TZ=America/Sao_Paulo
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
