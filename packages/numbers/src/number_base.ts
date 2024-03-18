@@ -2,10 +2,6 @@ import VonageCommand from '@vonage/cli-utils';
 
 export default abstract class NumberCommand<T>
     extends VonageCommand<typeof NumberCommand> {
-    async catch(error: any) {
-        return super.catch(error);
-    }
-
     protected _parseParams(params): any {
         const searchResponse = {};
         if (params.startsWith) {
