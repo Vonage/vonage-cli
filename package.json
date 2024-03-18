@@ -1,5 +1,5 @@
 {
-    "name": "@vonage/cli",
+    "name": "@vonage/cli-monorepo",
     "homepage": "https://github.com/Vonage/vonage-cli#readme",
     "license": "Apache 2.0",
     "workspaces": [
