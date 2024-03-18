@@ -268,157 +268,162 @@ export default class ApplicationsCreate
             response.privacy = improveAi;
         }
 
-        cli.action.start(chalk.bold('Creating Application'), 'Initializing', {
-            stdout: true,
-        });
+        try {
+            cli.action.start(chalk.bold('Creating Application'), 'Initializing', {
+                stdout: true,
+            });
 
-        // create application
-        const output = await this.createApplication(response);
+            // create application
+            const output = await this.createApplication(response);
 
-        const keyFileName = sanitizeFileName(output.name);
+            const keyFileName = sanitizeFileName(output.name);
 
-        // write vonage.app file
-        const vonageAppFilePath = `${process.cwd()}/vonage_app.json`;
-        const vonagePrivateKeyFilePath = `${process.cwd()}/${keyFileName.toLowerCase()}.key`;
+            // write vonage.app file
+            const vonageAppFilePath = `${process.cwd()}/vonage_app.json`;
+            const vonagePrivateKeyFilePath = `${process.cwd()}/${keyFileName.toLowerCase()}.key`;
 
-        writeFileSync(
-            vonageAppFilePath,
-            JSON.stringify(
-                {
-                    application_name: output.name,
-                    application_id: output.id,
-                    private_key: output.keys.private_key,
-                },
-                null,
-                2,
-            ),
-        );
-
-        writeFileSync(vonagePrivateKeyFilePath, output.keys.private_key);
-
-        cli.action.stop();
-
-        const indent = '  ';
-
-        this.log(
-            chalk.magenta.underline.bold('Application Name:'),
-            output.name,
-        );
-        this.log('');
-        this.log(chalk.magenta.underline.bold('Application ID:'), output.id);
-        this.log('');
-
-        const { voice, messages, rtc, vbc } = output.capabilities;
-
-        if (voice) {
-            this.log(chalk.magenta.underline.bold('Voice Settings'));
-
-            this.log(indent, chalk.cyan.underline.bold('Event Webhook:'));
-            this.log(
-                indent,
-                indent,
-                chalk.bold('Address:'),
-                _.get(voice, 'webhooks.event_url.address'),
-            );
-            this.log(
-                indent,
-                indent,
-                chalk.bold('HTTP Method:'),
-                _.get(voice, 'webhooks.event_url.http_method'),
+            writeFileSync(
+                vonageAppFilePath,
+                JSON.stringify(
+                    {
+                        application_name: output.name,
+                        application_id: output.id,
+                        private_key: output.keys.private_key,
+                    },
+                    null,
+                    2,
+                ),
             );
 
-            this.log(indent, chalk.cyan.underline.bold('Answer Webhook:'));
+            writeFileSync(vonagePrivateKeyFilePath, output.keys.private_key);
+
+            cli.action.stop();
+
+            const indent = '  ';
+
             this.log(
-                indent,
-                indent,
-                chalk.bold('Address:'),
-                _.get(voice, 'webhooks.answer_url.address'),
-            );
-            this.log(
-                indent,
-                indent,
-                chalk.bold('HTTP Method:'),
-                _.get(voice, 'webhooks.answer_url.http_method'),
+                chalk.magenta.underline.bold('Application Name:'),
+                output.name,
             );
             this.log('');
-        }
-
-        if (messages) {
-            this.log(chalk.magenta.underline.bold('Messages Settings'));
-
-            this.log(indent, chalk.cyan.underline.bold('Inbound Webhook:'));
-            this.log(
-                indent,
-                indent,
-                chalk.bold('Address:'),
-                _.get(messages, 'webhooks.inbound_url.address'),
-            );
-            this.log(
-                indent,
-                indent,
-                chalk.bold('HTTP Method:'),
-                _.get(messages, 'webhooks.inbound_url.http_method'),
-            );
-
-            this.log(indent, chalk.cyan.underline.bold('Status Webhook:'));
-            this.log(
-                indent,
-                indent,
-                chalk.bold('Address:'),
-                _.get(messages, 'webhooks.status_url.address'),
-            );
-            this.log(
-                indent,
-                indent,
-                chalk.bold('HTTP Method:'),
-                _.get(messages, 'webhooks.status_url.http_method'),
-            );
+            this.log(chalk.magenta.underline.bold('Application ID:'), output.id);
             this.log('');
-        }
 
-        if (rtc) {
-            this.log(chalk.magenta.underline.bold('RTC Settings'));
+            const { voice, messages, rtc, vbc } = output.capabilities;
 
-            this.log(indent, chalk.cyan.underline.bold('Event Webhook:'));
-            this.log(
-                indent,
-                indent,
-                chalk.bold('Address:'),
-                _.get(rtc, 'webhooks.event_url.address'),
-            );
-            this.log(
-                indent,
-                indent,
-                chalk.bold('HTTP Method:'),
-                _.get(rtc, 'webhooks.event_url.http_method'),
-            );
+            if (voice) {
+                this.log(chalk.magenta.underline.bold('Voice Settings'));
+
+                this.log(indent, chalk.cyan.underline.bold('Event Webhook:'));
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('Address:'),
+                    _.get(voice, 'webhooks.event_url.address'),
+                );
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('HTTP Method:'),
+                    _.get(voice, 'webhooks.event_url.http_method'),
+                );
+
+                this.log(indent, chalk.cyan.underline.bold('Answer Webhook:'));
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('Address:'),
+                    _.get(voice, 'webhooks.answer_url.address'),
+                );
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('HTTP Method:'),
+                    _.get(voice, 'webhooks.answer_url.http_method'),
+                );
+                this.log('');
+            }
+
+            if (messages) {
+                this.log(chalk.magenta.underline.bold('Messages Settings'));
+
+                this.log(indent, chalk.cyan.underline.bold('Inbound Webhook:'));
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('Address:'),
+                    _.get(messages, 'webhooks.inbound_url.address'),
+                );
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('HTTP Method:'),
+                    _.get(messages, 'webhooks.inbound_url.http_method'),
+                );
+
+                this.log(indent, chalk.cyan.underline.bold('Status Webhook:'));
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('Address:'),
+                    _.get(messages, 'webhooks.status_url.address'),
+                );
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('HTTP Method:'),
+                    _.get(messages, 'webhooks.status_url.http_method'),
+                );
+                this.log('');
+            }
+
+            if (rtc) {
+                this.log(chalk.magenta.underline.bold('RTC Settings'));
+
+                this.log(indent, chalk.cyan.underline.bold('Event Webhook:'));
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('Address:'),
+                    _.get(rtc, 'webhooks.event_url.address'),
+                );
+                this.log(
+                    indent,
+                    indent,
+                    chalk.bold('HTTP Method:'),
+                    _.get(rtc, 'webhooks.event_url.http_method'),
+                );
+                this.log('');
+            }
+
+            if (vbc) {
+                this.log(chalk.magenta.underline.bold('VBC Settings'));
+                this.log(chalk.bold('Enabled'));
+                this.log('');
+            }
+
+            this.log(chalk.magenta.underline.bold('Public Key'));
+            this.log(output.keys.public_key);
             this.log('');
-        }
 
-        if (vbc) {
-            this.log(chalk.magenta.underline.bold('VBC Settings'));
-            this.log(chalk.bold('Enabled'));
+            this.log(chalk.magenta.underline.bold('App Files'));
+            this.log(chalk.bold('Vonage App File:'), vonageAppFilePath);
             this.log('');
+            this.log(chalk.bold('Private Key File:'), vonagePrivateKeyFilePath);
+            this.log('');
+
+            this.log(
+                chalk.magenta.underline.bold('Improve AI:'),
+                output.privacy.improve_ai,
+            );
+
+            this.log('');
+
+            this.exit();
+        } catch (error) {
+            this.log(chalk.red.bold('Error creating application'));
+            this.log(chalk.red.bold(error.message));
         }
-
-        this.log(chalk.magenta.underline.bold('Public Key'));
-        this.log(output.keys.public_key);
-        this.log('');
-
-        this.log(chalk.magenta.underline.bold('App Files'));
-        this.log(chalk.bold('Vonage App File:'), vonageAppFilePath);
-        this.log('');
-        this.log(chalk.bold('Private Key File:'), vonagePrivateKeyFilePath);
-        this.log('');
-
-        this.log(
-            chalk.magenta.underline.bold('Improve AI:'),
-            output.privacy.improve_ai,
-        );
-
-        this.log('');
-
-        this.exit();
     }
 
     async catch(error: any) {
