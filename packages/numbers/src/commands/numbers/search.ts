@@ -62,7 +62,7 @@ export default class NumberSearch extends NumberCommand<
 
         const numberData = await this.numberSearch(args.countryCode, flags);
         cli.table(
-            numberData.numbers,
+            numberData.numbers || [],
             {
                 country: {},
                 msisdn: {

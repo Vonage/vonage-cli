@@ -7,6 +7,7 @@ import Vonage from '@vonage/server-sdk';
 import { CredentialsObject } from '@vonage/server-sdk';
 import { readFileSync } from 'fs';
 import * as path from 'path';
+import chalk from 'chalk';
 
 /**
  * @deprecated
@@ -96,29 +97,36 @@ export default abstract class VonageCommand<T extends typeof Command>
     }
 
     async init(): Promise<void> {
-        await super.init();
-        const { flags, args } = await this.parse(
-            this.constructor as Interfaces.Command.Class,
-        );
-        this.flags = this.parsedFlags = flags;
-        this.parsedArgs = args;
-
-        this.Vonage = Vonage;
-
         try {
-            const rawConfig = readFileSync(
-                path.join(this.config.configDir, 'vonage.config.json'),
+            await super.init();
+            const { flags, args } = await this.parse(
+            this.constructor as Interfaces.Command.Class,
             );
-            this._userConfig = JSON.parse(rawConfig.toString());
-        } catch (error) {
+            this.flags = this.parsedFlags = flags;
+            this.parsedArgs = args;
+
+            this.Vonage = Vonage;
+
+            try {
+                const rawConfig = readFileSync(
+                    path.join(this.config.configDir, 'vonage.config.json'),
+                );
+                this._userConfig = JSON.parse(rawConfig.toString());
+            } catch (error) {
             // need something when no file exists - do we auto create? ask?
-        }
+            }
 
-        this.initApiConfig();
+            this.initApiConfig();
 
-        if (flags?.appId && flags?.keyFile) {
-            this._appId = flags.appId;
-            this._keyFile = flags.keyFile;
+            if (flags?.appId && flags?.keyFile) {
+                this._appId = flags.appId;
+                this._keyFile = flags.keyFile;
+            }
+        } catch (error) {
+            // Fix oclif being too verbose
+            this.log(`${chalk.red('>')}    Error: ${error.message}`);
+            this.log(`${chalk.red('>')}    See more help with --help`);
+            process.exit(2);
         }
     }
 
@@ -144,14 +152,6 @@ export default abstract class VonageCommand<T extends typeof Command>
     }
 
     async catch(error: any) {
-        if (error.oclif?.exit === 0) {
-            return;
-        }
-
-        if (this.flags?.trace) {
-            this.log(error.stack);
-        }
-
         if (error.statusCode === 401) {
             this.error('Authentication Failure', {
                 code: 'API_AUTH_ERR',

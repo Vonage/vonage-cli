@@ -23,7 +23,7 @@ export default class NumberList extends NumberCommand<typeof NumberList.flags> {
         const flags = this.parsedFlags;
         const numberData = await this.getAllNumbers({});
         cli.table(
-            numberData.numbers,
+            numberData.numbers || [],
             {
                 country: {},
                 msisdn: {
