@@ -47,5 +47,5 @@ node_modules/
 .vonagerc
 vonage_app.json
 
-
+package-lock.json
 dist

@@ -33,9 +33,6 @@
         "commands": "./dist/commands"
     },
     "scripts": {
-        "postpack": "npx shx rm -f oclif.manifest.json",
-        "prepack": "npm run build && npx oclif manifest && npx oclif readme",
-        "version": "npx oclif readme && git add README.md",
         "build": "npx shx rm -rf dist tsconfig.tsbuildinfo && tsc --build --verbose"
     },
     "devDependencies": {
