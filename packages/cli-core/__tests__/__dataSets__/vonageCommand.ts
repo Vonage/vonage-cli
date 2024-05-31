@@ -16,14 +16,10 @@ export default [
       ['To fix this error you can:'],
       [`1. Run ${chalk.green('vonage config:set application-id <value>')}`],
       [
-        `2. Run this command again and pass in the application id using ${chalk.green(
-          '--application-id=<value>',
-        )}`,
+        `2. Run this command again and pass in the application id using ${chalk.green('--application-id=<value>')}`,
       ],
       [
-        `3. Set the ${chalk.green(
-          'VONAGE_APPLICATION_ID',
-        )} environment variable`,
+        `3. Set the ${chalk.green('VONAGE_APPLICATION_ID')} environment variable`,
       ],
     ],
   },
@@ -42,12 +38,10 @@ export default [
     expected: [
       ['The private key is invalid!'],
       [
-        `Check that you have the correct private key and run this command again`,
+        'Check that you have the correct private key and run this command again',
       ],
       [
-        `${chalk.bold(
-          'Note:',
-        )} The private key can be a path to the file or the value of the private key`,
+        `${chalk.bold('Note:')} The private key can be a path to the file or the value of the private key`,
       ],
     ],
   },
@@ -57,17 +51,13 @@ export default [
     expected: [
       ['You do not have the private key set!'],
       [
-        `${chalk.bold(
-          'Note:',
-        )} The private key can be a path to the file or the value of the private key`,
+        `${chalk.bold('Note:')} The private key can be a path to the file or the value of the private key`,
       ],
       [''],
       ['To fix this error you can:'],
       [`1. Run ${chalk.green('vonage config:set private-key <value>')}`],
       [
-        `2. Run this command again and pass in the private key using ${chalk.green(
-          '--private-key=<value>',
-        )}`,
+        `2. Run this command again and pass in the private key using ${chalk.green('--private-key=<value>')}`,
       ],
       [`3. Set the ${chalk.green('VONAGE_PRIVATE_KEY')} environment variable`],
     ],
@@ -75,6 +65,6 @@ export default [
   {
     label: 'report error',
     error: new Error('I am Error'),
-    expected: [[`An error occurred: I am Error`]],
+    expected: [['An error occurred: I am Error']],
   },
 ];

@@ -1,6 +1,11 @@
 import { jest, expect } from '@jest/globals';
-import { Command } from '@oclif/core';
-import { VonageCommand } from '../lib/vonageCommand';
+import { Command, Flags, Args } from '@oclif/core';
+import {
+  VonageCommand,
+  CommandInterface,
+  VonageArgs,
+  VonageFlags,
+} from '../lib/vonageCommand';
 import testCases from './__dataSets__/vonageCommand';
 
 const logMock = jest.fn();
@@ -12,27 +17,71 @@ class TestError extends Error {
   }
 }
 
-class TestClass extends VonageCommand<typeof TestClass> {
+class TestRunCommand implements CommandInterface<typeof TestCommand> {
+  static calledFlags: VonageFlags<typeof TestCommand>;
+  static calledArgs: VonageArgs<typeof TestCommand>;
+
+  async run(args: VonageArgs<typeof TestCommand>, flags: VonageFlags<typeof TestCommand>): Promise<void> {
+    TestRunCommand.calledFlags = flags;
+    TestRunCommand.calledArgs = args;
+  }
+}
+
+class TestCommand extends VonageCommand<typeof TestCommand> {
+  static flags = {
+    foo: Flags.string()
+  };
+
+  static args = {
+    fizz: Args.string()
+
+  };
+
+  get runCommand(): CommandInterface<typeof TestCommand> {
+    return new TestRunCommand();
+  }
+}
+
+class TestErrorCommand extends VonageCommand<typeof TestErrorCommand> {
   public static errorToThrow: Error | null = null;
+
+  get runCommand(): CommandInterface<typeof TestErrorCommand> {
+    return new TestRunCommand();
+  }
 
   protected errors = {
     [TestError.name]: ['This is a test Error'],
   };
 
   async run(): Promise<void> {
-    throw TestClass.errorToThrow;
+    throw TestErrorCommand.errorToThrow;
   }
 }
 
 describe('Vonnage command', () => {
   afterEach(() => {
-    TestClass.errorToThrow = null;
+    TestErrorCommand.errorToThrow = null;
     jest.resetAllMocks();
   });
 
+  test('Will pass flags to run command', async () => {
+    await TestCommand.run(['buzz', '--foo=bar']);
+
+    expect(TestRunCommand.calledFlags).toEqual({
+      color: true,
+      force: true,
+      foo: 'bar',
+      'screen-reader': false,
+      truncate: 0,
+    });
+    expect(TestRunCommand.calledArgs).toEqual({
+      fizz: 'buzz',
+    });
+  });
+
   test.each(testCases)('Will $label', async ({ error, expected }) => {
-    TestClass.errorToThrow = error;
-    await TestClass.run([]);
+    TestErrorCommand.errorToThrow = error;
+    await TestErrorCommand.run([]);
 
     expect(logMock.mock.calls).toEqual([
       ...expected,
@@ -42,8 +91,8 @@ describe('Vonnage command', () => {
   });
 
   test('Will include class errors', async () => {
-    TestClass.errorToThrow = new TestError();
-    await TestClass.run([]);
+    TestErrorCommand.errorToThrow = new TestError();
+    await TestErrorCommand.run([]);
 
     expect(logMock.mock.calls).toEqual([
       ['This is a test Error'],
@@ -51,4 +100,5 @@ describe('Vonnage command', () => {
       ['You can set DEBUG=* for more information'],
     ]);
   });
+
 });

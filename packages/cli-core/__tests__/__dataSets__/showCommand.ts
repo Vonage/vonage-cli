@@ -1,8 +1,9 @@
-import { ConfigParams } from '../../lib/enums';
+import { jest } from '@jest/globals';
+import { ConfigParams, ConfigData } from '@vonage/cli-config';
 import { normalize } from 'path';
-import { dumpValue } from '../../lib/ux';
 import chalk from 'chalk';
-import { ConfigData } from '../../lib/types';
+import { dumpValue } from '@vonage/cli-ux';
+
 
 const globalConfig: Record<string, ConfigData> = {
   [normalize(`${process.cwd()}/test/@oclif/core/vonage.config.json`)]: {
@@ -26,14 +27,10 @@ const globalSet = [
   [`${chalk.bold('The global API key is')}: ${dumpValue('global-key')}`],
   [`${chalk.bold('The global API secret is')}: ${dumpValue('global-secret')}`],
   [
-    `${chalk.bold('The global application ID is')}: ${dumpValue(
-      'global-application',
-    )}`,
+    `${chalk.bold('The global application ID is')}: ${dumpValue('global-application')}`,
   ],
   [
-    `${chalk.bold('The global private key is')}: ${dumpValue(
-      'global-private-key',
-    )}`,
+    `${chalk.bold('The global private key is')}: ${dumpValue('global-private-key')}`,
   ],
   [''],
 ];
@@ -50,14 +47,10 @@ const localSet = [
   [`${chalk.bold('The local API key is')}: ${dumpValue('local-key')}`],
   [`${chalk.bold('The local API secret is')}: ${dumpValue('local-secret')}`],
   [
-    `${chalk.bold('The local application ID is')}: ${dumpValue(
-      'local-application',
-    )}`,
+    `${chalk.bold('The local application ID is')}: ${dumpValue('local-application')}`,
   ],
   [
-    `${chalk.bold('The local private key is')}: ${dumpValue(
-      'local-private-key',
-    )}`,
+    `${chalk.bold('The local private key is')}: ${dumpValue('local-private-key')}`,
   ],
   [''],
 ];
@@ -73,19 +66,13 @@ const localNotSet = [
 const envSet = [
   [`${chalk.bold('The environment API key is')}: ${dumpValue('env-key')}`],
   [
-    `${chalk.bold('The environment API secret is')}: ${dumpValue(
-      'env-secret',
-    )}`,
+    `${chalk.bold('The environment API secret is')}: ${dumpValue('env-secret')}`,
   ],
   [
-    `${chalk.bold('The environment application ID is')}: ${dumpValue(
-      'env-app-id',
-    )}`,
+    `${chalk.bold('The environment application ID is')}: ${dumpValue('env-app-id')}`,
   ],
   [
-    `${chalk.bold('The environment private key is')}: ${dumpValue(
-      'env-private-key',
-    )}`,
+    `${chalk.bold('The environment private key is')}: ${dumpValue('env-private-key')}`,
   ],
   [''],
 ];
@@ -102,14 +89,10 @@ const argsSet = [
   [`${chalk.bold('The arguments API key is')}: ${dumpValue('args-key')}`],
   [`${chalk.bold('The arguments API secret is')}: ${dumpValue('args-secret')}`],
   [
-    `${chalk.bold('The arguments application ID is')}: ${dumpValue(
-      'args-app-id',
-    )}`,
+    `${chalk.bold('The arguments application ID is')}: ${dumpValue('args-app-id')}`,
   ],
   [
-    `${chalk.bold('The arguments private key is')}: ${dumpValue(
-      'args-private-key',
-    )}`,
+    `${chalk.bold('The arguments private key is')}: ${dumpValue('args-private-key')}`,
   ],
   [''],
 ];
@@ -124,7 +107,7 @@ const argsNotSet = [
 export default [
   {
     label: 'use global config',
-    commandArgs: ['--verbose'],
+    commandFlags: ['--verbose'],
     config: globalConfig,
     expected: [
       ...globalSet,
@@ -134,14 +117,10 @@ export default [
       [`${chalk.bold('The API key is')}: ${dumpValue('global-key')}`],
       [`${chalk.bold('The API secret is')}: ${dumpValue('global-secret')}`],
       [
-        `${chalk.bold('The application ID is')}: ${dumpValue(
-          'global-application',
-        )}`,
+        `${chalk.bold('The application ID is')}: ${dumpValue('global-application')}`,
       ],
       [
-        `${chalk.bold('The private key is')}: ${dumpValue(
-          'global-private-key',
-        )}`,
+        `${chalk.bold('The private key is')}: ${dumpValue('global-private-key')}`,
       ],
       [''],
     ],
@@ -149,7 +128,7 @@ export default [
   },
   {
     label: 'use local config',
-    commandArgs: ['--verbose'],
+    commandFlags: ['--verbose'],
     config: localConfig,
     expected: [
       ...globalNotSet,
@@ -159,14 +138,10 @@ export default [
       [`${chalk.bold('The API key is')}: ${dumpValue('local-key')}`],
       [`${chalk.bold('The API secret is')}: ${dumpValue('local-secret')}`],
       [
-        `${chalk.bold('The application ID is')}: ${dumpValue(
-          'local-application',
-        )}`,
+        `${chalk.bold('The application ID is')}: ${dumpValue('local-application')}`,
       ],
       [
-        `${chalk.bold('The private key is')}: ${dumpValue(
-          'local-private-key',
-        )}`,
+        `${chalk.bold('The private key is')}: ${dumpValue('local-private-key')}`,
       ],
       [''],
     ],
@@ -174,7 +149,7 @@ export default [
   },
   {
     label: 'use environment variables ',
-    commandArgs: ['--verbose'],
+    commandFlags: ['--verbose'],
     config: {},
     expected: [
       ...globalNotSet,
@@ -191,7 +166,7 @@ export default [
   },
   {
     label: 'use argument flags',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--api-key=args-key',
       '--api-secret=args-secret',
@@ -214,7 +189,7 @@ export default [
   },
   {
     label: 'follow config precedence',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--api-key=args-key',
       '--api-secret=args-secret',
@@ -240,7 +215,7 @@ export default [
   },
   {
     label: 'only output global',
-    commandArgs: ['--part=global', '--verbose'],
+    commandFlags: ['--part=global', '--verbose'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -250,7 +225,7 @@ export default [
   },
   {
     label: 'only output local',
-    commandArgs: ['--verbose', '--part=local'],
+    commandFlags: ['--verbose', '--part=local'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -260,7 +235,7 @@ export default [
   },
   {
     label: 'only output environment',
-    commandArgs: ['--verbose', '--part=environment'],
+    commandFlags: ['--verbose', '--part=environment'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -270,7 +245,7 @@ export default [
   },
   {
     label: 'only output arguments',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--part=arguments',
       '--api-key=args-key',
@@ -287,7 +262,7 @@ export default [
   },
   {
     label: 'output environment and arguments',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--part=arguments',
       '--part=environment',
@@ -305,7 +280,7 @@ export default [
   },
   {
     label: 'output API key only',
-    commandArgs: ['--verbose', '--setting=api-key', '--api-key=args-key'],
+    commandFlags: ['--verbose', '--setting=api-key', '--api-key=args-key'],
     config: {
       ...globalConfig,
       ...localConfig,
@@ -326,7 +301,7 @@ export default [
   },
   {
     label: 'output API secret only',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--setting=api-secret',
       '--api-key=args-key',
@@ -352,7 +327,7 @@ export default [
   },
   {
     label: 'output application id only ',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--setting=application-id',
       '--app-id=args-app-id',
@@ -377,7 +352,7 @@ export default [
   },
   {
     label: 'output private key only ',
-    commandArgs: [
+    commandFlags: [
       '--verbose',
       '--setting=private-key',
       '--api-key=args-key',

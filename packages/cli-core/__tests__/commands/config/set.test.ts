@@ -56,9 +56,7 @@ describe('Set Command', () => {
         return;
       }
 
-      expect(saveFile).toHaveBeenCalledWith(
-        ...(expectedConfig as Array<unknown>),
-      );
+      expect(saveFile).toHaveBeenCalledWith(...(expectedConfig as Array<unknown>));
     },
   );
 });

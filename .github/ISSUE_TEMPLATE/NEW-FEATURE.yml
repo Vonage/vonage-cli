@@ -1,0 +1,29 @@
+---
+name: New Feature Request
+description: Request a new feature
+title: "[Feature Request]: "
+labels: ["enhancement"]
+assignees: ["manchuck", "pardel", "dragonmantank"]
+body:
+ - type: textarea
+   id: feature_description
+   attributes:
+    label: Feature Description
+    description: Please provide a brief description of the feature you would
+      like to see
+   validations:
+    required: true
+ - type: textarea
+   id: feature_reason
+   attributes:
+    label: Reason for Feature
+    description: Please provide a brief description of why you think this
+      feature should be added
+ - type: input
+   id: call_example
+   attributes:
+    label: Example of Call
+    description: Please provide an example of how you would like the command
+      call to look like
+   validations:
+    required: true

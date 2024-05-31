@@ -1,3 +1,2 @@
-export * from './enums/index';
+export * from './enums';
 export * from './vonageCommand';
-export * from './vonageConfig';

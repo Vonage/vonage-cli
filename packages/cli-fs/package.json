@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@vonage/cli-fs",
+  "version": "2.0.0",
+  "description": "Filesystem utilities for Vonage CLI",
+  "keywords": [
+    "vonage"
+  ],
+  "homepage": "https://github.com/Vonage/vonage-cli/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/Vonage/vonage-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vonage/vonage-cli.git"
+  },
+  "license": "Apache-2.0",
+  "contributors": [
+    {
+      "name": "Chuck 'MANCHUCK' Reeves",
+      "url": "https://github.com/manchuck"
+    }
+  ],
+  "main": "lib/index.js",
+  "type": "module",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "dist/**",
+    "lib/**",
+    "/oclif.manifest.json"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run compile",
+    "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
+    "compile": "npx tsc --build --verbose",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@vonage/cli-ux": "2.0.0",
+    "chalk": "^4",
+    "debug": "^4.3.4"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/debug": "4.1.12"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

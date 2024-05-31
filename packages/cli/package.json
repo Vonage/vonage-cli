@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "@vonage/cli",
   "version": "2.1.0",
   "description": "CLI to interact with Vonage APIs",
@@ -9,9 +10,14 @@
   "bugs": "https://github.com/Vonage/vonage-cli/issues",
   "repository": "Vonage/vonage-cli",
   "license": "Apache 2.0",
-  "author": "Vonage Dev Rel <devrel@vonage.com>",
-  "type": "module",
+  "contributors": [
+    {
+      "name": "Chuck \"MANCHUCK\" Reeves",
+      "url": "https://github.com/manchuck"
+    }
+  ],
   "main": "lib/index.js",
+  "type": "module",
   "bin": {
     "vonage": "./bin/run.js"
   },
@@ -21,25 +27,10 @@
     "/oclif.manifest.json"
   ],
   "scripts": {
-    "build": "npm run clean && npm run compile",
+    "build": "npm run clean",
     "clean": "npx shx rm -rf dist tsconfig.tsbuildinfo",
     "compile": "npx tsc --build --verbose",
     "prepublishOnly": "npm run build"
-  },
-  "dependencies": {
-    "@oclif/core": "^2.8.8",
-    "@oclif/plugin-autocomplete": "^2.3.1",
-    "@oclif/plugin-commands": "^2.2.16",
-    "@oclif/plugin-help": "^5.2.10",
-    "@oclif/plugin-not-found": "^2.3.26",
-    "@oclif/plugin-plugins": "^3.1.5",
-    "@oclif/plugin-which": "^2.2.22",
-    "@vonage/cli-core": "^2.1.0",
-    "@vonage/cli-jwt": "^2.1.0",
-    "ts-node": "^10.9.1"
-  },
-  "engines": {
-    "node": ">=16.0.0"
   },
   "oclif": {
     "bin": "vonage",
@@ -53,5 +44,21 @@
       "@vonage/cli-core",
       "@vonage/cli-jwt"
     ]
+  },
+  "dependencies": {
+    "@oclif/core": "^3.26.6",
+    "@oclif/plugin-autocomplete": "^3.0.18",
+    "@oclif/plugin-commands": "^3.3.4",
+    "@oclif/plugin-help": "^6.0.22",
+    "@oclif/plugin-not-found": "^3.1.10",
+    "@oclif/plugin-plugins": "^5.1.3",
+    "@oclif/plugin-which": "^3.1.10",
+    "@vonage/cli-core": "^2.1.0",
+    "@vonage/cli-jwt": "^2.1.0",
+    "ts-node": "^10.9.2"
+  },
+  "engineStrict": true,
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

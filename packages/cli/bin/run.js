@@ -1,8 +1,5 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S node --loader ts-node/esm --no-warnings=ExperimentalWarning
 
-import oclif from '@oclif/core'
+import {execute} from '@oclif/core';
 
-oclif
-  .run(process.argv.slice(2), import.meta.url)
-  .then(oclif.flush)
-  .catch(oclif.Errors.handle)
+await execute({development: true, dir: import.meta.url});

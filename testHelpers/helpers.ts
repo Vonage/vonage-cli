@@ -16,6 +16,4 @@ type MockableFunction = (...args: any[]) => any
 export const asMock = <Func extends MockableFunction>(mockedFunc: Func) =>
   mockedFunc as jest.MockedFunction<typeof mockedFunc>;
 
-export const keyFile = `${path.dirname(
-  url.fileURLToPath(import.meta.url),
-)}/private.test.key`;
+export const keyFile = `${path.dirname(url.fileURLToPath(import.meta.url))}/private.test.key`;

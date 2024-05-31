@@ -13,6 +13,7 @@ jest.unstable_mockModule('../../../lib/fs', () => ({
 }));
 
 jest.unstable_mockModule('@oclif/core', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const actual = jest.requireActual('@oclif/core') as any;
   return {
     __esModule: true,
@@ -40,9 +41,7 @@ const existsMock = asMock(pathExists);
 const saveMock = asMock(saveFile);
 const promptAsMock = asMock(ux.prompt);
 
-const { default: SetupConfig } = await import(
-  '../../../lib/commands/config/setup'
-);
+const { default: SetupConfig } = await import('../../../lib/commands/config/setup');
 
 const intro = [
   [chalk.bold(`${' '.repeat(20)}Welcome to Vonage!`)],

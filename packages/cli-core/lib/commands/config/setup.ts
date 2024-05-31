@@ -32,11 +32,9 @@ You can use the command line flags to skip interactive mode`;
       : await this.vonageConfig.saveLocalConfig(this.flags.yes);
 
     /* istanbul ignore next */
-    this.log(
-      result
-        ? 'Config file saved! ✅'
-        : chalk.bold.red('Config file not saved ❌'),
-    );
+    this.log(result
+      ? 'Config file saved! ✅'
+      : chalk.bold.red('Config file not saved ❌'));
   }
 
   protected welcome(): void {
@@ -46,18 +44,18 @@ You can use the command line flags to skip interactive mode`;
     this.log(chalk.bold(SetupConfig.description));
     this.log(chalk.dim('Type "vonage config --help" for more information'));
     this.log('');
-    this.welcomeFile(
-      this.flags.global
-        ? this.vonageConfig.globalConfigFile
-        : this.vonageConfig.localConfigFile,
-    );
+    this.welcomeFile(this.flags.global
+      ? this.vonageConfig.globalConfigFile
+      : this.vonageConfig.localConfigFile);
     this.log('');
   }
 
   protected welcomeFile(file: string): void {
-    /* istanbul ignore next */
-    this.fs.pathExists(file)
-      ? this.log(`The config file: ${file} will be updated`)
-      : this.log(`The ${file} will be created`);
+    if (this.fs.pathExists(file)) {
+      this.log(`The config file: ${file} will be updated`);
+      return;
+    }
+
+    this.log(`The ${file} will be created`);
   }
 }

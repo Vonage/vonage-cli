@@ -1,4 +1,4 @@
-import { BaseSetCommand } from '../../config/baseSetCommand';
+import { BaseSetCommand } from '../../baseSetCommand';
 import { Args } from '@oclif/core';
 import kebabcase from 'lodash.kebabcase';
 import snakecase from 'lodash.snakecase';
@@ -15,7 +15,7 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
       description: 'The setting to set',
       options: Object.values(ConfigParams).map(kebabcase),
       required: true,
-      parse: (value) => snakecase(value).toUpperCase(),
+      parse: async (value) => snakecase(value).toUpperCase(),
     }),
     value: Args.string({
       description: 'Value to set',
@@ -39,20 +39,21 @@ export default class SetConfig extends BaseSetCommand<typeof SetConfig> {
     const location = global ? 'global' : 'local';
     this.log(`Setting ${global ? 'global' : 'local'} ${setting} to: ${value}`);
 
-    const currentSetting = this.vonageConfig.getVariableFrom(setting, location);
+    const currentSetting = this.vonageConfig.getVariableFrom(
+      setting as ConfigParams,
+      location,
+    );
     this.log(`The current setting is: ${this.ux.dumpValue(currentSetting)}`);
 
-    this.vonageConfig.setVariableFrom(setting, location, value);
+    this.vonageConfig.setVariableFrom(setting as string, location, value);
 
     const result = this.flags.global
       ? await this.vonageConfig.saveGlobalConfig(this.flags.yes)
       : await this.vonageConfig.saveLocalConfig(this.flags.yes);
 
     /* istanbul ignore next */
-    this.log(
-      result
-        ? 'Config file updated! ✅'
-        : chalk.bold.red('Config file not updated ❌'),
-    );
+    this.log(result
+      ? 'Config file updated! ✅'
+      : chalk.bold.red('Config file not updated ❌'));
   }
 }

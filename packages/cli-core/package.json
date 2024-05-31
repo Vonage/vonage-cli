@@ -1,7 +1,8 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "@vonage/cli-core",
   "version": "2.1.0",
-  "description": "Core utilities for vonage CLI's ",
+  "description": "Core classes for vonage CLI's ",
   "keywords": [
     "vonage"
   ],
@@ -14,8 +15,14 @@
     "url": "git+https://github.com/Vonage/vonage-cli.git"
   },
   "license": "Apache-2.0",
-  "author": "Chuck MANCHUCK Reeves <chuck@manchuck.com>",
+  "contributors": [
+    {
+      "name": "Chuck 'MANCHUCK' Reeves",
+      "url": "https://github.com/manchuck"
+    }
+  ],
   "main": "lib/index.js",
+  "type": "module",
   "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
@@ -23,6 +30,7 @@
   },
   "files": [
     "dist/**",
+    "lib/**",
     "/oclif.manifest.json"
   ],
   "scripts": {
@@ -31,22 +39,6 @@
     "compile": "npx tsc --build --verbose",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "@oclif/core": "^2.8.8",
-    "@vonage/jwt": "^1.4.0",
-    "chalk": "^4",
-    "debug": "^4.3.4",
-    "lodash.kebabcase": "^4.1.1",
-    "lodash.snakecase": "^4.1.1",
-    "lodash.startcase": "^4.4.0"
-  },
-  "devDependencies": {
-    "@jest/globals": "^29.5.0",
-    "expect-type": "^0.16.0"
-  },
-  "engines": {
-    "node": ">=16.0.0"
-  },
   "oclif": {
     "commands": "./lib/commands",
     "topics": {
@@ -54,5 +46,28 @@
         "description": "Manage Vonage config"
       }
     }
+  },
+  "dependencies": {
+    "@oclif/core": "4.0.11",
+    "@vonage/cli-fs": "2.0.0",
+    "@vonage/cli-ux": "2.0.0",
+    "@vonage/jwt": "^1.10.0",
+    "chalk": "^4",
+    "debug": "^4.3.4",
+    "lodash.kebabcase": "^4.1.1",
+    "lodash.snakecase": "^4.1.1",
+    "lodash.startcase": "^4.4.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@oclif/test": "4.0.7",
+    "@types/debug": "4.1.12",
+    "@types/lodash.kebabcase": "4.1.9",
+    "@types/lodash.snakecase": "4.1.9",
+    "@types/lodash.startcase": "4.4.9",
+    "expect-type": "^0.19.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

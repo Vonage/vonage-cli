@@ -64,7 +64,7 @@ export default [
     ])
     .flat(),
   {
-    label: `not set local config when file is not present`,
+    label: 'not set local config when file is not present',
     commandArgs: [kebabcase(ConfigParams.API_KEY), 'foo'],
     mockPathExists: false,
     mockSaveFile: true,
@@ -72,16 +72,14 @@ export default [
     expectedConfig: false,
     expectedOutput: [
       [
-        `You need to run ${dumpCommand(
-          'vonage config:setup',
-        )} before you can set a value`,
+        `You need to run ${dumpCommand('vonage config:setup')} before you can set a value`,
       ],
       [''],
       ['You can set DEBUG=* for more information'],
     ],
   },
   {
-    label: `not set global config when file is not present`,
+    label: 'not set global config when file is not present',
     commandArgs: [kebabcase(ConfigParams.API_KEY), 'foo', '--global'],
     mockPathExists: false,
     mockSaveFile: true,
@@ -89,9 +87,7 @@ export default [
     expectedConfig: false,
     expectedOutput: [
       [
-        `You need to run ${dumpCommand(
-          'vonage config:setup --global',
-        )} before you can set a value`,
+        `You need to run ${dumpCommand('vonage config:setup --global')} before you can set a value`,
       ],
       [''],
       ['You can set DEBUG=* for more information'],
