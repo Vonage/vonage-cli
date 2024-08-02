@@ -1,7 +1,7 @@
-import { ConfigData } from './types/index';
+import { ConfigData } from '../types';
 import debug from 'debug';
 import { updateConfigData, defaultConfigWithSchema, Latest } from './update';
-import { LoadFileCurry} from '@vonage/cli-fs';
+import { LoadFileCurry} from '../fs';
 
 const log = debug('@vonage:cli:config:loader');
 

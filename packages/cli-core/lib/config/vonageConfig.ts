@@ -1,11 +1,11 @@
-import { ConfigParts, ConfigParams, ConfigEnv } from './enums';
-import { ConfigData } from './types';
+import { ConfigParts, ConfigParams, ConfigEnv } from '../enums';
+import { ConfigData } from '../types';
 import debug from 'debug';
 import { loadConfigFile } from './loader';
 import { LatestVersion } from './update';
 import { ConfigInterface } from './configInterface';
 import { normalize } from 'path';
-import { FSFactory } from '@vonage/cli-fs';
+import { FSFactory } from '../fs';
 import { configFlags } from './configFlags';
 
 const log = debug('@vonage:cli:config');

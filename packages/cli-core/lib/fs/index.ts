@@ -1,4 +1,4 @@
-import { UXFactory, UXFlags } from '@vonage/cli-ux';
+import { UXFactory, UXFlags } from '../ux';
 import { PathExistsCurry, pathExists } from './pathExists';
 import { LoadFileCurry, loadFile } from './loadFile';
 import { SaveFileCurry, saveFile } from './saveFile';
@@ -12,7 +12,7 @@ import {
 } from './directory';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { normalize, parse } from 'node:path';
-import { curry3, curry4, curry5, curry9 } from './fpUtils';
+import { curry3, curry4, curry5, curry9 } from '../fpUtils';
 
 export * from './pathExists';
 export * from './loadFile';

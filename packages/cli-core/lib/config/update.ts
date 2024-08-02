@@ -1,5 +1,5 @@
-import { ConfigData } from './types';
-import { ConfigParams } from './enums';
+import { ConfigData } from '../types';
+import { ConfigParams } from '../enums';
 import debug from 'debug';
 
 const log = debug('vonage:cli:config:update');

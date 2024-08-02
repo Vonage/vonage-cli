@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { PathExistsCurry } from './pathExists';
 import { debugFsLog } from './fsDebug';
-import { ConfirmCurry } from '@vonage/cli-ux';
+import { ConfirmCurry } from '../ux';
 import { NodeParse, NodeMkdir } from './nodeTypes';
 
 export type CheckDirectoryExistsForFile = (

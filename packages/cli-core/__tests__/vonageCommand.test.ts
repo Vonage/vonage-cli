@@ -8,9 +8,6 @@ import {
 } from '../lib/vonageCommand';
 import testCases from './__dataSets__/vonageCommand';
 
-const logMock = jest.fn();
-Command.prototype.log = logMock;
-
 class TestError extends Error {
   constructor() {
     super('Invalid Application Id');
@@ -18,10 +15,13 @@ class TestError extends Error {
 }
 
 class TestRunCommand implements CommandInterface<typeof TestCommand> {
-  static calledFlags: VonageFlags<typeof TestCommand>;
-  static calledArgs: VonageArgs<typeof TestCommand>;
+  static calledFlags: VonageFlags<typeof Command>;
+  static calledArgs: VonageArgs<typeof Command>;
 
-  async run(args: VonageArgs<typeof TestCommand>, flags: VonageFlags<typeof TestCommand>): Promise<void> {
+  async run(
+    args: VonageArgs<typeof TestCommand>,
+    flags: VonageFlags<typeof TestCommand>
+  ): Promise<void> {
     TestRunCommand.calledFlags = flags;
     TestRunCommand.calledArgs = args;
   }
@@ -34,10 +34,9 @@ class TestCommand extends VonageCommand<typeof TestCommand> {
 
   static args = {
     fizz: Args.string()
-
   };
 
-  get runCommand(): CommandInterface<typeof TestCommand> {
+  get runCommand(): CommandInterface<typeof Command> {
     return new TestRunCommand();
   }
 }
@@ -69,10 +68,12 @@ describe('Vonnage command', () => {
 
     expect(TestRunCommand.calledFlags).toEqual({
       color: true,
+      debug: false,
       force: true,
       foo: 'bar',
       'screen-reader': false,
       truncate: 0,
+      verbose: false,
     });
     expect(TestRunCommand.calledArgs).toEqual({
       fizz: 'buzz',

@@ -14,12 +14,6 @@
     "dist"
   ],
 
-  "references": [
-    { "path": "../cli-ux" },
-    { "path": "../cli-config" },
-    { "path": "../cli-fs" }
-  ],
-
   "ts-node": {
     "esm": true
   }

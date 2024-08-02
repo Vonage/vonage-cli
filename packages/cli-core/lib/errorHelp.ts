@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { ConfigEnv } from '@vonage/cli-config';
+import { ConfigEnv } from './enums';
 import {
   MissingApplicationIdError,
   MissingPrivateKeyError,

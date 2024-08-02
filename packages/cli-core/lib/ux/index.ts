@@ -1,7 +1,7 @@
 import { ux } from '@oclif/core';
 import { Flags } from '@oclif/core';
 import { icon, brand } from './logo';
-import { curry2, curry3 } from './fpUtils';
+import { curry2, curry3 } from '../fpUtils';
 import terminalLink from 'terminal-link';
 import { buildReadline } from './getReadline';
 import {
@@ -99,7 +99,7 @@ export type UXFactory =  {
 }
 
 export const UXFactory = (flags?: Partial<typeof UXFlags | typeof defaultUXFlags>): UXFactory => {
-  const { 
+  const {
     force,
     truncate,
     'screen-reader': screenReader,

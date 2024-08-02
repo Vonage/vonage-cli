@@ -11,6 +11,11 @@ const projectDefault = {
     '@vonage/cli-fs': '<rootDir>/packages/cli-fs/lib/index.ts',
     '@vonage/cli-(.+)': '<rootDir>/packages/cli-$1/lib',
   },
+  coveragePathIgnorePatterns: [
+    'dist',
+    'node_modules',
+    '<rootDir>/testHelpers',
+  ],
 };
 
 const config: Config.InitialOptions = {
@@ -18,7 +23,7 @@ const config: Config.InitialOptions = {
   coverageDirectory: '<rootDir>/coverage/',
   coveragePathIgnorePatterns: [
     'node_modules',
-    '<rootDir>/testHelpers/*',
+    '<rootDir>/testHelpers',
     '<rootDir>/packages/cli/bin',
   ],
   projects: [
@@ -27,19 +32,8 @@ const config: Config.InitialOptions = {
       displayName: 'CORE',
       testMatch: ['<rootDir>/packages/cli-core/__tests__/**/*.test.ts'],
       coveragePathIgnorePatterns: [
-        'dist',
-        'node_modules',
+        ...projectDefault.coveragePathIgnorePatterns,
         '<rootDir>/packages/cli-core/__tests__',
-      ],
-    },
-    {
-      ...projectDefault,
-      displayName: 'FS',
-      testMatch: ['<rootDir>/packages/cli-fs/__tests__/**/*.test.ts'],
-      coveragePathIgnorePatterns: [
-        'dist',
-        'node_modules',
-        '<rootDir>/packages/cli-fs/__tests__',
       ],
     },
     {
@@ -47,8 +41,7 @@ const config: Config.InitialOptions = {
       displayName: 'CONFIG',
       testMatch: ['<rootDir>/packages/cli-config/__tests__/**/*.test.ts'],
       coveragePathIgnorePatterns: [
-        'dist',
-        'node_modules',
+        ...projectDefault.coveragePathIgnorePatterns,
         '<rootDir>/packages/cli-config/__tests__',
       ],
     },
@@ -57,19 +50,8 @@ const config: Config.InitialOptions = {
       displayName: 'JWT',
       testMatch: ['<rootDir>/packages/cli-jwt/__tests__/**/*.test.ts'],
       coveragePathIgnorePatterns: [
-        'dist',
-        'node_modules',
+        ...projectDefault.coveragePathIgnorePatterns,
         '<rootDir>/packages/cli-jwt/__tests__',
-      ],
-    },
-    {
-      ...projectDefault,
-      displayName: 'UX',
-      testMatch: ['<rootDir>/packages/cli-ux/__tests__/**/*.test.ts'],
-      coveragePathIgnorePatterns: [
-        'dist',
-        'node_modules',
-        '<rootDir>/packages/cli-ux/__tests__',
       ],
     },
   ],

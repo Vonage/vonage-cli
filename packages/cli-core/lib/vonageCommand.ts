@@ -1,8 +1,8 @@
 import { Command, Flags, Interfaces } from '@oclif/core';
-import { VonageConfig, ConfigInterface } from '@vonage/cli-config';
+import { VonageConfig, ConfigInterface } from './config';
 import { commonErrors } from './errorHelp';
-import { UXFactory, UXFlags } from '@vonage/cli-ux';
-import { FSFactory } from '@vonage/cli-fs';
+import { UXFactory, UXFlags } from './ux';
+import { FSFactory } from './fs';
 
 export interface CommandInterface<T extends typeof Command> {
   ux?: UXFactory;
@@ -15,15 +15,13 @@ export interface CommandInterface<T extends typeof Command> {
 }
 
 export type VonageFlags<T extends typeof Command> = Interfaces.InferredFlags<
-  (typeof VonageCommand)['baseFlags'] & T['flags']
+  T['flags'] & typeof VonageCommand['baseFlags']
 >
-
 export type VonageArgs<T extends typeof Command> = Interfaces.InferredArgs<
   T['args']
 >
 
 export abstract class VonageCommand<T extends typeof Command> extends Command {
-
   static enableJsonFlag = true;
 
   static baseFlags = {
@@ -55,9 +53,9 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
 
   protected errors: Record<string, Array<string>> = {};
 
-  protected flags!: VonageFlags<T>;
-
   protected args!: VonageArgs<T>;
+
+  protected flags!: VonageFlags<T>;
 
   protected _vonageConfig?: ConfigInterface;
 
@@ -107,11 +105,11 @@ export abstract class VonageCommand<T extends typeof Command> extends Command {
 
   async run(): Promise<void> {
     const command = this.runCommand;
-
+    
     command.ux = this.ux;
     command.fs = this.fs;
     command.config = this.vonageConfig;
-
+    
     await command.run(this.args, this.flags);
   }
 

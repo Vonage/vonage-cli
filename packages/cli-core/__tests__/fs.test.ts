@@ -11,11 +11,14 @@ import {
   saveFile,
   CheckDirectoryExistsForFileCurry,
   MakeDirectoryForFileCurry,
-} from '../lib';
-import {
   confirm,
   ConfirmCurry,
-} from '@vonage/cli-ux';
+} from '../lib';
+import {
+  NodeReadFile,
+  NodeMkdir,
+  NodeWriteFile,
+} from '../lib/fs/nodeTypes';
 import {
   existsMock,
   normalizeMock,
@@ -25,11 +28,6 @@ import {
   writeFileMock,
 } from '../../../testHelpers/mocks';
 import { ParsedPath } from 'node:path';
-import {
-  NodeReadFile,
-  NodeMkdir,
-  NodeWriteFile,
-} from '../lib/nodeTypes';
 
 const checkDirectoryExistsForFileMock = jest.fn(checkDirectoryExistsForFile);
 const makdDirectoryForFileMock = jest.fn(makeDirectoryForFile);

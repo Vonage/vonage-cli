@@ -1,4 +1,4 @@
-import { ConfigParts, ConfigParams } from './enums';
+import { ConfigParts, ConfigParams } from '../enums';
 
 export interface ConfigInterface {
   saveGlobalConfig(): Promise<boolean>;

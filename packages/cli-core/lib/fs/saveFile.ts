@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { PathExistsCurry } from './pathExists';
 import { debugFsLog } from './fsDebug';
-import { ConfirmCurry, dumpValue } from '@vonage/cli-ux';
+import { ConfirmCurry, dumpValue } from '../ux';
 import { NodeNormalize, NodeWriteFile } from './nodeTypes';
 import { CheckDirectoryExistsForFileCurry, MakeDirectoryForFileCurry } from './directory';
 

@@ -1,6 +1,13 @@
 import { describe, test, expect, jest } from '@jest/globals';
-import { VonageConfig, ConfigParams, ConfigEnv, ConfigParts  } from '../lib';
-import { FSFactory, LoadFileCurry, SaveFileCurry } from '@vonage/cli-fs';
+import {
+  FSFactory,
+  LoadFileCurry,
+  SaveFileCurry,
+  VonageConfig,
+  ConfigParams,
+  ConfigEnv,
+  ConfigParts,
+} from '../lib';
 
 type MockFS = {
   loadFile: jest.MockedFunction<LoadFileCurry> & LoadFileCurry,

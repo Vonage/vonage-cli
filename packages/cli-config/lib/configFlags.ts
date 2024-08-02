@@ -1,27 +1,23 @@
 import { Flags } from '@oclif/core';
+import { ConfigParts, ConfigParams } from '@vonage/cli-config';
 
-export const configFlags = {
-  'api-key': Flags.string({
-    aliases: ['apiKey'],
-    summary: 'API Key to use',
-    helpGroup: 'CONFIGURATION',
-    deprecateAliases: true,
+export const readConfigFlags = {
+  part: Flags.string({
+    summary: 'Only show the value from this domain',
+    options: Object.values(ConfigParts),
+    multiple: true,
   }),
-  'api-secret': Flags.string({
-    summary: 'API Secret to use',
-    helpGroup: 'CONFIGURATION',
-    dependsOn: ['api-key'],
+  setting: Flags.string({
+    summary: 'Only show this setting',
+    multiple: true,
+    options: Object.values(ConfigParams).map((value) => value.replace('_', '-').toLowerCase()),
   }),
-  'private-key': Flags.file({
-    summary: 'Private key file to use',
-    helpGroup: 'CONFIGURATION',
-    dependsOn: ['application-id', 'api-key'],
-    aliases: ['key_file'],
-    deprecateAliases: true,
-  }),
-  'application-id': Flags.file({
-    aliases: ['app-id', 'app_id'],
-    summary: 'Application id to use',
-    helpGroup: 'CONFIGURATION',
+};
+
+export const writeConfigFlags = {
+  global: Flags.boolean({
+    char: 'g',
+    summary: 'Write the global config file',
+    allowNo: false,
   }),
 };
