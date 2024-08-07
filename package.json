@@ -10,6 +10,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@vonage/server-sdk": "3.16.0",
+    "rc": "1.2.8",
     "yargs": "17.7.2"
   },
   "devDependencies": {
