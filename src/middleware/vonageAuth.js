@@ -4,6 +4,7 @@ const rc = require('rc');
 exports.getVonageAuth = async (argv) => {
   // Use any of the args passed in
   if (argv.apiKey || argv.apiSecret || argv.privateKey || argv.appId) {
+    console.info('Using passed in arguments');
     return {
       Auth: new Auth({
         apiKey: argv['api-key'],
@@ -18,17 +19,31 @@ exports.getVonageAuth = async (argv) => {
   // Check XDG_CONFIG_HOME and the windows one (rc will not this)
 
   // TODO Find nexmo cli config
+
   const authConfig = rc('vonage',{});
-  if (!authConfig) {
+  if (!authConfig.config
+    && !authConfig.API_KEY
+    && !authConfig.API_SECRET
+    && !authConfig.PRIVATE_KEY
+    && !authConfig.APP_ID
+  ) {
+    console.debug('No configuration file found');
     return {};
 
   }
+
+  console.debug('Configuration found:', authConfig);
   const normalConfig = Object.fromEntries(
     Object.entries(authConfig).map(
     ([key, value]) => [
       key.toUpperCase().replace(/-/g, '_'),
       value
     ])
+  );
+
+  console.info(authConfig.config
+    ? `Using configuration from vonage config file at ${authConfig.config}`
+    : `Using configuration from environment variables`
   );
 
   return {

@@ -2,6 +2,7 @@
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs');
 const { getVonageAuth } = require('./middleware/vonageAuth');
+const { setupLog } = require('./middleware/log');
 
 yargs(hideBin(process.argv))
   .options({
@@ -30,6 +31,7 @@ yargs(hideBin(process.argv))
       type: 'boolean',
     },
   })
+  .middleware(setupLog)
   .middleware(getVonageAuth)
   .commandDir('commands')
   .demandCommand()
