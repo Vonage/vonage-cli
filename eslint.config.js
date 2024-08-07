@@ -1,8 +1,15 @@
-// eslint-disable-next-line n/no-extraneous-import
-import globals from 'globals';
-import vonage from '@vonage/eslint-config';
+const globals = require('globals');
+const eslint = require('@eslint/js');
+const stylisticJs = require('@stylistic/eslint-plugin-js');
+const jest = require('eslint-plugin-jest');
+const nodePlugin = require('eslint-plugin-n');
 
-export default [
+module.exports = [
+  eslint.configs.recommended,
+  stylisticJs.configs['disable-legacy'],
+  nodePlugin.configs['flat/recommended'],
+  jest.configs['flat/recommended'],
+  jest.configs['flat/style'],
   {
     languageOptions: {
       ecmaVersion: 2022,
@@ -12,16 +19,17 @@ export default [
         ...globals.jest,
       }
     },
+    plugins: {
+     '@stylistic/js': stylisticJs
+    },
+    rules: {
+      '@stylistic/js/semi': ['error', 'always'],
+
+    }
   },
   {
-    files: ['packages/*/lib/**/*.{ts,tsx}'],
+    files: ['packages/*/src/**/*.{js}'],
   },
-  {
-    ignores: ['packages/*/dist/**/*.js', 'coverage/**'],
-  },
-  ...vonage.configs.typescript,
-  ...vonage.configs.jest,
-  ...vonage.configs.node,
   {
     settings: {
       node: {
