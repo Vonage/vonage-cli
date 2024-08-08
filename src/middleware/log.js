@@ -2,7 +2,7 @@ const winston = require('winston');
 const { format, transports } = winston;
 
 exports.setupLog = async (argv) => {
-  let level = 'notice';
+  let level = 'warn';
   if (argv.verbose) {
     level = 'info';
   }
@@ -14,7 +14,6 @@ exports.setupLog = async (argv) => {
   const logger = winston.createLogger({
     level: level,
     format: format.combine(
-      format.timestamp(),
       format.colorize(),
       format.padLevels(),
       format.simple(),
