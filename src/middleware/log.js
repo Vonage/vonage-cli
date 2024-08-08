@@ -19,6 +19,7 @@ exports.setupLog = async (argv) => {
       format.padLevels(),
       format.simple(),
     ),
+    // TODO Add debug file like fly.io
     transports: [new transports.Console()],
   });
 

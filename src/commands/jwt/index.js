@@ -1,0 +1,90 @@
+const { tokenGenerate } = require('@vonage/jwt');
+const Ajv = require('ajv/dist/2020');
+const schema = require('../../aclSchema.json');
+
+const ajv = new Ajv();
+const validate = ajv.compile(schema);
+
+const validateAcl = (arg) => {
+  let acl;
+  try {
+    acl = JSON.parse(arg);
+  } catch (error) {
+    throw new Error(`Failed to parse JSON for ACL: ${error}`);
+  }
+
+  const data = validate(acl);
+  if (data) {
+    return arg;
+  }
+
+  // TODO Dump to debug log
+  throw new Error(
+    `ACL Failed to validate against schema:\n${JSON.stringify(validate.errors, null, 2)}`,
+  );
+};
+
+const jwtFlags = {
+  exp: {
+    number: true,
+    describe: 'The timestamp the token expires',
+    group: 'JWT Options:',
+    coerce: (arg) => parseInt(arg, 10),
+  },
+  ttl: {
+    number: true,
+    describe: 'The time to live in seconds',
+    group: 'JWT Options:',
+    coerce: (arg) => parseInt(arg, 10),
+  },
+  sub: {
+    string: true,
+    group: 'JWT Options:',
+    describe: 'The subject of the token',
+  },
+  acl: {
+    string: true,
+    group: 'JWT Options:',
+    describe: 'The access control list for the token',
+    coerce: validateAcl,
+  },
+  claim: {
+    array: true,
+    group: 'JWT Options:',
+    describe: 'Additional claims for the token',
+  },
+};
+
+exports.jwtFlags = jwtFlags;
+
+exports.command = 'jwt';
+
+exports.desc = 'Create a JWT token for authentication';
+
+exports.aliases = ['jwt create'];
+
+exports.builder = jwtFlags;
+
+exports.handler = (argv) => {
+  console.info('Creating JWT token');
+
+  console.debug(`App ID: ${argv.appId}`);
+  console.debug(`Expiry: ${argv.exp}`);
+  console.debug(`TTL: ${argv.ttl}`);
+  console.debug(`Subject: ${argv.sub}`);
+  console.debug(`ACL: ${argv.acl}`);
+  console.debug(`Claims: ${argv.claim}`);
+
+  const token = tokenGenerate(
+    argv.appId,
+    argv.privateKey,
+    {
+      acl: argv.acl,
+      exp: argv.exp,
+      ttl: argv.ttl,
+      sub: argv.sub,
+    },
+  );
+
+  console.log(token);
+};
