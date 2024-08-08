@@ -1,11 +1,11 @@
 #!/usr/bin/env -S node
-const { hideBin, } = require('yargs/helpers',);
-const yargs = require('yargs',);
-const { getVonageAuth, } = require('./middleware/vonageAuth',);
-const { setupLog, } = require('./middleware/log',);
-const { readFileSync, existsSync, } = require('node:fs',);
+const { hideBin } = require('yargs/helpers');
+const yargs = require('yargs');
+const { getVonageAuth } = require('../src/middleware/vonageAuth');
+const { setupLog } = require('../src/middleware/log');
+const { readFileSync, existsSync } = require('node:fs');
 
-yargs(hideBin(process.argv,),)
+yargs(hideBin(process.argv))
   .options({
     'api-key': {
       describe: 'Your Vonage API key',
@@ -24,8 +24,8 @@ yargs(hideBin(process.argv,),)
       type: 'string',
       group: 'Vonage Credentials:',
       implies: 'app-id',
-      coerce: (arg,) => existsSync(arg,)
-        ? readFileSync(arg, 'utf-8',)
+      coerce: (arg) => existsSync(arg)
+        ? readFileSync(arg, 'utf-8')
         : arg,
     },
     'app-id': {
@@ -45,10 +45,10 @@ yargs(hideBin(process.argv,),)
       type: 'boolean',
       group: 'UX',
     },
-  },)
-  .middleware(setupLog,)
-  .middleware(getVonageAuth,)
-  .commandDir('commands', {recurse: true,},)
+  })
+  .middleware(setupLog)
+  .middleware(getVonageAuth)
+  .commandDir('../src/commands', {recurse: true})
   .demandCommand()
   .help()
   .parse();
