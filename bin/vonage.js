@@ -48,7 +48,7 @@ yargs(hideBin(process.argv))
   })
   .middleware(setupLog)
   .middleware(getVonageAuth)
-  .commandDir('../src/commands', {recurse: true})
+  .commandDir('../src/commands')
   .demandCommand()
   .help()
   .parse();
