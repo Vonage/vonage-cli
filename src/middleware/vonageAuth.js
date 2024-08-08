@@ -6,6 +6,10 @@ exports.getVonageAuth = async (argv) => {
   if (argv.apiKey || argv.apiSecret || argv.privateKey || argv.appId) {
     console.info('CLI Config - Using passed in arguments');
     return {
+      apiKey: argv['api-key'],
+      apiSecret: argv['api-secret'],
+      privateKey: argv['private-key'],
+      appId: argv['app-id'],
       Auth: new Auth({
         apiKey: argv['api-key'],
         apiSecret: argv['api-secret'],
@@ -47,6 +51,10 @@ exports.getVonageAuth = async (argv) => {
   );
 
   return {
+    apiKey: normalConfig.API_KEY,
+    apiSecret: normalConfig.API_SECRET,
+    privateKey: normalConfig.PRIVATE_KEY,
+    appId: normalConfig.APP_ID,
     Auth: new Auth({
       apiKey: normalConfig.API_KEY,
       apiSecret: normalConfig.API_SECRET,
