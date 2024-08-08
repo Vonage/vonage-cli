@@ -4,14 +4,14 @@ const rc = require('rc');
 exports.getVonageAuth = async (argv) => {
   // Use any of the args passed in
   if (argv.apiKey || argv.apiSecret || argv.privateKey || argv.appId) {
-    console.info('Using passed in arguments');
+    console.info('CLI Config - Using passed in arguments');
     return {
       Auth: new Auth({
         apiKey: argv['api-key'],
         apiSecret: argv['api-secret'],
         privateKey: argv['private-key'],
         applicationId: argv['app-id'],
-      })
+      }),
     };
   }
 
@@ -27,23 +27,23 @@ exports.getVonageAuth = async (argv) => {
     && !authConfig.PRIVATE_KEY
     && !authConfig.APP_ID
   ) {
-    console.debug('No configuration file found');
+    console.debug('CLI Config - No configuration file found');
     return {};
 
   }
 
-  console.debug('Configuration found:', authConfig);
+  console.debug('CLI Config - Configuration found:', authConfig);
   const normalConfig = Object.fromEntries(
     Object.entries(authConfig).map(
-    ([key, value]) => [
-      key.toUpperCase().replace(/-/g, '_'),
-      value
-    ])
+      ([key, value]) => [
+        key.toUpperCase().replace(/-/g, '_'),
+        value,
+      ]),
   );
 
   console.info(authConfig.config
     ? `Using configuration from vonage config file at ${authConfig.config}`
-    : `Using configuration from environment variables`
+    : 'Using configuration from environment variables',
   );
 
   return {
@@ -52,6 +52,6 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: normalConfig.API_SECRET,
       privateKey: normalConfig.PRIVATE_KEY,
       applicationId: normalConfig.APP_ID,
-    })
+    }),
   };
 };
