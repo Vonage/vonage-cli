@@ -15,7 +15,7 @@ const validateAcl = (arg) => {
 
   const data = validate(acl);
   if (data) {
-    return arg;
+    return acl;
   }
 
   // TODO Dump to debug log
@@ -48,20 +48,14 @@ const jwtFlags = {
     describe: 'The access control list for the token',
     coerce: validateAcl,
   },
-  claim: {
-    array: true,
-    group: 'JWT Options:',
-    describe: 'Additional claims for the token',
-  },
+  // TODO Restore claims
 };
 
 exports.jwtFlags = jwtFlags;
 
-exports.command = 'jwt';
+exports.command = 'create';
 
 exports.desc = 'Create a JWT token for authentication';
-
-exports.aliases = ['jwt create'];
 
 exports.builder = jwtFlags;
 

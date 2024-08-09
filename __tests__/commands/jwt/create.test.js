@@ -1,10 +1,10 @@
 const { faker } = require('@faker-js/faker');
-const { handler, jwtFlags } = require('../../../src/commands/jwt');
+const { handler, jwtFlags } = require('../../../src/commands/jwt/create');
 const { mockConsole } = require('../../helpers');
 const { getTestData } = require('../../common');
 const jwt = require('jsonwebtoken');
 
-describe('Command: vonage jwt', () => {
+describe('Command: vonage jwt create', () => {
   let consoleMock;
 
   beforeEach(() => {
@@ -12,7 +12,6 @@ describe('Command: vonage jwt', () => {
   });
 
   test('should generate a JWT', async () => {
-    expect(true).toBe(true);
     const {globalArgs, privateKey} = getTestData();
     handler({
       ...globalArgs,
@@ -31,7 +30,6 @@ describe('Command: vonage jwt', () => {
   });
 
   test('should generate a JWT with a subject', async () => {
-    expect(true).toBe(true);
     const {globalArgs, privateKey} = getTestData();
     const sub = faker.string.alpha(10);
     handler({
@@ -46,8 +44,7 @@ describe('Command: vonage jwt', () => {
     expect(decoded.sub).toBe(sub);
   });
 
-  test('should generate a JWT with am acl', async () => {
-    expect(true).toBe(true);
+  test('should generate a JWT with an acl', async () => {
     const {globalArgs, privateKey} = getTestData();
     const acl = {
       'acl': {
@@ -73,7 +70,7 @@ describe('Command: vonage jwt', () => {
     });
 
     expect(jwtFlags.acl.coerce(JSON.stringify(acl)))
-      .toBe(JSON.stringify(acl));
+      .toEqual(acl);
 
     expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
     expect(consoleMock.log).toHaveBeenCalled();
