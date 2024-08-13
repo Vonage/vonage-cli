@@ -1,4 +1,5 @@
 const winston = require('winston');
+const { table } = require('../ux/table');
 const { format, transports } = winston;
 
 exports.setupLog = async (argv) => {
@@ -26,6 +27,7 @@ exports.setupLog = async (argv) => {
   console.warn = (...args) => logger.warn.call(logger, ...args);
   console.error = (...args) => logger.error.call(logger, ...args);
   console.debug = (...args) => logger.debug.call(logger, ...args);
+  console.table = (...args) => table.call(...args);
 
   return {
     logger: logger,
