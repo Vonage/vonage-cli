@@ -45,12 +45,15 @@
   "dependencies": {
     "@vonage/auth": "1.11.0",
     "@vonage/jwt": "1.11.0",
+    "@vonage/server-client": "1.13.0",
     "@vonage/server-sdk": "3.16.0",
     "ajv": "8.17.1",
     "chalk": "4",
+    "easy-table": "1.2.0",
     "jsonwebtoken": "9.0.2",
     "rc": "1.2.8",
     "winston": "3.13.1",
+    "yaml": "2.5.0",
     "yargs": "17.7.2"
   },
   "devDependencies": {
