@@ -2,6 +2,20 @@ const { Auth } = require('@vonage/auth');
 const { Vonage } = require('@vonage/server-sdk');
 const rc = require('rc');
 
+const configFileName = '.vonagerc';
+const globalConfigPath = `${process.env.XDG_CONFIG_HOME || process.env.HOME + '/.config'}/vonage`;
+const globalConfigFile = `${globalConfigPath}/${configFileName}`;
+
+const localConfigPath = process.cwd();
+const localConfigFile = `${localConfigPath}/${configFileName}`;
+
+const sharedConfig = {
+  globalConfigPath,
+  globalConfigFile,
+  localConfigPath,
+  localConfigFile,
+};
+
 exports.getVonageAuth = async (argv) => {
   // Use any of the args passed in
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {
@@ -12,21 +26,20 @@ exports.getVonageAuth = async (argv) => {
       privateKey: argv['private-key'],
       applicationId: argv['app-id'],
     });
+
     return {
       apiKey: argv['api-key'],
       apiSecret: argv['api-secret'],
       privateKey: argv['private-key'],
       appId: argv['app-id'],
+      config: sharedConfig,
       Auth: auth,
       SDK: new Vonage(auth),
     };
   }
 
-  // TODO: Find global config
-  // Check XDG_CONFIG_HOME and the windows one (rc will not this)
-
+  // TODO Check XDG_CONFIG_HOME and the windows one (rc will not this)
   // TODO Find nexmo cli config
-
   const authConfig = rc('vonage',{});
   if (!authConfig.config
     && !authConfig.API_KEY
@@ -52,6 +65,7 @@ exports.getVonageAuth = async (argv) => {
     ? `Using configuration from vonage config file at ${authConfig.config}`
     : 'Using configuration from environment variables',
   );
+
   const auth = new Auth({
     apiKey: normalConfig.API_KEY,
     apiSecret: normalConfig.API_SECRET,
@@ -64,6 +78,7 @@ exports.getVonageAuth = async (argv) => {
     apiSecret: normalConfig.API_SECRET,
     privateKey: normalConfig.PRIVATE_KEY,
     appId: normalConfig.APP_ID,
+    config: sharedConfig,
     Auth: auth,
     SDK: new Vonage(auth),
   };
