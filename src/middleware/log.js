@@ -27,7 +27,7 @@ exports.setupLog = async (argv) => {
   console.warn = (...args) => logger.warn.call(logger, ...args);
   console.error = (...args) => logger.error.call(logger, ...args);
   console.debug = (...args) => logger.debug.call(logger, ...args);
-  console.table = (...args) => table.call(...args);
+  console.table = (...args) => console.log(table(...args));
 
   return {
     logger: logger,
