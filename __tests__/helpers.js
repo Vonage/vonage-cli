@@ -3,6 +3,7 @@ const info = console.info;
 const debug = console.debug;
 const error = console.error;
 const warn = console.warn;
+const table = console.table;
 
 afterAll(() => {
   console.log = log;
@@ -10,6 +11,7 @@ afterAll(() => {
   console.debug = debug;
   console.error = error;
   console.warn = warn;
+  console.table = table;
 });
 
 exports.mockConsole = () => {
@@ -18,5 +20,6 @@ exports.mockConsole = () => {
   console.info = jest.fn();
   console.debug = jest.fn();
   console.error = jest.fn();
+  console.table = jest.fn();
   return console;
 };

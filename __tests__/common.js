@@ -5,7 +5,7 @@ const Transport = require('winston-transport');
 const { format } = winston;
 
 class NullTransport extends Transport {
-  log(info, callback) {
+  log(_, callback) {
     callback();
   }
 }
@@ -23,6 +23,8 @@ const testLogger = winston.createLogger({
 
 exports.getTestData = () => {
   const appId = faker.string.uuid();
+  // This is a test key and is not assigned to a real account
+  // However it can be used to generate JWT tokens
   const privateKey = `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDTH8cEhJKsu2hB
 ucgs0Blf3tvgdXuIa5sMRI3zIZGok8jqaj6DC0WdM1eiJlQCWnVL0vR25MkopMZN
@@ -55,7 +57,7 @@ doWDENAr/VU1RNCDwFdxYFg=
   const apiSecret = faker.string.alpha(16);
 
 
-  const globalArgs = {
+  const globalArgs = Object.freeze({
     auth: new Auth({
       appId: appId,
       privateKey: privateKey,
@@ -66,6 +68,7 @@ doWDENAr/VU1RNCDwFdxYFg=
     privateKey: privateKey,
     apiKey: apiKey,
     apiSecret: apiSecret,
+    source: 'CLI arguments',
     logger: {
       ...testLogger,
       info: jest.fn(),
@@ -74,13 +77,35 @@ doWDENAr/VU1RNCDwFdxYFg=
       log: jest.fn(),
       warn: jest.fn(),
     },
-  };
+    config: {
+      localConfigFile: faker.system.filePath(),
+      globalConfigFile: faker.system.filePath(),
+      cli: {
+        apiKey: apiKey,
+        apiSecret: apiSecret,
+        privateKey: privateKey,
+        appId: appId,
+      },
+      local: {
+        apiKey: faker.string.alpha(16),
+        apiSecret: faker.string.alpha(16),
+        privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
+        appId: faker.string.uuid(),
+      },
+      global: {
+        apiKey: faker.string.alpha(16),
+        apiSecret: faker.string.alpha(16),
+        privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
+        appId: faker.string.uuid(),
+      },
+    },
+  });
 
-  return {
+  return Object.freeze({
     appId: appId,
     privateKey: privateKey,
     apiKey: apiKey,
     apiSecret: apiSecret,
     globalArgs: globalArgs,
-  };
+  });
 };

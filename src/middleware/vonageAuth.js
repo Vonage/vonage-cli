@@ -1,8 +1,9 @@
 const { Auth } = require('@vonage/auth');
 const { Vonage } = require('@vonage/server-sdk');
-const rc = require('rc');
+const { readFileSync, existsSync } = require('fs');
 
 const configFileName = '.vonagerc';
+
 const globalConfigPath = `${process.env.XDG_CONFIG_HOME || process.env.HOME + '/.config'}/vonage`;
 const globalConfigFile = `${globalConfigPath}/${configFileName}`;
 
@@ -16,69 +17,83 @@ const sharedConfig = {
   localConfigFile,
 };
 
-exports.getVonageAuth = async (argv) => {
-  // Use any of the args passed in
+const decideConfig = (argv, config, localConfigExists, globalConfigExists) => {
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {
-    console.info('CLI Config - Using passed in arguments');
-    const auth = new Auth({
-      apiKey: argv['api-key'],
-      apiSecret: argv['api-secret'],
-      privateKey: argv['private-key'],
-      applicationId: argv['app-id'],
-    });
+    console.debug('Using passed in arguments');
+    return config.cli;
+  }
 
-    return {
+  if (localConfigExists) {
+    console.debug('Using local config file');
+    return config.local;
+  }
+
+  if (globalConfigExists) {
+    console.debug('Using global config file');
+    return config.global;
+  }
+
+  throw new Error('No configuration found');
+};
+
+exports.getVonageAuth = async (argv) => {
+  const config = {
+    ...sharedConfig,
+    local: {},
+    global: {},
+    cli: {
       apiKey: argv['api-key'],
       apiSecret: argv['api-secret'],
       privateKey: argv['private-key'],
       appId: argv['app-id'],
-      config: sharedConfig,
-      Auth: auth,
-      SDK: new Vonage(auth),
+      source: 'CLI arguments',
+    },
+  };
+
+  const localConfigExists = existsSync(localConfigFile);
+  console.debug(`Local config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
+
+  if (localConfigExists) {
+    console.debug('Reading Local Config');
+    const localConfig = JSON.parse(readFileSync(localConfigFile, 'utf8'));
+    console.debug('Local Config:', localConfig);
+    config.local = {
+      apiKey: localConfig['api-key'],
+      apiSecret: localConfig['api-secret'],
+      privateKey: localConfig['private-key'],
+      appId: localConfig['app-id'],
+      source: 'Local config file',
     };
   }
 
-  // TODO Check XDG_CONFIG_HOME and the windows one (rc will not this)
-  // TODO Find nexmo cli config
-  const authConfig = rc('vonage',{});
-  if (!authConfig.config
-    && !authConfig.API_KEY
-    && !authConfig.API_SECRET
-    && !authConfig.PRIVATE_KEY
-    && !authConfig.APP_ID
-  ) {
-    console.debug('CLI Config - No configuration file found');
-    return {};
+  const globalConfigExists = existsSync(globalConfigFile);
+  console.debug(`Global Config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
 
+  if (globalConfigExists) {
+    console.debug('Reading global Config');
+    const globalConfig = JSON.parse(readFileSync(globalConfigFile, 'utf8'));
+    console.debug('global Config:', globalConfig);
+    config.global = {
+      apiKey: globalConfig['api-key'],
+      apiSecret: globalConfig['api-secret'],
+      privateKey: globalConfig['private-key'],
+      appId: globalConfig['app-id'],
+      source: 'Global config file',
+    };
   }
 
-  console.debug('CLI Config - Configuration found:', authConfig);
-  const normalConfig = Object.fromEntries(
-    Object.entries(authConfig).map(
-      ([key, value]) => [
-        key.toUpperCase().replace(/-/g, '_'),
-        value,
-      ]),
+  const authConfig = decideConfig(
+    argv,
+    config,
+    localConfigExists,
+    globalConfigExists,
   );
 
-  console.info(authConfig.config
-    ? `Using configuration from vonage config file at ${authConfig.config}`
-    : 'Using configuration from environment variables',
-  );
-
-  const auth = new Auth({
-    apiKey: normalConfig.API_KEY,
-    apiSecret: normalConfig.API_SECRET,
-    privateKey: normalConfig.PRIVATE_KEY,
-    applicationId: normalConfig.APP_ID,
-  });
+  const auth = new Auth(authConfig);
 
   return {
-    apiKey: normalConfig.API_KEY,
-    apiSecret: normalConfig.API_SECRET,
-    privateKey: normalConfig.PRIVATE_KEY,
-    appId: normalConfig.APP_ID,
-    config: sharedConfig,
+    ...authConfig,
+    config: config,
     Auth: auth,
     SDK: new Vonage(auth),
   };

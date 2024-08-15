@@ -45,13 +45,11 @@
   "dependencies": {
     "@vonage/auth": "1.11.0",
     "@vonage/jwt": "1.11.0",
-    "@vonage/server-client": "1.13.0",
     "@vonage/server-sdk": "3.16.0",
     "ajv": "8.17.1",
     "chalk": "4",
     "easy-table": "1.2.0",
     "jsonwebtoken": "9.0.2",
-    "rc": "1.2.8",
     "winston": "3.13.1",
     "yaml": "2.5.0",
     "yargs": "17.7.2"
@@ -60,7 +58,6 @@
     "@eslint/js": "9.8.0",
     "@faker-js/faker": "8.4.1",
     "@stylistic/eslint-plugin-js": "2.6.1",
-    "@vonage/eslint-config": "1.2.0",
     "eslint-plugin-jest": "28.7.0",
     "eslint-plugin-n": "17.10.2",
     "globals": "15.9.0",
