@@ -1,7 +1,7 @@
 const { faker } = require('@faker-js/faker');
 const { handler } = require('../../../src/commands/jwt/validate');
 const { mockConsole } = require('../../helpers');
-const { getTestData } = require('../../common');
+const { getTestMiddlewareArgs, testPrivateKey } = require('../../common');
 const jwt = require('jsonwebtoken');
 
 describe('Command: vonage jwt validate', () => {
@@ -12,20 +12,21 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should validate token', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         exp: parseInt(Date.now() / 1000) + 3600000,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
       },
     );
     handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     });
 
@@ -33,13 +34,13 @@ describe('Command: vonage jwt validate', () => {
     expect(consoleMock.log.mock.calls).toEqual([
       ['✅ Token was signed with the correct private key'],
       ['✅ Token has not expired'],
-      [`✅ Application Id [${globalArgs.appId}] matches [${globalArgs.appId}]`],
+      [`✅ Application Id [${args.appId}] matches [${args.appId}]`],
       ['✅ All checks complete! Token is valid'],
     ]);
   });
 
   test('should validate token with sub and acl', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const sub = faker.string.alpha(10);
     const acl = {
       'acl': {
@@ -60,12 +61,12 @@ describe('Command: vonage jwt validate', () => {
     };
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         sub: sub,
         nbf: parseInt(Date.now() / 1000) - 3600,
         acl: acl,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -73,9 +74,10 @@ describe('Command: vonage jwt validate', () => {
     );
 
     handler({
-      ...globalArgs,
+      ...args,
       sub: sub,
       token: token,
+      privateKey: testPrivateKey,
       acl: acl,
     });
 
@@ -84,7 +86,7 @@ describe('Command: vonage jwt validate', () => {
     expect(consoleMock.log.mock.calls).toEqual([
       ['✅ Token was signed with the correct private key'],
       ['✅ Token not before time is valid'],
-      [`✅ Application Id [${globalArgs.appId}] matches [${globalArgs.appId}]`],
+      [`✅ Application Id [${args.appId}] matches [${args.appId}]`],
       [`✅ Subject [${sub}] matches [${sub}]`],
       ['✅ ACL matches'],
       ['✅ All checks complete! Token is valid'],
@@ -92,7 +94,7 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should validate token with claims but not arguments', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const sub = faker.string.alpha(10);
     const acl = {
       'acl': {
@@ -113,11 +115,11 @@ describe('Command: vonage jwt validate', () => {
     };
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         sub: sub,
         acl: acl,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -125,7 +127,8 @@ describe('Command: vonage jwt validate', () => {
     );
 
     handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     });
 
@@ -138,13 +141,13 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should fail to validate token when application id mismatches', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const wrongAppId = faker.string.uuid();
     const token = jwt.sign(
       {
         application_id: wrongAppId,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -152,25 +155,26 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     })).toThrow(
-      `Application Id [${wrongAppId}] does not match [${globalArgs.appId}]`,
+      `Application Id [${wrongAppId}] does not match [${args.appId}]`,
     );
 
-    expect(consoleMock.log.mock.calls[1]).toEqual([`❌ Application Id [${wrongAppId}] does not match [${globalArgs.appId}]`]);
+    expect(consoleMock.log.mock.calls[1]).toEqual([`❌ Application Id [${wrongAppId}] does not match [${args.appId}]`]);
   });
 
   test('should fail to validate token when subject mismatches', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const wrongSub = faker.string.alpha(10);
     const correctSub = faker.string.alpha(10);
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         sub: wrongSub,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -178,8 +182,9 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
       token: token,
+      privateKey: testPrivateKey,
       sub: correctSub,
     })).toThrow(
       `Subject [${wrongSub}] does not match [${correctSub}]`,
@@ -192,13 +197,13 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should fail to validate token when token is expired', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         exp: parseInt(Date.now() / 1000) - 3600000,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -206,7 +211,8 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     })).toThrow('Token has expired');
 
@@ -216,13 +222,13 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should fail to validate token when token is nbf is before current date', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         nbf: parseInt(Date.now() / 1000) + 3600,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -230,7 +236,8 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     })).toThrow('Token is not yet valid');
 
@@ -240,7 +247,7 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should fail to validate token when acl mismatches', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const wrongAcl = {
       'acl': {
         'paths': {
@@ -263,11 +270,11 @@ describe('Command: vonage jwt validate', () => {
 
     const token = jwt.sign(
       {
-        application_id: globalArgs.appId,
+        application_id: args.appId,
         acl: wrongAcl,
         exp: parseInt(Date.now() / 1000) + 3600000,
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -275,8 +282,9 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
       token: token,
+      privateKey: testPrivateKey,
       acl: correctAcl,
     })).toThrow('ACL does not match');
 
@@ -284,11 +292,11 @@ describe('Command: vonage jwt validate', () => {
   });
 
   test('should fail to validate token when token is missing application id', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
       },
-      privateKey,
+      testPrivateKey,
       {
         algorithm: 'RS256',
         header: { typ: 'JWT', alg: 'RS256' },
@@ -296,7 +304,8 @@ describe('Command: vonage jwt validate', () => {
     );
 
     expect(() => handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       token: token,
     })).toThrow('Application Id is not present in the token');
 

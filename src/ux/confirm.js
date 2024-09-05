@@ -1,4 +1,4 @@
-import readline  from 'node:readline';
+const readline  = require('node:readline');
 
 exports.confirm = (
   message,

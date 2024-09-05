@@ -31,8 +31,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "jest --silent --verbose",
+    "test:watch": "jest --verbose --silent --watchAll"
   },
   "lint-staged": {
     "package.json": [

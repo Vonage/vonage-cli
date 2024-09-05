@@ -1,7 +1,7 @@
 const { faker } = require('@faker-js/faker');
 const { handler, jwtFlags } = require('../../../src/commands/jwt/create');
 const { mockConsole } = require('../../helpers');
-const { getTestData } = require('../../common');
+const { getTestMiddlewareArgs, testPrivateKey } = require('../../common');
 const jwt = require('jsonwebtoken');
 
 describe('Command: vonage jwt create', () => {
@@ -12,40 +12,42 @@ describe('Command: vonage jwt create', () => {
   });
 
   test('should generate a JWT', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
     });
     expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
     expect(consoleMock.log).toHaveBeenCalled();
     const generatedToken = consoleMock.log.mock.calls[0][0];
 
-    const decoded = jwt.verify(generatedToken, privateKey, { algorithms: ['RS256'] });
+    const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded).toHaveProperty('iat');
     expect(decoded).toHaveProperty('jti');
     expect(decoded).toHaveProperty('exp');
     expect(decoded).not.toHaveProperty('acl');
     expect(decoded).not.toHaveProperty('sub');
-    expect(decoded.application_id).toBe(globalArgs.appId);
+    expect(decoded.application_id).toBe(args.appId);
   });
 
   test('should generate a JWT with a subject', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const sub = faker.string.alpha(10);
     handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       sub: sub,
     });
     expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
     expect(consoleMock.log).toHaveBeenCalled();
     const generatedToken = consoleMock.log.mock.calls[0][0];
 
-    const decoded = jwt.verify(generatedToken, privateKey, { algorithms: ['RS256'] });
+    const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded.sub).toBe(sub);
   });
 
   test('should generate a JWT with an acl', async () => {
-    const {globalArgs, privateKey} = getTestData();
+    const args = getTestMiddlewareArgs();
     const acl = {
       'acl': {
         'paths': {
@@ -65,7 +67,8 @@ describe('Command: vonage jwt create', () => {
     };
 
     handler({
-      ...globalArgs,
+      ...args,
+      privateKey: testPrivateKey,
       acl: JSON.stringify(acl),
     });
 
@@ -76,7 +79,7 @@ describe('Command: vonage jwt create', () => {
     expect(consoleMock.log).toHaveBeenCalled();
     const generatedToken = consoleMock.log.mock.calls[0][0];
 
-    const decoded = jwt.verify(generatedToken, privateKey, { algorithms: ['RS256'] });
+    const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded.acl).toBe(JSON.stringify(acl));
   });
 

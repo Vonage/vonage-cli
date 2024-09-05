@@ -6,18 +6,21 @@ const configFileName = '.vonagerc';
 
 const globalConfigPath = `${process.env.XDG_CONFIG_HOME || process.env.HOME + '/.config'}/vonage`;
 const globalConfigFile = `${globalConfigPath}/${configFileName}`;
+const globalConfigExists = existsSync(globalConfigFile);
 
 const localConfigPath = process.cwd();
 const localConfigFile = `${localConfigPath}/${configFileName}`;
+const localConfigExists = existsSync(localConfigFile);
 
 const sharedConfig = {
-  globalConfigPath,
-  globalConfigFile,
-  localConfigPath,
-  localConfigFile,
+  globalConfigPath: globalConfigPath,
+  globalConfigFile: globalConfigFile,
+
+  localConfigPath: localConfigPath,
+  localConfigFile: localConfigFile,
 };
 
-const decideConfig = (argv, config, localConfigExists, globalConfigExists) => {
+const decideConfig = (argv, config) => {
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {
     console.debug('Using passed in arguments');
     return config.cli;
@@ -46,11 +49,9 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: argv['api-secret'],
       privateKey: argv['private-key'],
       appId: argv['app-id'],
-      source: 'CLI arguments',
     },
   };
 
-  const localConfigExists = existsSync(localConfigFile);
   console.debug(`Local config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
 
   if (localConfigExists) {
@@ -62,11 +63,9 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: localConfig['api-secret'],
       privateKey: localConfig['private-key'],
       appId: localConfig['app-id'],
-      source: 'Local config file',
     };
   }
 
-  const globalConfigExists = existsSync(globalConfigFile);
   console.debug(`Global Config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
 
   if (globalConfigExists) {
@@ -78,16 +77,10 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: globalConfig['api-secret'],
       privateKey: globalConfig['private-key'],
       appId: globalConfig['app-id'],
-      source: 'Global config file',
     };
   }
 
-  const authConfig = decideConfig(
-    argv,
-    config,
-    localConfigExists,
-    globalConfigExists,
-  );
+  const authConfig = decideConfig(argv, config);
 
   const auth = new Auth(authConfig);
 

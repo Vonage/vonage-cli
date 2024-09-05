@@ -2,9 +2,9 @@ process.env.FORCE_COLOR = 0;
 const yaml = require('yaml');
 const { handler } = require('../../../src/commands/auth');
 const { mockConsole } = require('../../helpers');
-const { getTestData } = require('../../common');
+const { getTestMiddlewareArgs } = require('../../common');
 
-describe('Command: vonage jwt create', () => {
+describe('Command: vonage auth', () => {
   let consoleMock;
 
   beforeEach(() => {
@@ -12,12 +12,12 @@ describe('Command: vonage jwt create', () => {
   });
 
   test('should show the table of configs', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
     });
 
-    const { config } = globalArgs;
+    const { config } = args;
     expect(consoleMock.info).toHaveBeenCalledWith('Displaying auth information');
     expect(consoleMock.log.mock.calls[3][0]).toBe(`The local configuration file is ${config.localConfigFile}`);
     expect(consoleMock.log.mock.calls[4][0]).toBe(`The global configuration file is ${config.globalConfigFile}`);
@@ -27,19 +27,19 @@ describe('Command: vonage jwt create', () => {
         'API Secret': config.cli.apiSecret,
         'Private Key': config.cli.privateKey,
         'Application ID': config.cli.appId,
-        'Source': 'CLI arguments',
+        'Source': 'Not Set',
       },
     ]);
   });
 
   test('should show the table of configs for global only', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       global: true,
     });
 
-    const {config } = globalArgs;
+    const {config } = args;
     expect(consoleMock.table.mock.calls[0][0]).toEqual([
       {
         'API Key': config.global.apiKey,
@@ -52,13 +52,13 @@ describe('Command: vonage jwt create', () => {
   });
 
   test('should show the table of configs for local only', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       local: true,
     });
 
-    const {config } = globalArgs;
+    const {config } = args;
     expect(consoleMock.table.mock.calls[0][0]).toEqual([
       {
         'Source': 'Local file',
@@ -71,53 +71,53 @@ describe('Command: vonage jwt create', () => {
   });
 
   test('should dump the JSON of the local config', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       local: true,
       json: true,
     });
 
-    const {config} = globalArgs;
+    const {config} = args;
     expect(consoleMock.table).not.toHaveBeenCalled();
     expect(consoleMock.log.mock.calls).toEqual([[JSON.stringify(config.local, null, 2)]]);
   });
 
   test('should dump the JSON of the global config', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       global: true,
       json: true,
     });
 
-    const {config} = globalArgs;
+    const {config} = args;
     expect(consoleMock.table).not.toHaveBeenCalled();
     expect(consoleMock.log.mock.calls).toEqual([[JSON.stringify(config.global, null, 2)]]);
   });
 
   test('should dump the YAML of the local config', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       local: true,
       yaml: true,
     });
 
-    const {config} = globalArgs;
+    const {config} = args;
     expect(consoleMock.table).not.toHaveBeenCalled();
     expect(consoleMock.log.mock.calls).toEqual([[yaml.stringify(config.local, null, 2)]]);
   });
 
   test('should dump the YAML of the global config', async () => {
-    const { globalArgs } = getTestData();
+    const args = getTestMiddlewareArgs();
     handler({
-      ...globalArgs,
+      ...args,
       global: true,
       yaml: true,
     });
 
-    const {config} = globalArgs;
+    const {config} = args;
     expect(consoleMock.table).not.toHaveBeenCalled();
     expect(consoleMock.log.mock.calls).toEqual([[yaml.stringify(config.global, null, 2)]]);
   });

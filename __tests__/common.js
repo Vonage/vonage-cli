@@ -10,22 +10,9 @@ class NullTransport extends Transport {
   }
 }
 
-const testLogger = winston.createLogger({
-  level: 'debug',
-  format: format.combine(
-    format.timestamp(),
-    format.colorize(),
-    format.padLevels(),
-    format.simple(),
-  ),
-  transports: [new NullTransport()],
-});
-
-exports.getTestData = () => {
-  const appId = faker.string.uuid();
-  // This is a test key and is not assigned to a real account
-  // However it can be used to generate JWT tokens
-  const privateKey = `-----BEGIN PRIVATE KEY-----
+// This is a test key and is not assigned to a real account
+// However it can be used to generate JWT tokens
+const testPrivateKey = `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDTH8cEhJKsu2hB
 ucgs0Blf3tvgdXuIa5sMRI3zIZGok8jqaj6DC0WdM1eiJlQCWnVL0vR25MkopMZN
 MTphoaVpdK9wywMVx7PsgMCDXJjW77QFJFbbcbV9KG2xvMsjJGttmVrn+9aPpCnX
@@ -53,59 +40,105 @@ OjIAiQMkj/iyjsMDL8eH0VM+OMdieHwbkKyajyrB9dFikvWfxiuo3dU1N5vJTzty
 LmzkB8M/rKlAYKD8iKA8cRun4tKzRepHT3JPMu0GYTfcP9ovs5F3aEjX+UuWOO7n
 doWDENAr/VU1RNCDwFdxYFg=
 -----END PRIVATE KEY-----`;
-  const apiKey = faker.string.alpha(16);
-  const apiSecret = faker.string.alpha(16);
 
 
-  const globalArgs = Object.freeze({
-    auth: new Auth({
-      appId: appId,
-      privateKey: privateKey,
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-    }),
-    appId: appId,
-    privateKey: privateKey,
-    apiKey: apiKey,
-    apiSecret: apiSecret,
-    source: 'CLI arguments',
-    logger: {
-      ...testLogger,
-      info: jest.fn(),
-      debug: jest.fn(),
-      error: jest.fn(),
-      log: jest.fn(),
-      warn: jest.fn(),
-    },
-    config: {
-      localConfigFile: faker.system.filePath(),
-      globalConfigFile: faker.system.filePath(),
-      cli: {
-        apiKey: apiKey,
-        apiSecret: apiSecret,
-        privateKey: privateKey,
-        appId: appId,
-      },
-      local: {
-        apiKey: faker.string.alpha(16),
-        apiSecret: faker.string.alpha(16),
-        privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
-        appId: faker.string.uuid(),
-      },
-      global: {
-        apiKey: faker.string.alpha(16),
-        apiSecret: faker.string.alpha(16),
-        privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
-        appId: faker.string.uuid(),
-      },
-    },
-  });
+exports.testPrivateKey = testPrivateKey;
 
+const testLogger = winston.createLogger({
+  level: 'debug',
+  format: format.combine(
+    format.timestamp(),
+    format.colorize(),
+    format.padLevels(),
+    format.simple(),
+  ),
+  transports: [new NullTransport()],
+});
+
+exports.testLogger = testLogger;
+
+const getLoggerMideleware = () => Object.freeze({
+  ...testLogger,
+  info: jest.fn(),
+  debug: jest.fn(),
+  error: jest.fn(),
+  log: jest.fn(),
+  warn: jest.fn(),
+});
+
+exports.getLoggerMideleware = getLoggerMideleware;
+
+const getLocalConfig = () => Object.freeze({
+  apiKey: faker.string.alpha(16),
+  apiSecret: faker.string.alpha(16),
+  privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
+  appId: faker.string.uuid(),
+});
+
+exports.getLocalConfig = getLocalConfig;
+
+const getGlobalConfig = () => Object.freeze({
+  apiKey: faker.string.alpha(16),
+  apiSecret: faker.string.alpha(16),
+  privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
+  appId: faker.string.uuid(),
+});
+
+exports.getGlobalConfig = getGlobalConfig;
+
+const getCLIConfig = () => Object.freeze({
+  apiKey: faker.string.alpha(16),
+  apiSecret: faker.string.alpha(16),
+  privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
+  appId: faker.string.uuid(),
+});
+
+exports.getCLIConfig = getCLIConfig;
+
+const getMiddlewareConfig = () => {
+  const localPath = faker.system.directoryPath();
+  const globalPath = faker.system.directoryPath();
   return Object.freeze({
-    appId: appId,
-    privateKey: privateKey,
-    apiKey: apiKey,
-    apiSecret: apiSecret,
-    globalArgs: globalArgs,
+    localConfigPath: localPath,
+    localConfigFile: `${localPath}/.vonagerc`,
+
+    globalConfigPath: globalPath,
+    globalConfigFile: `${globalPath}/.vonagerc`,
+
+    cli: getCLIConfig(),
+    local: getLocalConfig(),
+    global: getGlobalConfig(),
   });
 };
+
+exports.getMiddlewareConfig = getMiddlewareConfig;
+
+const getConfigArgs = () => {
+  const config = getMiddlewareConfig();
+  return Object.freeze({
+    config: config,
+    logger: getLoggerMideleware(),
+    appId: config.cli.appId,
+    privateKey: config.cli.privateKey,
+    apiKey: config.cli.apiKey,
+    apiSecret: config.cli.apiSecret,
+  });
+};
+
+exports.getConfigArgs = getConfigArgs;
+
+const getTestMiddlewareArgs = () => {
+  const base = getConfigArgs();
+  return Object.freeze({
+    ...base,
+    auth: new Auth({
+      appId: base.appId,
+      privateKey: base.privateKey,
+      apiKey: base.apiKey,
+      apiSecret: base.apiSecret,
+    }),
+  });
+};
+
+exports.getTestMiddlewareArgs = getTestMiddlewareArgs;
+

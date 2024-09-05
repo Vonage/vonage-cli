@@ -1,9 +1,6 @@
 const { dumpValue } = require('../ux/dump');
 const yaml = require('yaml');
 
-// eslint-disable-next-line no-unused-vars
-const removeSource = ({source, ...rest}) => rest;
-
 exports.command = 'auth [command]';
 
 exports.desc = 'Manage authentication information';
