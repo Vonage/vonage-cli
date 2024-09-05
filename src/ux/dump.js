@@ -86,8 +86,6 @@ const dumpArray = (data, indent = 2) => [
   `${' '.repeat(indent - 2)}${chalk.yellow(']')}`,
 ].join('\n');
 
-const dumpCommand = (command) => chalk.green(command);
-
 exports.dumpKey = dumpKey;
 
 exports.dumpValue = dumpValue;
@@ -95,6 +93,3 @@ exports.dumpValue = dumpValue;
 exports.dumpObject = dumpObject;
 
 exports.dumpArray = dumpArray;
-
-exports.dumpCommand = dumpCommand;
-

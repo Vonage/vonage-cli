@@ -5,7 +5,7 @@ const { dumpYesNo, dumpOnOf, dumpEnabledDisabled } = require('../../src/ux/dumpY
 const { table } = require('../../src/ux/table');
 const uxTests = require('../__dataSets__/ux');
 
-describe('UX tests', () => {
+describe('UX: dump', () => {
   test.each(uxTests)('Will $label', ({ value, expected }) => {
     expect(dumpValue(value)).toEqual(expected);
   });
