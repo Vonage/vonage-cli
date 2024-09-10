@@ -19,12 +19,14 @@ exports.builder = (yargs) => yargs.options({
   },
   'page-size': {
     alias: ['s'],
+    group: 'Pagination',
     describe: 'Number of applications to return',
     type: 'number',
     default: 100,
   },
   'page': {
     alias: ['p'],
+    group: 'Pagination',
     describe: 'Page number',
     type: 'number',
   },

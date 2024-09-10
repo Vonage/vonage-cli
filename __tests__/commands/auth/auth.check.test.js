@@ -4,7 +4,7 @@ const { handler } = require('../../../src/commands/auth/check');
 const { mockConsole } = require('../../helpers');
 const { getTestMiddlewareArgs, testPrivateKey, testPublicKey } = require('../../common');
 const { Vonage } = require('@vonage/server-sdk');
-const { getBasicApplication } = require('../../apps');
+const { getBasicApplication } = require('../../app');
 const yargs = require('yargs');
 
 jest.mock('@vonage/server-sdk');

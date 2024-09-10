@@ -1,6 +1,6 @@
 const { validatePrivateKeyAndAppId, validateApiKeyAndSecret } = require('../../src/utils/validateSDKAuth');
 const { getCLIConfig, testPrivateKey, testPublicKey } = require('../common');
-const { getBasicApplication } = require('../apps');
+const { getBasicApplication } = require('../app');
 const { Vonage } = require('@vonage/server-sdk');
 const { mockConsole } = require('../helpers');
 

@@ -3,7 +3,7 @@ const fs = require('fs');
 const set = require('../../../src/commands/auth/set');
 const { getTestMiddlewareArgs, testPublicKey, testPrivateKey } = require('../../common');
 const { Vonage } = require('@vonage/server-sdk');
-const { getBasicApplication } = require('../../apps');
+const { getBasicApplication } = require('../../app');
 const { mockConsole } = require('../../helpers');
 const yargs = require('yargs');
 
