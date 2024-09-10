@@ -1,5 +1,6 @@
 const { existsSync, writeFileSync, mkdir } = require('fs');
 const { confirm } = require('../../ux/confirm');
+const { dumpAuth } = require('../../ux/dumpAuth');
 
 const createConfigDirectory = (configPath) => new Promise((resolve) => {
   if (existsSync(configPath)) {
@@ -41,12 +42,19 @@ exports.builder = (yargs) => yargs.options({
     describe: 'Save local configuration only',
     type: 'boolean',
   },
-}).demandOption(['api-key', 'api-secret', 'private-key', 'app-id']);
+});
 
 exports.handler = async (argv) => {
   console.info('Saving auth information');
-  console.debug('Config', JSON.stringify(argv.config, null, 2));
 
+  const newAuthInformation = {
+    'api-key': argv.apiKey,
+    'api-secret': argv.apiSecret,
+    'private-key': argv.privateKey,
+    'app-id': argv.appId,
+  };
+
+  console.debug('New auth information:', newAuthInformation);
   const configPath = argv.local
     ? argv.config.localConfigPath
     : argv.config.globalConfigPath;
@@ -68,14 +76,9 @@ exports.handler = async (argv) => {
 
   console.debug(`Writing to: ${configFile}`);
 
-  const newAuthInformation = {
-    'api-key': argv.apiKey,
-    'api-secret': argv.apiSecret,
-    'private-key': argv.privateKey,
-    'app-id': argv.appId,
-  };
-
-  console.debug('New auth information:', newAuthInformation);
   writeFileSync(configFile, JSON.stringify(newAuthInformation, null, 2));
   console.log(`Configuration saved to ${configFile}`);
+
+  console.log('');
+  dumpAuth(newAuthInformation);
 };

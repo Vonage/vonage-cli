@@ -1,29 +1,27 @@
-const dumpBolean = (value, trueWord, falseWord, includeText=false) => value
-  ? `✅ ${includeText ? trueWord : ''}`
-  : `❌ ${includeText ? falseWord : ''}`;
+const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=false, noEmoji=false}) => value
+  ? `${!noEmoji ? '✅' : ''}${includeText ? trueWord : ''}`
+  : `${!noEmoji ? '❌' : ''}${includeText ? falseWord : ''}`;
 
-exports.dumpBolean = dumpBolean;
+exports.dumpBoolean = dumpBoolean;
 
-exports.dumpYesNo = (value, includeText=false) => dumpBolean(
-  value,
-  'Yes',
-  'No',
-  includeText,
-);
+exports.dumpYesNo = (value, includeText=false) => dumpBoolean({
+  value: value,
+  trueWord: 'Yes',
+  falseWord: 'No',
+  includeText: includeText,
+});
 
-exports.dumpOnOf = (value, includeText=false) => dumpBolean(
-  value,
-  'On',
-  'Off',
-  includeText,
-);
+exports.dumpOnOff = (value, includeText=false) => dumpBoolean({
+  value: value,
+  trueWord: 'On',
+  falseWord: 'Off',
+  includeText: includeText,
+});
 
-exports.dumpEnabledDisabled = (value, includeText=false) => dumpBolean(
-  value,
-  'Enabled',
-  'Disabled',
-  includeText,
-);
-
-
+exports.dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
+  value: value,
+  trueWord: 'Enabled',
+  falseWord: 'Disabled',
+  includeText: includeText,
+});
 

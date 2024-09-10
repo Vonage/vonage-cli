@@ -1,11 +1,17 @@
 #!/usr/bin/env -S node
+const chalk = require('chalk');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs');
-const { getVonageAuth } = require('../src/middleware/vonageAuth');
+const { setConfig } = require('../src/middleware/config');
 const { setupLog } = require('../src/middleware/log');
-const { readFileSync, existsSync } = require('node:fs');
+const { coercePrivateKey } = require('../src/utils/coercePrivateKey');
 
 yargs(hideBin(process.argv))
+  .fail((msg, err, yargs) => {
+    console.error(chalk.red('Error:'), msg);
+    console.log('');
+    yargs.showHelp();
+  })
   .options({
     'api-key': {
       describe: 'Your Vonage API key',
@@ -24,9 +30,7 @@ yargs(hideBin(process.argv))
       type: 'string',
       group: 'Vonage Credentials:',
       implies: 'app-id',
-      coerce: (arg) => existsSync(arg)
-        ? readFileSync(arg, 'utf-8')
-        : arg,
+      coerce: coercePrivateKey,
     },
     'app-id': {
       describe: 'Your Vonage application ID',
@@ -45,7 +49,7 @@ yargs(hideBin(process.argv))
     },
   })
   .middleware(setupLog)
-  .middleware(getVonageAuth)
+  .middleware(setConfig)
   .scriptName('vonage')
   .commandDir('../src/commands')
   .demandCommand()

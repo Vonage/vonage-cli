@@ -1,5 +1,17 @@
-const { dumpValue } = require('../ux/dump');
+const chalk = require('chalk');
+const { dumpCommand } = require('../ux/dump');
+const { dumpBoolean } = require('../ux/dumpYesNo');
+const { lineBreak } = require('../ux/lineBreak');
+const { dumpAuth } = require('../ux/dumpAuth');
 const yaml = require('yaml');
+
+
+const dumpOptions = {
+  noEmoji: true,
+  includeText: true,
+  trueWord: '',
+  falseWord: 'No! ',
+};
 
 exports.command = 'auth [command]';
 
@@ -16,59 +28,39 @@ exports.builder = (yargs) => yargs.options({
     type: 'boolean',
     conflicts: 'yaml',
   },
-  'local': {
-    describe: 'Display local configuration only',
-    type: 'boolean',
-    conflicts: 'global',
-  },
-  'global': {
-    describe: 'Display global configuration only',
-    type: 'boolean',
-    conflicts: 'local',
-  },
 }).commandDir('auth');
 
 exports.handler = async (argv) => {
   console.info('Displaying auth information');
   const { config } = argv;
-  console.debug('Configuration:', config);
 
-  let authData = {
-    apiKey: argv.apiKey,
-    apiSecret: argv.apiSecret,
-    privateKey: argv.privateKey,
-    appId: argv.appId,
-    source: argv.source,
-  };
+  const { localConfigExists, globalConfigExists } = config;
 
-  if (argv.local) {
-    authData ={
-      source: 'Local file',
-      apiKey: config.local.apiKey,
-      apiSecret: config.local.apiSecret,
-      privateKey: config.local.privateKey,
-      appId: config.local.appId,
-    };
-  }
-
-  if (argv.global) {
-    authData = {
-      source: 'Global file',
-      apiKey: config.global.apiKey,
-      apiSecret: config.global.apiSecret,
-      privateKey: config.global.privateKey,
-      appId: config.global.appId,
-    };
+  if (!localConfigExists && !globalConfigExists) {
+    console.error('No configuration files found.');
+    console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
+    console.log('');
+    console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
+    console.log('      use the --help option for more information');
+    return;
   }
 
   if (argv.json) {
     console.log(JSON.stringify(
-      {
-        apiKey: authData.apiKey,
-        apiSecret: authData.apiSecret,
-        privateKey: authData.privateKey,
-        appId: authData.appId,
-      },
+      [
+        {
+          apiKey: config.local.apiKey,
+          apiSecret: config.local.apiSecret,
+          privateKey: config.local.privateKey,
+          appId: config.local.appId,
+        },
+        {
+          apiKey: config.global.apiKey,
+          apiSecret: config.global.apiSecret,
+          privateKey: config.global.privateKey,
+          appId: config.global.appId,
+        },
+      ],
       null,
       2,
     ));
@@ -77,29 +69,33 @@ exports.handler = async (argv) => {
 
   if (argv.yaml) {
     console.log(yaml.stringify(
-      {
-        apiKey: authData.apiKey,
-        apiSecret: authData.apiSecret,
-        privateKey: authData.privateKey,
-        appId: authData.appId,
-      },
+      [
+        {
+          apiKey: config.local.apiKey,
+          apiSecret: config.local.apiSecret,
+          privateKey: config.local.privateKey,
+          appId: config.local.appId,
+        },
+        {
+          apiKey: config.global.apiKey,
+          apiSecret: config.global.apiSecret,
+          privateKey: config.global.privateKey,
+          appId: config.global.appId,
+        },
+      ],
     ));
     return;
   }
 
-  console.log('Auth Information');
+  console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
   console.log('');
-  console.table([
-    {
-      'Source': dumpValue(authData.source),
-      'API Key': dumpValue(authData.apiKey),
-      'API Secret': dumpValue(authData.apiSecret),
-      'Private Key': dumpValue(authData.privateKey),
-      'Application ID': dumpValue(authData.appId),
-    },
-  ]);
-  console.log('');
-  console.log(`The local configuration file is ${config.localConfigFile}`);
-  console.log(`The global configuration file is ${config.globalConfigFile}`);
+  dumpAuth(config.local);
 
+
+  lineBreak();
+
+  console.log(`${dumpBoolean({value: globalConfigExists, ...dumpOptions})}Global credentials found at: ${config.globalConfigFile}`);
+  console.log('');
+  dumpAuth(config.global);
 };
+

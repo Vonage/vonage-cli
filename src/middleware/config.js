@@ -1,23 +1,21 @@
-const { Auth } = require('@vonage/auth');
-const { Vonage } = require('@vonage/server-sdk');
 const { readFileSync, existsSync } = require('fs');
 
-const configFileName = '.vonagerc';
-
-const globalConfigPath = `${process.env.XDG_CONFIG_HOME || process.env.HOME + '/.config'}/vonage`;
-const globalConfigFile = `${globalConfigPath}/${configFileName}`;
+const globalConfigPath = `${process.env.HOME}/.vonage`;
+const globalConfigFile = `${globalConfigPath}/config.json`;
 const globalConfigExists = existsSync(globalConfigFile);
 
 const localConfigPath = process.cwd();
-const localConfigFile = `${localConfigPath}/${configFileName}`;
+const localConfigFile = `${localConfigPath}/.vonagerc`;
 const localConfigExists = existsSync(localConfigFile);
 
 const sharedConfig = {
   globalConfigPath: globalConfigPath,
   globalConfigFile: globalConfigFile,
+  globalConfigExists: globalConfigExists,
 
   localConfigPath: localConfigPath,
   localConfigFile: localConfigFile,
+  localConfigExists: localConfigExists,
 };
 
 const decideConfig = (argv, config) => {
@@ -36,10 +34,10 @@ const decideConfig = (argv, config) => {
     return config.global;
   }
 
-  throw new Error('No configuration found');
+  return false;
 };
 
-exports.getVonageAuth = async (argv) => {
+exports.setConfig = async (argv, yargs) => {
   const config = {
     ...sharedConfig,
     local: {},
@@ -49,6 +47,7 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: argv['api-secret'],
       privateKey: argv['private-key'],
       appId: argv['app-id'],
+      source: 'CLI Arguments',
     },
   };
 
@@ -63,6 +62,7 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: localConfig['api-secret'],
       privateKey: localConfig['private-key'],
       appId: localConfig['app-id'],
+      source: 'Local Config File',
     };
   }
 
@@ -77,17 +77,24 @@ exports.getVonageAuth = async (argv) => {
       apiSecret: globalConfig['api-secret'],
       privateKey: globalConfig['private-key'],
       appId: globalConfig['app-id'],
+      source: 'Global Config File',
     };
   }
 
   const authConfig = decideConfig(argv, config);
 
-  const auth = new Auth(authConfig);
+  if (!authConfig) {
+    console.error('No configuration found. Please provide the necessary information');
+    yargs.exit(2);
+  }
 
-  return {
+  const finalConfig = {
     ...authConfig,
     config: config,
-    Auth: auth,
-    SDK: new Vonage(auth),
   };
+
+  console.debug('Auth Config:', authConfig);
+  console.debug('Final Config:', finalConfig);
+
+  return finalConfig;
 };
