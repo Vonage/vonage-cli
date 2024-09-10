@@ -37,13 +37,11 @@ yargs(hideBin(process.argv))
       alias: 'v',
       describe: 'Print more information',
       type: 'boolean',
-      group: 'UX',
     },
     'debug': {
       alias: 'd',
       describe: 'Print debug information',
       type: 'boolean',
-      group: 'UX',
     },
   })
   .middleware(setupLog)
