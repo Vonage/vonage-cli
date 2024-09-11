@@ -11,35 +11,47 @@ class NullTransport extends Transport {
 }
 
 // This is a test key and is not assigned to a real account
+const testPublicKey = `-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArkfxVPGAqjGI/1B/8oQC
+XLuek+0bzfw6hpkfKZ6egEuS6rFHBlvEwf9Grds8bxFZWf7m6+l9XwFI5kdrWXDr
+IoApMP/7p1ga0u2IITtPXnpdFpZM0jJVkGrx61CDelgGZNPRfi4vzKtPW1L2y50q
+7bDDz7pVofAQ1hK/9wADNAm6F/pKY1yb/3RIQ7bW25DKNJXlR2s6zIc5f9XV490c
+1r9LDSRqewC4yodJPeENCaxUZ79OpCPeGd+q5TwvCe6wF63DiRZy4fzojX51k5p5
+8DZbwsbxvghz/Dt63+SeNjGNiVUp4O96YgRwksywxPbNZbJzLqmOsqreYTFG9QLL
+JwIDAQAB
+-----END PUBLIC KEY-----`;
+
+// This is a test key and is not assigned to a real account
 // However it can be used to generate JWT tokens
 const testPrivateKey = `-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDTH8cEhJKsu2hB
-ucgs0Blf3tvgdXuIa5sMRI3zIZGok8jqaj6DC0WdM1eiJlQCWnVL0vR25MkopMZN
-MTphoaVpdK9wywMVx7PsgMCDXJjW77QFJFbbcbV9KG2xvMsjJGttmVrn+9aPpCnX
-yT27bWkTR0k/wCAvra/st5MDKg2kB3SMc+97zlO3GqIkJJKfKYQFAO8oRBcsZ1Bx
-ydPWTQvyLYW15Cjv30aIGLfceFwDeUOBgBsesGFtcXvVF6sVxd5D/USunX/9es95
-Rdr4+9Qq4tIKZRkBz2KWD0eo256wmmq2lQoGaR9x6XgLHhUlsi6OXILcyChi2Qcc
-a01Hn7YvAgMBAAECggEAJsS+lIdNsddmIS+e4Q/DoRW49aJNMXNlEN8j2+Itr7GX
-ougom4K94UyUyotUQOxgfrB5wL1pbQO5AGLKUDRRPii1sLYu1liKIyNPdq/RxyJU
-Qd927awXQiji39EF0mm1KnaPOWtG7rCcGGp1Yg4Izgf4nPLIVkkENalOHzYhNB3u
-4W4OIT49iw/auBF4wnl1RmXWXjkxDuk2cYT28a8hWqyQjJqXTsO+u4BaXYxSf4nP
-Be2yoUEFRbcxvJrhEpfODhPP83I1EBipJkhUTc5WMb/vtH2b49+TYd2tPR0LOxom
-mcNUWF6++ae+vL6K8Dlfcvx+CA7g7KBHHcgFCzn7GQKBgQDzc2ow5LlQQ/VfXZTz
-n07V/QgVQ15sA5Cf/gsvmwnGPy06Qx/WRHsz6NG8nvW2mHZwfDIHuLjBW1gcssEx
-mLpqav5XLZfSyjjRO/AxLIfJDx/aARp3+7Ny5aY2e3wtNx8wz4J80i7P+eX3fETM
-70cWhc2PvYMDjG+O7cDW2FWAFwKBgQDeAcc/FBHLl9/HqiBvYf/Y/k0t1TUoHujO
-PSbP6SaN06JnvJmBANyED7sWeIPuoRFXXEr4Auu7y0C55Wlsno/ImTbJsopZ1rgU
-k5q4t9vcu7cGiOr7L7UkySNYZqRjwvKEJ610COexTThSwl0v3GNLP8r4AMdBaqdK
-uO6fVfxxqQKBgFc5ne2Atai9gJe3ltum0382FoRPy+/VYyb/xZA780eVcSXz0N9b
-T+0sWKFFLvJKM/1fcil0FLYqfSpjHXcgqoHgbdpcWo5KqArHd+qWctwl0Bqy1IHy
-q7vZ7jCNE9O7cTBy2OTSBbW8apm+a4Qlowm9zQXYN624zmueYb5YamHnAoGAZvJA
-KHnv/o7AkF/NhpjVARR7SYOSkLY0kl48/zBIVoAK0TvdmrqBhyOcR8E+vIsn9XCw
-uuzvzzdjHlDJYDruxcB2bXVDPoGY/sGrf3iSlXreVkNrY2st/o7euwFtvW0K9ElJ
-34K5nbgHJClI+QajbKN6RSJnQ2hnhvjWfkBrPXECgYEA4MCEm9EyrguEO51am8va
-OjIAiQMkj/iyjsMDL8eH0VM+OMdieHwbkKyajyrB9dFikvWfxiuo3dU1N5vJTzty
-LmzkB8M/rKlAYKD8iKA8cRun4tKzRepHT3JPMu0GYTfcP9ovs5F3aEjX+UuWOO7n
-doWDENAr/VU1RNCDwFdxYFg=
------END PRIVATE KEY-----`;
+MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCuR/FU8YCqMYj/
+UH/yhAJcu56T7RvN/DqGmR8pnp6AS5LqsUcGW8TB/0at2zxvEVlZ/ubr6X1fAUjm
+R2tZcOsigCkw//unWBrS7YghO09eel0WlkzSMlWQavHrUIN6WAZk09F+Li/Mq09b
+UvbLnSrtsMPPulWh8BDWEr/3AAM0CboX+kpjXJv/dEhDttbbkMo0leVHazrMhzl/
+1dXj3RzWv0sNJGp7ALjKh0k94Q0JrFRnv06kI94Z36rlPC8J7rAXrcOJFnLh/OiN
+fnWTmnnwNlvCxvG+CHP8O3rf5J42MY2JVSng73piBHCSzLDE9s1lsnMuqY6yqt5h
+MUb1AssnAgMBAAECggEABFZ1EBSstk+3pbHRZW4EswiBGL8eNzZvwc7eLYaC/RV5
+yXlHwnBBSZolc7P7tpX7dS0jfpFYAKfYXSbqP0EmERHt3zLX3CE/awA6KFLravdn
+tBAMnG9f8tFpRl6WzyeRYoFlJZtXruPqpzloPBwkJ+NY6aWCdnPdBL8AY9DubiVE
+kC1fez1cfhm88wu1Hdf6woUh+R6vnIFlAnayGPYkM2S9X4xnrVWfLTrDlRf2NB2o
+K3P8q3FgWAh4o9Jnl/DpI5euOsorwooIqMmYhK9DYaMsDmWrZLMOciSZJKn3xMtH
++LzMVQgVoc0LZCNA8vAxqefH6jjxzZkRiVuqU8eB5QKBgQDwR+YLwWXVkaLCtPOs
+RnW+U6KRaZYYexCx7K8cH/HIZ/ZhYP1m9J0LSuOF6sKlmDOooaOqS62tBfWDRUut
+4NHbzHi3iDhjRH2Mz1h9uRURzPld5TZkMdDVAHxkd4b5tN9u7c+1Y0WQ7mvEJS//
+kDDhwNwR1+JiUIDYlPJSadbj6wKBgQC5rrZrlEGTApBoorjIWrUzTC99eBUas92C
+BozwLHVB1FzDcBP9ABqee0fgVEND4i2iNZCtCm19Gsv+nd21+E1+wmhREBtCzEXO
+wfQQjeOJN0QnjJKm94WSmx1xmkhIZBG7NRmScP2W0BzXdEkbRPfWpnfFmUqim2qH
+/lTR139ytQKBgF6tBdD1+EkppEcyA52K+dPvomvHfdPRked5ihn74EoF5MfD7rUF
+h2eur23R7bZP/XLhldqBDULSyUVbJZGytx3zOFGgxA8hKpM0E/sd1VZ5PHyp1z+t
+fUqgcWMo0a9MfIl5/NDM99k+iIn12S7KwugBFPWW6eWxMMOmFMEyYPDXAoGAW3Z+
+EPvUWS/YJlKRJs/Xlc8fTXSLIL4cjGHhpqSfla+fif15OxSECDC9tPiMsbGFvPMZ
+ssMCL6+1cFQe0/XdZmUosVV3uC2a7T+Ik2bw/7QjdD/ANVKTjyWtGTpgBJiWS1ra
+n9HceB9HNbHoGPCeDDOvp7vckcBwd1CGQ18dPkkCgYBwm8eIPoW92dOBvnZrh4WT
+UBEEJoSmV7iom93Wt6m6u0Ow54JrhJeDpRH301OMU0V0UD4cQ7S4SxvVsFEjyGiO
+thaTVNUBxf1N62zIzUL7t6ItA4+PZVu6ehXyZ/rax7DfhmINjQ3fRGPPLHGd0L1O
+8B7ZcGqNJg+6nRv+fTwCjw==
+-----END PRIVATE KEY-----
+`;
 
 const testLogger = winston.createLogger({
   level: 'debug',
@@ -147,4 +159,5 @@ module.exports = {
   getGlobalFile: getGlobalFile,
   testLogger: testLogger,
   testPrivateKey: testPrivateKey,
+  testPublicKey: testPublicKey,
 };
