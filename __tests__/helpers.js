@@ -5,14 +5,18 @@ const error = console.error;
 const warn = console.warn;
 const table = console.table;
 
-afterAll(() => {
+const restoreConsole = () => {
   console.log = log;
   console.info = info;
   console.debug = debug;
   console.error = error;
   console.warn = warn;
   console.table = table;
-});
+};
+
+afterAll(restoreConsole);
+
+exports.restoreConsole = restoreConsole;
 
 exports.mockConsole = () => {
   console.log = jest.fn();

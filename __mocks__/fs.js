@@ -45,8 +45,20 @@ const existsSync = jest.fn((filePath) => {
   return !!mockFiles[pathName][fileName];
 });
 
+const readFileSync = (filePath) => {
+  const pathName = path.dirname(filePath);
+  const fileName = path.basename(filePath);
+
+  if (!mockFiles[pathName] || !mockFiles[pathName][fileName]) {
+    throw new Error(`ENOENT: no such file or directory, open '${filePath}'`);
+  }
+
+  return mockFiles[pathName][fileName];
+};
+
 fs.__addFile = __addFile;
 fs.__addPath = __addPath;
+fs.readFileSync = readFileSync;
 fs.readdirSync = readdirSync;
 fs.existsSync = existsSync;
 fs.writeFileSync = jest.fn();

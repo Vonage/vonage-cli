@@ -1,21 +1,24 @@
 const { readFileSync, existsSync } = require('fs');
+const chalk = require('chalk');
 
-const globalConfigPath = `${process.env.HOME}/.vonage`;
-const globalConfigFile = `${globalConfigPath}/config.json`;
-const globalConfigExists = existsSync(globalConfigFile);
+const getSharedConfig = () => {
+  const globalConfigPath = `${process.env.HOME}/.vonage`;
+  const globalConfigFile = `${globalConfigPath}/config.json`;
+  const globalConfigExists = existsSync(globalConfigFile);
 
-const localConfigPath = process.cwd();
-const localConfigFile = `${localConfigPath}/.vonagerc`;
-const localConfigExists = existsSync(localConfigFile);
+  const localConfigPath = process.cwd();
+  const localConfigFile = `${localConfigPath}/.vonagerc`;
+  const localConfigExists = existsSync(localConfigFile);
 
-const sharedConfig = {
-  globalConfigPath: globalConfigPath,
-  globalConfigFile: globalConfigFile,
-  globalConfigExists: globalConfigExists,
+  return {
+    globalConfigPath: globalConfigPath,
+    globalConfigFile: globalConfigFile,
+    globalConfigExists: globalConfigExists,
 
-  localConfigPath: localConfigPath,
-  localConfigFile: localConfigFile,
-  localConfigExists: localConfigExists,
+    localConfigPath: localConfigPath,
+    localConfigFile: localConfigFile,
+    localConfigExists: localConfigExists,
+  };
 };
 
 const decideConfig = (argv, config) => {
@@ -24,12 +27,12 @@ const decideConfig = (argv, config) => {
     return config.cli;
   }
 
-  if (localConfigExists) {
+  if (config.localConfigExists) {
     console.debug('Using local config file');
     return config.local;
   }
 
-  if (globalConfigExists) {
+  if (config.globalConfigExists) {
     console.debug('Using global config file');
     return config.global;
   }
@@ -37,19 +40,30 @@ const decideConfig = (argv, config) => {
   return false;
 };
 
-exports.setConfig = async (argv, yargs) => {
+exports.setConfig = (argv, yargs) => {
+  const sharedConfig = getSharedConfig();
+  const {
+    globalConfigFile,
+    globalConfigExists,
+    localConfigFile,
+    localConfigExists,
+  } = sharedConfig;
+
   const config = {
     ...sharedConfig,
     local: {},
     global: {},
     cli: {
-      apiKey: argv['api-key'],
-      apiSecret: argv['api-secret'],
-      privateKey: argv['private-key'],
-      appId: argv['app-id'],
-      source: 'CLI Arguments',
+      ...(argv.apiKey ? {apiKey: argv.apiKey} : {}),
+      ...(argv.apiSecret ? {apiSecret: argv.apiSecret} : {}),
+      ...(argv.privateKey ? {privateKey: argv.privateKey} : {}),
+      ...(argv.appId ? {appId: argv.appId} : {}),
     },
   };
+
+  if (Object.entries(config.cli).length) {
+    config.cli.source = 'CLI Arguments';
+  }
 
   console.debug(`Local config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
 
@@ -66,11 +80,13 @@ exports.setConfig = async (argv, yargs) => {
     };
   }
 
-  console.debug(`Global Config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
+  console.debug(`Global Config [${globalConfigFile}] exists? ${globalConfigExists ? 'Yes' : 'No'}`);
 
   if (globalConfigExists) {
     console.debug('Reading global Config');
-    const globalConfig = JSON.parse(readFileSync(globalConfigFile, 'utf8'));
+    const fileContents = readFileSync(globalConfigFile, 'utf8');
+    console.debug(`Global File Contents: ${fileContents}`);
+    const globalConfig = JSON.parse(fileContents);
     console.debug('global Config:', globalConfig);
     config.global = {
       apiKey: globalConfig['api-key'],
@@ -84,7 +100,7 @@ exports.setConfig = async (argv, yargs) => {
   const authConfig = decideConfig(argv, config);
 
   if (!authConfig) {
-    console.error('No configuration found. Please provide the necessary information');
+    console.error(`${chalk.red('error:')} No configuration file found`);
     yargs.exit(2);
   }
 

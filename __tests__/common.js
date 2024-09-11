@@ -41,9 +41,6 @@ LmzkB8M/rKlAYKD8iKA8cRun4tKzRepHT3JPMu0GYTfcP9ovs5F3aEjX+UuWOO7n
 doWDENAr/VU1RNCDwFdxYFg=
 -----END PRIVATE KEY-----`;
 
-
-exports.testPrivateKey = testPrivateKey;
-
 const testLogger = winston.createLogger({
   level: 'debug',
   format: format.combine(
@@ -55,8 +52,6 @@ const testLogger = winston.createLogger({
   transports: [new NullTransport()],
 });
 
-exports.testLogger = testLogger;
-
 const getLoggerMideleware = () => Object.freeze({
   ...testLogger,
   info: jest.fn(),
@@ -66,16 +61,12 @@ const getLoggerMideleware = () => Object.freeze({
   warn: jest.fn(),
 });
 
-exports.getLoggerMideleware = getLoggerMideleware;
-
 const getLocalConfig = () => Object.freeze({
   apiKey: faker.string.alpha(16),
   apiSecret: faker.string.alpha(16),
   privateKey: `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`,
   appId: faker.string.uuid(),
 });
-
-exports.getLocalConfig = getLocalConfig;
 
 const getGlobalConfig = () => Object.freeze({
   apiKey: faker.string.alpha(16),
@@ -84,8 +75,6 @@ const getGlobalConfig = () => Object.freeze({
   appId: faker.string.uuid(),
 });
 
-exports.getGlobalConfig = getGlobalConfig;
-
 const getCLIConfig = () => Object.freeze({
   apiKey: faker.string.alpha(16),
   apiSecret: faker.string.alpha(16),
@@ -93,31 +82,38 @@ const getCLIConfig = () => Object.freeze({
   appId: faker.string.uuid(),
 });
 
-exports.getCLIConfig = getCLIConfig;
-
-const getMiddlewareConfig = () => {
+const getLocalFile = () => {
   const localPath = faker.system.directoryPath();
-  const globalPath = faker.system.directoryPath();
   return Object.freeze({
     localConfigPath: localPath,
     localConfigFile: `${localPath}/.vonagerc`,
+    localConfigExists: true,
+  });
+};
 
+const getGlobalFile = () => {
+  const globalPath = faker.system.directoryPath();
+  return Object.freeze({
     globalConfigPath: globalPath,
-    globalConfigFile: `${globalPath}/.vonagerc`,
+    globalConfigFile: `${globalPath}/config.json`,
+    globalConfigExists: true,
+  });
+};
 
+const getMiddlewareConfig = () => {
+  return Object.freeze({
+    ...getLocalFile(),
+    ...getGlobalFile(),
     cli: getCLIConfig(),
     local: getLocalConfig(),
     global: getGlobalConfig(),
   });
 };
 
-exports.getMiddlewareConfig = getMiddlewareConfig;
-
 const getConfigArgs = () => {
   const config = getMiddlewareConfig();
   return Object.freeze({
     config: config,
-    logger: getLoggerMideleware(),
     appId: config.cli.appId,
     privateKey: config.cli.privateKey,
     apiKey: config.cli.apiKey,
@@ -125,12 +121,11 @@ const getConfigArgs = () => {
   });
 };
 
-exports.getConfigArgs = getConfigArgs;
-
 const getTestMiddlewareArgs = () => {
   const base = getConfigArgs();
   return Object.freeze({
     ...base,
+    logger: getLoggerMideleware(),
     auth: new Auth({
       appId: base.appId,
       privateKey: base.privateKey,
@@ -140,5 +135,16 @@ const getTestMiddlewareArgs = () => {
   });
 };
 
-exports.getTestMiddlewareArgs = getTestMiddlewareArgs;
-
+module.exports = {
+  getCLIConfig: getCLIConfig,
+  getConfigArgs: getConfigArgs,
+  getGlobalConfig: getGlobalConfig,
+  getLocalConfig: getLocalConfig,
+  getLocalFile: getLocalFile,
+  getLoggerMideleware: getLoggerMideleware,
+  getMiddlewareConfig: getMiddlewareConfig,
+  getTestMiddlewareArgs: getTestMiddlewareArgs,
+  getGlobalFile: getGlobalFile,
+  testLogger: testLogger,
+  testPrivateKey: testPrivateKey,
+};
