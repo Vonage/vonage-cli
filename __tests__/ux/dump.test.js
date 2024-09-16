@@ -9,15 +9,19 @@ describe('UX: dump', () => {
   test.each(uxTests)('Will $label', ({ value, expected }) => {
     expect(dumpValue(value)).toEqual(expected);
   });
+});
 
-  test('description list will return a string', () => {
+describe('UX: description list', () => {
+  test('Will return a string', () => {
     expect(descriptionList([
       ['term', 'details'],
       ['foo', 'bar'],
     ])).toBe(`${dumpKey('term')}: ${dumpValue('details')}\n${dumpKey('foo')}: ${dumpValue('bar')}`);
   });
+});
 
-  test('dumpYesNo will return Yes or No', () => {
+describe('UX: boolean dump', () => {
+  test('Will return Yes or No', () => {
     expect(dumpYesNo(true)).toBe('✅ ');
     expect(dumpYesNo(false)).toBe('❌ ');
 
@@ -25,7 +29,7 @@ describe('UX: dump', () => {
     expect(dumpYesNo(false, true)).toBe('❌ No');
   });
 
-  test('dumpOnOf will return On or Off', () => {
+  test('Will return On or Off', () => {
     expect(dumpOnOff(true)).toBe('✅ ');
     expect(dumpOnOff(false)).toBe('❌ ');
 
@@ -33,14 +37,16 @@ describe('UX: dump', () => {
     expect(dumpOnOff(false, true)).toBe('❌ Off');
   });
 
-  test('dumpEnabledDisabled will return Enabled or Disabled', () => {
+  test('Will return Enabled or Disabled', () => {
     expect(dumpEnabledDisabled(true)).toBe('✅ ');
     expect(dumpEnabledDisabled(false)).toBe('❌ ');
 
     expect(dumpEnabledDisabled(true, true)).toBe('✅ Enabled');
     expect(dumpEnabledDisabled(false, true)).toBe('❌ Disabled');
   });
+});
 
+describe('UX: table', () => {
   test('table will return a string', () => {
     const data = [
       {
