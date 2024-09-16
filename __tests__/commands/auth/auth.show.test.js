@@ -15,7 +15,7 @@ describe('Command: vonage auth', () => {
     consoleMock = mockConsole();
   });
 
-  test('Should show the config settings, validate them and show credentials as valid', async () => {
+  test('Should show the config settings, validate them', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -50,61 +50,21 @@ describe('Command: vonage auth', () => {
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[4][0]).toBe('Checking API Key Secret: ✅ Valid');
-    expect(consoleMock.log.mock.calls[5][0]).toBe('Checking App ID and Private Key: ✅ Valid');
-
-    expect(consoleMock.log.mock.calls[9][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
+    expect(consoleMock.log.mock.calls[7][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(consoleMock.log.mock.calls[11][0]).toBe([
+    expect(consoleMock.log.mock.calls[9][0]).toBe([
       `API Key: ${config.global.apiKey}`,
       `API Secret: ${redactedGlobal}`,
       `App ID: ${config.global.appId}`,
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[13][0]).toBe('Checking API Key Secret: ✅ Valid');
-    expect(consoleMock.log.mock.calls[14][0]).toBe('Checking App ID and Private Key: ✅ Valid');
-  });
-
-  test('Should show the config settings, validate them and show credentials as invalid', async () => {
-    const application = getBasicApplication();
-    application.keys.publicKey = testPublicKey;
-
-    Vonage._mockGetApplicationPage.mockRejectedValue({response: {status: 401}});
-    Vonage._mockGetApplication.mockRejectedValue({response: {status: 401}});
-
-    const args = getTestMiddlewareArgs();
-
-    await handler(args);
-
-    const { config } = args;
-    expect(consoleMock.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Local credentials found at: ${config.localConfigFile}`);
-
-    const redactedLocal = `${config.local.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.local.apiSecret}`.length - 2);
-    expect(consoleMock.log.mock.calls[2][0]).toBe([
-      `API Key: ${config.local.apiKey}`,
-      `API Secret: ${redactedLocal}`,
-      `App ID: ${config.local.appId}`,
-      'Private Key: Is Set',
-    ].join('\n'));
-
-    expect(consoleMock.log.mock.calls[4][0]).toBe('Checking API Key Secret: ❌ Invalid');
-    expect(consoleMock.log.mock.calls[5][0]).toBe('Checking App ID and Private Key: ❌ Invalid');
-
-    expect(consoleMock.log.mock.calls[9][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
-
-    const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(consoleMock.log.mock.calls[11][0]).toBe([
-      `API Key: ${config.global.apiKey}`,
-      `API Secret: ${redactedGlobal}`,
-      `App ID: ${config.global.appId}`,
-      'Private Key: Is Set',
-    ].join('\n'));
-
-    expect(consoleMock.log.mock.calls[13][0]).toBe('Checking API Key Secret: ❌ Invalid');
-    expect(consoleMock.log.mock.calls[14][0]).toBe('Checking App ID and Private Key: ❌ Invalid');
+    // twice once for local and once for global
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(2);
+    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(2);
+    expect(Vonage._mockGetApplication.mock.calls[0][0]).toEqual(config.local.appId);
+    expect(Vonage._mockGetApplication.mock.calls[1][0]).toEqual(config.global.appId);
   });
 
   test('Should show only the local config settings', async () => {
@@ -139,8 +99,9 @@ describe('Command: vonage auth', () => {
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[4][0]).toBe('Checking API Key Secret: ✅ Valid');
-    expect(consoleMock.log.mock.calls[5][0]).toBe('Checking App ID and Private Key: ✅ Valid');
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication.mock.calls[0][0]).toEqual(config.local.appId);
   });
 
   test('Should show only the global config settings', async () => {
@@ -175,8 +136,9 @@ describe('Command: vonage auth', () => {
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[4][0]).toBe('Checking API Key Secret: ✅ Valid');
-    expect(consoleMock.log.mock.calls[5][0]).toBe('Checking App ID and Private Key: ✅ Valid');
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
 
   test('Should show only the API Key and Secret', async () => {
@@ -208,7 +170,8 @@ describe('Command: vonage auth', () => {
       `API Secret: ${redactedGlobal}`,
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[4][0]).toBe('Checking API Key Secret: ✅ Valid');
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
   });
 
   test('Should show only the App Id and Private Key', async () => {
@@ -239,7 +202,10 @@ describe('Command: vonage auth', () => {
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[5][0]).toBe('Checking App ID and Private Key: ✅ Valid');
+    expect(Vonage._mockGetApplicationPage).not.toHaveBeenCalled();
+    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
+
+    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
 
   test('Should show the full Private Key and API Secret', async () => {

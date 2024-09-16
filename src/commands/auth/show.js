@@ -1,7 +1,7 @@
 const chalk = require('chalk');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
 const { dumpCommand } = require('../../ux/dump');
-const { dumpBoolean, dumpValidInvalid } = require('../../ux/dumpYesNo');
+const { dumpBoolean } = require('../../ux/dumpYesNo');
 const { lineBreak } = require('../../ux/lineBreak');
 const { dumpAuth } = require('../../ux/dumpAuth');
 const yaml = require('yaml');
@@ -13,11 +13,7 @@ const dumpOptions = {
   falseWord: 'No! ',
 };
 
-exports.command = 'auth [command]';
-
-exports.desc = 'Manage authentication information';
-
-exports.builder = (yargs) => yargs.options({
+const showFlags = {
   'show-all': {
     describe: 'Shows the non redacted private key and API secret',
     type: 'boolean',
@@ -33,7 +29,15 @@ exports.builder = (yargs) => yargs.options({
     type: 'boolean',
     conflicts: 'yaml',
   },
-}).commandDir('auth');
+};
+
+exports.flags = showFlags;
+
+exports.command = 'auth [command]';
+
+exports.desc = 'Manage authentication information';
+
+exports.builder = (yargs) => yargs.options(showFlags);
 
 exports.handler = async (argv) => {
   console.info('Displaying auth information');
@@ -111,8 +115,8 @@ exports.handler = async (argv) => {
     dumpAuth(config.local, argv.showAll);
     console.log('');
 
-    console.log(`Checking API Key Secret: ${dumpValidInvalid(await validateApiKeyAndSecret(config.local.apiKey, config.local.apiSecret), true)}`);
-    console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey), true)}`);
+    await validateApiKeyAndSecret(config.local.apiKey, config.local.apiSecret);
+    await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey);
   }
 
   if (hasLocal && hasGlobal) {
@@ -125,8 +129,8 @@ exports.handler = async (argv) => {
     dumpAuth(config.global, argv.showAll);
     console.log('');
 
-    console.log(`Checking API Key Secret: ${dumpValidInvalid(await validateApiKeyAndSecret(config.global.apiKey, config.global.apiSecret), true)}`);
-    console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.global.appId, config.global.privateKey), true)}`);
+    await validateApiKeyAndSecret(config.global.apiKey, config.global.apiSecret);
+    await validatePrivateKeyAndAppId(config.global.appId, config.global.privateKey);
   }
 };
 

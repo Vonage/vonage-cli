@@ -1,6 +1,9 @@
-
 const mockGetApplication = jest.fn();
 const mockGetApplicationPage = jest.fn();
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 const mockedVonage = jest.fn().mockImplementation(() => {
   return {
