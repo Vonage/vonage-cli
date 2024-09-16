@@ -1,27 +1,19 @@
 const yargs = require('yargs');
-const { existsSync, writeFileSync, mkdir } = require('fs');
+const { existsSync, writeFileSync, mkdirSync } = require('fs');
 const { confirm } = require('../../ux/confirm');
 const { dumpAuth } = require('../../ux/dumpAuth');
-const { dumpValidInvalid } = require('../../ux/dumpYesNo');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
 
-const createConfigDirectory = (configPath) => new Promise((resolve) => {
+const createConfigDirectory = (configPath) => {
   if (existsSync(configPath)) {
     console.debug('Config directory already exists');
-    return resolve(true);
+    return true;
   }
 
   console.info(`Creating configuration directory ${configPath}`);
-
-  mkdir(configPath, { recursive: true }, (err) => {
-    if (err) {
-      console.error('Error creating config directory:', err);
-      return resolve(false);
-    }
-  });
-
-  return resolve(true);
-});
+  mkdirSync(configPath, { recursive: true });
+  return true;
+};
 
 const checkOkToWrite = async (configPath) => {
   if (!existsSync(configPath)) {
@@ -30,22 +22,30 @@ const checkOkToWrite = async (configPath) => {
   }
 
   console.debug('Config file exists, checking if ok to write');
-  const okToWrite = await confirm('Configuration file already exists. Overwrite?');
+  const okToWrite = await confirm(`Configuration file ${configPath} already exists. Overwrite?`);
   console.debug('Ok to write:', okToWrite);
 
   return okToWrite;
 };
 
 const setApiKeyAndSecret = async (apiKey, apiSecret) => {
-  if (!apiKey || !apiSecret) {
-    console.debug('API Key and Secret are required');
+  const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
+  return valid ? { 'api-key': apiKey, 'api-secret': apiSecret } : false;
+};
+
+const setAppIdAndPrivateKey = async (apiKey, apiSecret, appId, privateKey) => {
+  if (!appId || !privateKey) {
+    console.debug('App ID and Private Key are required');
     return {};
   }
 
-  console.log('Checking API Key Secret: ...');
-  const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
-  console.log(`\rChecking API Key Secret: ${dumpValidInvalid(valid)}`);
-  return valid ? { 'api-key': apiKey, 'api-secret': apiSecret } : false;
+  const valid = await validatePrivateKeyAndAppId(
+    apiKey,
+    apiSecret,
+    appId,
+    privateKey,
+  );
+  return valid ? { 'app-id': appId, 'private-key': privateKey} : false;
 };
 
 exports.command = 'set';
@@ -57,11 +57,9 @@ exports.builder = (yargs) => yargs.options({
     describe: 'Save local configuration only',
     type: 'boolean',
   },
-});
+}).demandOption(['api-key', 'api-secret']);
 
 exports.handler = async (argv) => {
-  console.log('Saving auth information');
-
   const apiKeySecret = await setApiKeyAndSecret(
     argv.config.cli.apiKey,
     argv.config.cli.apiSecret,
@@ -73,15 +71,22 @@ exports.handler = async (argv) => {
     return;
   }
 
-  console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey), true)}`);
+  const appIdPrivateKey = await setAppIdAndPrivateKey(
+    argv.config.cli.apiKey,
+    argv.config.cli.apiSecret,
+    argv.config.cli.appId,
+    argv.config.cli.privateKey,
+  );
 
-  return;
+  if (appIdPrivateKey === false) {
+    console.error('Invalid App ID or Private Key');
+    yargs.exit(5);
+    return;
+  }
 
   const newAuthInformation = {
-    'api-key': argv.config.cli.apiKey,
-    'api-secret': argv.config.cli.apiSecret,
-    'private-key': argv.config.cli.privateKey,
-    'app-id': argv.config.cli.appId,
+    ...apiKeySecret,
+    ...appIdPrivateKey,
   };
 
   console.debug('New auth information:', newAuthInformation);
@@ -100,7 +105,7 @@ exports.handler = async (argv) => {
     : argv.config.globalConfigFile;
 
   if (await checkOkToWrite(configFile) === false) {
-    console.info('Configuration not saved');
+    console.log('Configuration not saved');
     return;
   }
 

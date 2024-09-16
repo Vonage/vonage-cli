@@ -28,6 +28,10 @@ const mkdir = jest.fn((directoryPath) => {
   __addPath(directoryPath);
 });
 
+const mkdirSync = jest.fn((directoryPath) => {
+  __addPath(directoryPath);
+});
+
 const readdirSync = jest.fn((directoryPath) => mockFiles[directoryPath] || []);
 
 const existsSync = jest.fn((filePath) => {
@@ -63,5 +67,6 @@ fs.readdirSync = readdirSync;
 fs.existsSync = existsSync;
 fs.writeFileSync = jest.fn();
 fs.mkdir = mkdir;
+fs.mkdirSync = mkdirSync;
 
 module.exports = fs;

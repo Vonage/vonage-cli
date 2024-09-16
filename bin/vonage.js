@@ -36,6 +36,7 @@ yargs(hideBin(process.argv))
       describe: 'Your Vonage application ID',
       group: 'Vonage Credentials:',
       type: 'string',
+      implies: 'private-key',
     },
     'verbose': {
       alias: 'v',

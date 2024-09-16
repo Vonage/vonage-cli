@@ -1,28 +1,64 @@
 const { confirm } = require('../../../src/ux/confirm');
 const fs = require('fs');
 const set = require('../../../src/commands/auth/set');
-const { getTestMiddlewareArgs } = require('../../common');
+const { getTestMiddlewareArgs, testPublicKey, testPrivateKey } = require('../../common');
+const { Vonage } = require('@vonage/server-sdk');
+const { getBasicApplication } = require('../../apps');
+const { mockConsole } = require('../../helpers');
+const yargs = require('yargs');
 
 jest.mock('fs');
 jest.mock('../../../src/ux/confirm');
+jest.mock('@vonage/server-sdk');
+jest.mock('yargs');
+
+const oldProcessStdoutWrite = process.stdout.write;
 
 describe('Command: vonage auth set', () => {
-  test('should write to the global config file', async () => {
-    const args = getTestMiddlewareArgs();
+  let consoleMock;
+
+  beforeEach(() => {
+    process.stdout.write = jest.fn();
+    consoleMock = mockConsole();
+  });
+
+  afterAll(() => {
+    process.stdout.write = oldProcessStdoutWrite;
+  });
+
+
+  test('Should write to the global config file', async () => {
+    const application = getBasicApplication();
+    application.keys.publicKey = testPublicKey;
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
 
     fs.__addPath(args.config.globalConfigPath);
     expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
 
     await set.handler(args);
 
+    expect(consoleMock.log.mock.calls[0][0]).toBe(`Configuration saved to ${args.config.globalConfigFile}`);
+
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,
       JSON.stringify(
         {
-          'api-key': args.apiKey,
-          'api-secret': args.apiSecret,
-          'private-key': args.privateKey,
-          'app-id': args.appId,
+          'api-key': args.config.cli.apiKey,
+          'api-secret': args.config.cli.apiSecret,
+          'app-id': args.config.cli.appId,
+          'private-key': args.config.cli.privateKey,
         },
         null,
         2,
@@ -34,19 +70,32 @@ describe('Command: vonage auth set', () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
-  test('should write to the global config file and create directory', async () => {
-    const args = getTestMiddlewareArgs();
+  test('Should only write api key and secret', async () => {
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        apiKey: args.config.cli.apiKey,
+        apiSecret: args.config.cli.apiSecret,
+      },
+    };
+
+    fs.__addPath(args.config.globalConfigPath);
+    expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
 
     await set.handler(args);
+
+    expect(consoleMock.log.mock.calls[0][0]).toBe(`Configuration saved to ${args.config.globalConfigFile}`);
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,
       JSON.stringify(
         {
-          'api-key': args.apiKey,
-          'api-secret': args.apiSecret,
-          'private-key': args.privateKey,
-          'app-id': args.appId,
+          'api-key': args.config.cli.apiKey,
+          'api-secret': args.config.cli.apiSecret,
         },
         null,
         2,
@@ -54,16 +103,67 @@ describe('Command: vonage auth set', () => {
     );
 
     expect(fs.existsSync).toHaveBeenCalledWith(args.config.globalConfigPath);
-    expect(fs.mkdir).toHaveBeenCalledWith(
+    expect(fs.mkdirSync).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  test('Should write to the global config file and create directory', async () => {
+    const application = getBasicApplication();
+    application.keys.publicKey = testPublicKey;
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
+
+    await set.handler(args);
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith(
+      args.config.globalConfigFile,
+      JSON.stringify(
+        {
+          'api-key': args.config.cli.apiKey,
+          'api-secret': args.config.cli.apiSecret,
+          'app-id': args.config.cli.appId,
+          'private-key': args.config.cli.privateKey,
+        },
+        null,
+        2,
+      ),
+    );
+
+    expect(fs.existsSync).toHaveBeenCalledWith(args.config.globalConfigPath);
+    expect(fs.mkdirSync).toHaveBeenCalledWith(
       args.config.globalConfigPath,
       {recursive: true },
-      expect.any(Function),
     );
     expect(confirm).not.toHaveBeenCalled();
   });
 
-  test('should write to the local config file', async () => {
-    const args = getTestMiddlewareArgs();
+  test('Should write to the local config file', async () => {
+    const application = getBasicApplication();
+    application.keys.publicKey = testPublicKey;
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
 
     await set.handler({
       ...args,
@@ -74,10 +174,10 @@ describe('Command: vonage auth set', () => {
       args.config.localConfigFile,
       JSON.stringify(
         {
-          'api-key': args.apiKey,
-          'api-secret': args.apiSecret,
-          'private-key': args.privateKey,
-          'app-id': args.appId,
+          'api-key': args.config.cli.apiKey,
+          'api-secret': args.config.cli.apiSecret,
+          'app-id': args.config.cli.appId,
+          'private-key': args.config.cli.privateKey,
         },
         null,
         2,
@@ -89,8 +189,22 @@ describe('Command: vonage auth set', () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
-  test('should confirm overwriting file then write', async () => {
-    const args = getTestMiddlewareArgs();
+  test('Should confirm overwriting file then write', async () => {
+    const application = getBasicApplication();
+    application.keys.publicKey = testPublicKey;
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
 
     fs.__addFile(args.config.localConfigFile, JSON.stringify(args.config.local));
     confirm.mockResolvedValue(true);
@@ -101,12 +215,26 @@ describe('Command: vonage auth set', () => {
     });
 
 
-    expect(confirm).toHaveBeenCalledWith('Configuration file already exists. Overwrite?');
+    expect(confirm).toHaveBeenCalledWith(`Configuration file ${args.config.localConfigFile} already exists. Overwrite?`);
     expect(fs.writeFileSync).toHaveBeenCalled();
   });
 
-  test('should confirm overwriting file and then not write', async () => {
-    const args = getTestMiddlewareArgs();
+  test('Should confirm overwriting file and then not write', async () => {
+    const application = getBasicApplication();
+    application.keys.publicKey = testPublicKey;
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
 
     fs.__addFile(args.config.localConfigFile, JSON.stringify(args.config.local));
 
@@ -121,7 +249,54 @@ describe('Command: vonage auth set', () => {
     expect(fs.writeFileSync).not.toHaveBeenCalled();
   });
 
-  test('should handle failure when mkdir fails', async () => {
+  test('Should not write when API Key and Secret validation fails', async () => {
+    Vonage._mockGetApplicationPage.mockRejectedValue({response: {status: 401}});
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        ...args.config.local,
+        privateKey: testPrivateKey,
+      },
+    };
+
+    fs.__addPath(args.config.globalConfigPath);
+    expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
+
+    await set.handler(args);
+
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
+
+    expect(fs.existsSync).toHaveBeenCalledWith(args.config.globalConfigPath);
+    expect(fs.mkdirSync).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(yargs.exit).toHaveBeenCalledWith(5);
+  });
+
+  test('Should not write when App Id and Private Key fails', async () => {
+    const application = getBasicApplication();
+
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    Vonage._mockGetApplication.mockResolvedValue(application);
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    fs.__addPath(args.config.globalConfigPath);
+    expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
+
+    await set.handler(args);
+
+    expect(fs.writeFileSync).not.toHaveBeenCalled();
+
+    expect(fs.existsSync).toHaveBeenCalledWith(args.config.globalConfigPath);
+    expect(fs.mkdirSync).not.toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(yargs.exit).toHaveBeenCalledWith(5);
+  });
+
+  test('Should handle failure when mkdir fails', async () => {
     const args = getTestMiddlewareArgs();
 
     fs.mkdir.mockImplementation((path, options, cb) =>
