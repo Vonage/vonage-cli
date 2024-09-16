@@ -47,7 +47,7 @@ describe('UX: boolean dump', () => {
 });
 
 describe('UX: table', () => {
-  test('table will return a string', () => {
+  test('Will return a string', () => {
     const data = [
       {
         id: faker.string.alpha(10),

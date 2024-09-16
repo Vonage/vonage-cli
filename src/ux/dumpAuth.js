@@ -7,6 +7,8 @@ exports.dumpAuth = (config, noRedact=false) => {
   const dumpConfig = Client.transformers.camelCaseObjectKeys(config);
   let privateKey = dumpConfig.privateKey ? 'Is Set' : null;
 
+  console.debug('privateKey', privateKey);
+
   switch(true) {
   case noRedact === true:
     privateKey = dumpConfig.privateKey;
@@ -17,7 +19,9 @@ exports.dumpAuth = (config, noRedact=false) => {
     break;
 
   default:
-    privateKey = 'Is Set';
+    privateKey = dumpConfig.privateKey.startsWith('-----BEGIN PRIVATE KEY-----')
+      ? 'Is Set'
+      : 'INVALID KEY';
     break;
   }
 

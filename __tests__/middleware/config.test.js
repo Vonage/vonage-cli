@@ -225,7 +225,7 @@ describe('Middeleware: Config', () => {
 
   test('Will exit when no config is found', () => {
     setConfig({}, yargs);
-    expect(consoleMock.error).toHaveBeenCalledWith('error: No configuration file found');
+    expect(consoleMock.log).toHaveBeenCalledWith('error: No configuration file found');
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 });

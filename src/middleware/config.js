@@ -1,6 +1,7 @@
 const { readFileSync, existsSync } = require('fs');
 const { dumpCommand } = require('../ux/dump');
 const chalk = require('chalk');
+const yargs = require('yargs');
 
 const getSharedConfig = () => {
   const globalConfigPath = `${process.env.HOME}/.vonage`;
@@ -41,7 +42,19 @@ const decideConfig = (argv, config) => {
   return false;
 };
 
-exports.setConfig = (argv, yargs) => {
+const errorNoConfig = (local=false) => {
+  console.log(`${chalk.red('error')}: No ${local ? 'local ' :'' }configuration file found`);
+  console.log('');
+  console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
+  console.log('');
+  console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
+  console.log('      use the --help option for more information');
+  yargs.exit(2);
+};
+
+exports.errorNoConfig = errorNoConfig;
+
+exports.setConfig = (argv) => {
   const sharedConfig = getSharedConfig();
   const {
     globalConfigFile,
@@ -101,22 +114,14 @@ exports.setConfig = (argv, yargs) => {
   const authConfig = decideConfig(argv, config);
 
   if (!authConfig) {
-    console.error(`${chalk.red('error:')} No configuration file found`);
-    console.log('');
-    console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
-    console.log('');
-    console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
-    console.log('      use the --help option for more information');
-    yargs.exit(2);
+    errorNoConfig();
+    return;
   }
 
   const finalConfig = {
     ...authConfig,
     config: config,
   };
-
-  console.debug('Auth Config:', authConfig);
-  console.debug('Final Config:', finalConfig);
 
   return finalConfig;
 };

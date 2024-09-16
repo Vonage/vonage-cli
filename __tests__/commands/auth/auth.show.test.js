@@ -10,7 +10,7 @@ jest.mock('@vonage/server-sdk');
 
 const oldProcessStdoutWrite = process.stdout.write;
 
-describe('Command: vonage auth', () => {
+describe('Command: vonage auth show and vonage auth', () => {
   let consoleMock;
 
   beforeEach(() => {

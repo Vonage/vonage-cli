@@ -32,7 +32,7 @@ const showFlags = {
 
 exports.flags = showFlags;
 
-exports.command = 'auth [command]';
+exports.command = 'show';
 
 exports.desc = 'Manage authentication information';
 
