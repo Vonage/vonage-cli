@@ -1,4 +1,5 @@
 const { readFileSync, existsSync } = require('fs');
+const { dumpCommand } = require('../ux/dump');
 const chalk = require('chalk');
 
 const getSharedConfig = () => {
@@ -101,6 +102,11 @@ exports.setConfig = (argv, yargs) => {
 
   if (!authConfig) {
     console.error(`${chalk.red('error:')} No configuration file found`);
+    console.log('');
+    console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
+    console.log('');
+    console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
+    console.log('      use the --help option for more information');
     yargs.exit(2);
   }
 

@@ -6,16 +6,16 @@ const validatePrivateKeyAndAppId = async (appId, privateKey, logProgress=true) =
   console.info('Validating API Key and Secret');
 
   if (!appId || !privateKey) {
-    console.error('App ID and Private Key are required');
+    console.debug('App ID and Private Key are required');
     return false;
   }
 
-  const vonage = new Vonage({
-    applicationId: appId,
-    privateKey: privateKey,
-  });
-
   try {
+    const vonage = new Vonage({
+      applicationId: appId,
+      privateKey: privateKey,
+    });
+
     console.debug('Loading application');
     if (logProgress) {
       process.stdout.write('Checking App ID and Private Key: ...');
@@ -34,15 +34,15 @@ const validatePrivateKeyAndAppId = async (appId, privateKey, logProgress=true) =
     console.debug(`Public key confirmed: ${correctPublicKey ? 'Yes' : 'No'}`);
 
     if (logProgress) {
-      process.stdout.write(`\rChecking App ID and Private Key: ${dumpValidInvalid(correctPublicKey, true)}`);
+      process.stdout.write(`\rChecking App ID and Private Key: ${dumpValidInvalid(correctPublicKey, true)}\n`);
     }
 
     return correctPublicKey;
   } catch (error) {
-    console.error('Error:', error);
+    console.debug('Error validating API Key Secret:', error);
     console.info('API Key and Secret are invalid');
     if (logProgress) {
-      process.stdout.write(`\rChecking App ID and Private Key: ${dumpValidInvalid(false, true)}`);
+      process.stdout.write(`\rChecking App ID and Private Key: ${dumpValidInvalid(false, true)}\n`);
     }
     return false;
   }
@@ -52,16 +52,16 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret, logProgress=true) => {
   console.info('Validating API Key and Secret');
 
   if (!apiKey || !apiSecret) {
-    console.error('API Key and Secret are required');
+    console.debug('API Key and Secret are required');
     return false;
   }
 
-  const vonage = new Vonage({
-    apiKey: apiKey,
-    apiSecret: apiSecret,
-  });
-
   try {
+    const vonage = new Vonage({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+    });
+
     if (logProgress) {
       process.stdout.write('Checking API Key Secret: ...');
     }
@@ -70,15 +70,15 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret, logProgress=true) => {
     await vonage.applications.getApplicationPage({size: 1});
     console.info('API Key and Secret are valid');
     if (logProgress) {
-      process.stdout.write(`\rChecking API Key Secret: ${dumpValidInvalid(true, true)}`);
+      process.stdout.write(`\rChecking API Key Secret: ${dumpValidInvalid(true, true)}\n`);
     }
     return true;
   } catch (error) {
-    console.error('Error:', error);
+    console.debug('Error validating App ID and Private Key', error);
     console.info('API Key and Secret are invalid');
 
     if (logProgress) {
-      process.stdout.write(`\rChecking API Key Secret: ${dumpValidInvalid(false, true)}`);
+      process.stdout.write(`\rChecking API Key Secret: ${dumpValidInvalid(false, true)}\n`);
     }
 
     return false;

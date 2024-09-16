@@ -1,6 +1,9 @@
+const yargs = require('yargs');
 const { existsSync, writeFileSync, mkdir } = require('fs');
 const { confirm } = require('../../ux/confirm');
 const { dumpAuth } = require('../../ux/dumpAuth');
+const { dumpValidInvalid } = require('../../ux/dumpYesNo');
+const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
 
 const createConfigDirectory = (configPath) => new Promise((resolve) => {
   if (existsSync(configPath)) {
@@ -33,6 +36,18 @@ const checkOkToWrite = async (configPath) => {
   return okToWrite;
 };
 
+const setApiKeyAndSecret = async (apiKey, apiSecret) => {
+  if (!apiKey || !apiSecret) {
+    console.debug('API Key and Secret are required');
+    return {};
+  }
+
+  console.log('Checking API Key Secret: ...');
+  const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
+  console.log(`\rChecking API Key Secret: ${dumpValidInvalid(valid)}`);
+  return valid ? { 'api-key': apiKey, 'api-secret': apiSecret } : false;
+};
+
 exports.command = 'set';
 
 exports.desc = 'Set authentication information';
@@ -45,13 +60,28 @@ exports.builder = (yargs) => yargs.options({
 });
 
 exports.handler = async (argv) => {
-  console.info('Saving auth information');
+  console.log('Saving auth information');
+
+  const apiKeySecret = await setApiKeyAndSecret(
+    argv.config.cli.apiKey,
+    argv.config.cli.apiSecret,
+  );
+
+  if (apiKeySecret === false) {
+    console.error('Invalid API Key or Secret');
+    yargs.exit(5);
+    return;
+  }
+
+  console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey), true)}`);
+
+  return;
 
   const newAuthInformation = {
-    'api-key': argv.apiKey,
-    'api-secret': argv.apiSecret,
-    'private-key': argv.privateKey,
-    'app-id': argv.appId,
+    'api-key': argv.config.cli.apiKey,
+    'api-secret': argv.config.cli.apiSecret,
+    'private-key': argv.config.cli.privateKey,
+    'app-id': argv.config.cli.appId,
   };
 
   console.debug('New auth information:', newAuthInformation);
@@ -59,7 +89,7 @@ exports.handler = async (argv) => {
     ? argv.config.localConfigPath
     : argv.config.globalConfigPath;
 
-  console.debug(`Config path (${argv.local ? 'local' : 'global'}): ${configPath}`);
+  console.debug(`Config path: ${configPath}`);
 
   if (!argv.local && await createConfigDirectory(configPath) === false) {
     return;

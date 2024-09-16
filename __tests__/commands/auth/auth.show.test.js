@@ -8,11 +8,18 @@ const { getBasicApplication } = require('../../apps');
 
 jest.mock('@vonage/server-sdk');
 
+const oldProcessStdoutWrite = process.stdout.write;
+
 describe('Command: vonage auth', () => {
   let consoleMock;
 
   beforeEach(() => {
+    process.stdout.write = jest.fn();
     consoleMock = mockConsole();
+  });
+
+  afterAll(() => {
+    process.stdout.write = oldProcessStdoutWrite;
   });
 
   test('Should show the config settings, validate them', async () => {
@@ -50,10 +57,10 @@ describe('Command: vonage auth', () => {
       'Private Key: Is Set',
     ].join('\n'));
 
-    expect(consoleMock.log.mock.calls[7][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
+    expect(consoleMock.log.mock.calls[8][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(consoleMock.log.mock.calls[9][0]).toBe([
+    expect(consoleMock.log.mock.calls[10][0]).toBe([
       `API Key: ${config.global.apiKey}`,
       `API Secret: ${redactedGlobal}`,
       `App ID: ${config.global.appId}`,
