@@ -1,6 +1,5 @@
-const chalk = require('chalk');
+const yargs = require('yargs');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
-const { dumpCommand } = require('../../ux/dump');
 const { dumpBoolean } = require('../../ux/dumpYesNo');
 const { lineBreak } = require('../../ux/lineBreak');
 const { dumpAuth } = require('../../ux/dumpAuth');
@@ -44,15 +43,6 @@ exports.handler = async (argv) => {
   const { config } = argv;
 
   const { localConfigExists, globalConfigExists } = config;
-
-  if (!localConfigExists && !globalConfigExists) {
-    console.error('No configuration files found.');
-    console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
-    console.log('');
-    console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
-    console.log('      use the --help option for more information');
-    return;
-  }
 
   if (argv.json) {
     console.log(JSON.stringify(
@@ -108,6 +98,7 @@ exports.handler = async (argv) => {
       || config.global.privateKey
       || config.global.appId);
 
+  let configOk = true;
 
   if (hasLocal) {
     console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
@@ -115,8 +106,17 @@ exports.handler = async (argv) => {
     dumpAuth(config.local, argv.showAll);
     console.log('');
 
-    await validateApiKeyAndSecret(config.local.apiKey, config.local.apiSecret);
-    await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey);
+    configOk = await validateApiKeyAndSecret(
+      config.local.apiKey,
+      config.local.apiSecret,
+    ) && configOk;
+
+    configOk = await validatePrivateKeyAndAppId(
+      config.local.apiKey,
+      config.local.apiSecret,
+      config.local.appId,
+      config.local.privateKey,
+    ) && configOk;
   }
 
   if (hasLocal && hasGlobal) {
@@ -129,8 +129,23 @@ exports.handler = async (argv) => {
     dumpAuth(config.global, argv.showAll);
     console.log('');
 
-    await validateApiKeyAndSecret(config.global.apiKey, config.global.apiSecret);
-    await validatePrivateKeyAndAppId(config.global.appId, config.global.privateKey);
+    configOk = await validateApiKeyAndSecret(
+      config.global.apiKey,
+      config.global.apiSecret,
+    ) && configOk;
+
+    configOk = await validatePrivateKeyAndAppId(
+      config.global.apiKey,
+      config.global.apiSecret,
+      config.global.appId,
+      config.global.privateKey,
+    ) && configOk;
+  }
+
+  if (!configOk) {
+    console.error('Configuration is not valid');
+    yargs.exit(5);
+    return;
   }
 };
 

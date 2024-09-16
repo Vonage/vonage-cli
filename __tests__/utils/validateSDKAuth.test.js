@@ -23,7 +23,10 @@ describe('Utils: Validate SDK Auth', () => {
     application.keys.publicKey = testPublicKey;
     Vonage._mockGetApplication.mockResolvedValue(application);
 
+    const { apiKey, apiSecret } = getCLIConfig();
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
     );
@@ -31,6 +34,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(true);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });
@@ -44,8 +49,11 @@ describe('Utils: Validate SDK Auth', () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
     Vonage._mockGetApplication.mockResolvedValue(application);
+    const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
       false,
@@ -54,6 +62,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(true);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });
@@ -65,7 +75,10 @@ describe('Utils: Validate SDK Auth', () => {
     const application = getBasicApplication();
     Vonage._mockGetApplication.mockResolvedValue(application);
 
+    const { apiKey, apiSecret } = getCLIConfig();
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
     );
@@ -73,6 +86,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(false);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });
@@ -86,7 +101,10 @@ describe('Utils: Validate SDK Auth', () => {
     const application = getBasicApplication();
     Vonage._mockGetApplication.mockResolvedValue(application);
 
+    const { apiKey, apiSecret } = getCLIConfig();
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
       false,
@@ -95,6 +113,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(false);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });
@@ -105,8 +125,11 @@ describe('Utils: Validate SDK Auth', () => {
   test('Will not validate when application not found', async () => {
     const application = getBasicApplication();
     Vonage._mockGetApplication.mockRejectedValue({response: {status: 404}});
+    const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
     );
@@ -114,6 +137,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(false);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });
@@ -126,8 +151,11 @@ describe('Utils: Validate SDK Auth', () => {
   test('Will not validate when application not found and not repot progress', async () => {
     const application = getBasicApplication();
     Vonage._mockGetApplication.mockRejectedValue({response: {status: 404}});
+    const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validatePrivateKeyAndAppId(
+      apiKey,
+      apiSecret,
       application.id,
       testPrivateKey,
       false,
@@ -136,6 +164,8 @@ describe('Utils: Validate SDK Auth', () => {
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
     expect(result).toBe(false);
     expect(Vonage).toHaveBeenCalledWith({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       privateKey: testPrivateKey,
       applicationId: application.id,
     });

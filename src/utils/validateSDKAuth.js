@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const { dumpValidInvalid } = require('../ux/dumpYesNo');
 const { Vonage } = require('@vonage/server-sdk');
 
-const validatePrivateKeyAndAppId = async (appId, privateKey, logProgress=true) => {
+const validatePrivateKeyAndAppId = async (apiKey, apiSecret, appId, privateKey, logProgress=true) => {
   console.info('Validating API Key and Secret');
 
   if (!appId || !privateKey) {
@@ -12,6 +12,8 @@ const validatePrivateKeyAndAppId = async (appId, privateKey, logProgress=true) =
 
   try {
     const vonage = new Vonage({
+      apiKey: apiKey,
+      apiSecret: apiSecret,
       applicationId: appId,
       privateKey: privateKey,
     });
