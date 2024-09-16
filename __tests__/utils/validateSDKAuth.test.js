@@ -12,8 +12,8 @@ describe('Utils: Validate SDK Auth', () => {
     Vonage._mockGetApplication.mockResolvedValue(application);
 
     const result = await validatePrivateKeyAndAppId(
-      testPrivateKey,
       application.id,
+      testPrivateKey,
     );
 
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
@@ -29,8 +29,8 @@ describe('Utils: Validate SDK Auth', () => {
     Vonage._mockGetApplication.mockResolvedValue(application);
 
     const result = await validatePrivateKeyAndAppId(
-      testPrivateKey,
       application.id,
+      testPrivateKey,
     );
 
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
@@ -46,8 +46,8 @@ describe('Utils: Validate SDK Auth', () => {
     Vonage._mockGetApplication.mockRejectedValue({response: {status: 404}});
 
     const result = await validatePrivateKeyAndAppId(
-      testPrivateKey,
       application.id,
+      testPrivateKey,
     );
 
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(application.id);
@@ -95,4 +95,7 @@ describe('Utils: Validate SDK Auth', () => {
       apiSecret: apiSecret,
     });
   });
+
+
+
 });

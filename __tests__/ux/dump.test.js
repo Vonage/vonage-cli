@@ -1,7 +1,7 @@
 const { faker } = require('@faker-js/faker');
 const { dumpValue, dumpKey } = require('../../src/ux/dump');
 const { descriptionList } = require('../../src/ux/descriptionList');
-const { dumpYesNo, dumpOnOf, dumpEnabledDisabled } = require('../../src/ux/dumpYesNo');
+const { dumpYesNo, dumpOnOff, dumpEnabledDisabled } = require('../../src/ux/dumpYesNo');
 const { table } = require('../../src/ux/table');
 const uxTests = require('../__dataSets__/ux');
 
@@ -26,11 +26,11 @@ describe('UX: dump', () => {
   });
 
   test('dumpOnOf will return On or Off', () => {
-    expect(dumpOnOf(true)).toBe('✅ ');
-    expect(dumpOnOf(false)).toBe('❌ ');
+    expect(dumpOnOff(true)).toBe('✅ ');
+    expect(dumpOnOff(false)).toBe('❌ ');
 
-    expect(dumpOnOf(true, true)).toBe('✅ On');
-    expect(dumpOnOf(false, true)).toBe('❌ Off');
+    expect(dumpOnOff(true, true)).toBe('✅ On');
+    expect(dumpOnOff(false, true)).toBe('❌ Off');
   });
 
   test('dumpEnabledDisabled will return Enabled or Disabled', () => {

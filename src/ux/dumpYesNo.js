@@ -1,6 +1,6 @@
 const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=false, noEmoji=false}) => value
-  ? `${!noEmoji ? '✅' : ''}${includeText ? trueWord : ''}`
-  : `${!noEmoji ? '❌' : ''}${includeText ? falseWord : ''}`;
+  ? `${!noEmoji ? '✅ ' : ''}${includeText ? trueWord : ''}`
+  : `${!noEmoji ? '❌ ' : ''}${includeText ? falseWord : ''}`;
 
 exports.dumpBoolean = dumpBoolean;
 
@@ -22,6 +22,13 @@ exports.dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
   value: value,
   trueWord: 'Enabled',
   falseWord: 'Disabled',
+  includeText: includeText,
+});
+
+exports.dumpValidInvalid = (value, includeText=false) => dumpBoolean({
+  value: value,
+  trueWord: 'Valid',
+  falseWord: 'Invalid',
   includeText: includeText,
 });
 

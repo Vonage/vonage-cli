@@ -1,10 +1,10 @@
 const chalk = require('chalk');
-const { dumpCommand } = require('../ux/dump');
-const { dumpBoolean } = require('../ux/dumpYesNo');
-const { lineBreak } = require('../ux/lineBreak');
-const { dumpAuth } = require('../ux/dumpAuth');
+const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
+const { dumpCommand } = require('../../ux/dump');
+const { dumpBoolean, dumpValidInvalid } = require('../../ux/dumpYesNo');
+const { lineBreak } = require('../../ux/lineBreak');
+const { dumpAuth } = require('../../ux/dumpAuth');
 const yaml = require('yaml');
-
 
 const dumpOptions = {
   noEmoji: true,
@@ -18,6 +18,11 @@ exports.command = 'auth [command]';
 exports.desc = 'Manage authentication information';
 
 exports.builder = (yargs) => yargs.options({
+  'show-all': {
+    describe: 'Shows the non redacted private key and API secret',
+    type: 'boolean',
+    default: false,
+  },
   'yaml': {
     describe: 'Output as YAML',
     type: 'boolean',
@@ -87,15 +92,41 @@ exports.handler = async (argv) => {
     return;
   }
 
-  console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
-  console.log('');
-  dumpAuth(config.local);
+  const hasLocal = localConfigExists
+    && (config.local.apiKey
+      || config.local.apiSecret
+      || config.local.privateKey
+      || config.local.appId);
+
+  const hasGlobal = globalConfigExists
+    && (config.global.apiKey
+      || config.global.apiSecret
+      || config.global.privateKey
+      || config.global.appId);
 
 
-  lineBreak();
+  if (hasLocal) {
+    console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
+    console.log('');
+    dumpAuth(config.local, argv.showAll);
+    console.log('');
 
-  console.log(`${dumpBoolean({value: globalConfigExists, ...dumpOptions})}Global credentials found at: ${config.globalConfigFile}`);
-  console.log('');
-  dumpAuth(config.global);
+    console.log(`Checking API Key Secret: ${dumpValidInvalid(await validateApiKeyAndSecret(config.local.apiKey, config.local.apiSecret), true)}`);
+    console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.local.appId, config.local.privateKey), true)}`);
+  }
+
+  if (hasLocal && hasGlobal) {
+    lineBreak();
+  }
+
+  if (hasGlobal) {
+    console.log(`${dumpBoolean({value: globalConfigExists, ...dumpOptions})}Global credentials found at: ${config.globalConfigFile}`);
+    console.log('');
+    dumpAuth(config.global, argv.showAll);
+    console.log('');
+
+    console.log(`Checking API Key Secret: ${dumpValidInvalid(await validateApiKeyAndSecret(config.global.apiKey, config.global.apiSecret), true)}`);
+    console.log(`Checking App ID and Private Key: ${dumpValidInvalid(await validatePrivateKeyAndAppId(config.global.appId, config.global.privateKey), true)}`);
+  }
 };
 

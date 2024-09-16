@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { Vonage } = require('@vonage/server-sdk');
 
-const validatePrivateKeyAndAppId = async (privateKey, appId) => {
+const validatePrivateKeyAndAppId = async (appId, privateKey) => {
   console.info('Validating API Key and Secret');
 
   const vonage = new Vonage({
@@ -12,11 +12,14 @@ const validatePrivateKeyAndAppId = async (privateKey, appId) => {
   try {
     console.debug('Loading application');
     const application = await vonage.applications.getApplication(appId);
+    console.debug('Got Application');
+
     const publicKey = application.keys.publicKey;
 
     const encryptedString = crypto.publicEncrypt(publicKey, appId);
-
     const decryptedString = crypto.privateDecrypt(privateKey, encryptedString);
+
+    console.debug('Confirming public key');
     return decryptedString.toString() === appId;
   } catch (error) {
     console.error('Error:', error);

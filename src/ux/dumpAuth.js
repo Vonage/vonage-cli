@@ -1,14 +1,46 @@
 const { Client } = require('@vonage/server-client');
 const { dumpValue } = require('../ux/dump');
-const { truncate } = require('../ux/truncate');
 const { descriptionList } = require('../ux/descriptionList');
+const { redact } = require('../ux/redact');
 
-exports.dumpAuth = (config) => {
+exports.dumpAuth = (config, noRedact=false) => {
   const dumpConfig = Client.transformers.camelCaseObjectKeys(config);
-  console.log(descriptionList({
-    'API Key': dumpValue(dumpConfig.apiKey),
-    'API Secret': dumpValue(dumpConfig.apiSecret),
-    'Application ID': dumpValue(dumpConfig.appId),
-    'Private Key': dumpValue(truncate(dumpConfig.privateKey, 27, '... truncated')),
-  }));
+  let privateKey = dumpConfig.privateKey ? 'Is Set' : null;
+
+  switch(true) {
+  case noRedact === true:
+    privateKey = dumpConfig.privateKey;
+    break;
+
+  case privateKey === null:
+    privateKey = null;
+    break;
+
+  default:
+    privateKey = 'Is Set';
+    break;
+  }
+
+  const output = {};
+
+  if (dumpConfig.apiKey) {
+    output['API Key'] = dumpValue(dumpConfig.apiKey);
+  }
+
+  if (dumpConfig.apiSecret) {
+    output['API Secret'] = dumpValue(noRedact
+      ? dumpConfig.apiSecret
+      : redact(dumpConfig.apiSecret),
+    );
+  }
+
+  if (dumpConfig.appId) {
+    output['App ID'] = dumpValue(dumpConfig.appId);
+  }
+
+  if (dumpConfig.privateKey) {
+    output['Private Key'] = dumpValue(privateKey);
+  }
+
+  console.log(descriptionList(output));
 };
