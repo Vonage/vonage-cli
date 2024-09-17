@@ -1,4 +1,4 @@
-const readline  = require('node:readline');
+const readline  = require('readline');
 
 exports.confirm = (
   message,

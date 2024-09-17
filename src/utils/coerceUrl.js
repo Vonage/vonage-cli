@@ -1,4 +1,4 @@
-const URL = require('url');
+const { URL } = require('node:url');
 
 const coerceUrl = (argName) => (url) => {
   if (!url) {
