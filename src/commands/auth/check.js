@@ -62,7 +62,7 @@ exports.handler = async (argv) => {
 
   const validPrivateKey = config.privateKey && config.privateKey.startsWith('-----BEGIN PRIVATE KEY');
 
-  if (!validPrivateKey) {
+  if (config.privateKey && !validPrivateKey) {
     console.debug('Private key is not a valid private key');
     config.privateKey = 'INVALID PRIVATE KEY';
     configOk = false;

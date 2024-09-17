@@ -122,14 +122,6 @@ describe('Command: vonage auth check', () => {
         ...args.config.local,
         privateKey: testPrivateKey,
       },
-      local: {
-        ...args.config.local,
-        privateKey: testPrivateKey,
-      },
-      global: {
-        ...args.config.global,
-        privateKey: testPrivateKey,
-      },
     };
 
     await handler(args);
@@ -148,6 +140,34 @@ describe('Command: vonage auth check', () => {
     expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
     expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
     expect(Vonage._mockGetApplication.mock.calls[0][0]).toEqual(config.cli.appId);
+  });
+
+  test('Should validate the API Key and Secret only in the CLI', async () => {
+    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+
+    const args = { ...getTestMiddlewareArgs()};
+
+    args.config = {
+      ...args.config,
+      cli: {
+        apiKey: args.config.local.apiKey,
+        apiSecret: args.config.local.apiSecret,
+      },
+    };
+
+    await handler(args);
+
+    const { config } = args;
+    expect(consoleMock.log.mock.calls[0][0]).toBe('CLI arguments');
+
+    const redactedCli = `${config.cli.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.cli.apiSecret}`.length - 2);
+    expect(consoleMock.log.mock.calls[2][0]).toBe([
+      `API Key: ${config.cli.apiKey}`,
+      `API Secret: ${redactedCli}`,
+    ].join('\n'));
+
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
   });
 
   test('Should fail to validate no config is found', async () => {
