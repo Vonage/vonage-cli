@@ -49,20 +49,18 @@ describe('Command: vonage jwt create', () => {
   test('should generate a JWT with an acl', async () => {
     const args = getTestMiddlewareArgs();
     const acl = {
-      'acl': {
-        'paths': {
-          '/messages/*': {
-            'filters': {
-              'to': '447977271009',
-            },
+      'paths': {
+        '/messages/*': {
+          'filters': {
+            'to': '447977271009',
           },
-          '/calls/*': {
-            'filters': {
-              'to': '447977271009',
-            },
-          },
-          '/conferences/*': {},
         },
+        '/calls/*': {
+          'filters': {
+            'to': '447977271009',
+          },
+        },
+        '/conferences/*': {},
       },
     };
 

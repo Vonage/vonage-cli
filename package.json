@@ -50,7 +50,9 @@
     "ajv": "8.17.1",
     "chalk": "4",
     "easy-table": "1.2.0",
+    "json-diff": "1.0.6",
     "jsonwebtoken": "9.0.2",
+    "table": "6.8.2",
     "winston": "3.13.1",
     "yaml": "2.5.0",
     "yargs": "17.7.2"

@@ -1,6 +1,33 @@
+const { aclDiff } = require('../../utils/aclDiff');
+const { dumpAclDiff } = require('../../ux/dumpAcl');
+const { indentLines } = require('../../ux/indentLines');
 const jwt = require('jsonwebtoken');
 const { dumpObject } = require('../../ux/dump');
+const { dumpBoolean } = require('../../ux/dumpYesNo');
 const { jwtFlags } = require('./create');
+const yargs = require('yargs');
+
+class ExpiredTokenError extends Error {
+  constructor() {
+    super('Token has expired or is not yet active');
+  }
+}
+
+class InvalidClaimError extends Error {
+  _which;
+
+  static invlidClaims = {
+    APP_ID: 'application_id',
+    SUB: 'sub',
+    ACL: 'acl',
+  };
+
+  constructor(which, message) {
+    super(message);
+    this.name = 'InvalidClaimError';
+    this._which = which;
+  }
+}
 
 const validateAppId = (decoded, argv) => {
   const decodedApp = decoded.application_id || false;
@@ -9,7 +36,7 @@ const validateAppId = (decoded, argv) => {
 
   switch (true) {
   case (!decodedApp):
-    console.log('❌ Application Id is not present in the token'); 
+    console.log('❌ Application Id is not present in the token');
     throw new Error('Application Id is not present in the token');
 
   case (decodedApp === argvApp):
@@ -17,7 +44,7 @@ const validateAppId = (decoded, argv) => {
     return;
   default:
     console.log(`❌ Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
-    throw new Error(`Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
+    throw new InvalidClaimError(InvalidClaimError.invlidClaims.APP_ID, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -32,7 +59,7 @@ const validateSubject = (decoded, argv) => {
     return;
 
   case (decodedSub && !argvSub):
-    console.warn('Subject is present in the token but not in the validation arguments');
+    console.log(`ℹ️ Subject [${decoded.sub}]`);
     return;
 
   case (decodedSub === argvSub):
@@ -41,7 +68,7 @@ const validateSubject = (decoded, argv) => {
 
   default:
     console.log(`❌ Subject [${decoded.sub}] does not match [${argv.sub}]`);
-    throw new Error(`Subject [${decoded.sub}] does not match [${argv.sub}]`);
+    throw new InvalidClaimError(InvalidClaimError.invlidClaims.SUB, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -62,7 +89,7 @@ const validateExpired = (decoded) => {
   }
 
   console.log('❌ Token has expired');
-  throw new Error('Token has expired');
+  throw new ExpiredTokenError();
 };
 
 const validateNotBefore = (decoded) => {
@@ -82,30 +109,39 @@ const validateNotBefore = (decoded) => {
   }
 
   console.log('❌ Token is not yet valid');
-  throw new Error('Token is not yet valid');
+  throw new ExpiredTokenError();
 };
 
 const validateAcl = (decoded, argv) => {
-  const decodedAcl = decoded.acl || false;
-  const argvAcl = argv.acl || false;
-  console.debug('Validating ACL', decodedAcl, argvAcl);
+  const actualAcl = decoded.acl || false;
+  let expectedAcl = argv.acl || false;
 
-  switch (true) {
-  case(!decodedAcl && !argvAcl):
+  const aclFlag = !!argv.acl || false;
+  console.debug('Validating ACL', actualAcl, expectedAcl);
+  if (!actualAcl && !expectedAcl) {
     console.debug('ACL not passed as argument and not present in the token');
     return;
+  };
 
-  case (decodedAcl && !argvAcl):
+  if(!expectedAcl) {
     console.warn('ACL is present in the token but not in the validation arguments');
-    return;
-
-  case (JSON.stringify(decoded.acl) === JSON.stringify(argv.acl)):
-    console.log('✅ ACL matches');
-    return;
-  default:
-    console.log('❌ ACL does not match');
-    throw new Error('ACL does not match');
+    expectedAcl = actualAcl;
   }
+
+  // Run the diff so we can dump the acl results info
+  const results = aclDiff(actualAcl, expectedAcl);
+
+  console.log(!aclFlag
+    ? 'ℹ️ ACL present'
+    : dumpBoolean({
+      value: results.ok,
+      trueWord: 'ACL matches',
+      falseWord: 'ACL does not match',
+      includeText: true,
+    }),
+  );
+
+  console.log(indentLines(dumpAclDiff(results, !aclFlag), 2));
 };
 
 exports.command = 'validate <token>';
@@ -132,11 +168,23 @@ exports.handler = (argv) => {
   console.debug(`Decoded token: ${dumpObject(decoded)}`);
   console.log('✅ Token was signed with the correct private key');
 
-  validateExpired(decoded);
-  validateNotBefore(decoded);
-  validateAppId(decoded, argv);
-  validateSubject(decoded, argv);
-  validateAcl(decoded, argv);
+  try {
+    validateExpired(decoded);
+    validateNotBefore(decoded);
+    validateAppId(decoded, argv);
+    validateSubject(decoded, argv);
+    validateAcl(decoded, argv);
+    console.log('✅ All checks complete! Token is valid');
+  } catch (error) {
+    switch (error.constructor.name) {
+    case 'InvalidClaimError':
+      yargs.exit(22);
+      break;
 
-  console.log('✅ All checks complete! Token is valid');
+    case 'ExpiredTokenError':
+      yargs.exit(127);
+      break;
+    }
+  }
+
 };

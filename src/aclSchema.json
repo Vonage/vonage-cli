@@ -2,33 +2,27 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Vonage JWT ACL Schema",
   "type": "object",
-  "required": ["acl"],
+  "additionalProperties": false,
+  "required": ["paths"],
   "properties": {
-    "acl": {
+    "paths": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["paths"],
-      "properties": {
-        "paths": {
+      "patternProperties": {
+        "^/[^\\s]*$": {
           "type": "object",
           "additionalProperties": false,
-          "patternProperties": {
-            "^/[^\\s]*$": {
-              "type": "object",
-              "additionalProperties": false,
-              "properties": {
-                "methods": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
-                  }
-                },
-                "filters": {
-                  "type": "object",
-                  "additionalProperties": true
-                }
+          "properties": {
+            "methods": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
               }
+            },
+            "filters": {
+              "type": "object",
+              "additionalProperties": true
             }
           }
         }
