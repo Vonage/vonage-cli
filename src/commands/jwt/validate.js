@@ -151,6 +151,13 @@ exports.desc = 'Validate a JWT token';
 exports.builder = {
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
+  // Hide these flags since they don't apply for this command
+  'api-key': {
+    hidden: true,
+  },
+  'api-secret': {
+    hidden: true,
+  },
 };
 
 exports.handler = (argv) => {

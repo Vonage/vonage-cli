@@ -48,7 +48,13 @@ const jwtFlags = {
     describe: 'The access control list for the token',
     coerce: validateAcl,
   },
-  // TODO Restore claims
+  // Hide these flags since they don't apply for this command
+  'api-key': {
+    hidden: true,
+  },
+  'api-secret': {
+    hidden: true,
+  },
 };
 
 exports.jwtFlags = jwtFlags;

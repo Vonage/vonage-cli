@@ -46,6 +46,13 @@ const flags = {
     group: 'Applications',
     coerce: coerceCapability,
   },
+  // Hide these flags since they don't apply for this command
+  'api-key': {
+    hidden: true,
+  },
+  'api-secret': {
+    hidden: true,
+  },
 };
 
 const matchCapability = (app, [operation, capabilities]) => {

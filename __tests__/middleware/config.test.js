@@ -43,7 +43,7 @@ describe('Middeleware: Config', () => {
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
     );
 
-    const args = setConfig({}, {});
+    const args = setConfig({});
 
     expect(args.apiKey).toBe(globalConfig.apiKey);
     expect(args.apiSecret).toBe(globalConfig.apiSecret);
@@ -84,7 +84,7 @@ describe('Middeleware: Config', () => {
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
     );
 
-    const args = setConfig({}, {});
+    const args = setConfig({});
 
     expect(args.apiKey).toBe(localConfig.apiKey);
     expect(args.apiSecret).toBe(localConfig.apiSecret);
@@ -205,7 +205,7 @@ describe('Middeleware: Config', () => {
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
     );
 
-    const args = setConfig({}, {});
+    const args = setConfig({});
 
     expect(args.apiKey).toBe(localConfig.apiKey);
     expect(args.apiSecret).toBe(localConfig.apiSecret);
@@ -229,6 +229,49 @@ describe('Middeleware: Config', () => {
       source: 'Local Config File',
     });
     expect(args.source).toBe('Local Config File');
+  });
+
+  test('Will not decide to use cli arguments when __skip__ is used', () => {
+    const localConfig = getLocalConfig();
+    const localFile = getLocalFile();
+
+    process.cwd = jest.fn(() => localFile.localConfigPath);
+    const derivedLocalConfigFile = `${localFile.localConfigPath}/.vonagerc`;
+
+    fs.__addFile(
+      derivedLocalConfigFile,
+      JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
+    );
+
+    const args = setConfig({
+      apiKey: '__skip__',
+      apiSecret: '__skip__',
+      appId: '__skip__',
+      privateKey: '__skip__',
+    });
+
+    expect(args.apiKey).toBe(localConfig.apiKey);
+    expect(args.apiSecret).toBe(localConfig.apiSecret);
+    expect(args.appId).toBe(localConfig.appId);
+    expect(args.privateKey).toBe(localConfig.privateKey);
+
+    expect(args.config.local).toEqual({
+      ...localConfig,
+      source: 'Local Config File',
+    });
+
+    expect(args.config.localConfigExists).toBe(true);
+
+    expect(args.config.local).toEqual({
+      ...localConfig,
+      source: 'Local Config File',
+    });
+
+    expect(args.source).toBe('Local Config File');
+    expect(args.AUTH.apiKey).toBe(localConfig.apiKey);
+    expect(args.AUTH.apiSecret).toBe(localConfig.apiSecret);
+    expect(args.AUTH.privateKey).toBe(localConfig.privateKey);
+    expect(args.AUTH.applicationId).toBe(localConfig.appId);
   });
 
   test('Will exit when no config is found', () => {
