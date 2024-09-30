@@ -8,127 +8,230 @@ const getBasicApplication = () => Object.freeze({
   },
 });
 
-const addVoiceCapabilities = (app) => {
-  return {
-    ...app,
-    capabilities: {
-      ...app.capabilities,
-      voice: {
-        webhooks: {
-          event_url: {
-            address: faker.internet.url(),
-            http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
-            socket_timeout: faker.number.int({max: 5000, min: 1000}),
-            connect_timeout: faker.number.int({max: 1000, min: 300}),
-          },
-          answer_url: {
-            address: faker.internet.url(),
-            http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
-            socket_timeout: faker.number.int({max: 5000, min: 1000}),
-            connect_timeout: faker.number.int({max: 1000, min: 300}),
-          },
-          fallback_answer_url: {
-            address: faker.internet.url(),
-            http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
-            socket_timeout: faker.number.int({max: 5000, min: 1000}),
-            connect_timeout: faker.number.int({max: 1000, min: 300}),
-          },
+const addVoiceCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    voice: {
+      webhooks: {
+        event_url: {
+          address: faker.internet.url(),
+          http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
+          socket_timeout: faker.number.int({max: 5000, min: 1000}),
+          connect_timeout: faker.number.int({max: 1000, min: 300}),
         },
-        signed_callbacks: true,
-        conversations_ttl: faker.number.int({max: 744, min: 1}),
-        leg_persistence_time: faker.number.int({max: 31, min: 1}),
-        region: faker.helpers.shuffle([
-          'na-east',
-          'na-west',
-          'eu-west',
-          'eu-east',
-          'apac-sng',
-          'apac-australia',
-        ])[0],
-      },
-    },
-  };
-};
-
-const addMessagesCapabilities = (app) => {
-  return {
-    ...app,
-    capabilities: {
-      ...app.capabilities,
-      messages: {
-        webhooks: {
-          inbound_url: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
-          status_url: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
+        answer_url: {
+          address: faker.internet.url(),
+          http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
+          socket_timeout: faker.number.int({max: 5000, min: 1000}),
+          connect_timeout: faker.number.int({max: 1000, min: 300}),
         },
-        version: faker.helpers.shuffle(['v1', 'v0.1'])[0],
-        'authenticate_inbound_media': true,
-      },
-    },
-  };
-};
-
-const addVerifyCapabilities = (app) => {
-  return {
-    ...app,
-    capabilities: {
-      ...app.capabilities,
-      verify: {
-        webhooks: {
-          status_url: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
-        },
-        version: 'v2',
-      },
-    },
-  };
-};
-
-const addMeetingsCapabilities = (app) => {
-  return {
-    ...app,
-    capabilities: {
-      ...app.capabilities,
-      meetings: {
-        webhooks: {
-          room_changed: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
-          session_changed: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
-          recording_changed: {
-            address: faker.internet.url(),
-            http_method: 'POST',
-          },
+        fallback_answer_url: {
+          address: faker.internet.url(),
+          http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
+          socket_timeout: faker.number.int({max: 5000, min: 1000}),
+          connect_timeout: faker.number.int({max: 1000, min: 300}),
         },
       },
+      signed_callbacks: true,
+      conversations_ttl: faker.number.int({max: 744, min: 1}),
+      leg_persistence_time: faker.number.int({max: 31, min: 1}),
+      region: faker.helpers.shuffle([
+        'na-east',
+        'na-west',
+        'eu-west',
+        'eu-east',
+        'apac-sng',
+        'apac-australia',
+      ])[0],
     },
-  };
-};
+  },
+});
 
-const getTestApp = () =>{
-  const key = `-----BEGIN PUBLIC KEY-----${faker.string.alpha(10)}-----END PUBLIC KEY-----`;
-  return {
-    id: faker.string.uuid(),
-    name: faker.science.chemicalElement().name,
-    keys: {
-      public_key: key,
+const addMessagesCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    messages: {
+      webhooks: {
+        inbound_url: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+        status_url: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+      },
+      version: faker.helpers.shuffle(['v1', 'v0.1'])[0],
+      authenticate_inbound_media: true,
     },
-    privacy: {
-      improve_ai: true,
+  },
+});
+
+const addVerifyCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    verify: {
+      webhooks: {
+        status_url: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+      },
+      version: 'v2',
     },
-  };
-};
+  },
+});
+
+const addNetworkCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    network_apis: {
+      redirect_url: faker.internet.url(),
+      network_application_id:  `${faker.commerce.productAdjective()}_${faker.commerce.productMaterial()}_${faker.commerce.product()}`,
+    },
+  },
+});
+
+const addRTCCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    rtc: {
+      webhooks: {
+        event_url: {
+          address: faker.internet.url(),
+          http_method: faker.helpers.shuffle(['GET', 'POST'])[0],
+        },
+      },
+      signed_callbacks: true,
+    },
+  },
+});
+
+const addMeetingsCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    meetings: {
+      webhooks: {
+        room_changed: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+        session_changed: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+        recording_changed: {
+          address: faker.internet.url(),
+          http_method: 'POST',
+        },
+      },
+    },
+  },
+});
+
+const addVideoCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    video: {
+      webhooks: {
+        archive_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        connection_created: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        connection_destroyed: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        sip_call_created: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        sip_call_updated: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        sip_call_destroyed: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        sip_call_mute_forced: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        stream_created: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        stream_destroyed: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        render_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        broadcast_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        captions_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+      },
+      storage: {
+        server_side_encryption: false,
+        end_to_end_encryption: false,
+        cloud_storage: true,
+      },
+      environment_enabled: false,
+      environment_id: 1,
+      // Config is not ignored by the CLI since it is not documented
+    },
+  },
+});
+
+const addVBCCapabilities = (app) => ({
+  ...app,
+  capabilities: {
+    ...app.capabilities,
+    vbc: {},
+  },
+});
+
+const getTestApp = () => ({
+  id: faker.string.uuid(),
+  name: faker.science.chemicalElement().name,
+  keys: {
+    public_key:`-----BEGIN PUBLIC KEY-----${faker.string.alpha(10)}-----END PUBLIC KEY-----`,
+  },
+  privacy: {
+    improve_ai: true,
+  },
+});
 
 module.exports = {
   getTestApp,
@@ -136,5 +239,9 @@ module.exports = {
   addMessagesCapabilities,
   addVerifyCapabilities,
   addMeetingsCapabilities,
+  addRTCCapabilities,
+  addNetworkCapabilities,
+  addVBCCapabilities,
+  addVideoCapabilities,
   getBasicApplication: getBasicApplication,
 };

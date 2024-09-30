@@ -1,14 +1,14 @@
-process.env.FORCE_COLOR = 0;
-const {
-  getTestApp,
-  addVerifyCapabilities,
-  addMeetingsCapabilities,
-  addMessagesCapabilities,
-  addVoiceCapabilities,
-} = require('../app');
-const { handler } = require('../../src/commands/apps');
-describe('Command: vonage apps', () => {
-  test('Will test', () => {
-    expect(true).toBe(true);
+const app = require('../../src/commands/apps');
+
+describe('Command: vonage app', () => {
+  test('should have a command apps', () => {
+    expect(app.command).toBe('apps [command]');
+    expect(app.handler).toBeInstanceOf(Function);
+    const yargs = {};
+    yargs.commandDir = jest.fn().mockReturnValue(yargs);
+    yargs.options = jest.fn().mockReturnValue(yargs);
+
+    app.builder(yargs);
+    expect(yargs.commandDir).toHaveBeenCalledWith('apps');
   });
 });

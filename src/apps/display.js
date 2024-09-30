@@ -3,107 +3,45 @@ const { dumpYesNo } = require('../ux/dumpYesNo');
 const { descriptionList } = require('../ux/descriptionList');
 const chalk = require('chalk');
 
-const displayFlags = {
-  'show-voice': {
-    describe: 'Show voice capabilities',
-    type: 'boolean',
-    group: 'Capabilities',
-    conflicts: ['json', 'yaml'],
-  },
-  'show-messages': {
-    describe: 'Show message capabilities',
-    type: 'boolean',
-    group: 'Capabilities',
-    conflicts: ['json', 'yaml'],
-  },
-  'show-verify': {
-    describe: 'Show verify capabilities',
-    type: 'boolean',
-    group: 'Capabilities',
-    conflicts: ['json', 'yaml'],
-  },
-  'show-meetings': {
-    describe: 'Show meetings capabilities',
-    type: 'boolean',
-    group: 'Capabilities',
-    conflicts: ['json', 'yaml'],
-  },
-};
-
 const capabilityLabels = {
-  'voice': 'Voice',
-  'rtc': 'RTC',
-  'messages': 'Messages',
-  'verify': 'Verify',
   'meetings': 'Meetings',
+  'messages': 'Messages',
   'network_apis': 'Network APIs',
+  'rtc': 'RTC',
   'vbc': 'VBC',
+  'verify': 'Verify',
+  'video': 'Video',
+  'voice': 'Voice',
 };
 
-const capabilitiesSummary = ({capabilities = {}}) => {
-  const appCapabilities = Object.entries(capabilityLabels).reduce(
-    (acc, [capability, label]) => {
+const getAppCapabilities = ({capabilities = {}}) => Object.entries(capabilityLabels)
+  .reduce(
+    (acc, [capability]) => {
       if (capabilities[capability]) {
-        acc.push(label);
+        acc.push(capability);
       }
       return acc;
     },
     [],
-  );
+  ).sort();
 
-  return appCapabilities.length > 0 ? appCapabilities.join(', ') : 'None';
+const capabilitiesSummary = ({capabilities = {}}) => {
+  const appCapabilities = getAppCapabilities({capabilities});
+
+  return appCapabilities.length > 0
+    ? appCapabilities.map((capability) => capabilityLabels[capability]).join(', ')
+    : 'None';
 };
 
-const listApplications = (args, apps) => {
-  const displayApps = apps.map((app) => buildApplicationSummary(args, app));
-  console.table(displayApps);
+const listApplications = (apps) => {
+  console.table(apps.map((app) => buildApplicationSummary(app)));
 };
 
-const buildApplicationSummary = (argv, app) => {
-  console.debug(`Build application summary ${dumpObject(app)}`);
-
-  const displayApp = {
-    'Name': app.name,
-    'Capabilities': capabilitiesSummary(app),
-  };
-
-  if (argv['show-voice']) {
-    console.debug('Adding voice capabilities');
-    const voice = app.capabilities.voice || {};
-    displayApp['Voice: Uses Signed callbacks'] = dumpYesNo(voice?.signedCallbacks);
-    displayApp['Voice: Conversation TTL'] = voice?.conversationsTtl;
-    displayApp['Voice: Leg Persistence Time'] = voice?.legPersistenceTime;
-    displayApp['Voice: Event URL'] = dumpWebhook(voice?.webhooks?.eventUrl);
-    displayApp['Voice: Answer URL'] = dumpWebhook(voice?.webhooks?.answerUrl);
-    displayApp['Voice: Fallback URL'] = dumpWebhook(voice?.webhooks?.fallbackAnswerUrl);
-  }
-
-  if (argv['show-messages']) {
-    console.debug('Displaying messaging capabilities');
-    const messages = app.capabilities.messages || {};
-    displayApp['Messages: Authenticate Inbound Media'] = dumpYesNo(messages?.authenticateInboundMedia);
-    displayApp['Messages: Webhook Version'] = messages?.version;
-    displayApp['Messages: Status URL'] = dumpWebhook(messages?.webhooks?.statusUrl);
-    displayApp['Messages: Inbound URL'] = dumpWebhook(messages?.webhooks?.inboundUrl);
-  }
-
-  if (argv['show-verify']) {
-    console.debug('Displaying verify capabilities');
-    const verify = app.capabilities.verify || {};
-    displayApp['Messages: Webhook Version'] = verify?.version;
-    displayApp['Messages: Status URL'] = dumpWebhook(verify?.webhooks?.statusUrl);
-  }
-
-  if (argv['show-meetings']) {
-    console.debug('Displaying meetings capabilities');
-    const meetings = app.capabilities.meetings || {};
-    displayApp['Meetings: Room changed URL'] = dumpWebhook(meetings?.webhooks?.roomChanged);
-    displayApp['Meetings: Session changed URL'] = dumpWebhook(meetings?.webhooks?.sessionChanged);
-    displayApp['Meetings: Recording changed URL'] = dumpWebhook(meetings?.webhooks?.recordingChanged);
-  }
-
-  return displayApp;
-};
+const buildApplicationSummary = (app) => ({
+  'App ID': app.id,
+  'Name': app.name,
+  'Capabilities': capabilitiesSummary(app),
+});
 
 const displayApplication = (app) => {
   console.debug(`Displaying application ${dumpObject(app)}`);
@@ -133,7 +71,7 @@ const displayCapabilities = ({capabilities}) => {
   displayVBCApplication(capabilities);
 };
 
-const dumpWebhook = ({address, httpMethod} = {}) => address 
+const dumpWebhook = ({address, httpMethod} = {}) => address
   ? `${address} [${httpMethod}]`
   : undefined;
 
@@ -242,6 +180,7 @@ const displayVoiceApplication = ({voice}) => {
 
 module.exports = {
   displayApplication: displayApplication,
+  getAppCapabilities: getAppCapabilities,
   capabilitiesSummary: capabilitiesSummary,
   displayCapabilities: displayCapabilities,
   displayVoiceApplication: displayVoiceApplication,
@@ -250,5 +189,6 @@ module.exports = {
   displayVerifyApplication: displayVerifyApplication,
   displayMeetingsApplication: displayMeetingsApplication,
   listApplications: listApplications,
-  displayFlags: displayFlags,
+  capabilityLabels: capabilityLabels,
+  capabilities: Object.keys(capabilityLabels),
 };
