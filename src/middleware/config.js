@@ -1,4 +1,6 @@
 const { readFileSync, existsSync } = require('fs');
+const { Auth } = require('@vonage/auth');
+const { Vonage } = require('@vonage/server-sdk');
 const { dumpCommand } = require('../ux/dump');
 const chalk = require('chalk');
 const yargs = require('yargs');
@@ -118,9 +120,18 @@ exports.setConfig = (argv) => {
     return;
   }
 
+  const SDKAuth = new Auth({
+    apiKey: authConfig.apiKey,
+    apiSecret: authConfig.apiSecret,
+    privateKey: authConfig.privateKey,
+    applicationId: authConfig.appId,
+  });
+
   const finalConfig = {
     ...authConfig,
     config: config,
+    AUTH: SDKAuth,
+    SDK: new Vonage(SDKAuth),
   };
 
   return finalConfig;

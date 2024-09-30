@@ -62,6 +62,14 @@ describe('Middeleware: Config', () => {
     expect(args.config.local).toEqual({});
     expect(args.config.cli).toEqual({});
     expect(args.source).toBe('Global Config File');
+
+    expect(args.SDK).toBeDefined();
+    expect(args.AUTH).toBeDefined();
+
+    expect(args.AUTH.apiKey).toBe(globalConfig.apiKey);
+    expect(args.AUTH.apiSecret).toBe(globalConfig.apiSecret);
+    expect(args.AUTH.privateKey).toBe(globalConfig.privateKey);
+    expect(args.AUTH.applicationId).toBe(globalConfig.appId);
   });
 
   test('Will decide to use the local config when local or cli is not set', () => {
