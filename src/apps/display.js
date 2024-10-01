@@ -61,8 +61,7 @@ const displayCapabilities = ({capabilities}) => {
     return;
   }
 
-  console.log([
-    'Capabilities',
+  const capabilitiesList = [
     indentLines(displayVoiceApplication(capabilities)),
 
     indentLines(displayMessagesApplication(capabilities)),
@@ -76,6 +75,12 @@ const displayCapabilities = ({capabilities}) => {
     indentLines(displayNetworkApplication(capabilities)),
 
     indentLines(displayVBCApplication(capabilities)),
+  ].filter((line) => line);
+
+  console.log([
+    'Capabilities:',
+
+    ...(capabilitiesList.length > 0 ? capabilitiesList : ['  None Enabled']),
   ].join('\n'));
 };
 
@@ -86,7 +91,7 @@ const dumpWebhook = ({address, httpMethod} = {}) => address
 const displayVBCApplication = ({vbc}) => {
   if (!vbc) {
     console.debug('No VBC capabilities');
-    return '';
+    return;
   }
 
   return [chalk.underline('NB: VBC capabilities is not supported through the command line.')].join('\n');
@@ -95,7 +100,7 @@ const displayVBCApplication = ({vbc}) => {
 const displayNetworkApplication = ({networkApis}) => {
   if (!networkApis) {
     console.debug('No network capabilities');
-    return '';
+    return;
   }
 
   return [
@@ -113,7 +118,7 @@ const displayNetworkApplication = ({networkApis}) => {
 const displayVideoApplication = ({video}) => {
   if (!video) {
     console.debug('No video capabilities');
-    return '';
+    return;
   }
 
   const recordings =  [
@@ -175,7 +180,7 @@ const displayVideoApplication = ({video}) => {
 const displayVerifyApplication = ({verify}) => {
   if (!verify) {
     console.debug('No verify capabilities');
-    return '';
+    return;
   }
 
   return [
@@ -191,7 +196,7 @@ const displayVerifyApplication = ({verify}) => {
 const displayMessagesApplication = ({messages}) => {
   if (!messages) {
     console.debug('No messages capabilities');
-    return '';
+    return;
   }
 
   return [
@@ -209,7 +214,7 @@ const displayMessagesApplication = ({messages}) => {
 const displayRTCApplication = ({rtc}) => {
   if (!rtc) {
     console.debug('No RTC capabilities');
-    return '';
+    return;
   }
 
   return [
@@ -225,7 +230,7 @@ const displayRTCApplication = ({rtc}) => {
 const displayVoiceApplication = ({voice}) => {
   if (!voice) {
     console.debug('No voice capabilities');
-    return '';
+    return;
   }
   return [
     `${chalk.underline(dumpKey('VOICE'))}:`,

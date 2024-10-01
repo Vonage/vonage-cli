@@ -37,11 +37,11 @@ exports.builder = (yargs) => yargs.options({
 });
 
 exports.handler = async (argv) => {
-  console.info(`Show information for application ${argv.appId}`);
+  console.info(`Show information for application ${argv.config.cli.appId}`);
 
   const { SDK } = argv;
 
-  const application = await SDK.applications.getApplication(argv.appId);
+  const application = await SDK.applications.getApplication(argv.config.cli.appId);
 
   if (argv.yaml) {
     console.log(yaml.stringify(
