@@ -1,10 +1,10 @@
+const { indentLines } = require('../ux/indentLines');
 const { dumpObject, dumpKey } = require('../ux/dump');
-const { dumpYesNo } = require('../ux/dumpYesNo');
+const { dumpOnOff } = require('../ux/dumpYesNo');
 const { descriptionList } = require('../ux/descriptionList');
 const chalk = require('chalk');
 
 const capabilityLabels = {
-  'meetings': 'Meetings',
   'messages': 'Messages',
   'network_apis': 'Network APIs',
   'rtc': 'RTC',
@@ -48,7 +48,8 @@ const displayApplication = (app) => {
   console.log(descriptionList([
     ['Name', app.name],
     ['Application ID', app.id],
-    ['Improve AI', dumpYesNo(app.privacy?.improveAI, true)],
+    ['Improve AI', dumpOnOff(app.privacy?.improveAI)],
+    ['Private/Public Key', app.keys?.publicKey ? 'Set' : 'Not Set'],
   ]));
   console.log('');
   displayCapabilities(app);
@@ -60,122 +61,184 @@ const displayCapabilities = ({capabilities}) => {
     return;
   }
 
-  displayVoiceApplication(capabilities);
-  displayMessagesApplication(capabilities);
-  displayVerifyApplication(capabilities);
-  displayMeetingsApplication(capabilities);
+  console.log([
+    'Capabilities',
+    indentLines(displayVoiceApplication(capabilities)),
 
-  displayRTCApplication(capabilities);
-  displayVideoApplication(capabilities);
-  displayNetworkApplication(capabilities);
-  displayVBCApplication(capabilities);
+    indentLines(displayMessagesApplication(capabilities)),
+
+    indentLines(displayVerifyApplication(capabilities)),
+
+    indentLines(displayRTCApplication(capabilities)),
+
+    indentLines(displayVideoApplication(capabilities)),
+
+    indentLines(displayNetworkApplication(capabilities)),
+
+    indentLines(displayVBCApplication(capabilities)),
+  ].join('\n'));
 };
 
 const dumpWebhook = ({address, httpMethod} = {}) => address
-  ? `${address} [${httpMethod}]`
+  ? `[${httpMethod || 'POST'}] ${address}`
   : undefined;
 
 const displayVBCApplication = ({vbc}) => {
   if (!vbc) {
     console.debug('No VBC capabilities');
-    return;
+    return '';
   }
 
-  console.log(chalk.italic('VBC capabilities is currently not supported through the command line'));
-  console.log('');
+  return [chalk.underline('NB: VBC capabilities is not supported through the command line.')].join('\n');
 };
 
 const displayNetworkApplication = ({networkApis}) => {
   if (!networkApis) {
     console.debug('No network capabilities');
-    return;
+    return '';
   }
 
-  console.log(chalk.italic('Network capabilities is currently not supported through the command line'));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('NETWORK APIS'))}:`,
+    indentLines(descriptionList([
+      [
+        'Redirect URL',
+        dumpWebhook({address: networkApis.redirectUri, httpMethod: 'GET'}),
+      ],
+    ])),
+    '',
+  ].join('\n');
 };
 
 const displayVideoApplication = ({video}) => {
   if (!video) {
     console.debug('No video capabilities');
-    return;
+    return '';
   }
 
-  console.log(chalk.italic('Video capabilities is currently not supported through the command line'));
-  console.log('');
-};
+  const recordings =  [
+    `${chalk.underline(dumpKey('RECORDINGS STORAGE'))}:`,
+    video.storage.cloudStorage
+      ? indentLines(descriptionList([
+        ['Cloud Storage', dumpOnOff(video.storage.cloudStorage)],
+        ['Storage Type', video.storage.credentialType],
+        ['Crednetial', video.storage.credential],
+      ]))
+      : indentLines(descriptionList([['Cloud Storage', dumpOnOff(video.storage.cloudStorage)]])),
+  ].join('\n');
 
-const displayMeetingsApplication = ({meetings}) => {
-  if (!meetings) {
-    console.debug('No meetings capabilities');
-    return;
-  }
-  console.log(`${chalk.underline(dumpKey('Meetings capabilities (deprecated)'))}:`);
-  console.log(descriptionList([
-    ['Room changed URL', dumpWebhook(meetings.webhooks.roomChanged)],
-    ['Session changed URL', dumpWebhook(meetings.webhooks.sessionChanged)],
-    ['Recording changed URL', dumpWebhook(meetings.webhooks.recordingChanged)],
-  ]));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('VIDEO'))}:`,
+    indentLines(descriptionList([
+      ['Session URL', dumpWebhook(video.webhooks.streamCreated)],
+      [
+        'Session Signature Secret',
+        video.webhooks.streamCreated?.secret || 'Off',
+      ],
+
+      ['Recordings URL', dumpWebhook(video.webhooks.archiveStatus)],
+      [
+        'Recordings Signature Secret',
+        video.webhooks.archiveStatus?.secret || 'Off',
+      ],
+
+      ['Monitoring URL', dumpWebhook(video.webhooks?.broadcastStatus)],
+      [
+        'Monitoring Signature Secret',
+        video.webhooks.broadcastStatus?.secret || 'Off',
+      ],
+
+      ['Composer URL', dumpWebhook(video.webhooks.renderStatus)],
+      [
+        'Composer Signature Secret',
+        video.webhooks.renderStatus?.secret || 'Off',
+      ],
+
+      ['Caption URL', dumpWebhook(video.webhooks.captionsStatus)],
+      [
+        'Caption Signature Secret',
+        video.webhooks.captionsStatus?.secret || 'Off',
+      ],
+
+      ['SIP Monitoring', dumpWebhook(video.webhooks.sipCallCreated)],
+      [
+        'SIP Signature Secret',
+        video.webhooks.sipCallCreated?.secret || 'Off',
+      ],
+    ])),
+    '',
+    indentLines(recordings),
+    '',
+  ].join('\n');
 };
 
 const displayVerifyApplication = ({verify}) => {
   if (!verify) {
     console.debug('No verify capabilities');
-    return;
+    return '';
   }
 
-  console.log(`${chalk.underline(dumpKey('Verify capabilities'))}:`);
-  console.log(descriptionList([
-    ['Webhook Version', verify.version],
-    ['Status URL', dumpWebhook(verify.webhooks.statusUrl)],
-  ]));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('VERIFY'))}:`,
+    indentLines(descriptionList([
+      ['Webhook Version', verify.version],
+      ['Status URL', dumpWebhook(verify.webhooks.statusUrl)],
+    ])),
+    '',
+  ].join('\n');
 };
 
 const displayMessagesApplication = ({messages}) => {
   if (!messages) {
     console.debug('No messages capabilities');
-    return;
+    return '';
   }
 
-  console.log(`${chalk.underline(dumpKey('Message capabilities'))}:`);
-
-  console.log(descriptionList([
-    ['Authenticate Inbound Media', dumpYesNo(messages.authenticateInboundMedia)],
-    ['Webhook Version', messages.version],
-    ['Status URL',dumpWebhook(messages.webhooks.statusUrl)],
-    ['Inbound URL', dumpWebhook(messages.webhooks.inboundUrl)],
-  ]));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('MESSAGES'))}:`,
+    indentLines(descriptionList([
+      ['Authenticate Inbound Media', dumpOnOff(messages.authenticateInboundMedia)],
+      ['Webhook Version', messages.version],
+      ['Status URL',dumpWebhook(messages.webhooks.statusUrl)],
+      ['Inbound URL', dumpWebhook(messages.webhooks.inboundUrl)],
+    ])),
+    '',
+  ].join('\n');
 };
 
 const displayRTCApplication = ({rtc}) => {
   if (!rtc) {
     console.debug('No RTC capabilities');
-    return;
+    return '';
   }
 
-  console.log(chalk.italic('RTC capabilities is currently in beta and not supported through the command line'));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('RTC'))}:`,
+    indentLines(descriptionList([
+      ['Event URL', dumpWebhook(rtc.webhooks.eventUrl)],
+      ['Uses Signed callbacks', dumpOnOff(rtc.signedCallbacks)],
+    ])),
+    '',
+  ].join('\n');
 };
 
 const displayVoiceApplication = ({voice}) => {
   if (!voice) {
     console.debug('No voice capabilities');
-    return;
+    return '';
   }
-
-  console.log(`${chalk.underline(dumpKey('Voice capabilities'))}:`);
-  console.log(descriptionList([
-    ['Uses Signed callbacks', dumpYesNo(voice.signedCallbacks)],
-    ['Conversation TTL', voice.conversationsTtl],
-    ['Leg Persistence Time', voice.legPersistenceTime],
-    ['Event URL', dumpWebhook(voice.webhooks.eventUrl)],
-    ['Answer URL', dumpWebhook(voice.webhooks.answerUrl)],
-    ['Fallback URL', dumpWebhook(voice.webhooks.fallbackAnswerUrl)],
-  ]));
-  console.log('');
+  return [
+    `${chalk.underline(dumpKey('VOICE'))}:`,
+    indentLines(descriptionList([
+      ['Uses Signed callbacks', dumpOnOff(voice.signedCallbacks)],
+      ['Conversation TTL', `${voice.conversationsTtl} hours`],
+      ['Leg Persistence Time', `${voice.legPersistenceTime} days`],
+      ['Event URL', dumpWebhook(voice.webhooks.eventUrl)],
+      ['Answer URL', dumpWebhook(voice.webhooks.answerUrl)],
+      ['Fallback URL', dumpWebhook(voice.webhooks.fallbackAnswerUrl)],
+    ])),
+    '',
+  ].join('\n');
 };
 
 module.exports = {
@@ -187,7 +250,6 @@ module.exports = {
   displayRTCApplication: displayRTCApplication,
   displayMessagesApplication: displayMessagesApplication,
   displayVerifyApplication: displayVerifyApplication,
-  displayMeetingsApplication: displayMeetingsApplication,
   listApplications: listApplications,
   capabilityLabels: capabilityLabels,
   capabilities: Object.keys(capabilityLabels),

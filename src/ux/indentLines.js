@@ -1,5 +1,3 @@
-exports.indentLines = (lines, indent) => {
-  const indentStr = ' '.repeat(indent);
-  const linesArray = Array.isArray(lines) ? lines : lines.split('\n');
-  return linesArray.map((line) => `${indentStr}${line}`).join('\n');
-};
+exports.indentLines = (str, length=2) => `${str}`.split('\n')
+  .map((line) => ' '.repeat(length) + line)
+  .join('\n');

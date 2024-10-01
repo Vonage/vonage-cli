@@ -3,7 +3,6 @@ const yaml = require('yaml');
 const {
   getTestApp,
   addVerifyCapabilities,
-  addMeetingsCapabilities,
   addMessagesCapabilities,
   addVoiceCapabilities,
   addRTCCapabilities,
@@ -11,7 +10,7 @@ const {
   addVBCCapabilities,
   addVideoCapabilities,
 } = require('../../app');
-const { 
+const {
   handler,
   coerceCapability,
 } = require('../../../src/commands/apps/list');
@@ -67,10 +66,8 @@ describe('Command: vonage apps', () => {
           addRTCCapabilities(
             addVoiceCapabilities(
               addMessagesCapabilities(
-                addMeetingsCapabilities(
-                  addVerifyCapabilities(
-                    getTestApp(),
-                  ),
+                addVerifyCapabilities(
+                  getTestApp(),
                 ),
               ),
             ),
@@ -78,8 +75,8 @@ describe('Command: vonage apps', () => {
         ),
       ),
     );
-    
-    const appTwo = getTestApp(); 
+
+    const appTwo = getTestApp();
     const sdk = Vonage();
 
     Vonage._mockListAllApplications.mockImplementation(async function* () {
@@ -92,7 +89,7 @@ describe('Command: vonage apps', () => {
     expect(consoleMock.table).toHaveBeenCalledWith([
       {
         'App ID': appOne.id,
-        'Capabilities': 'Meetings, Messages, Network APIs, RTC, VBC, Verify, Video, Voice',
+        'Capabilities': 'Messages, Network APIs, RTC, VBC, Verify, Video, Voice',
         'Name': appOne.name,
       },
       {
@@ -248,12 +245,12 @@ describe('Command: vonage apps', () => {
 
   test('Should error when capability is not valid', async () => {
     expect(() => coerceCapability('invalid'))
-      .toThrow('Invalid capability. Only: meetings, messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
 
     expect(() => coerceCapability('invalid,foo'))
-      .toThrow('Invalid capability. Only: meetings, messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
 
     expect(() => coerceCapability('invalid+foo'))
-      .toThrow('Invalid capability. Only: meetings, messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
   });
 });

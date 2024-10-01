@@ -3,7 +3,6 @@ const yaml = require('yaml');
 const {
   getTestApp,
   addVerifyCapabilities,
-  addMeetingsCapabilities,
   addMessagesCapabilities,
   addVoiceCapabilities,
 } = require('../../app');
@@ -177,31 +176,6 @@ describe('Command: vonage apps', () => {
     expect(consoleMock.log.mock.calls[3][0]).toBe([
       `Webhook Version: ${app.capabilities.verify.version}`,
       `Status URL: ${app.capabilities.verify.webhooks.statusUrl.address} [${app.capabilities.verify.webhooks.statusUrl.httpMethod}]`,
-    ].join('\n'));
-  });
-
-  test('Will display the meetings capabilities details', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      addMeetingsCapabilities(getTestApp()),
-      true,
-      true,
-    );
-
-    const appMock = jest.fn().mockResolvedValue(app);
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-    };
-
-    await handler({appId: app.id, SDK: sdkMock});
-    expect(consoleMock.log).toHaveBeenCalledTimes(5);
-    expect(consoleMock.log.mock.calls[2][0]).toBe('Meetings capabilities (deprecated):');
-
-    expect(consoleMock.log.mock.calls[3][0]).toBe([
-      `Room changed URL: ${app.capabilities.meetings.webhooks.roomChanged.address} [${app.capabilities.meetings.webhooks.roomChanged.httpMethod}]`,
-      `Session changed URL: ${app.capabilities.meetings.webhooks.sessionChanged.address} [${app.capabilities.meetings.webhooks.sessionChanged.httpMethod}]`,
-      `Recording changed URL: ${app.capabilities.meetings.webhooks.recordingChanged.address} [${app.capabilities.meetings.webhooks.recordingChanged.httpMethod}]`,
     ].join('\n'));
   });
 

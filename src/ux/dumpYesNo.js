@@ -11,11 +11,12 @@ exports.dumpYesNo = (value, includeText=false) => dumpBoolean({
   includeText: includeText,
 });
 
-exports.dumpOnOff = (value, includeText=false) => dumpBoolean({
+exports.dumpOnOff = (value) => dumpBoolean({
   value: value,
   trueWord: 'On',
   falseWord: 'Off',
-  includeText: includeText,
+  includeText: true,
+  noEmoji: true,
 });
 
 exports.dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({

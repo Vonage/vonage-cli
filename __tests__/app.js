@@ -112,29 +112,6 @@ const addRTCCapabilities = (app) => ({
   },
 });
 
-const addMeetingsCapabilities = (app) => ({
-  ...app,
-  capabilities: {
-    ...app.capabilities,
-    meetings: {
-      webhooks: {
-        room_changed: {
-          address: faker.internet.url(),
-          http_method: 'POST',
-        },
-        session_changed: {
-          address: faker.internet.url(),
-          http_method: 'POST',
-        },
-        recording_changed: {
-          address: faker.internet.url(),
-          http_method: 'POST',
-        },
-      },
-    },
-  },
-});
-
 const addVideoCapabilities = (app) => ({
   ...app,
   capabilities: {
@@ -238,7 +215,6 @@ module.exports = {
   addVoiceCapabilities,
   addMessagesCapabilities,
   addVerifyCapabilities,
-  addMeetingsCapabilities,
   addRTCCapabilities,
   addNetworkCapabilities,
   addVBCCapabilities,
