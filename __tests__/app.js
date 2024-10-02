@@ -8,7 +8,7 @@ const getBasicApplication = () => Object.freeze({
   },
 });
 
-const addVoiceCapabilities = (app) => ({
+const addVoiceCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
@@ -48,7 +48,7 @@ const addVoiceCapabilities = (app) => ({
   },
 });
 
-const addMessagesCapabilities = (app) => ({
+const addMessagesCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
@@ -69,7 +69,7 @@ const addMessagesCapabilities = (app) => ({
   },
 });
 
-const addVerifyCapabilities = (app) => ({
+const addVerifyCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
@@ -85,18 +85,18 @@ const addVerifyCapabilities = (app) => ({
   },
 });
 
-const addNetworkCapabilities = (app) => ({
+const addNetworkCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
     network_apis: {
-      redirect_url: faker.internet.url(),
+      redirect_uri: faker.internet.url(),
       network_application_id:  `${faker.commerce.productAdjective()}_${faker.commerce.productMaterial()}_${faker.commerce.product()}`,
     },
   },
 });
 
-const addRTCCapabilities = (app) => ({
+const addRTCCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
@@ -112,7 +112,7 @@ const addRTCCapabilities = (app) => ({
   },
 });
 
-const addVideoCapabilities = (app) => ({
+const addVideoCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,
@@ -182,16 +182,15 @@ const addVideoCapabilities = (app) => ({
       storage: {
         server_side_encryption: false,
         end_to_end_encryption: false,
-        cloud_storage: true,
+        cloud_storage: false,
       },
       environment_enabled: false,
       environment_id: 1,
-      // Config is not ignored by the CLI since it is not documented
     },
   },
 });
 
-const addVBCCapabilities = (app) => ({
+const addVBCCapabilities = (app) => Object.freeze({
   ...app,
   capabilities: {
     ...app.capabilities,

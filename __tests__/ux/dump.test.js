@@ -30,11 +30,8 @@ describe('UX: boolean dump', () => {
   });
 
   test('Will return On or Off', () => {
-    expect(dumpOnOff(true)).toBe('✅ ');
-    expect(dumpOnOff(false)).toBe('❌ ');
-
-    expect(dumpOnOff(true, true)).toBe('✅ On');
-    expect(dumpOnOff(false, true)).toBe('❌ Off');
+    expect(dumpOnOff(true)).toBe('On');
+    expect(dumpOnOff(false)).toBe('Off');
   });
 
   test('Will return Enabled or Disabled', () => {

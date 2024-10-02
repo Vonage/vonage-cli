@@ -33,3 +33,10 @@ exports.dumpValidInvalid = (value, includeText=false) => dumpBoolean({
   includeText: includeText,
 });
 
+exports.dumpOffOrValue = (value) => dumpBoolean({
+  value: value,
+  trueWord: value,
+  falseWord: 'Off',
+  includeText: true,
+  noEmoji: true,
+});
