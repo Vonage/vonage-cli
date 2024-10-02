@@ -151,7 +151,7 @@ exports.desc = 'Validate a JWT token';
 exports.builder = (yargs) => yargs.options({
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
-  // Hide these flags since they don't apply for this command
+  // Flags from higher level that do not apply to this command
   'api-key': {
     hidden: true,
   },

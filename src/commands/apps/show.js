@@ -17,6 +17,7 @@ exports.builder = (yargs) => yargs.options({
     conflicts: 'yaml',
     type: 'boolean',
   },
+  // Flags from higher level that do not apply to this command
   'app-id': {
     hidden: true,
   },

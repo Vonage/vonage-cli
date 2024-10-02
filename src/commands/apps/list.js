@@ -46,7 +46,7 @@ const flags = {
     group: 'Applications',
     coerce: coerceCapability,
   },
-  // Hide these flags since they don't apply for this command
+  // Flags from higher level that do not apply to this command
   'api-key': {
     hidden: true,
   },

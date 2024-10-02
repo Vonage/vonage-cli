@@ -1,32 +1,7 @@
 const yargs = require('yargs');
-const { existsSync, writeFileSync, mkdirSync } = require('fs');
-const { confirm } = require('../../ux/confirm');
 const { dumpAuth } = require('../../ux/dumpAuth');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
-
-const createConfigDirectory = (configPath) => {
-  if (existsSync(configPath)) {
-    console.debug('Config directory already exists');
-    return true;
-  }
-
-  console.info(`Creating configuration directory ${configPath}`);
-  mkdirSync(configPath, { recursive: true });
-  return true;
-};
-
-const checkOkToWrite = async (configPath) => {
-  if (!existsSync(configPath)) {
-    console.debug('Config file does not exist ok to write');
-    return true;
-  }
-
-  console.debug('Config file exists, checking if ok to write');
-  const okToWrite = await confirm(`Configuration file ${configPath} already exists. Overwrite?`);
-  console.debug('Ok to write:', okToWrite);
-
-  return okToWrite;
-};
+const { writeJSONFile, createDirectory } = require('../../utils/fs');
 
 const setApiKeyAndSecret = async (apiKey, apiSecret) => {
   const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
@@ -96,7 +71,7 @@ exports.handler = async (argv) => {
 
   console.debug(`Config path: ${configPath}`);
 
-  if (!argv.local && await createConfigDirectory(configPath) === false) {
+  if (!argv.local && createDirectory(configPath) === false) {
     return;
   }
 
@@ -104,16 +79,16 @@ exports.handler = async (argv) => {
     ? argv.config.localConfigFile
     : argv.config.globalConfigFile;
 
-  if (await checkOkToWrite(configFile) === false) {
-    console.log('Configuration not saved');
-    return;
+  try {
+    await writeJSONFile(
+      configFile,
+      newAuthInformation,
+      `Configuration file ${configFile} already exists. Overwrite?`,
+    );
+
+    console.log('');
+    dumpAuth(newAuthInformation);
+  } catch (error) {
+    console.error('Failed to save new configuration', error);
   }
-
-  console.debug(`Writing to: ${configFile}`);
-
-  writeFileSync(configFile, JSON.stringify(newAuthInformation, null, 2));
-  console.log(`Configuration saved to ${configFile}`);
-
-  console.log('');
-  dumpAuth(newAuthInformation);
 };

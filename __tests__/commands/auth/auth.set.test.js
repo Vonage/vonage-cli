@@ -49,7 +49,7 @@ describe('Command: vonage auth set', () => {
 
     await set.handler(args);
 
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Configuration saved to ${args.config.globalConfigFile}`);
+    expect(consoleMock.log.mock.calls[0][0]).toBe(`Data saved to ${args.config.globalConfigFile}`);
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,
@@ -88,7 +88,7 @@ describe('Command: vonage auth set', () => {
 
     await set.handler(args);
 
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Configuration saved to ${args.config.globalConfigFile}`);
+    expect(consoleMock.log.mock.calls[0][0]).toBe(`Data saved to ${args.config.globalConfigFile}`);
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,
