@@ -57,24 +57,6 @@ const errorNoConfig = (local=false) => {
 exports.errorNoConfig = errorNoConfig;
 
 exports.setConfig = (argv) => {
-  const options = {};
-
-  if (argv.apiKey && argv.apiKey !== '__skip__') {
-    options.apiKey = argv.apiKey;
-  }
-
-  if (argv.apiSecret && argv.apiSecret !== '__skip__') {
-    options.apiSecret = argv.apiSecret;
-  }
-
-  if (argv.privateKey && argv.privateKey !== '__skip__') {
-    options.privateKey = argv.privateKey;
-  }
-
-  if (argv.appId && argv.appId !== '__skip__') {
-    options.appId = argv.appId;
-  }
-
   const sharedConfig = getSharedConfig();
   const {
     globalConfigFile,
@@ -88,10 +70,10 @@ exports.setConfig = (argv) => {
     local: {},
     global: {},
     cli: {
-      ...(options.apiKey ? {apiKey: options.apiKey} : {}),
-      ...(options.apiSecret ? {apiSecret: options.apiSecret} : {}),
-      ...(options.privateKey ? {privateKey: options.privateKey} : {}),
-      ...(options.appId ? {appId: options.appId} : {}),
+      ...(argv.apiKey ? {apiKey: argv.apiKey} : {}),
+      ...(argv.apiSecret ? {apiSecret: argv.apiSecret} : {}),
+      ...(argv.privateKey ? {privateKey: argv.privateKey} : {}),
+      ...(argv.appId ? {appId: argv.appId} : {}),
     },
   };
 
@@ -130,7 +112,7 @@ exports.setConfig = (argv) => {
     };
   }
 
-  const authConfig = decideConfig(options, config);
+  const authConfig = decideConfig(argv, config);
 
   if (!authConfig) {
     errorNoConfig();
