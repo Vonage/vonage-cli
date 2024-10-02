@@ -2,7 +2,7 @@ const yaml = require('yaml');
 const { displayApplication } = require('../../apps/display');
 const { Client } = require('@vonage/server-client');
 
-exports.command = 'show <app-id>';
+exports.command = 'show <id>';
 
 exports.desc = 'Get information for an application';
 
@@ -20,28 +20,29 @@ exports.builder = (yargs) => yargs.options({
   'app-id': {
     hidden: true,
   },
-  // app-id requires private-key since we are not using it for this command,
-  // default it to __skip__ and hide it
   'private-key': {
-    default: '__skip__',
-    coerce: (arg) => arg,
     hidden: true,
   },
-  // These come from the apps command so we just hide them in all sub commands
   'app-name': {
     hidden: true,
   },
   'capability': {
     hidden: true,
   },
-});
+})
+  .positional(
+    'id',
+    {
+      describe: 'The ID of the application to show',
+    },
+  );
 
 exports.handler = async (argv) => {
-  console.info(`Show information for application ${argv.config.cli.appId}`);
+  console.info(`Show information for application ${argv.id}`);
 
   const { SDK } = argv;
 
-  const application = await SDK.applications.getApplication(argv.config.cli.appId);
+  const application = await SDK.applications.getApplication(argv.id);
 
   if (argv.yaml) {
     console.log(yaml.stringify(

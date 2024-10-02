@@ -148,7 +148,7 @@ exports.command = 'validate <token>';
 
 exports.desc = 'Validate a JWT token';
 
-exports.builder = {
+exports.builder = (yargs) => yargs.options({
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
   // Hide these flags since they don't apply for this command
@@ -158,7 +158,12 @@ exports.builder = {
   'api-secret': {
     hidden: true,
   },
-};
+}).positional(
+  'token',
+  {
+    describe: 'The JWT token to validate',
+  },
+);
 
 exports.handler = (argv) => {
   console.info('Validating JWT token');

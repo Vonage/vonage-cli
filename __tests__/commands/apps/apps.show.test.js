@@ -35,7 +35,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app.id}}, SDK: sdkMock});
+    await handler({id: app.id, SDK: sdkMock});
     expect(consoleMock.log).toHaveBeenCalledTimes(2);
 
     expect(consoleMock.info.mock.calls[0][0]).toBe(
@@ -363,7 +363,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app.id}}, SDK: sdkMock});
+    await handler({id: app.id, SDK: sdkMock});
 
     expect(consoleMock.log.mock.calls[2][0]).toBe([
       'Capabilities:',
