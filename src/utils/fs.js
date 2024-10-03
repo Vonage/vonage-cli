@@ -38,7 +38,7 @@ const writeFile = async (filePath, data, message) => {
   console.debug(`Writing to: ${filePath}`);
 
   writeFileSync(filePath, data);
-  console.log(`Data saved to ${filePath}`);
+  console.debug(`Data saved to ${filePath}`);
 };
 
 const writeJSONFile = async (filePath, data, message) =>  writeFile(

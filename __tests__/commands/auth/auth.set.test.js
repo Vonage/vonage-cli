@@ -4,7 +4,6 @@ const set = require('../../../src/commands/auth/set');
 const { getTestMiddlewareArgs, testPublicKey, testPrivateKey } = require('../../common');
 const { Vonage } = require('@vonage/server-sdk');
 const { getBasicApplication } = require('../../app');
-const { mockConsole } = require('../../helpers');
 const yargs = require('yargs');
 
 jest.mock('fs');
@@ -15,11 +14,8 @@ jest.mock('yargs');
 const oldProcessStdoutWrite = process.stdout.write;
 
 describe('Command: vonage auth set', () => {
-  let consoleMock;
-
   beforeEach(() => {
     process.stdout.write = jest.fn();
-    consoleMock = mockConsole();
   });
 
   afterAll(() => {
@@ -48,8 +44,6 @@ describe('Command: vonage auth set', () => {
     expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
 
     await set.handler(args);
-
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Data saved to ${args.config.globalConfigFile}`);
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,
@@ -87,8 +81,6 @@ describe('Command: vonage auth set', () => {
     expect(fs.existsSync(args.config.globalConfigPath)).toBe(true);
 
     await set.handler(args);
-
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Data saved to ${args.config.globalConfigFile}`);
 
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       args.config.globalConfigFile,

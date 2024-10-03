@@ -4,7 +4,7 @@ const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs');
 const { setConfig } = require('../src/middleware/config');
 const { setupLog } = require('../src/middleware/log');
-const { coercePrivateKey } = require('../src/utils/coercePrivateKey');
+const { coerceKey } = require('../src/utils/coerceKey');
 
 yargs(hideBin(process.argv))
   .fail((msg, err, yargs) => {
@@ -30,7 +30,7 @@ yargs(hideBin(process.argv))
       type: 'string',
       group: 'Vonage Credentials:',
       implies: 'app-id',
-      coerce: coercePrivateKey,
+      coerce: coerceKey('private'),
     },
     'app-id': {
       describe: 'Your Vonage application ID',
