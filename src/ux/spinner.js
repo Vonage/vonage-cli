@@ -19,30 +19,43 @@ process.on('SIGTERM', exitAndShowCursor);
 process.on('SIGQUIT', exitAndShowCursor);
 process.on('SIGHUP', exitAndShowCursor);
 
+const frames = [
+  '⠋',
+  '⠙',
+  '⠹',
+  '⠸',
+  '⠼',
+  '⠴',
+  '⠦',
+  '⠧',
+  '⠇',
+  '⠏',
+];
+
 exports.spinner = ({
   message,
-  endEmoji,
-  failedEmoji,
+  endEmoji = '✅',
+  failedEmoji = '❌',
 }) => {
   hideCursor();
   let counter = 0;
-  process.stderr.write(`${message} ...`);
+  process.stderr.write(`${frames[counter]} ${message}`);
 
   const intervalId = setInterval(() => {
     process.stderr.clearLine();
-    process.stderr.write(`\r${message} ${'.'.repeat(counter % 3 + 1)}`);
+    process.stderr.write(`\r${frames[counter % 9]} ${message}`);
     counter++;
-  }, 500);
+  }, 80);
 
   return {
     stop: () => {
       clearInterval(intervalId);
-      process.stderr.write(`\r${message} ... Done! ${endEmoji || ''}\n`);
+      process.stderr.write(`\r${endEmoji || ' '} ${message}\n`);
       resetCursor();
     },
     fail: () => {
       clearInterval(intervalId);
-      process.stderr.write(`\r${message} ... Failed ${failedEmoji || ''}\n`);
+      process.stderr.write(`\r${failedEmoji || ' '} ${message}\n`);
       resetCursor();
     },
   };
