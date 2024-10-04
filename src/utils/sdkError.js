@@ -1,7 +1,8 @@
 const yargs = require('yargs');
 exports.sdkError = async (error) => {
   const statusCode = error.response?.status;
-  console.debug(JSON.stringify(await error.response.json(), null, 2));
+  const errorData = await error.response?.json() || {};
+  console.debug(JSON.stringify(errorData, null, 2));
 
   switch (statusCode) {
   case 401:
@@ -9,9 +10,17 @@ exports.sdkError = async (error) => {
     console.error('You are not authorized to perform this action');
     yargs.exit(5);
     return;
+  case 404:
+    console.error(
+      `Resource not Found${errorData.detail
+        ? `: ${errorData.detail}`
+        : ''}`,
+    );
+    yargs.exit(90);
+    return;
 
   default:
-    console.error(`With SDK call: ${error.message}` );
+    console.error(`Error with SDK call: ${error.message}` );
     yargs.exit(99);
     return;
   }

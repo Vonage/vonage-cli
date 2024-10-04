@@ -65,10 +65,11 @@ exports.handler = async (argv) => {
   };
 
   try {
-    console.debug('Creating application', appData);
+    process.stderr.write('Creating application ...');
     newApplication = await argv.SDK.applications.createApplication(appData);
-
+    process.stderr.write('\rCreating application ... Done!\n');
   } catch (error) {
+    process.stderr.write('\rCreating application ... Failed\n');
     if ([401, 403].includes(error.response?.status)) {
       console.error(error.response.data);
       yargs.exit(5);
@@ -82,10 +83,12 @@ exports.handler = async (argv) => {
 
   try {
     if (argv.privateKeyFile) {
-      console.debug(`Saving private key to file: ${argv.privateKeyFile}`);
+      process.stderr.write('Saving private key ...');
       await writeFile(argv.privateKeyFile, newApplication.keys.privateKey);
+      process.stderr.write('\rSaving private key ... Done!\n');
     }
   } catch (error) {
+    process.stderr.write('\rSaving private key ... Failed\n');
     console.error('Error saving private key:', error);
     dumpPrivateKey = true;
   }
