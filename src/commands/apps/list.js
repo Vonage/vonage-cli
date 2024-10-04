@@ -47,10 +47,10 @@ const flags = {
     coerce: coerceCapability,
   },
   // Flags from higher level that do not apply to this command
-  'api-key': {
+  'app-id': {
     hidden: true,
   },
-  'api-secret': {
+  'private-key': {
     hidden: true,
   },
 };
