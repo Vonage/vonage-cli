@@ -1,5 +1,6 @@
 const yaml = require('yaml');
 const { displayApplication } = require('../../apps/display');
+const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
 const { Client } = require('@vonage/server-client');
 
 exports.command = 'show <id>';
@@ -41,10 +42,7 @@ exports.builder = (yargs) => yargs.options({
 exports.handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);
 
-  const { SDK } = argv;
-
-  const application = await SDK.applications.getApplication(argv.id);
-
+  const application = await loadAppFromSDK(argv.SDK, argv.id);
   if (argv.yaml) {
     console.log(yaml.stringify(
       Client.transformers.snakeCaseObjectKeys(application, true, false),

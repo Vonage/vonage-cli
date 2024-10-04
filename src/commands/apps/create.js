@@ -1,6 +1,6 @@
-const yargs = require('yargs');
 const { Client } = require('@vonage/server-client');
 const yaml = require('yaml');
+const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { writeFile } = require('../../utils/fs');
 const { displayApplication } = require('../../apps/display');
 const { coerceKey } = require('../../utils/coerceKey');
@@ -50,8 +50,6 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   console.info('Creating new application');
-  console.debug('Arguments:', argv);
-  let newApplication;
   let dumpPrivateKey = false;
 
   const appData = {
@@ -64,20 +62,11 @@ exports.handler = async (argv) => {
     },
   };
 
-  try {
-    process.stderr.write('Creating application ...');
-    newApplication = await argv.SDK.applications.createApplication(appData);
-    process.stderr.write('\rCreating application ... Done!\n');
-  } catch (error) {
-    process.stderr.write('\rCreating application ... Failed\n');
-    if ([401, 403].includes(error.response?.status)) {
-      console.error(error.response.data);
-      yargs.exit(5);
-      return;
-    }
+  const newApplication = await writeAppToSDK(argv.SDK, appData);
 
-    console.error(`Error creating application: ${error.message}` );
-    yargs.exit(99);
+  // writeAppToSDK should exit the process but there might be a delay and we
+  // don't want to have any other errors get thrown
+  if (!newApplication) {
     return;
   }
 
@@ -95,7 +84,7 @@ exports.handler = async (argv) => {
 
   if (argv.json) {
     console.log(JSON.stringify(
-      Client.transformers.snakeCaseObjectKeys(newApplication, true, false),
+      Client.transformers.snakeCaseObjectKeys(newApplication, true),
       null,
       2,
     ));
@@ -104,7 +93,7 @@ exports.handler = async (argv) => {
 
   if (argv.yaml) {
     console.log(yaml.stringify(
-      Client.transformers.snakeCaseObjectKeys(newApplication, true, false),
+      Client.transformers.snakeCaseObjectKeys(newApplication, true),
     ));
     return;
   }

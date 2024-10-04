@@ -1,7 +1,13 @@
 const yargs = require('yargs');
 exports.sdkError = async (error) => {
   const statusCode = error.response?.status;
-  const errorData = await error.response?.json() || {};
+  let errorData = {};
+  try {
+    errorData = await error.response?.json();
+  } catch (error) {
+    console.debug('Failed to parse error response', error);
+  }
+
   console.debug(JSON.stringify(errorData, null, 2));
 
   switch (statusCode) {

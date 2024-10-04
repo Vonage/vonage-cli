@@ -13,6 +13,12 @@ exports.builder = (yargs) => yargs
     },
   ).options({
     // Flags from higher level that do not apply to this command
+    'json': {
+      hidden: true,
+    },
+    'yaml': {
+      hidden: true,
+    },
     'app-name': {
       hidden: true,
     },
