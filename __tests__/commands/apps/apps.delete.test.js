@@ -1,10 +1,15 @@
 const { handler } = require('../../../src/commands/apps/delete');
 const { faker } = require('@faker-js/faker');
 const { sdkError } = require('../../../src/utils/sdkError');
+const { mockConsole } = require('../../helpers');
 
 jest.mock('../../../src/utils/sdkError');
 
 describe('Command: vonage apps delete', () => {
+  beforeEach(() => {
+    mockConsole();
+  });
+
   test('Should delete app', async () => {
     const appMock = jest.fn().mockResolvedValue(undefined);
     const sdkMock = {

@@ -4,6 +4,8 @@ const debug = console.debug;
 const error = console.error;
 const warn = console.warn;
 const table = console.table;
+const stdout = process.stdout.write;
+const stderr = process.stderr.write;
 
 const restoreConsole = () => {
   console.log = log;
@@ -12,6 +14,8 @@ const restoreConsole = () => {
   console.error = error;
   console.warn = warn;
   console.table = table;
+  process.stdout.write = stdout;
+  process.stderr.write = stderr;
 };
 
 afterAll(restoreConsole);
@@ -25,5 +29,7 @@ exports.mockConsole = () => {
   console.debug = jest.fn();
   console.error = jest.fn();
   console.table = jest.fn();
+  process.stdout.write = jest.fn();
+  process.stderr.write = jest.fn();
   return console;
 };

@@ -5,23 +5,17 @@ const { getTestMiddlewareArgs, testPublicKey, testPrivateKey } = require('../../
 const { Vonage } = require('@vonage/server-sdk');
 const { getBasicApplication } = require('../../app');
 const yargs = require('yargs');
+const {mockConsole } = require('../../helpers');
 
 jest.mock('fs');
 jest.mock('../../../src/ux/confirm');
 jest.mock('@vonage/server-sdk');
 jest.mock('yargs');
 
-const oldProcessStdoutWrite = process.stdout.write;
-
 describe('Command: vonage auth set', () => {
   beforeEach(() => {
-    process.stdout.write = jest.fn();
+    mockConsole();
   });
-
-  afterAll(() => {
-    process.stdout.write = oldProcessStdoutWrite;
-  });
-
 
   test('Should write to the global config file', async () => {
     const application = getBasicApplication();
