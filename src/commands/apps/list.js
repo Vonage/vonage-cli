@@ -75,7 +75,7 @@ exports.command = 'list';
 
 exports.desc = 'List applications';
 
-exports.builder = (yargs) => yargs.options(flags);
+exports.builder = flags;
 
 exports.handler = async (argv) => {
   console.info('Listing applications');

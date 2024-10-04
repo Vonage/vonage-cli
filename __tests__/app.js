@@ -6,6 +6,9 @@ const getBasicApplication = () => Object.freeze({
   keys: {
     publicKey: `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`,
   },
+  privacy: {
+    improveAi: faker.datatype.boolean(),
+  },
 });
 
 const addVoiceCapabilities = (app) => Object.freeze({
@@ -198,19 +201,8 @@ const addVBCCapabilities = (app) => Object.freeze({
   },
 });
 
-const getTestApp = () => ({
-  id: faker.string.uuid(),
-  name: faker.science.chemicalElement().name,
-  keys: {
-    public_key:`-----BEGIN PUBLIC KEY-----${faker.string.alpha(10)}-----END PUBLIC KEY-----`,
-  },
-  privacy: {
-    improve_ai: true,
-  },
-});
-
 module.exports = {
-  getTestApp,
+  getTestApp: getBasicApplication,
   addVoiceCapabilities,
   addMessagesCapabilities,
   addVerifyCapabilities,

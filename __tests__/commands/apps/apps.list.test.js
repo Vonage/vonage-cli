@@ -16,6 +16,7 @@ const {
 } = require('../../../src/commands/apps/list');
 const { mockConsole } = require('../../helpers');
 const { Vonage } = require('@vonage/server-sdk');
+const { Client } = require('@vonage/server-client');
 
 jest.mock('@vonage/server-sdk');
 
@@ -226,7 +227,7 @@ describe('Command: vonage apps', () => {
     await handler({ SDK: sdk, json: true });
 
     expect(consoleMock.table).not.toHaveBeenCalled();
-    expect(consoleMock.log).toHaveBeenCalledWith(JSON.stringify([app], null, 2));
+    expect(consoleMock.log).toHaveBeenCalledWith(JSON.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Will output YAML', async () => {
@@ -240,7 +241,7 @@ describe('Command: vonage apps', () => {
     await handler({ SDK: sdk, yaml: true });
 
     expect(consoleMock.table).not.toHaveBeenCalled();
-    expect(consoleMock.log).toHaveBeenCalledWith(yaml.stringify([app], null, 2));
+    expect(consoleMock.log).toHaveBeenCalledWith(yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Should error when capability is not valid', async () => {
