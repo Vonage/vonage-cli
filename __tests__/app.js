@@ -1,6 +1,6 @@
 const { faker } = require('@faker-js/faker');
 
-const getBasicApplication = () => Object.freeze({
+const getBasicApplication = () => ({
   id: faker.string.uuid(),
   name: `${faker.commerce.productAdjective()} ${faker.commerce.productMaterial()} ${faker.commerce.product()}`,
   keys: {

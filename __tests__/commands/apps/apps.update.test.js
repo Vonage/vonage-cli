@@ -67,7 +67,7 @@ describe('Command: apps update', () => {
     expect(updateAppMock).toHaveBeenCalledWith({
       ...app,
       privacy: {
-        improveAi: app.privacy.improveAi,
+        improveAi: !app.privacy.improveAi,
       },
     });
   });
@@ -134,7 +134,7 @@ describe('Command: apps update', () => {
       id: app.id,
       name: `${app.name} new`,
       privacy: {
-        improveAi: app.privacy.improveAi,
+        improveAi: !app.privacy.improveAi,
       },
       keys: {
         publicKey: newPublicKey,
@@ -194,7 +194,7 @@ describe('Command: apps update', () => {
       name: `${app.name} new`,
       improveAi: !app.privacy.improveAi,
       publicKeyFile: newPublicKey,
-      json: true, 
+      json: true,
     });
 
     expect(consoleMock.log).toHaveBeenCalledTimes(1);
@@ -202,8 +202,14 @@ describe('Command: apps update', () => {
     expect(consoleMock.log.mock.calls[0][0]).toBe(JSON.stringify(
       Client.transformers.snakeCaseObjectKeys(
         {
-          ...app,
+          id: app.id,
           name: `${app.name} new`,
+          keys: {
+            public_key: newPublicKey,
+          },
+          privacy: {
+            improve_ai: !app.privacy.improveAi,
+          },
         },
         true,
         false,
@@ -236,15 +242,21 @@ describe('Command: apps update', () => {
       name: `${app.name} new`,
       improveAi: !app.privacy.improveAi,
       publicKeyFile: newPublicKey,
-      yaml: true, 
+      yaml: true,
     });
-    expect(consoleMock.log).toHaveBeenCalledTimes(1);
 
+    expect(consoleMock.log).toHaveBeenCalledTimes(1);
     expect(consoleMock.log.mock.calls[0][0]).toBe(yaml.stringify(
       Client.transformers.snakeCaseObjectKeys(
         {
-          ...app,
+          id: app.id,
           name: `${app.name} new`,
+          keys: {
+            public_key: newPublicKey,
+          },
+          privacy: {
+            improve_ai: !app.privacy.improveAi,
+          },
         },
         true,
       ),
