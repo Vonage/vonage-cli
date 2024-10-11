@@ -3,16 +3,7 @@ const { dumpObject, dumpKey } = require('../ux/dump');
 const { dumpOnOff, dumpOffOrValue } = require('../ux/dumpYesNo');
 const { descriptionList } = require('../ux/descriptionList');
 const chalk = require('chalk');
-
-const capabilityLabels = {
-  'messages': 'Messages',
-  'network_apis': 'Network APIs',
-  'rtc': 'RTC',
-  'vbc': 'VBC',
-  'verify': 'Verify',
-  'video': 'Video',
-  'voice': 'Voice',
-};
+const { capabilityLabels } = require('./capabilities');
 
 const getAppCapabilities = ({capabilities = {}}) => Object.entries(capabilityLabels)
   .reduce(
@@ -258,7 +249,7 @@ const displayRTCApplication = ({rtc}) => {
   return [
     `${chalk.underline(dumpKey('RTC'))}:`,
     indentLines(descriptionList([
-      ['Event URL', dumpWebhook(rtc.webhooks.eventUrl)],
+      ['Event URL', dumpWebhook(rtc.webhooks?.eventUrl)],
       ['Uses Signed callbacks', dumpOnOff(rtc.signedCallbacks)],
     ])),
     '',

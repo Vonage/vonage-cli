@@ -36,7 +36,6 @@ const flags = {
     conflicts: 'yaml',
     type: 'boolean',
   },
-
   'app-name': {
     describe: 'Filter by application name',
     group: 'Applications',

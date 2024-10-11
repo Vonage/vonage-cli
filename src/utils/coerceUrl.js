@@ -5,7 +5,6 @@ const coerceUrl = (argName) => (url) => {
     return url;
   }
 
-  console.debug(`URL for ${argName}: ${url}`);
   try {
     const parsed = new URL(url);
     return parsed.toString();
