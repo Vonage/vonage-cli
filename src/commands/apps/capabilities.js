@@ -3,7 +3,7 @@ const { displayApplication } = require('../../apps/display');
 const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
 const { rtcFlags, updateRTC } = require('../../apps/rtc');
-const { verifyFlags } = require('../../apps/flags/verifyFlags');
+const { verifyFlags, updateVerify } = require('../../apps/verify');
 const { videoFlags } = require('../../apps/video');
 const { voiceFlags, updateVoice } = require('../../apps/voice');
 const { messageFlags, updateMessages } = require('../../apps/message');
@@ -25,6 +25,7 @@ const capabilityUpdateFunctions = {
   'network_apis': updateNetwork,
   'voice': updateVoice,
   'messages': updateMessages,
+  'verify': updateVerify,
 };
 
 const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
