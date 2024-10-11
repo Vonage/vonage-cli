@@ -6,7 +6,7 @@ const { rtcFlags, updateRTC } = require('../../apps/rtc');
 const { verifyFlags } = require('../../apps/flags/verifyFlags');
 const { videoFlags } = require('../../apps/video');
 const { voiceFlags, updateVoice } = require('../../apps/voice');
-const { messageFlags } = require('../../apps/flags/messageFlags');
+const { messageFlags, updateMessages } = require('../../apps/message');
 const { networkFlags, updateNetwork } = require('../../apps/network');
 const { dumpCommand } = require('../../ux/dump');
 const { capabilities } = require('../../apps/capabilities');
@@ -20,10 +20,11 @@ const allFlags = {
   ...networkFlags,
 };
 
-const capabilityUpdate = {
+const capabilityUpdateFunctions = {
   'rtc': updateRTC,
   'network_apis': updateNetwork,
   'voice': updateVoice,
+  'messages': updateMessages,
 };
 
 const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
@@ -77,10 +78,9 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   console.info('Managing application capabilities');
-  console.debug(`RTC Http URL: ${argv.rtcEventUrl}`);
-  console.debug(`RTC Http Method: ${argv.rtcEventMethod}`);
 
   const { action, id, which } = argv;
+  console.debug(`Performaing ${action} on ${which} for application ${id}`);
 
   const invalidFlags = [];
   const capabilityFlags = Object.keys(allFlags).reduce(
@@ -95,7 +95,7 @@ exports.handler = async (argv) => {
         console.debug(`Invalid flag for ${argv.which}: ${camelFlag}`);
       }
 
-      if (argv[camelFlag] || argv[camelFlag] === '') {
+      if (Object.keys(argv).includes(camelFlag)) {
         acc[camelFlag] = argv[camelFlag];
       }
 
@@ -116,7 +116,7 @@ exports.handler = async (argv) => {
   // Check for required flags (yargs cant nativly do this)
   if (action !== 'rm' && Object.keys(capabilityFlags).length < 1) {
     console.error(`You must provide at least one ${dumpCommand(which + '-*')} flag when updating the ${which} capability`);
-    yargs.exit(2);
+    yargs.exit(1);
     return;
   }
 
@@ -130,7 +130,7 @@ exports.handler = async (argv) => {
   switch (action) {
   case 'update':
     console.info(`Modifying ${which} capability on application: ${app.name}`);
-    capabilityUpdate[which](app, capabilityFlags);
+    capabilityUpdateFunctions[which](app, capabilityFlags);
     break;
 
   case 'rm':
