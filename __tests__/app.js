@@ -67,7 +67,7 @@ const addMessagesCapabilities = (app) => Object.freeze({
         },
       },
       version: faker.helpers.shuffle(['v1', 'v0.1'])[0],
-      authenticate_inbound_media: true,
+      authenticate_inbound_media: faker.datatype.boolean(),
     },
   },
 });
@@ -126,6 +126,16 @@ const addVideoCapabilities = (app) => Object.freeze({
           secret: faker.internet.password(),
           active: true,
         },
+        broadcast_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
+        captions_status: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
         connection_created: {
           address: faker.internet.url(),
           secret: faker.internet.password(),
@@ -136,12 +146,12 @@ const addVideoCapabilities = (app) => Object.freeze({
           secret: faker.internet.password(),
           active: true,
         },
-        sip_call_created: {
+        render_status: {
           address: faker.internet.url(),
           secret: faker.internet.password(),
           active: true,
         },
-        sip_call_updated: {
+        sip_call_created: {
           address: faker.internet.url(),
           secret: faker.internet.password(),
           active: true,
@@ -156,6 +166,11 @@ const addVideoCapabilities = (app) => Object.freeze({
           secret: faker.internet.password(),
           active: true,
         },
+        sip_call_updated: {
+          address: faker.internet.url(),
+          secret: faker.internet.password(),
+          active: true,
+        },
         stream_created: {
           address: faker.internet.url(),
           secret: faker.internet.password(),
@@ -166,29 +181,30 @@ const addVideoCapabilities = (app) => Object.freeze({
           secret: faker.internet.password(),
           active: true,
         },
-        render_status: {
-          address: faker.internet.url(),
-          secret: faker.internet.password(),
-          active: true,
-        },
-        broadcast_status: {
-          address: faker.internet.url(),
-          secret: faker.internet.password(),
-          active: true,
-        },
-        captions_status: {
-          address: faker.internet.url(),
-          secret: faker.internet.password(),
-          active: true,
-        },
       },
+      // CLI will only read the stoarge
       storage: {
         server_side_encryption: false,
         end_to_end_encryption: false,
         cloud_storage: false,
       },
+      // Everything below here is ignored by the CLI
       environment_enabled: false,
       environment_id: 1,
+      hoolock_configs: [
+        // There are more but we only need one for testing
+        // We want to make sure the CLI does not touch this array
+        {
+          client_policies: {
+            all: [
+              {
+                value: 'p2p',
+              },
+            ],
+          },
+          key: 'stream.codec.h264',
+        },
+      ],
     },
   },
 });
