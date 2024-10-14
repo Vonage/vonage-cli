@@ -122,7 +122,7 @@ describe('Command: vonage apps', () => {
     expect(consoleMock.log.mock.calls[2][0]).toBe([
       'Capabilities:',
       '  MESSAGES:',
-      '    Authenticate Inbound Media: On',
+      `    Authenticate Inbound Media: ${app.capabilities.messages.authenticateInboundMedia ? 'On' : 'Off'}`,
       `    Webhook Version: ${app.capabilities.messages.version}`,
       `    Status URL: [${app.capabilities.messages.webhooks.statusUrl.httpMethod}] ${app.capabilities.messages.webhooks.statusUrl.address}`,
       `    Inbound URL: [${app.capabilities.messages.webhooks.inboundUrl.httpMethod}] ${app.capabilities.messages.webhooks.inboundUrl.address}`,
