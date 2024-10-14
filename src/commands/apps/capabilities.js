@@ -4,7 +4,7 @@ const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
 const { rtcFlags, updateRTC } = require('../../apps/rtc');
 const { verifyFlags, updateVerify } = require('../../apps/verify');
-const { videoFlags } = require('../../apps/video');
+const { videoFlags, updateVideo } = require('../../apps/video');
 const { voiceFlags, updateVoice } = require('../../apps/voice');
 const { messageFlags, updateMessages } = require('../../apps/message');
 const { networkFlags, updateNetwork } = require('../../apps/network');
@@ -21,26 +21,24 @@ const allFlags = {
 };
 
 const capabilityUpdateFunctions = {
-  'rtc': updateRTC,
-  'network_apis': updateNetwork,
-  'voice': updateVoice,
   'messages': updateMessages,
+  'network_apis': updateNetwork,
+  'rtc': updateRTC,
   'verify': updateVerify,
+  'video': updateVideo,
+  'voice': updateVoice,
 };
 
 const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
 const clearRemoved = (obj) => Object.fromEntries(Object.entries(obj).reduce(
   (acc, [key, value]) => {
-    console.debug(`Checking ${key} for removal ${value}`);
     if (value?.constructor.name === 'Object') {
-      console.debug('Object found, recursing');
       acc.push([key, clearRemoved(value)]);
       return acc;
     };
 
     if (value !== '__REMOVE__') {
-      console.debug(`Adding ${value} back to object ${key}`);
       acc.push([key, value]);
     }
 

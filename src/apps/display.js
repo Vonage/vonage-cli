@@ -114,7 +114,7 @@ const displayVideoApplication = ({video}) => {
 
   const recordings =  [
     `${chalk.underline(dumpKey('RECORDINGS STORAGE'))}:`,
-    video.storage.cloudStorage
+    video.storage?.cloudStorage
       ? indentLines(descriptionList([
         ['Cloud Storage', dumpOnOff(video.storage.cloudStorage)],
         ['Storage Type', video.storage.credentialType],
@@ -122,7 +122,7 @@ const displayVideoApplication = ({video}) => {
         ['End to End Encryption', dumpOnOff(video.storage.endToEndEncryption)],
         ['Server Side Encryption', dumpOnOff(video.storage.serverSideEncryption)],
       ]))
-      : indentLines(descriptionList([['Cloud Storage', dumpOnOff(video.storage.cloudStorage)]])),
+      : indentLines(descriptionList([['Cloud Storage', dumpOnOff(video.storage?.cloudStorage)]])),
   ].join('\n');
 
   return [
@@ -233,8 +233,8 @@ const displayMessagesApplication = ({messages}) => {
     indentLines(descriptionList([
       ['Authenticate Inbound Media', dumpOnOff(messages.authenticateInboundMedia)],
       ['Webhook Version', messages.version],
-      ['Status URL',dumpWebhook(messages.webhooks.statusUrl)],
-      ['Inbound URL', dumpWebhook(messages.webhooks.inboundUrl)],
+      ['Status URL',dumpWebhook(messages.webhooks?.statusUrl)],
+      ['Inbound URL', dumpWebhook(messages.webhooks?.inboundUrl)],
     ])),
     '',
   ].join('\n');
