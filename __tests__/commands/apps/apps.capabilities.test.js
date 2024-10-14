@@ -7,15 +7,12 @@ const { getBasicApplication } = require('../../app');
 const { Client } = require('@vonage/server-client');
 const { dataSets } = require('../../__dataSets__/apps/index');
 
-jest.mock('yargs');
-
-describe('Command: vonage apps capabilities', () => {
-
+describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}) => {
   beforeEach(() => {
     mockConsole();
   });
 
-  test.each(dataSets)('Will $label', async ({app, args, expected}) => {
+  test.each(testCases)('Will $label', async ({app, args, expected}) => {
     const getAppMock = jest.fn().mockResolvedValue({...app});
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
@@ -35,7 +32,9 @@ describe('Command: vonage apps capabilities', () => {
     expect(getAppMock).toHaveBeenCalledWith(app.id);
     expect(updateAppMock).toHaveBeenCalledWith(expected);
   });
+});
 
+describe('Command: vonage apps capabilities', () => {
   test('Should exit 1 if invalid flag is passed', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
@@ -65,6 +64,32 @@ describe('Command: vonage apps capabilities', () => {
     expect(yargs.exit).toHaveBeenCalledWith(1);
     expect(console.error).toHaveBeenCalledWith('You cannot use the flag(s) [messages-status-url, network-redirect-url] when updating the rtc capability');
   });
+
+  test('Should exit 1 if one flag is missing', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const updateAppMock = jest.fn().mockResolvedValue();
+    const sdkMock = {
+      applications: {
+        getApplication: getAppMock,
+        updateApplication: updateAppMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      SDK: sdkMock,
+      action: 'add',
+      which: 'rtc',
+    });
+
+    expect(updateAppMock).not.toHaveBeenCalled();
+    expect(yargs.exit).toHaveBeenCalledWith(1);
+    expect(console.error).toHaveBeenCalledWith('You must provide at least one rtc-* flag when updating the rtc capability');
+  });
 });
-
-

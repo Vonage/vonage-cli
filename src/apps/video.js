@@ -22,12 +22,12 @@ const updateVideo = (app, flags) => {
   const newVideo = {
     webhooks: {
       ...videoWebhooks.reduce(
-        (acc, webhook) => Object.assign(acc, { 
+        (acc, webhook) => Object.assign(acc, {
           [webhook]: {
             address: app.capabilities?.video?.webhooks?.[webhook]?.address,
             secret: app.capabilities?.video?.webhooks?.[webhook]?.secret,
             active: app.capabilities?.video?.webhooks?.[webhook]?.active,
-          }, 
+          },
         }),
         {},
       ),
@@ -44,6 +44,10 @@ const updateVideo = (app, flags) => {
 
   // Remove undefined values
   app.capabilities.video = JSON.parse(JSON.stringify(newVideo));
+
+  if (Object.keys(app.capabilities.video.webhooks).length < 1) {
+    app.capabilities.video.webhooks = undefined;
+  }
 
   if (Object.keys(app.capabilities.video).length < 1) {
     app.capabilities.video = undefined;
@@ -64,6 +68,12 @@ const updateWebhookUrl = (capability, which, flags) => {
 
   if (flags[secretFlag]) {
     newStatus.secret = flags[secretFlag];
+  }
+
+  if (flags[urlFlag] === '__REMOVE__') {
+    newStatus.address = undefined;
+    newStatus.active = undefined;
+    newStatus.secret = undefined;
   }
 
   capability.webhooks[which] = JSON.parse(JSON.stringify(newStatus));

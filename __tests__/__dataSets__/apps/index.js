@@ -6,10 +6,28 @@ const { videoDataSets } = require('./videoCapabilities');
 const { voiceDataSets } = require('./voiceCapabilities');
 
 exports.dataSets = [
-  ...messageDataSets,
-  ...networkDataSets,
-  ...rtcDataSets,
-  ...verifyDataSets,
-  ...videoDataSets,
-  ...voiceDataSets,
+  {
+    label: 'message',
+    testCases: messageDataSets,
+  },
+  {
+    label: 'network',
+    testCases: networkDataSets,
+  },
+  {
+    label: 'rtc',
+    testCases: rtcDataSets,
+  },
+  {
+    label: 'verify',
+    testCases: verifyDataSets,
+  },
+  {
+    label: 'video',
+    testCases: videoDataSets,
+  },
+  {
+    label: 'voice',
+    testCases: voiceDataSets,
+  },
 ];

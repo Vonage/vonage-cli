@@ -16,7 +16,7 @@ exports.videoDataSets = [
       const urlFlag = `video${webhook[0].toUpperCase() + webhook.slice(1)}Url`;
 
       return {
-        label: `update ${webhook} URL (without secret)`,
+        label: `update video ${webhook} URL (without secret)`,
         app: app,
         args: {
           action: 'update',
@@ -52,7 +52,7 @@ exports.videoDataSets = [
       const secret = faker.internet.password();
 
       return {
-        label: `update ${webhook} URL (with secret)`,
+        label: `update video ${webhook} URL (with secret)`,
         app: app,
         args: {
           action: 'update',
@@ -92,7 +92,7 @@ exports.videoDataSets = [
       const secret = faker.internet.password();
 
       return {
-        label: `replace ${webhook}`,
+        label: `replace video ${webhook}`,
         app: app,
         args: {
           action: 'update',
@@ -111,6 +111,102 @@ exports.videoDataSets = [
                 [webhook]: {
                   address: newUrl,
                   secret: secret,
+                  active: true,
+                },
+              },
+            },
+          },
+        },
+      };
+    })(),
+
+    (() => {
+      const app = Client.transformers.camelCaseObjectKeys(
+        addVideoCapabilities(
+          getBasicApplication(),
+        ),
+        true,
+      );
+
+      const urlFlag = `video${webhook[0].toUpperCase() + webhook.slice(1)}Url`;
+      const otherHooks = app.capabilities.video.webhooks;
+      delete otherHooks[webhook];
+
+      return {
+        label: `remove video ${webhook} URL (without secret and other webhooks)`,
+        app: app,
+        args: {
+          action: 'update',
+          which: 'video',
+          [urlFlag]: '__REMOVE__',
+        },
+        expected: {
+          ...app,
+          name: `${app.name}`,
+          capabilities: {
+            video: {
+              ...app.capabilities.video,
+              webhooks: otherHooks,
+            },
+          },
+        },
+      };
+    })(),
+
+    (() => {
+      const app = Client.transformers.camelCaseObjectKeys(
+        getBasicApplication(),
+        true,
+      );
+
+      const urlFlag = `video${webhook[0].toUpperCase() + webhook.slice(1)}Url`;
+
+      return {
+        label: `remove video ${webhook} URL (without secret and other hooks)`,
+        app: app,
+        args: {
+          action: 'update',
+          which: 'video',
+          [urlFlag]: '__REMOVE__',
+        },
+        expected: {
+          ...app,
+          name: `${app.name}`,
+          capabilities: {
+            video: {},
+          },
+        },
+      };
+    })(),
+
+    (() => {
+      const app = Client.transformers.camelCaseObjectKeys(
+        addVideoCapabilities(
+          getBasicApplication(),
+        ),
+        true,
+      );
+
+      const secretFlag = `video${webhook[0].toUpperCase() + webhook.slice(1)}Secret`;
+
+      return {
+        label: `remove video ${webhook} secret`,
+        app: app,
+        args: {
+          action: 'update',
+          which: 'video',
+          [secretFlag]: '__REMOVE__',
+        },
+        expected: {
+          ...app,
+          name: `${app.name}`,
+          capabilities: {
+            video: {
+              ...app.capabilities.video,
+              webhooks: {
+                ...app.capabilities.video.webhooks,
+                [webhook]: {
+                  address: app.capabilities.video.webhooks[webhook].address,
                   active: true,
                 },
               },

@@ -128,76 +128,76 @@ const displayVideoApplication = ({video}) => {
   return [
     `${chalk.underline(dumpKey('VIDEO'))}:`,
     indentLines(descriptionList([
-      ['Archive Status URL', dumpWebhook(video.webhooks.archiveStatus)],
+      ['Archive Status URL', dumpWebhook(video.webhooks?.archiveStatus)],
       [
         'Archive Status Signature Secret',
-        dumpOffOrValue(video.webhooks.archiveStatus?.secret),
+        dumpOffOrValue(video.webhooks?.archiveStatus?.secret),
       ],
 
-      ['Broadcast Status URL', dumpWebhook(video.webhooks.broadcastStatus)],
+      ['Broadcast Status URL', dumpWebhook(video.webhooks?.broadcastStatus)],
       [
         'Broadcast Status Signature Secret',
-        dumpOffOrValue(video.webhooks.broadcastStatus?.secret),
+        dumpOffOrValue(video.webhooks?.broadcastStatus?.secret),
       ],
 
-      ['Caption Status URL', dumpWebhook(video.webhooks.captionsStatus)],
+      ['Caption Status URL', dumpWebhook(video.webhooks?.captionsStatus)],
       [
         'Caption Status Signature Secret',
-        dumpOffOrValue(video.webhooks.captionsStatus?.secret),
+        dumpOffOrValue(video.webhooks?.captionsStatus?.secret),
       ],
 
-      ['Connection Created URL', dumpWebhook(video.webhooks.connectionCreated)],
+      ['Connection Created URL', dumpWebhook(video.webhooks?.connectionCreated)],
       [
         'Connection Created Signature Secret',
-        dumpOffOrValue(video.webhooks.connectionCreated?.secret),
+        dumpOffOrValue(video.webhooks?.connectionCreated?.secret),
       ],
 
-      ['Connection Destroyed URL', dumpWebhook(video.webhooks.connectionDestroyed)],
+      ['Connection Destroyed URL', dumpWebhook(video.webhooks?.connectionDestroyed)],
       [
         'Connection Destroyed Signature Secret',
-        dumpOffOrValue(video.webhooks.connectionDestroyed?.secret),
+        dumpOffOrValue(video.webhooks?.connectionDestroyed?.secret),
       ],
 
-      ['Render Status URL', dumpWebhook(video.webhooks.renderStatus)],
+      ['Render Status URL', dumpWebhook(video.webhooks?.renderStatus)],
       [
         'Render Status Signature Secret',
-        dumpOffOrValue(video.webhooks.renderStatus?.secret),
+        dumpOffOrValue(video.webhooks?.renderStatus?.secret),
       ],
 
-      ['SIP Call Created URL', dumpWebhook(video.webhooks.sipCallCreated)],
+      ['SIP Call Created URL', dumpWebhook(video.webhooks?.sipCallCreated)],
       [
         'SIP Call Created Signature Secret',
-        dumpOffOrValue(video.webhooks.sipCallCreated?.secret),
+        dumpOffOrValue(video.webhooks?.sipCallCreated?.secret),
       ],
 
-      ['SIP Call Destroyed URL', dumpWebhook(video.webhooks.sipCallDestroyed )],
+      ['SIP Call Destroyed URL', dumpWebhook(video.webhooks?.sipCallDestroyed )],
       [
         'SIP Call Destroyed Signature Secret',
-        dumpOffOrValue(video.webhooks.sipCallDestroyed?.secret),
+        dumpOffOrValue(video.webhooks?.sipCallDestroyed?.secret),
       ],
 
-      ['SIP Call Mute Forced URL', dumpWebhook(video.webhooks.sipCallMuteForced)],
+      ['SIP Call Mute Forced URL', dumpWebhook(video.webhooks?.sipCallMuteForced)],
       [
         'SIP Call Mute Forced Signature Secret',
-        dumpOffOrValue(video.webhooks.sipCallMuteForced?.secret),
+        dumpOffOrValue(video.webhooks?.sipCallMuteForced?.secret),
       ],
 
-      ['SIP Call Updated URL', dumpWebhook(video.webhooks.sipCallUpdated)],
+      ['SIP Call Updated URL', dumpWebhook(video.webhooks?.sipCallUpdated)],
       [
         'SIP Call Updated Signature Secret',
-        dumpOffOrValue(video.webhooks.sipCallUpdated?.secret),
+        dumpOffOrValue(video.webhooks?.sipCallUpdated?.secret),
       ],
 
-      ['Stream Created URL', dumpWebhook(video.webhooks.streamCreated)],
+      ['Stream Created URL', dumpWebhook(video.webhooks?.streamCreated)],
       [
         'Stream Created Signature Secret',
-        dumpOffOrValue(video.webhooks.streamCreated?.secret),
+        dumpOffOrValue(video.webhooks?.streamCreated?.secret),
       ],
 
-      ['Stream Destroyed URL', dumpWebhook(video.webhooks.streamDestroyed)],
+      ['Stream Destroyed URL', dumpWebhook(video.webhooks?.streamDestroyed)],
       [
         'Stream Destroyed Signature Secret',
-        dumpOffOrValue(video.webhooks.streamDestroyed?.secret),
+        dumpOffOrValue(video.webhooks?.streamDestroyed?.secret),
       ],
     ])),
     '',
