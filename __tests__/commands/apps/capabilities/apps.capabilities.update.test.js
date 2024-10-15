@@ -1,18 +1,20 @@
 process.env.FORCE_COLOR = 0;
 const { faker } = require('@faker-js/faker');
 const yargs = require('yargs');
-const { handler } = require('../../../src/commands/apps/capabilities');
-const { mockConsole } = require('../../helpers');
-const { getBasicApplication } = require('../../app');
+const { handler } = require('../../../../src/commands/apps/capabilities/update');
+const { mockConsole } = require('../../../helpers');
+const { getBasicApplication } = require('../../../app');
 const { Client } = require('@vonage/server-client');
-const { dataSets } = require('../../__dataSets__/apps/index');
+const { dataSets } = require('../../../__dataSets__/apps/index');
 
 describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}) => {
   beforeEach(() => {
     mockConsole();
   });
 
-  test.each(testCases)('Will $label', async ({app, args, expected}) => {
+  const udpateTestCases = testCases.filter(({args}) => args.action === 'update');
+
+  test.each(udpateTestCases)('Will $label', async ({app, args, expected}) => {
     const getAppMock = jest.fn().mockResolvedValue({...app});
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
