@@ -1,4 +1,4 @@
-const { handler, builder } = require('./numbers/show');
+const { handler } = require('./numbers/list');
 exports.command = 'numbers <command>';
 
 exports.desc = 'Manage application numbers';

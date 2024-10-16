@@ -22,7 +22,7 @@ describe('Middleware: Log', () => {
 
     expect(winston.createLogger).toHaveBeenCalledWith({
       format: undefined,
-      level: 'warn',
+      level: 'emerg',
       transports: [{}],
     });
   });

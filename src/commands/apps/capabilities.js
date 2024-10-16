@@ -1,4 +1,4 @@
-exports.command = 'capabilities <command>';
+exports.command = 'capabilities <action>';
 
 exports.desc = 'Manage application capabilities';
 
