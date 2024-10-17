@@ -56,7 +56,7 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { numbers } = await loadOwnedNumbersFromSDK(
+  const  numbers  = await loadOwnedNumbersFromSDK(
     SDK,
     {
       msisdn: msisdn,
@@ -68,12 +68,12 @@ exports.handler = async (argv) => {
     return;
   }
 
-  if (!numbers) {
+  const number = numbers.numbers[0];
+  if (!number) {
     console.error('Number not found');
     return;
   }
 
-  const number = numbers[0];
   console.debug('Current number properties:', number);
 
   if (!number.appId) {
@@ -86,7 +86,7 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const userConfirmedUnlink= await confirm(`Are you sure you want to unlink ${msisdn} from ${application.name}`);
+  const userConfirmedUnlink= await confirm(`Are you sure you want to unlink ${msisdn} from ${application.name}?`);
   console.log('');
 
   if (!userConfirmedUnlink) {
