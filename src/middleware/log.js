@@ -4,9 +4,9 @@ const winston = require('winston');
 const { table } = require('../ux/table');
 const { format, transports } = winston;
 
-const warning = (message) => process.stderr.write(`${chalk.yellow('Warning:')} ${message}`);
+const warning = (message) => process.stderr.write(`${chalk.yellow('Warning:')} ${message}\n`);
 
-const error = (message) => process.stderr.write(`${chalk.red('Error:')} ${message}`);
+const error = (message) => process.stderr.write(`${chalk.red('Error:')} ${message}\n`);
 
 exports.setupLog = (argv) => {
   let level = 'emerg';
