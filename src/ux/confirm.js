@@ -1,8 +1,18 @@
 const readline  = require('readline');
+const parser = require('yargs-parser');
+
+const { argv }= parser.detailed(process.argv);
+const { force } = argv;
 
 exports.confirm = (
   message,
 ) => new Promise((resolve) => {
+  if (force) {
+    console.debug(`Forcing: ${message}`);
+    resolve(true);
+    return;
+  }
+
   console.debug(`Confirming: ${message}`);
   const rl = readline.createInterface({
     input: process.stdin,

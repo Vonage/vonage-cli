@@ -48,6 +48,16 @@ yargs(hideBin(process.argv))
       describe: 'Print debug information',
       type: 'boolean',
     },
+    'force': {
+      alias: 'f',
+      describe: 'Force the command to run without confirmation',
+      type: 'boolean',
+    },
+    'color': {
+      describe: 'Turn on color output',
+      type: 'boolean',
+      default: true,
+    },
   })
   .middleware(setupLog)
   .middleware(setConfig)
