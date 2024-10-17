@@ -9,7 +9,7 @@ const getTestPhoneNumber = () => Object.freeze({
     'VOICE',
     'MMS',
     'SMS',
-  ], {min: 1, max: 3}),
+  ], {min: 1, max: 3}).sort(),
 });
 
 exports.getTestPhoneNumber = getTestPhoneNumber;

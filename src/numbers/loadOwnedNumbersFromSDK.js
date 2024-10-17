@@ -14,17 +14,17 @@ const loadOwnedNumbersFromSDK = async (
     || appId && `Fetching numbers linked to application ${appId}`
     || 'Fetching Owned numbers';
 
-  const { stop: loadStop, fail: loadFail } = spinner({ message: spinnerMessage });
+  const { stop, fail } = spinner({ message: spinnerMessage });
   try {
     const numbers = await SDK.numbers.getOwnedNumbers({
       ...(appId ? {applicationId: appId} : {}),
       ...(msisdn ? {pattern: msisdn} : {}),
     });
-    loadStop();
+    stop();
     // The SDK does not transform this response.
     return Client.transformers.camelCaseObjectKeys(numbers || [], true);
   } catch (error) {
-    loadFail();
+    fail();
     sdkError(error);
     return false;
   }

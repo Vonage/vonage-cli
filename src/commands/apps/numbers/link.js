@@ -1,3 +1,4 @@
+const yargs = require('yargs');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { confirm } = require('../../../ux/confirm');
@@ -56,7 +57,7 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { numbers } = await loadOwnedNumbersFromSDK(
+  const numbers = await loadOwnedNumbersFromSDK(
     SDK,
     {
       msisdn: msisdn,
@@ -68,12 +69,14 @@ exports.handler = async (argv) => {
     return;
   }
 
-  if (!numbers) {
+  const number = numbers.numbers[0];
+
+  if (!number) {
     console.error('No numbers found');
+    yargs.exit(20);
     return;
   }
 
-  const number = numbers[0];
   console.debug('Current number properties:', number);
 
   let userConfirmedUpdate = true;

@@ -9,6 +9,7 @@ exports.sdkError = async (error) => {
   }
 
   console.debug(JSON.stringify(errorData, null, 2));
+  console.debug(`Status Code ${statusCode}`);
 
   switch (statusCode) {
   case 401:
@@ -22,7 +23,7 @@ exports.sdkError = async (error) => {
         ? `: ${errorData.detail}`
         : ''}`,
     );
-    yargs.exit(90);
+    yargs.exit(20);
     return;
 
   default:
