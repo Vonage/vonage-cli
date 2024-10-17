@@ -6,17 +6,30 @@ const typeLabels = {
   'mobile-lvn': 'Mobile',
 };
 
+const displayNumber = (number = {}) => Object.assign({
+  'Number': number.msisdn,
+  'Country': buildCountryString(number.country),
+  'Type': `${typeLabels[number.type]}`,
+  'Features': number.features.sort().join(', '),
+});
+
+const displayExtendedNumber = (number = {}) => Object.assign({
+  ...displayNumber(number),
+  'Linked Application ID': number.appId,
+  'Message Outbound HTTP URL': number.moHttpUrl,
+  'Voice Callback': number.voiceCallback,
+  'Voice Callback Value': number.voiceCallbackValue,
+  'Voice Status Callback': number.voiceStatusCallback,
+});
+
 const displayNumbers = (numbers = []) => {
-  const numbersToDisplay = numbers.map((number) => {
-    return {
-      'Number': number.msisdn,
-      'Country': buildCountryString(number.country),
-      'Type': `${typeLabels[number.type]}`,
-      'Features': number.features.sort().join(', '),
-    };
-  });
+  const numbersToDisplay = numbers.map(displayNumber);
   console.table(numbersToDisplay);
 };
+
+exports.displayExtendedNumber = displayExtendedNumber;
+
+exports.displayNumber = displayNumber;
 
 exports.displayNumbers = displayNumbers;
 

@@ -3,7 +3,7 @@ const yaml = require('yaml');
 const { displayNumbers } = require('../../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../../ux/dump');
-const { loadLinkedAppNumbersFromSDK } = require('../../../numbers/loadLinkedAppNumbersFromSDK');
+const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { getAppCapabilities } = require('../../../apps/display');
 
@@ -56,7 +56,14 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { numbers } = await loadLinkedAppNumbersFromSDK(SDK, id);
+  const { numbers } = await loadOwnedNumbersFromSDK(
+    SDK,
+    {
+      appId: id,
+      message: `Fetching numbers linked to application: ${application.name}`,
+    },
+  );
+
   if (numbers === false) {
     return;
   }
