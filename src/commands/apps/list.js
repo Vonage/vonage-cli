@@ -1,6 +1,7 @@
 const yaml = require('yaml');
 const { Client } = require('@vonage/server-client');
-const {capabilities, getAppCapabilities, listApplications } = require('../../apps/display');
+const { listApplications } = require('../../apps/display');
+const {capabilities, getAppCapabilities } = require('../../apps/capabilities');
 
 const coerceCapability = (capability) => {
   // Determine if we are looking for a single capability, multiple

@@ -2,6 +2,25 @@ const crypto = require('crypto');
 const { dumpValidInvalid } = require('../ux/dumpYesNo');
 const { Vonage } = require('@vonage/server-sdk');
 
+const validateApplicationKey = (application, privateKey) => {
+  console.debug('Validating application key');
+  const publicKey = application.keys.publicKey;
+
+  console.debug(`Public Key: ${publicKey}`);
+  console.debug(`Private Key: ${privateKey}`);
+
+  try {
+    const encryptedString = crypto.publicEncrypt(publicKey, application.id);
+    const decryptedString = crypto.privateDecrypt(privateKey, encryptedString);
+
+    console.debug('Confirming public key');
+    return decryptedString.toString() === application.id;
+  } catch (error) {
+    console.debug('Error validating application key:', error);
+    return false;
+  }
+};
+
 const validatePrivateKeyAndAppId = async (apiKey, apiSecret, appId, privateKey, logProgress=true) => {
   console.info('Validating API Key and Secret');
 
@@ -23,16 +42,12 @@ const validatePrivateKeyAndAppId = async (apiKey, apiSecret, appId, privateKey, 
       process.stdout.write('Checking App ID and Private Key: ...');
     }
 
+    // TODO update to spinner
     const application = await vonage.applications.getApplication(appId);
     console.debug('Got Application');
 
-    const publicKey = application.keys.publicKey;
-
-    const encryptedString = crypto.publicEncrypt(publicKey, appId);
-    const decryptedString = crypto.privateDecrypt(privateKey, encryptedString);
-
     console.debug('Confirming public key');
-    const correctPublicKey = decryptedString.toString() === appId;
+    const correctPublicKey = validateApplicationKey(application, privateKey);
     console.debug(`Public key confirmed: ${correctPublicKey ? 'Yes' : 'No'}`);
 
     if (logProgress) {
@@ -89,3 +104,4 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret, logProgress=true) => {
 
 exports.validateApiKeyAndSecret = validateApiKeyAndSecret;
 exports.validatePrivateKeyAndAppId = validatePrivateKeyAndAppId;
+exports.validateApplicationKey = validateApplicationKey;

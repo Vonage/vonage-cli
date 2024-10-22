@@ -3,26 +3,7 @@ const { dumpObject, dumpKey } = require('../ux/dump');
 const { dumpOnOff, dumpOffOrValue } = require('../ux/dumpYesNo');
 const { descriptionList } = require('../ux/descriptionList');
 const chalk = require('chalk');
-const { capabilityLabels } = require('./capabilities');
-
-const getAppCapabilities = ({capabilities = {}}) => Object.entries(capabilityLabels)
-  .reduce(
-    (acc, [capability]) => {
-      if (capabilities[capability]) {
-        acc.push(capability);
-      }
-      return acc;
-    },
-    [],
-  ).sort();
-
-const capabilitiesSummary = ({capabilities = {}}) => {
-  const appCapabilities = getAppCapabilities({capabilities});
-
-  return appCapabilities.length > 0
-    ? appCapabilities.map((capability) => capabilityLabels[capability]).join(', ')
-    : 'None';
-};
+const { capabilitiesSummary } = require('./capabilities');
 
 const listApplications = (apps) => {
   console.table(apps.map((app) => buildApplicationSummary(app)));
@@ -277,14 +258,10 @@ const displayVoiceApplication = ({voice}) => {
 
 module.exports = {
   displayApplication: displayApplication,
-  getAppCapabilities: getAppCapabilities,
-  capabilitiesSummary: capabilitiesSummary,
   displayCapabilities: displayCapabilities,
   displayVoiceApplication: displayVoiceApplication,
   displayRTCApplication: displayRTCApplication,
   displayMessagesApplication: displayMessagesApplication,
   displayVerifyApplication: displayVerifyApplication,
   listApplications: listApplications,
-  capabilityLabels: capabilityLabels,
-  capabilities: Object.keys(capabilityLabels),
 };

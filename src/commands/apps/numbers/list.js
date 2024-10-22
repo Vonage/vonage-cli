@@ -5,7 +5,7 @@ const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../../ux/dump');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
-const { getAppCapabilities } = require('../../../apps/display');
+const { getAppCapabilities } = require('../../../apps/capabilities');
 
 exports.command = 'list <id>';
 
@@ -61,6 +61,7 @@ exports.handler = async (argv) => {
     {
       appId: id,
       message: `Fetching numbers linked to application: ${application.name}`,
+      size: 100,
     },
   );
 
