@@ -5,10 +5,8 @@ const { getTestMiddlewareArgs, testPrivateKey } = require('../../common');
 const jwt = require('jsonwebtoken');
 
 describe('Command: vonage jwt create', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   test('should generate a JWT', async () => {
@@ -17,9 +15,9 @@ describe('Command: vonage jwt create', () => {
       ...args,
       privateKey: testPrivateKey,
     });
-    expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(consoleMock.log).toHaveBeenCalled();
-    const generatedToken = consoleMock.log.mock.calls[0][0];
+    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
+    expect(console.log).toHaveBeenCalled();
+    const generatedToken = console.log.mock.calls[0][0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded).toHaveProperty('iat');
@@ -38,9 +36,9 @@ describe('Command: vonage jwt create', () => {
       privateKey: testPrivateKey,
       sub: sub,
     });
-    expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(consoleMock.log).toHaveBeenCalled();
-    const generatedToken = consoleMock.log.mock.calls[0][0];
+    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
+    expect(console.log).toHaveBeenCalled();
+    const generatedToken = console.log.mock.calls[0][0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded.sub).toBe(sub);
@@ -73,9 +71,9 @@ describe('Command: vonage jwt create', () => {
     expect(jwtFlags.acl.coerce(JSON.stringify(acl)))
       .toEqual(acl);
 
-    expect(consoleMock.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(consoleMock.log).toHaveBeenCalled();
-    const generatedToken = consoleMock.log.mock.calls[0][0];
+    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
+    expect(console.log).toHaveBeenCalled();
+    const generatedToken = console.log.mock.calls[0][0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
     expect(decoded.acl).toBe(JSON.stringify(acl));

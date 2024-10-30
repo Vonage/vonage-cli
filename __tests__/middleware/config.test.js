@@ -19,10 +19,8 @@ const oldEnv = process.env;
 const oldCwd = process.cwd;
 
 describe('Middeleware: Config', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   afterEach(() => {
@@ -233,7 +231,7 @@ describe('Middeleware: Config', () => {
 
   test('Will exit when no config is found', () => {
     setConfig({}, yargs);
-    expect(consoleMock.log).toHaveBeenCalledWith('error: No configuration file found');
+    expect(console.log).toHaveBeenCalledWith('error: No configuration file found');
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 });

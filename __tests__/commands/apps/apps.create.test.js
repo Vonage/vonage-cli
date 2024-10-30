@@ -13,10 +13,8 @@ jest.mock('../../../src/ux/confirm');
 jest.mock('yargs');
 
 describe('Command: apps create', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   test('Should create app and save private key', async () => {
@@ -54,8 +52,9 @@ describe('Command: apps create', () => {
       app.keys.privateKey,
     );
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(1, 'Application created');
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenNthCalledWith(1, 'Application created');
+
+    expect(console.log).toHaveBeenNthCalledWith(
       2,
       [
         `Name: ${app.name}`,
@@ -102,8 +101,8 @@ describe('Command: apps create', () => {
 
     expect(fs.writeFileSync).not.toHaveBeenCalled();
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(5, 'Private key:');
-    expect(consoleMock.log).toHaveBeenNthCalledWith(6, app.keys.privateKey);
+    expect(console.log).toHaveBeenNthCalledWith(5, 'Private key:');
+    expect(console.log).toHaveBeenNthCalledWith(6, app.keys.privateKey);
   });
 
   test('Should create app and output json', async () => {
@@ -135,8 +134,8 @@ describe('Command: apps create', () => {
       },
     });
 
-    expect(consoleMock.log).toHaveBeenCalledTimes(1);
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenNthCalledWith(
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true),
@@ -175,8 +174,8 @@ describe('Command: apps create', () => {
       },
     });
 
-    expect(consoleMock.log).toHaveBeenCalledTimes(1);
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenNthCalledWith(
       1,
       yaml.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true),

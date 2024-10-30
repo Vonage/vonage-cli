@@ -21,10 +21,8 @@ const { Client } = require('@vonage/server-client');
 jest.mock('@vonage/server-sdk');
 
 describe('Command: vonage apps', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   test('Will list applications when there are none', async () => {
@@ -36,8 +34,8 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk });
 
-    expect(consoleMock.table).not.toHaveBeenCalled();
-    expect(consoleMock.log).toHaveBeenCalledWith('No applications found');
+    expect(console.table).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith('No applications found');
   });
 
   test('Will list one application that does not have any capabilities', async () => {
@@ -51,7 +49,7 @@ describe('Command: vonage apps', () => {
     await handler({ SDK: sdk });
 
     expect(Vonage._mockListAllApplications).toHaveBeenCalledTimes(1);
-    expect(consoleMock.table).toHaveBeenCalledWith([
+    expect(console.table).toHaveBeenCalledWith([
       {
         'App ID': app.id,
         'Capabilities': 'None',
@@ -87,7 +85,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk });
 
-    expect(consoleMock.table).toHaveBeenCalledWith([
+    expect(console.table).toHaveBeenCalledWith([
       {
         'App ID': appOne.id,
         'Capabilities': 'Messages, Network APIs, RTC, VBC, Verify, Video, Voice',
@@ -114,15 +112,18 @@ describe('Command: vonage apps', () => {
       yield appThree;
     });
 
-    await handler({ SDK: sdk, appName: appTwo.name.substring(0, 3) });
+    await handler({ SDK: sdk, appName: appTwo.name });
 
-    expect(consoleMock.table).toHaveBeenCalledWith([
-      {
-        'App ID': appTwo.id,
-        'Capabilities': 'None',
-        'Name': appTwo.name,
-      },
-    ]);
+    expect(console.table).toHaveBeenNthCalledWith(
+      1,
+      [
+        {
+          'App ID': appTwo.id,
+          'Capabilities': 'None',
+          'Name': appTwo.name,
+        },
+      ],
+    );
   });
 
   test('Will filter capabilities using single equality', async () => {
@@ -143,7 +144,7 @@ describe('Command: vonage apps', () => {
       capability: coerceCapability('voice'),
     });
 
-    expect(consoleMock.table).toHaveBeenCalledWith([
+    expect(console.table).toHaveBeenCalledWith([
       {
         'App ID': appOne.id,
         'Capabilities': 'Voice',
@@ -175,7 +176,7 @@ describe('Command: vonage apps', () => {
       capability: coerceCapability('voice,messages'),
     });
 
-    expect(consoleMock.table).toHaveBeenCalledWith([
+    expect(console.table).toHaveBeenCalledWith([
       {
         'App ID': appOne.id,
         'Capabilities': 'Voice',
@@ -207,7 +208,7 @@ describe('Command: vonage apps', () => {
       capability: coerceCapability('voice+messages'),
     });
 
-    expect(consoleMock.table).toHaveBeenCalledWith([
+    expect(console.table).toHaveBeenCalledWith([
       {
         'App ID': appTwo.id,
         'Capabilities': 'Messages, Voice',
@@ -226,8 +227,8 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, json: true });
 
-    expect(consoleMock.table).not.toHaveBeenCalled();
-    expect(consoleMock.log).toHaveBeenCalledWith(JSON.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
+    expect(console.table).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(JSON.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Will output YAML', async () => {
@@ -240,8 +241,8 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, yaml: true });
 
-    expect(consoleMock.table).not.toHaveBeenCalled();
-    expect(consoleMock.log).toHaveBeenCalledWith(yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
+    expect(console.table).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Should error when capability is not valid', async () => {

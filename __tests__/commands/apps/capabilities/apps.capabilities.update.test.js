@@ -37,6 +37,10 @@ describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}
 });
 
 describe('Command: vonage apps capabilities', () => {
+  beforeEach(() => {
+    mockConsole();
+  });
+
   test('Should exit 1 if invalid flag is passed', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),

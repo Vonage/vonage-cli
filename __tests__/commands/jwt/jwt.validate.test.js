@@ -8,10 +8,8 @@ const yargs = require('yargs');
 jest.mock('yargs');
 
 describe('Command: vonage jwt validate', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   test('should validate token', async () => {
@@ -33,22 +31,15 @@ describe('Command: vonage jwt validate', () => {
       token: token,
     });
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
-      1,
-      '✅ Token was signed with the correct private key',
-    );
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
-      2,
-      '✅ Token has not expired',
-    );
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
-      3,
-      `✅ Application Id [${args.appId}] matches [${args.appId}]`,
-    );
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
-      4,
-      '✅ All checks complete! Token is valid',
-    );
+    expect(console.info.mock.calls[0]).toEqual(['Validating JWT token']);
+    expect(console.log.mock.calls).toEqual([
+      ['✅ Token was signed with the correct private key'],
+      ['✅ Token has not expired'],
+      [`✅ Application Id [${args.appId}] matches [${args.appId}]`],
+      ['✅ All checks complete! Token is valid'],
+    ]);
+
+    expect(yargs.exit).not.toHaveBeenCalled();
   });
 
   test('Should validate with sub and acl flags', async () => {
@@ -91,14 +82,9 @@ describe('Command: vonage jwt validate', () => {
       acl: acl,
     });
 
-    expect(consoleMock.warn).toHaveBeenNthCalledWith(
-      1,
-      'Token does not have an expiry date. It is good practice to include one.',
-    );
+    expect(console.log).toHaveBeenCalledTimes(7);
 
-    expect(consoleMock.log).toHaveBeenCalledTimes(7);
-
-    const actualLog = consoleMock.log.mock.calls.map((call) => call[0]);
+    const actualLog = console.log.mock.calls.map((call) => call[0]);
 
     expect(actualLog.join('\n')).toEqual([
       '✅ Token was signed with the correct private key',
@@ -151,7 +137,7 @@ describe('Command: vonage jwt validate', () => {
       token: token,
     });
 
-    const actualLog = consoleMock.log.mock.calls.map((call) => call[0]);
+    const actualLog = console.log.mock.calls.map((call) => call[0]);
 
     expect(actualLog.join('\n')).toEqual([
       '✅ Token was signed with the correct private key',
@@ -186,10 +172,7 @@ describe('Command: vonage jwt validate', () => {
       token: token,
     });
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
-      2,
-      `❌ Application Id [${wrongAppId}] does not match [${args.appId}]`,
-    );
+    expect(console.log.mock.calls[1]).toEqual([`❌ Application Id [${wrongAppId}] does not match [${args.appId}]`]);
     expect(yargs.exit).toHaveBeenCalledWith(22);
   });
 
@@ -216,7 +199,7 @@ describe('Command: vonage jwt validate', () => {
       sub: correctSub,
     });
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenNthCalledWith(
       3,
       `❌ Subject [${wrongSub}] does not match [${correctSub}]`,
     );
@@ -244,7 +227,7 @@ describe('Command: vonage jwt validate', () => {
       token: token,
     });
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenNthCalledWith(
       2,
       '❌ Token has expired',
     );
@@ -270,7 +253,7 @@ describe('Command: vonage jwt validate', () => {
       privateKey: testPrivateKey,
       token: token,
     });
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenNthCalledWith(
       2,
       '❌ Token is not yet valid',
     );
@@ -295,7 +278,7 @@ describe('Command: vonage jwt validate', () => {
       token: token,
     });
 
-    expect(consoleMock.log).toHaveBeenNthCalledWith(
+    expect(console.log).toHaveBeenNthCalledWith(
       2,
       '❌ Application Id is not present in the token',
     );

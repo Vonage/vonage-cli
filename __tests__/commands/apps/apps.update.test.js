@@ -6,10 +6,8 @@ const { handler } = require('../../../src/commands/apps/update');
 const yaml = require('yaml');
 
 describe('Command: apps update', () => {
-  let consoleMock;
-
   beforeEach(() => {
-    consoleMock = mockConsole();
+    mockConsole();
   });
 
   test('Will update application name', async () => {
@@ -197,26 +195,29 @@ describe('Command: apps update', () => {
       json: true,
     });
 
-    expect(consoleMock.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenCalledTimes(1);
 
-    expect(consoleMock.log.mock.calls[0][0]).toBe(JSON.stringify(
-      Client.transformers.snakeCaseObjectKeys(
-        {
-          id: app.id,
-          name: `${app.name} new`,
-          keys: {
-            public_key: newPublicKey,
+    expect(console.log).toHaveBeenNthCalledWith(
+      1,
+      JSON.stringify(
+        Client.transformers.snakeCaseObjectKeys(
+          {
+            id: app.id,
+            name: `${app.name} new`,
+            keys: {
+              public_key: newPublicKey,
+            },
+            privacy: {
+              improve_ai: !app.privacy.improveAi,
+            },
           },
-          privacy: {
-            improve_ai: !app.privacy.improveAi,
-          },
-        },
-        true,
-        false,
+          true,
+          false,
+        ),
+        null,
+        2,
       ),
-      null,
-      2,
-    ));
+    );
   });
 
   test('Will output YAML when requested', async () => {
@@ -245,23 +246,25 @@ describe('Command: apps update', () => {
       yaml: true,
     });
 
-    expect(consoleMock.log).toHaveBeenCalledTimes(1);
-    expect(consoleMock.log.mock.calls[0][0]).toBe(yaml.stringify(
-      Client.transformers.snakeCaseObjectKeys(
-        {
-          id: app.id,
-          name: `${app.name} new`,
-          keys: {
-            public_key: newPublicKey,
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log).toHaveBeenNthCalledWith(
+      1, yaml.stringify(
+        Client.transformers.snakeCaseObjectKeys(
+          {
+            id: app.id,
+            name: `${app.name} new`,
+            keys: {
+              public_key: newPublicKey,
+            },
+            privacy: {
+              improve_ai: !app.privacy.improveAi,
+            },
           },
-          privacy: {
-            improve_ai: !app.privacy.improveAi,
-          },
-        },
-        true,
+          true,
+        ),
+        null,
+        2,
       ),
-      null,
-      2,
-    ));
+    );
   });
 });
