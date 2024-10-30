@@ -1,4 +1,5 @@
 const yaml = require('yaml');
+const { sdkError } = require('../../utils/sdkError');
 const { spinner } = require('../../ux/spinner');
 const snakecase = require('snakecase');
 const { Client } = require('@vonage/server-client');
@@ -107,8 +108,7 @@ exports.handler = async (argv) => {
     }
   } catch (error) {
     fail();
-    console.error('❌ Loading applications... Failed');
-    console.error(error);
+    sdkError(error);
     return;
   }
 
