@@ -89,7 +89,6 @@ exports.handler = async (argv) => {
     console.warn(
       'This application does not have the voice or messages capability enabled',
     );
-    console.log('');
   }
 
   console.log(totalNumbers > 1 

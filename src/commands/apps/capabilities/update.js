@@ -11,6 +11,7 @@ const { networkFlags, updateNetwork } = require('../../../apps/network');
 const { dumpCommand } = require('../../../ux/dump');
 const { capabilities } = require('../../../apps/capabilities');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
+const  camelCase  = require('camelcase');
 
 const allFlags = {
   ...rtcFlags,
@@ -29,8 +30,6 @@ const capabilityUpdateFunctions = {
   'video': updateVideo,
   'voice': updateVoice,
 };
-
-const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
 
 const clearRemoved = (obj) => Object.fromEntries(Object.entries(obj).reduce(
   (acc, [key, value]) => {

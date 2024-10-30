@@ -3,9 +3,6 @@ const { dumpObject, dumpKey } = require('../ux/dump');
 const { dumpOnOff, dumpOffOrValue } = require('../ux/dumpYesNo');
 const { descriptionList } = require('../ux/descriptionList');
 const chalk = require('chalk');
-<<<<<<< HEAD
-const { capabilitiesSummary } = require('./capabilities');
-=======
 const { capabilityLabels, getAppCapabilities } = require('./capabilities');
 
 const capabilitiesSummary = ({capabilities = {}}) => {
@@ -16,7 +13,6 @@ const capabilitiesSummary = ({capabilities = {}}) => {
     ? appCapabilities.map((capability) => capabilityLabels[capability]).join(', ')
     : 'None';
 };
->>>>>>> bb21b03 (refactor: updated validation to use spinners)
 
 const listApplications = (apps) => {
   console.table(apps.map((app) => buildApplicationSummary(app)));

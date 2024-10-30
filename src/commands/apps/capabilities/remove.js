@@ -1,7 +1,7 @@
 const { displayApplication } = require('../../../apps/display');
 const { writeAppToSDK } = require('../../../apps/writeAppToSDK');
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
-const { capabilities, capabilityLabels } = require('../../../apps/capabilities');
+const { getAppCapabilities, capabilities, capabilityLabels } = require('../../../apps/capabilities');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
 const { dumpCommand } = require('../../../ux/dump');
 const { confirm } = require('../../../ux/confirm');
@@ -43,9 +43,11 @@ exports.handler = async (argv) => {
   const app = await loadAppFromSDK(argv.SDK, id);
   console.log('');
   console.debug(`Loaded application ${app.name} (${app.id})`);
+  console.debug(`Current capabilities: ${getAppCapabilities(app).length}`);
 
-  if (!app.capabilities) {
-    app.capabilities = {};
+  if (getAppCapabilities(app).length < 1) {
+    console.log('No capabilities to remove');
+    return;
   }
 
   const okToRemove = await confirm(`Remove ${capabilityLabels[which]} capability from ${app.name} (${app.id})?`);

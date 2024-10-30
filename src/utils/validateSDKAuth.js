@@ -94,5 +94,7 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret) => {
 };
 
 exports.validateApiKeyAndSecret = validateApiKeyAndSecret;
+
 exports.validatePrivateKeyAndAppId = validatePrivateKeyAndAppId;
+
 exports.validateApplicationKey = validateApplicationKey;

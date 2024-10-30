@@ -1,4 +1,5 @@
 const yaml = require('yaml');
+const snakecase = require('snakecase');
 const { Client } = require('@vonage/server-client');
 const { listApplications } = require('../../apps/display');
 const { capabilities, getAppCapabilities } = require('../../apps/capabilities');
@@ -23,7 +24,7 @@ const coerceCapability = (capability) => {
   // Check that the list of capabilities is valid
   const validCheckCapabilities = checkCapabilities.every((capability) => capabilities.includes(capability));
   if (!validCheckCapabilities) {
-    throw new Error(`Invalid capability. Only: ${capabilities.join(', ')} are allowed`);
+    throw new Error(`Invalid capability. Only: ${capabilities.map(snakecase).join(', ')} are allowed`);
   }
 
   return [operation, checkCapabilities];

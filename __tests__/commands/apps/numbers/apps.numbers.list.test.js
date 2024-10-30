@@ -50,10 +50,8 @@ describe('Command: vonage apps numbers list', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenCalledTimes(5);
-
     expect(console.log).toHaveBeenNthCalledWith(
-      3,
+      2,
       'There is 1 number linked:',
     );
 

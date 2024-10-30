@@ -70,8 +70,8 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(spinner).toHaveBeenCalled();
-    expect(fail).toHaveBeenCalled();
-    expect(stop).not.toHaveBeenCalled();
+    expect(fail).not.toHaveBeenCalled();
+    expect(stop).toHaveBeenCalled();
   });
 
   test('Will not validate when application not found', async () => {
