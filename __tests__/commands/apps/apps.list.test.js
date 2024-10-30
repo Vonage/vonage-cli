@@ -1,5 +1,6 @@
 process.env.FORCE_COLOR = 0;
 const yaml = require('yaml');
+const yargs = require('yargs');
 const {
   getTestApp,
   addVerifyCapabilities,
@@ -19,6 +20,7 @@ const { spinner } = require('../../../src/ux/spinner');
 const { Vonage } = require('@vonage/server-sdk');
 const { Client } = require('@vonage/server-client');
 
+jest.mock('yargs');
 jest.mock('@vonage/server-sdk');
 jest.mock('../../../src/ux/spinner');
 
@@ -31,7 +33,6 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will list applications when there are none', async () => {
-
     const sdk = Vonage();
 
     Vonage._mockListAllApplications.mockImplementation(async function* () {
@@ -251,7 +252,7 @@ describe('Command: vonage apps', () => {
     expect(console.log).toHaveBeenCalledWith(yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
-  test('Should error when capability is not valid', async () => {
+  test('Will error when capability is not valid', async () => {
     expect(() => coerceCapability('invalid'))
       .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
 
@@ -260,5 +261,19 @@ describe('Command: vonage apps', () => {
 
     expect(() => coerceCapability('invalid+foo'))
       .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+  });
+
+  test('Will exit 99 when API calls fails', async () => {
+    const sdk = Vonage();
+
+    Vonage._mockListAllApplications.mockImplementation(async function* () {
+      yield *[];
+      throw new Error('API Error');
+    });
+
+    await handler({ SDK: sdk });
+
+    expect(console.table).not.toHaveBeenCalled();
+    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

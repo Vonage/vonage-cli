@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@vonage/cli",
-  "version": "3.0.0",
+  "version": "3.0.0-beta.1",
   "description": "Vonage CLI",
   "license": "Apache 2.0",
   "contributors": [
@@ -65,7 +65,6 @@
     "@eslint/js": "9.12.0",
     "@faker-js/faker": "9.0.3",
     "@stylistic/eslint-plugin-js": "2.9.0",
-    "@vonage/vetch": "1.8.0",
     "eslint-plugin-jest": "28.8.3",
     "eslint-plugin-n": "17.11.1",
     "globals": "15.11.0",
@@ -73,5 +72,8 @@
     "jest": "29.7.0",
     "lint-staged": "15.2.10",
     "winston-transport": "4.8.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
