@@ -94,18 +94,20 @@ exports.handler = async (argv) => {
   const { stop, fail } = spinner({
     message: 'Loading applications...',
   });
+
   try {
     let stopped = false;
 
     // Load in all applications
     for await (const result of SDK.applications.listAllApplications()) {
-      !stopped && stop('Loading applications... Done');
+      !stopped && stop('✅ Loading applications... Done');
+      !stopped && console.log('');
       stopped = true;
       apps.push(Client.transformers.snakeCaseObjectKeys(result, true, false));
     }
   } catch (error) {
     fail();
-    console.error('Loading applications... Failed');
+    console.error('❌ Loading applications... Failed');
     console.error(error);
     return;
   }
