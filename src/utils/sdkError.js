@@ -1,4 +1,6 @@
 const yargs = require('yargs');
+const { dumpCommand } = require('../ux/dump');
+
 exports.sdkError = async (error) => {
   const statusCode = error.response?.status;
   let errorData = {};
@@ -15,6 +17,8 @@ exports.sdkError = async (error) => {
   case 401:
   case 403:
     console.error('You are not authorized to perform this action');
+    console.log('');
+    console.log(`Please check your credentials by running ${dumpCommand('vonage auth show')} and try again`);
     yargs.exit(5);
     return;
   case 404:

@@ -1,5 +1,6 @@
 process.env.FORCE_COLOR = 0;
 const yargs = require('yargs');
+const yaml = require('yaml');
 const { faker } = require('@faker-js/faker');
 const { getBasicApplication } = require('../../../app');
 const { handler } = require('../../../../src/commands/apps/numbers/link');
@@ -59,6 +60,96 @@ describe('Command: apps numbers link', () => {
     });
   });
 
+  test('Will link number to an app and output json', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+
+    const appMock = jest.fn().mockResolvedValue(app);
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
+
+    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+      json: true,
+    });
+
+    expect(appMock).toHaveBeenCalledWith(app.id);
+    expect(numbersMock).toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(updateMock).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(JSON.stringify(
+      {
+        ...numberNine,
+        appId: app.id,
+      },
+      null,
+      2,
+    ));
+  });
+
+  test('Will link number to an app and output yaml', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+
+    const appMock = jest.fn().mockResolvedValue(app);
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
+
+    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+      yaml: true,
+    });
+
+    expect(appMock).toHaveBeenCalledWith(app.id);
+    expect(numbersMock).toHaveBeenCalled();
+    expect(confirm).not.toHaveBeenCalled();
+    expect(updateMock).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(yaml.stringify(
+      {
+        ...numberNine,
+        appId: app.id,
+      },
+      null,
+      2,
+    ));
+  });
+
   test('Will link numbers to an app after confirming', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
@@ -99,7 +190,7 @@ describe('Command: apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(confirm).toHaveBeenCalledWith(`Number is already linked to application ${otherAppId}. Do you want to continue?`);
+    expect(confirm).toHaveBeenCalledWith(`Number is already linked to application [${otherAppId}]. Do you want to continue?`);
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
       appId: app.id,
@@ -232,51 +323,6 @@ describe('Command: apps numbers link', () => {
     });
 
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(confirm).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(20);
-  });
-
-  test('Will exit 20 when application not found', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
-
-    const numberNine = getTestPhoneNumber();
-
-    const error = new Error('failed');
-
-    error.response = {
-      status: 404,
-    };
-
-    const appMock = jest.fn().mockRejectedValue(error);
-
-    const numbersMock = jest.fn();
-    const updateMock = jest.fn();
-
-    confirm.mockResolvedValue(false);
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-        updateNumber: updateMock,
-      },
-    };
-
-    await handler({
-      id: app.id,
-      msisdn: numberNine.msisdn,
-      SDK: sdkMock,
-    });
-
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(20);

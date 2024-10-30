@@ -368,4 +368,34 @@ describe('Command: vonage apps numbers list', () => {
     expect(console.warn).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(0);
   });
+
+  test('Will exit 99 when loading numbers fails', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getTestApp(),
+      true,
+      true,
+    );
+
+    const error = new Error('failed');
+
+    error.response = {
+      status: 404,
+    };
+
+    const appMock = jest.fn().mockResolvedValue(app);
+    const numbersMock = jest.fn().mockRejectedValue(error);
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+      },
+    };
+
+    await handler({id: app.id, SDK: sdkMock, yaml: true});
+
+    expect(yargs.exit).toHaveBeenCalledWith(99);
+  });
 });

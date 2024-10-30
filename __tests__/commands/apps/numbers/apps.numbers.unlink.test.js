@@ -1,4 +1,5 @@
 process.env.FORCE_COLOR = 0;
+const yaml = require('yaml');
 const yargs = require('yargs');
 const { faker } = require('@faker-js/faker');
 const { getBasicApplication } = require('../../../app');
@@ -16,7 +17,7 @@ describe('Command: apps numbers link', () => {
     mockConsole();
   });
 
-  test('Will unlink numbers from an app', async () => {
+  test('Will unlink number from an app', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -51,7 +52,6 @@ describe('Command: apps numbers link', () => {
       SDK: sdkMock,
     });
 
-
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalledWith({
       index: 1,
@@ -63,6 +63,97 @@ describe('Command: apps numbers link', () => {
       ...numberNine,
     });
   });
+
+  test('Will unlink number from an app and dump json', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+
+    const appMock = jest.fn().mockResolvedValue(app);
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [
+      {
+        ...numberNine,
+        appId: app.id,
+      },
+    ]});
+    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    confirm.mockResolvedValue(true);
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+      json: true,
+    });
+
+    expect(appMock).toHaveBeenCalledWith(app.id);
+    expect(updateMock).toHaveBeenCalledWith({
+      ...numberNine,
+    });
+    expect(console.log).toHaveBeenCalledWith(
+      JSON.stringify(numberNine, null, 2),
+    );
+  });
+
+  test('Will unlink number from an app and dump yaml', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+
+    const appMock = jest.fn().mockResolvedValue(app);
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [
+      {
+        ...numberNine,
+        appId: app.id,
+      },
+    ]});
+    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    confirm.mockResolvedValue(true);
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+      yaml: true,
+    });
+
+    expect(appMock).toHaveBeenCalledWith(app.id);
+    expect(updateMock).toHaveBeenCalledWith({
+      ...numberNine,
+    });
+    expect(console.log).toHaveBeenCalledWith(
+      yaml.stringify(numberNine, null, 2),
+    );
+  });
+
 
   test('Will not unlink number from an app when user declines', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
@@ -98,7 +189,6 @@ describe('Command: apps numbers link', () => {
       msisdn: numberNine.msisdn,
       SDK: sdkMock,
     });
-
 
     expect(appMock).toHaveBeenCalled();
     expect(numbersMock).toHaveBeenCalled();

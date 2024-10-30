@@ -53,11 +53,6 @@ exports.handler = async (argv) => {
     },
   );
 
-  // Error condition
-  if (numbers === false) {
-    return;
-  }
-
   const number = numbers.numbers[0];
   if (!number) {
     console.error('Number not found');
@@ -91,16 +86,12 @@ exports.handler = async (argv) => {
   // eslint-disable-next-line no-unused-vars
   const { appId, ...numberWithoutAppId } = number;
 
-  const ok = await writeNumberToSDK(
+  await writeNumberToSDK(
     SDK,
     numberWithoutAppId,
   );
 
   console.log('');
-
-  if (!ok) {
-    return;
-  }
 
   if (argv.json) {
     console.log(JSON.stringify(numberWithoutAppId, null, 2));

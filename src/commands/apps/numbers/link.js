@@ -42,11 +42,7 @@ exports.handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Linking number ${msisdn} to application ${id}`);
 
-  const application = await loadAppFromSDK(SDK, id);
-
-  if (!application) {
-    return;
-  }
+  const app = await loadAppFromSDK(SDK, id);
 
   const numbers = await loadOwnedNumbersFromSDK(
     SDK,
@@ -58,7 +54,7 @@ exports.handler = async (argv) => {
   const number = numbers.numbers[0];
 
   if (!number) {
-    console.error('No numbers found');
+    console.error('Number not found');
     yargs.exit(20);
     return;
   }
@@ -67,9 +63,9 @@ exports.handler = async (argv) => {
 
   let userConfirmedUpdate = true;
 
-  if (number.appId && number.appId !== id) {
+  if (number.appId && number.appId !== app.id) {
     console.log('');
-    userConfirmedUpdate = await confirm(`Number is already linked to application ${number.appId}. Do you want to continue?`);
+    userConfirmedUpdate = await confirm(`Number is already linked to application [${number.appId}]. Do you want to continue?`);
   }
 
   console.log('');
@@ -79,7 +75,7 @@ exports.handler = async (argv) => {
     return;
   }
 
-  if (number.appId === id) {
+  if (number.appId === app.id) {
     console.log('Number is already linked to this application');
     console.log('');
     console.log(descriptionList(displayExtendedNumber(number)));
@@ -89,11 +85,7 @@ exports.handler = async (argv) => {
   console.info('Linking number to application');
 
   number.appId = id;
-  const ok = await writeNumberToSDK(SDK, number);
-
-  if (!ok) {
-    return;
-  }
+  await writeNumberToSDK(SDK, number);
 
   if (argv.json) {
     console.log(JSON.stringify(number, null, 2));

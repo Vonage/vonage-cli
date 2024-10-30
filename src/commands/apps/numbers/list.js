@@ -49,7 +49,7 @@ exports.handler = async (argv) => {
       size: 100,
       all: true,
     },
-  );
+  ) || {};
 
   if (argv.yaml) {
     console.log(YAML.stringify(
@@ -91,7 +91,7 @@ exports.handler = async (argv) => {
     );
   }
 
-  console.log(totalNumbers > 1 
+  console.log(totalNumbers > 1
     ? `There are ${totalNumbers} numbers linked:`
     : 'There is 1 number linked:',
   );
