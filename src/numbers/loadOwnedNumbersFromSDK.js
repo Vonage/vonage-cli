@@ -17,10 +17,12 @@ const loadOwnedNumbersFromSDK = async (
     || appId && `Fetching numbers linked to application ${appId}`
     || 'Fetching Owned numbers';
 
+  // TODO Progress bar
   const { stop, fail } = spinner({ message: spinnerMessage });
   try {
     let appNumbers = [];
     let totalPages = 1;
+    let totalNumbers = 0;
     do {
       console.debug(`Fetching numbers page ${index}`);
       const response = Client.transformers.camelCaseObjectKeys(
@@ -30,25 +32,33 @@ const loadOwnedNumbersFromSDK = async (
           size: size,
           index: index,
         }),
+        true,
       );
 
+      console.debug('Get owned numbers response:', response);
       appNumbers = [
         ...appNumbers,
-        ...(response.numbers || []).map(({msisdn}) => msisdn),
+        ...(response.numbers || []),
       ];
 
-      totalPages = Math.ceil(response.count / size);
+      totalNumbers = response.count || 0;
+      totalPages = Math.ceil(totalNumbers / size);
       index++;
+      console.debug(`Total pages: ${totalPages}`);
     } while(all && index <= totalPages);
+
+    console.debug('Numbers linked to application:', appNumbers);
 
     stop();
 
     // The SDK does not transform this response.
-    return appNumbers;
+    return {
+      totalNumbers: totalNumbers,
+      numbers: appNumbers,
+    };
   } catch (error) {
     fail();
     sdkError(error);
-    return false;
   }
 };
 

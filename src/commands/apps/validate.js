@@ -1,10 +1,11 @@
 const { validateApplicationKey } = require('../../utils/validateSDKAuth');
-const { coerceKey } = require('../../utils/coerceKey');
 const { capabilities, capabilityLabels, getAppCapabilities } = require('../../apps/capabilities');
 const { dumpEnabledDisabled, dumpBoolean, dumpValidInvalid } = require('../../ux/dumpYesNo');
 const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
 const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
+const { apiKey, apiSecret, privateKey } = require('../../credentialFlags');
 const yargs = require('yargs');
+const { dumpCommand } = require('../../ux/dump');
 
 const flagGroup = 'Application Validation';
 
@@ -12,83 +13,98 @@ exports.description = 'Validate an application';
 
 exports.command = 'validate <id>';
 
-exports.builder = (yargs) => yargs.options({
-  'messages': {
-    describe: 'Confrim the application has the messages capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'voice': {
-    describe: 'Confrim the application has the voice capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'rtc': {
-    describe: 'Confrim the application has the RTC capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'video': {
-    describe: 'Confrim the application has the video capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'network': {
-    describe: 'Confrim the application has the Netwokr APIs capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'verify': {
-    describe: 'Confrim the application has the Verify capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'vbc': {
-    describe: 'Confrim the application has the VBC capability enabled',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'all': {
-    describe: 'Confrim the application has all capabilities',
-    type: 'boolean',
-    default: false,
-    group: flagGroup,
-  },
-  'linked-numbers': {
-    describe: 'Validate the application has these numbers linked',
-    type: 'string',
-    group: flagGroup,
-    coerce: (numbers) => numbers.split(','),
-  },
-  'key': {
-    type: 'string',
-    group: flagGroup,
-    describe: 'Check private key against applications public key',
-    coerce: coerceKey('private'),
-  },
-  // Flags from higher level that do not apply to this command
-  'app-id': {
-    hidden: true,
-  },
-  'app-name': {
-    hidden: true,
-  },
-  'capability': {
-    hidden: true,
-  },
-})
+exports.builder = (yargs) => yargs
   .positional(
     'id',
     {
-      describe: 'The ID of the application to show',
+      describe: 'The ID of the application to validate',
     },
+  )
+  .options({
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    'private-key-file': {
+      ...privateKey,
+      describe: 'Validate this private key is paired with the application',
+    },
+    'messages': {
+      describe: 'Confrim the application has the messages capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'voice': {
+      describe: 'Confrim the application has the voice capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'rtc': {
+      describe: 'Confrim the application has the RTC capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'video': {
+      describe: 'Confrim the application has the video capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'network': {
+      describe: 'Confrim the application has the Netwokr APIs capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'verify': {
+      describe: 'Confrim the application has the Verify capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'vbc': {
+      describe: 'Confrim the application has the VBC capability enabled',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'all': {
+      describe: 'Confrim the application has all capabilities',
+      type: 'boolean',
+      default: false,
+      group: flagGroup,
+    },
+    'linked-numbers': {
+      describe: 'Validate the application has these numbers linked',
+      type: 'string',
+      group: flagGroup,
+      coerce: (numbers) => numbers.split(','),
+    },
+  })
+  .epilogue([
+    'The validate command checks an application for the following (at least one check must be provided:',
+    '  1. The application has the correct public key by matching it with the private key provided',
+    '  2. The application has the specified capabilities',
+    '  3. The application has the specified linked numbers',
+    '',
+    'This command will exit with the following codes:',
+    '  Exit 10 if the private key does not match the public key',
+    '  Exit 5 will be returned if the application is missing any of the specified capabilities',
+    '  Exit 2 will be returned if the application is missing any of the specified linked numbers',
+    '  Exit 15 will be returned if the application is missing messages or voice capabilities and has numbers linked to it',
+  ].join('\n'))
+  .example(
+    dumpCommand('vonage apps validate 000[...]000 --private-key=./path/to/private.key'),
+    'Validate application has the correct private key',
+  )
+  .example(
+    dumpCommand('vonage apps validate 000[...]000 --messages --voice'),
+    'Validate application has messages and voice capabilities',
+  )
+  .example(
+    dumpCommand('vonage apps validate 000[...]000 --linked-numbers=19162255887,12127779311'),
+    'Validate application has the specified linked numbers',
   );
 
 const checkCapability = (capability, appCapabilities) => {
@@ -128,7 +144,7 @@ exports.handler = async (argv) => {
     appNumbers = await loadOwnedNumbersFromSDK(
       SDK,
       {
-        appId: application.id,
+        id: application.id,
         message: `Fetching numbers linked to application: ${application.name}`,
         all: true,
       },
@@ -138,18 +154,18 @@ exports.handler = async (argv) => {
   console.log('');
   let correctPublicKey = true;
 
-  if (argv.key) {
+  if (argv.privateKeyFile) {
     console.info('Validating public key');
-    correctPublicKey = validateApplicationKey(application, argv.key);
-    console.log(`Checking public key: ${dumpValidInvalid(correctPublicKey, true)}`);
+    correctPublicKey = validateApplicationKey(application, argv.privateKeyFile);
+    console.log(`Checking private and public key: ${dumpValidInvalid(correctPublicKey, true)}`);
   };
 
   const appCapabilities = getAppCapabilities(application);
 
   console.debug(`Application capabilities ${appCapabilities}`);
 
-  const capabilitiesToValidate = capabilities.filter((capability) => argv.all 
-    || argv[capability] 
+  const capabilitiesToValidate = capabilities.filter((capability) => argv.all
+    || argv[capability]
     || (capability === 'network_apis' && argv['network']),
   );
 
@@ -162,15 +178,36 @@ exports.handler = async (argv) => {
   const numbersOk = linkedNumbers.every((number) => {
     console.info(`Checking if application has number ${number}`);
     const numberIncluded = appNumbers.includes(number);
-    console.log(`Checking if application has number ${number}: ${dumpBoolean({value: numberIncluded, ...dumpConfig})}`);  
+    console.log(`Checking if application has number ${number}: ${dumpBoolean({value: numberIncluded, ...dumpConfig})}`);
     return numberIncluded;
   });
 
-  if (!allCapabilitiesValid || !numbersOk || !correctPublicKey) { 
-    console.error('Application validation failed');
+  if (!correctPublicKey) {
+    console.error('Application has incorrect public key');
+    yargs.exit(10);
+    return;
+  }
+
+  if (!allCapabilitiesValid) {
+    console.error('Application is missing capabilities');
+    yargs.exit(5);
+    return;
+  }
+
+
+  if (!numbersOk) {
+    console.error('Application is missing linked numbers');
     yargs.exit(2);
     return;
   }
+
+  if (argv.linkedNumbers
+    && ['messages', 'voice'].some((capability) => !appCapabilities.includes(capability))) {
+    console.error('Application has numbers linked but is missing messages or voice capabilities');
+    yargs.exit(15);
+    return;
+  }
+
 
   console.log('Application validation passed ✅');
 };

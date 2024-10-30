@@ -1,29 +1,30 @@
 const chalk = require('chalk');
 const yargs = require('yargs');
+const { dumpCommand } = require('../../ux/dump');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
 const { dumpAuth } = require('../../ux/dumpAuth');
 const { errorNoConfig } = require('../../middleware/config');
 
-const showFlags = {
-  'show-all': {
-    describe: 'Shows the non redacted private key and API secret',
-    type: 'boolean',
-    default: false,
-  },
+exports.command = 'check';
+
+exports.description = 'Checks Vonage credentials';
+
+exports.builder = (yargs) => yargs.options({
   'local': {
     describe: 'Use local configuration',
     type: 'boolean',
     default: false,
   },
-};
-
-exports.flags = showFlags;
-
-exports.command = 'check';
-
-exports.desc = 'Checks Vonage credentials';
-
-exports.builder = (yargs) => yargs.options(showFlags);
+})
+  .example(
+    dumpCommand('$0 auth check'),
+    'Check the global configuration',
+  )
+  .example(
+    dumpCommand('$0 auth check --local'),
+    'Check the local configuration',
+  )
+  .epilogue([`By default, the global configuration is checked. Use the ${dumpCommand('--local')} flag to check the local configuration.`].join('\n'));
 
 exports.handler = async (argv) => {
   console.info('Displaying auth information');

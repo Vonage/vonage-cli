@@ -4,6 +4,8 @@ const { displayApplication } = require('../../apps/display');
 const { coerceKey } = require('../../utils/coerceKey');
 const { Client } = require('@vonage/server-client');
 const { writeAppToSDK } = require('../../apps/writeAppToSDK');
+const { apiKey, apiSecret } = require('../../credentialFlags');
+const { dumpCommand } = require('../../ux/dump');
 
 exports.command = 'update <id>';
 
@@ -16,6 +18,8 @@ exports.builder = (yargs) => yargs
       describe: 'The ID of the application to delete',
     },
   ).options({
+    'api-key': apiKey,
+    'api-secret': apiSecret,
     'name': {
       describe: 'The name you want to give the application',
       type: 'string',
@@ -32,20 +36,13 @@ exports.builder = (yargs) => yargs
       group: 'Update Application',
       coerce: coerceKey('public'),
     },
-    // Flags from higher level that do not apply to this command
-    'app-name': {
-      hidden: true,
-    },
-    'capability': {
-      hidden: true,
-    },
-    'app-id': {
-      hidden: true,
-    },
-    'private-key': {
-      hidden: true,
-    },
-  });
+  })
+  .example(
+    dumpCommand('vonage apps update 000[...]000 --name "New Name"'),
+    'Update the name of application 000[...]000',
+  );
+
+;
 
 exports.handler = async (argv) => {
   console.info(`Updating application: ${argv.id}`);

@@ -2,28 +2,49 @@ const { readFileSync, existsSync } = require('fs');
 const { Auth } = require('@vonage/auth');
 const { Vonage } = require('@vonage/server-sdk');
 const { dumpCommand } = require('../ux/dump');
+const { indentLines } = require('../ux/indentLines');
+const path = require('path');
 const chalk = require('chalk');
 const yargs = require('yargs');
 
 const getSharedConfig = () => {
-  const globalConfigPath = `${process.env.HOME}/.vonage`;
-  const globalConfigFile = `${globalConfigPath}/config.json`;
+  const globalConfigPath = path.join(process.env.HOME, '.vonage');
+  const globalConfigFileName = 'config.json';
+  const globalConfigFile = path.join(globalConfigPath, globalConfigFileName);
   const globalConfigExists = existsSync(globalConfigFile);
 
   const localConfigPath = process.cwd();
-  const localConfigFile = `${localConfigPath}/.vonagerc`;
+  const localConfigFileName = '.vonagerc';
+  const localConfigFile = path.join(localConfigPath, localConfigFileName);
   const localConfigExists = existsSync(localConfigFile);
 
   return {
     globalConfigPath: globalConfigPath,
+    globalConfigFileName: globalConfigFileName,
     globalConfigFile: globalConfigFile,
     globalConfigExists: globalConfigExists,
 
     localConfigPath: localConfigPath,
+    localConfigFileName: localConfigFileName,
     localConfigFile: localConfigFile,
     localConfigExists: localConfigExists,
   };
 };
+
+const { localConfigFile, globalConfigFile } = getSharedConfig();
+
+// Used as an array to allow commands to control as needed
+exports.configLoadingHelp = [
+  'The Vonage CLI will load configuration in the following order:',
+  '',
+  `1. The command line flags ${dumpCommand('--api-key')} and ${dumpCommand('--api-secret')} or ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')}`,
+  '2. A local configuration file in the current working directory',
+  indentLines(`(${dumpCommand(localConfigFile)})`),
+  `3. A global configuration file in the ${dumpCommand('.vonage')} folder in your home directory`,
+  indentLines(`(${dumpCommand(globalConfigFile)})`),
+  '',
+  `${chalk.yellow('NOTE')}: only the CLI will use these values. The SDK will use the values provided in the SDK initialization.`,
+];
 
 const decideConfig = (argv, config) => {
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {

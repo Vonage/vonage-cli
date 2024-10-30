@@ -1,10 +1,12 @@
 const { aclDiff } = require('../../utils/aclDiff');
 const { dumpAclDiff } = require('../../ux/dumpAcl');
+const { dumpCommand } = require('../../ux/dump');
 const { indentLines } = require('../../ux/indentLines');
 const jwt = require('jsonwebtoken');
 const { dumpObject } = require('../../ux/dump');
 const { dumpBoolean } = require('../../ux/dumpYesNo');
 const { jwtFlags } = require('./create');
+const { appId, privateKey } = require('../../credentialFlags');
 const yargs = require('yargs');
 
 class ExpiredTokenError extends Error {
@@ -146,24 +148,34 @@ const validateAcl = (decoded, argv) => {
 
 exports.command = 'validate <token>';
 
-exports.desc = 'Validate a JWT token';
+exports.description = 'Validate a JWT token.';
 
 exports.builder = (yargs) => yargs.options({
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
-  // Flags from higher level that do not apply to this command
-  'api-key': {
-    hidden: true,
-  },
-  'api-secret': {
-    hidden: true,
-  },
-}).positional(
-  'token',
-  {
-    describe: 'The JWT token to validate',
-  },
-);
+  'app-id': appId,
+  'private-key': privateKey,
+})
+  .epilogue([
+    'By default, the private key and application id from the config will be used',
+    `Use ${dumpCommand('$0 auth show')} check what those values are.`,
+    '',
+    `If you want to validate a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
+  ].join('\n'))
+  .example(
+    dumpCommand('$0 jwt validate <token>'),
+    'Validate a token using the configured private key and application id',
+  )
+  .example(
+    dumpCommand('$0 jwt validate <token> --app-id 000[...]000 --private-key ./path/to/private.key'),
+    'Validate a token with a different application id and private key',
+  )
+  .positional(
+    'token',
+    {
+      describe: 'The JWT token to validate',
+    },
+  );
 
 exports.handler = (argv) => {
   console.info('Validating JWT token');

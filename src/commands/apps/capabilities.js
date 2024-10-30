@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 exports.command = 'capabilities <action>';
 
 exports.desc = 'Manage application capabilities';

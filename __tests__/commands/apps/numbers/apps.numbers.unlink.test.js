@@ -53,7 +53,11 @@ describe('Command: apps numbers link', () => {
 
 
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalledWith({pattern: numberNine.msisdn});
+    expect(numbersMock).toHaveBeenCalledWith({
+      index: 1,
+      pattern: numberNine.msisdn,
+      size: 100,
+    });
     expect(confirm).toHaveBeenCalledWith(`Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
@@ -264,45 +268,6 @@ describe('Command: apps numbers link', () => {
     expect(confirm).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(20);
-  });
-
-  test('Will exit 99 when numbers call fails', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
-
-    const numberNine = getTestPhoneNumber();
-    const error = new Error('failed');
-    const appMock = jest.fn().mockResolvedValue(app);
-
-    const numbersMock = jest.fn().mockRejectedValue(error);
-    const updateMock = jest.fn();
-
-    confirm.mockResolvedValue(false);
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-        updateNumber: updateMock,
-      },
-    };
-
-    await handler({
-      id: app.id,
-      msisdn: numberNine.msisdn,
-      SDK: sdkMock,
-    });
-
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });
 

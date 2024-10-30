@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 exports.command = 'jwt <command>';
 
 exports.desc = 'Manage JWT tokens';

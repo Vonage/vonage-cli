@@ -1,8 +1,11 @@
 const yargs = require('yargs');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
+const { dumpCommand } = require('../../ux/dump');
 const { dumpBoolean } = require('../../ux/dumpYesNo');
 const { lineBreak } = require('../../ux/lineBreak');
 const { dumpAuth } = require('../../ux/dumpAuth');
+const { json, yaml: yamlFlag } = require('../../commonFlags');
+const { configLoadingHelp } = require('../../middleware/config');
 const yaml = require('yaml');
 
 const dumpOptions = {
@@ -17,26 +20,26 @@ const showFlags = {
     describe: 'Shows the non redacted private key and API secret',
     type: 'boolean',
     default: false,
+    group: 'Output:',
   },
-  'yaml': {
-    describe: 'Output as YAML',
-    type: 'boolean',
-    conflicts: 'json',
-  },
-  'json': {
-    describe: 'Output as JSON',
-    type: 'boolean',
-    conflicts: 'yaml',
-  },
+  'yaml': yamlFlag,
+  'json': json,
 };
 
 exports.flags = showFlags;
 
 exports.command = 'show';
 
-exports.desc = 'Manage authentication information';
+exports.description = ['Show configured Vonage API authentication information'].join('\n');
 
-exports.builder = (yargs) => yargs.options(showFlags);
+exports.builder = (yargs) => yargs.options(showFlags)
+  .epilogue([
+    '',
+    `This will display (and validate) the configured API key, API secret, private key, and application ID the Vonage CLI will use when making calls. The API secret and private key will be redacted (unless using ${dumpCommand('--json')} or ${dumpCommand('--yaml')}). Use the ${dumpCommand('--show-all')} flag to display them. `,
+    '',
+    ...configLoadingHelp,
+
+  ].join('\n'));
 
 exports.handler = async (argv) => {
   console.info('Displaying auth information');

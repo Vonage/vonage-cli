@@ -49,15 +49,22 @@ describe('Command: vonage auth check', () => {
     await handler(args);
 
     const { config } = args;
-    expect(consoleMock.log.mock.calls[0][0]).toBe(`Global credentials found at: ${config.globalConfigFile}`);
+    expect(consoleMock.log).toHaveBeenNthCalledWith(
+      1,
+      `Global credentials found at: ${config.globalConfigFile}`,
+    );
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(consoleMock.log.mock.calls[2][0]).toBe([
-      `API Key: ${config.global.apiKey}`,
-      `API Secret: ${redactedGlobal}`,
-      `App ID: ${config.global.appId}`,
-      'Private Key: Is Set',
-    ].join('\n'));
+
+    expect(consoleMock.log).toHaveBeenNthCalledWith(
+      3,
+      [
+        `API Key: ${config.global.apiKey}`,
+        `API Secret: ${redactedGlobal}`,
+        `App ID: ${config.global.appId}`,
+        'Private Key: Is Set',
+      ].join('\n'),
+    );
 
     expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
     expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);

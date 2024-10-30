@@ -1,5 +1,9 @@
 const { sdkError } = require('../../utils/sdkError');
 const { spinner } = require('../../ux/spinner');
+const { confirm } = require('../../ux/confirm');
+const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
+const { force } = require('../../commonFlags');
+const { apiKey, apiSecret } = require('../../credentialFlags');
 
 exports.command = 'delete <id>';
 
@@ -12,33 +16,26 @@ exports.builder = (yargs) => yargs
       describe: 'The ID of the application to delete',
     },
   ).options({
-    // Flags from higher level that do not apply to this command
-    'json': {
-      hidden: true,
-    },
-    'yaml': {
-      hidden: true,
-    },
-    'app-name': {
-      hidden: true,
-    },
-    'capability': {
-      hidden: true,
-    },
-    'app-id': {
-      hidden: true,
-    },
-    'private-key': {
-      hidden: true,
-    },
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    force: force,
   });
 
 exports.handler = async (argv) => {
   console.info(`Deleting application: ${argv.id}`);
 
-  const { SDK } = argv;
+  const { SDK, id } = argv;
+
+  const app = await loadAppFromSDK(SDK, id);
+
+  const okToDelete = await confirm(`Delete application ${app.name} (${app.id})?`);
+
+  if (!okToDelete) {
+    return;
+  }
 
   const {stop, fail } = spinner({message: 'Deleting application'});
+
   try {
     await SDK.applications.deleteApplication(argv.id);
     stop();

@@ -8,7 +8,7 @@ exports.sdkError = async (error) => {
     console.debug('Failed to parse error response', error);
   }
 
-  console.debug(JSON.stringify(errorData, null, 2));
+  console.debug(`API Error data: ${JSON.stringify(errorData, null, 2)}`);
   console.debug(`Status Code ${statusCode}`);
 
   switch (statusCode) {

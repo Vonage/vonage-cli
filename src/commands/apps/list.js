@@ -1,7 +1,9 @@
 const yaml = require('yaml');
 const { Client } = require('@vonage/server-client');
 const { listApplications } = require('../../apps/display');
-const {capabilities, getAppCapabilities } = require('../../apps/capabilities');
+const { capabilities, getAppCapabilities } = require('../../apps/capabilities');
+const { apiSecret, apiKey } = require('../../credentialFlags');
+const { dumpCommand } = require('../../ux/dump');
 
 const coerceCapability = (capability) => {
   // Determine if we are looking for a single capability, multiple
@@ -28,30 +30,14 @@ const coerceCapability = (capability) => {
 };
 
 const flags = {
-  'yaml': {
-    describe: 'Output as YAML',
-    type: 'boolean', conflicts: 'json',
-  },
-  'json': {
-    describe: 'Output as JSON',
-    conflicts: 'yaml',
-    type: 'boolean',
-  },
   'app-name': {
     describe: 'Filter by application name',
     group: 'Applications',
   },
   'capability': {
-    describe: 'Filter by capability',
+    describe: 'Filter by capability (comma separated for OR, plus separated for AND)',
     group: 'Applications',
     coerce: coerceCapability,
-  },
-  // Flags from higher level that do not apply to this command
-  'app-id': {
-    hidden: true,
-  },
-  'private-key': {
-    hidden: true,
   },
 };
 
@@ -75,7 +61,27 @@ exports.command = 'list';
 
 exports.desc = 'List applications';
 
-exports.builder = flags;
+exports.builder = (yargs) => yargs.options({
+  'api-key': apiKey,
+  'api-secret': apiSecret,
+  ...flags,
+})
+  .example(
+    dumpCommand('vonage apps list'),
+    'List all applications',
+  )
+  .example(
+    dumpCommand('vonage apps list --app-name=myapp'),
+    'List all applications that have "myapp" in the name',
+  )
+  .example(
+    dumpCommand('vonage apps list --capability=voice+messages'),
+    'List all applications with that have both voice and messages capability',
+  )
+  .example(
+    dumpCommand('vonage apps list --capability=voice,messages'),
+    'List all applications with that have voice and or messages capability',
+  );
 
 exports.handler = async (argv) => {
   console.info('Listing applications');

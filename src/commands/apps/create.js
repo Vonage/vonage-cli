@@ -1,9 +1,13 @@
 const { Client } = require('@vonage/server-client');
-const yaml = require('yaml');
+const chalk = require('chalk');
+const YAML = require('yaml');
 const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { writeFile } = require('../../utils/fs');
 const { displayApplication } = require('../../apps/display');
+const { dumpCommand } = require('../../ux/dump');
 const { coerceKey } = require('../../utils/coerceKey');
+const { apiKey, apiSecret } = require('../../credentialFlags');
+const { json, yaml } = require('../../commonFlags');
 
 exports.command = 'create <name>';
 
@@ -21,10 +25,12 @@ exports.builder = (yargs) => yargs
       default: process.cwd() + '/private.key',
       type: 'string',
       group: 'Create Application',
+      implies: 'public-key',
     },
     'improve-ai': {
       describe: 'Allow Vonage to improve AI models by using your data',
       type: 'boolean',
+      default: false,
       group: 'Create Application',
     },
     'public-key-file': {
@@ -33,20 +39,23 @@ exports.builder = (yargs) => yargs
       group: 'Create Application',
       coerce: coerceKey('public'),
     },
-    // Flags from higher level that do not apply to this command
-    'app-name': {
-      hidden: true,
-    },
-    'capability': {
-      hidden: true,
-    },
-    'app-id': {
-      hidden: true,
-    },
-    'private-key': {
-      hidden: true,
-    },
-  });
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    'json': json,
+    'yaml': yaml,
+  })
+  .example(
+    dumpCommand('vonage apps create "My New Application"'),
+    'Create a new application with the name "My New Application"',
+  )
+  .example(
+    dumpCommand('vonage apps create "My New Application" --public-key=./public.key'),
+    'Create a new application with the name "My New Application" and a public key from ./public.key',
+  )
+  .epilogue([
+    `After creating the application, you can use ${dumpCommand('vonage apps capability')} to manage the capabilities.`,
+    `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to run ${dumpCommand('vonage apps update')} to generate a new private key.`,
+  ].join('\n'));
 
 exports.handler = async (argv) => {
   console.info('Creating new application');
@@ -63,12 +72,6 @@ exports.handler = async (argv) => {
   };
 
   const newApplication = await writeAppToSDK(argv.SDK, appData);
-
-  // writeAppToSDK should exit the process but there might be a delay and we
-  // don't want to have any other errors get thrown
-  if (!newApplication) {
-    return;
-  }
 
   try {
     if (argv.privateKeyFile) {
@@ -92,7 +95,7 @@ exports.handler = async (argv) => {
   }
 
   if (argv.yaml) {
-    console.log(yaml.stringify(
+    console.log(YAML.stringify(
       Client.transformers.snakeCaseObjectKeys(newApplication, true),
     ));
     return;

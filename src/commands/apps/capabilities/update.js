@@ -10,6 +10,7 @@ const { messageFlags, updateMessages } = require('../../../apps/message');
 const { networkFlags, updateNetwork } = require('../../../apps/network');
 const { dumpCommand } = require('../../../ux/dump');
 const { capabilities } = require('../../../apps/capabilities');
+const { apiKey, apiSecret } = require('../../../credentialFlags');
 
 const allFlags = {
   ...rtcFlags,
@@ -49,13 +50,13 @@ const clearRemoved = (obj) => Object.fromEntries(Object.entries(obj).reduce(
 
 exports.command = 'update <id> <which>';
 
-exports.desc = 'Update application capabilities';
+exports.description = 'Update application capabilities';
 
 exports.builder = (yargs) => yargs
   .positional(
     'which',
     {
-      describe: 'Capability to add, update or remove',
+      describe: 'Capability to update',
       choices: capabilities,
     },
   )
@@ -66,7 +67,15 @@ exports.builder = (yargs) => yargs
       describe: 'The application ID',
     },
   )
-  .options(allFlags);
+  .options({
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    ...allFlags,
+  })
+  .example(
+    dumpCommand('vonage apps capabilities update 000[...]000 verify --verify-status-url="https://example.com/verify"'),
+    'Update the verify status url',
+  );
 
 exports.handler = async (argv) => {
   const { id, which } = argv;

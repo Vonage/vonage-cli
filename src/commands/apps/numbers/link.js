@@ -5,36 +5,16 @@ const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayExtendedNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
+const YAML = require('yaml');
+const { apiKey, apiSecret } = require('../../../credentialFlags');
+const { json, yaml } = require('../../../commonFlags');
+const { dumpCommand } = require('../../../ux/dump');
 
 exports.command = 'link <id> <msisdn>';
 
 exports.desc = 'Link a number to an application';
 
-exports.builder = (yargs) => yargs.options({
-  'yaml': {
-    describe: 'Output as YAML',
-    type: 'boolean',
-    conflicts: 'json',
-  },
-  'json': {
-    describe: 'Output as JSON',
-    conflicts: 'yaml',
-    type: 'boolean',
-  },
-  // Flags from higher level that do not apply to this command
-  'app-id': {
-    hidden: true,
-  },
-  'private-key': {
-    hidden: true,
-  },
-  'app-name': {
-    hidden: true,
-  },
-  'capability': {
-    hidden: true,
-  },
-})
+exports.builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -46,6 +26,16 @@ exports.builder = (yargs) => yargs.options({
     {
       describe: 'The number to link to the application',
     },
+  )
+  .options({
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    'yaml': yaml,
+    'json': json,
+  })
+  .example(
+    dumpCommand('vonage apps link 000[...]000 19162255887'),
+    'Link number 19162255887 to application 000[...]000',
   );
 
 exports.handler = async (argv) => {
@@ -53,6 +43,7 @@ exports.handler = async (argv) => {
   console.info(`Linking number ${msisdn} to application ${id}`);
 
   const application = await loadAppFromSDK(SDK, id);
+
   if (!application) {
     return;
   }
@@ -63,11 +54,6 @@ exports.handler = async (argv) => {
       msisdn: msisdn,
     },
   );
-
-  // Error condition
-  if (numbers === false) {
-    return;
-  }
 
   const number = numbers.numbers[0];
 
@@ -105,10 +91,22 @@ exports.handler = async (argv) => {
   number.appId = id;
   const ok = await writeNumberToSDK(SDK, number);
 
-  console.log('');
-  if (ok !== false) {
-    console.log('Number linked');
-    console.log(descriptionList(displayExtendedNumber(number)));
+  if (!ok) {
     return;
   }
+
+  if (argv.json) {
+    console.log(JSON.stringify(number, null, 2));
+    return;
+  }
+
+  if (argv.yaml) {
+    console.log(YAML.stringify(number, null, 2));
+    return;
+  }
+
+  console.log('');
+  console.log('Number linked');
+  console.log(descriptionList(displayExtendedNumber(number)));
+  return;
 };

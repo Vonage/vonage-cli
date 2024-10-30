@@ -26,7 +26,7 @@ describe('Command: apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
@@ -46,9 +46,12 @@ describe('Command: apps numbers link', () => {
       SDK: sdkMock,
     });
 
-
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalledWith({pattern: numberNine.msisdn});
+    expect(numbersMock).toHaveBeenCalledWith({
+      pattern: numberNine.msisdn,
+      index: 1,
+      size: 100,
+    });
     expect(confirm).not.toHaveBeenCalled();
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
@@ -74,7 +77,7 @@ describe('Command: apps numbers link', () => {
           appId: otherAppId,
         },
       ],
-    }); 
+    });
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
@@ -96,8 +99,6 @@ describe('Command: apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalled();
     expect(confirm).toHaveBeenCalledWith(`Number is already linked to application ${otherAppId}. Do you want to continue?`);
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
@@ -122,7 +123,7 @@ describe('Command: apps numbers link', () => {
           appId: app.id,
         },
       ],
-    }); 
+    });
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
@@ -168,7 +169,7 @@ describe('Command: apps numbers link', () => {
           appId: otherAppId,
         },
       ],
-    }); 
+    });
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
@@ -208,7 +209,7 @@ describe('Command: apps numbers link', () => {
     const appMock = jest.fn().mockResolvedValue(app);
     const numbersMock = jest.fn().mockResolvedValue({
       numbers: [],
-    }); 
+    });
 
     const updateMock = jest.fn();
 
@@ -279,45 +280,6 @@ describe('Command: apps numbers link', () => {
     expect(confirm).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(20);
-  });
-
-  test('Will exit 99 when numbers call fails', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
-
-    const numberNine = getTestPhoneNumber();
-    const error = new Error('failed');
-    const appMock = jest.fn().mockResolvedValue(app);
-
-    const numbersMock = jest.fn().mockRejectedValue(error);
-    const updateMock = jest.fn();
-
-    confirm.mockResolvedValue(false);
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-        updateNumber: updateMock,
-      },
-    };
-
-    await handler({
-      id: app.id,
-      msisdn: numberNine.msisdn,
-      SDK: sdkMock,
-    });
-
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });
 

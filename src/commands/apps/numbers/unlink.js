@@ -1,39 +1,19 @@
+const YAML = require('yaml');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayExtendedNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
+const { apiKey, apiSecret } = require('../../../credentialFlags');
+const { json, yaml } = require('../../../commonFlags');
+const { dumpCommand } = require('../../../ux/dump');
 
 exports.command = 'unlink <id> <msisdn>';
 
 exports.desc = 'Unlink a number to an application';
 
-exports.builder = (yargs) => yargs.options({
-  'yaml': {
-    describe: 'Output as YAML',
-    type: 'boolean',
-    conflicts: 'json',
-  },
-  'json': {
-    describe: 'Output as JSON',
-    conflicts: 'yaml',
-    type: 'boolean',
-  },
-  // Flags from higher level that do not apply to this command
-  'app-id': {
-    hidden: true,
-  },
-  'private-key': {
-    hidden: true,
-  },
-  'app-name': {
-    hidden: true,
-  },
-  'capability': {
-    hidden: true,
-  },
-})
+exports.builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -45,6 +25,16 @@ exports.builder = (yargs) => yargs.options({
     {
       describe: 'The number to unlink to the application',
     },
+  )
+  .options({
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    'yaml': yaml,
+    'json': json,
+  })
+  .example(
+    dumpCommand('vonage apps unlink 000[...]000 19162255887'),
+    'Unlink number 19162255887 to application 000[...]000',
   );
 
 exports.handler = async (argv) => {
@@ -108,9 +98,20 @@ exports.handler = async (argv) => {
 
   console.log('');
 
-  if (ok !== false) {
-    console.log('Number unlinked');
-    console.log(descriptionList(displayExtendedNumber(number)));
+  if (!ok) {
     return;
   }
+
+  if (argv.json) {
+    console.log(JSON.stringify(numberWithoutAppId, null, 2));
+    return;
+  }
+
+  if (argv.yaml) {
+    console.log(YAML.stringify(numberWithoutAppId, null, 2));
+    return;
+  }
+
+  console.log('Number unlinked');
+  console.log(descriptionList(displayExtendedNumber(numberWithoutAppId)));
 };

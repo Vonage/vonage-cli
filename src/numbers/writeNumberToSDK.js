@@ -1,6 +1,8 @@
 const { spinner } = require('../ux/spinner');
 const { sdkError } = require('../utils/sdkError');
 
+// Fake error since the API will not return an API error
+// This allows the sdkError function to display the error response
 class FakeError extends Error {
   response;
 
@@ -19,10 +21,10 @@ exports.writeNumberToSDK = async (SDK, number) => {
   });
 
   try {
-    console.info(`Updating number: ${number.msisdn}`);
+    console.info(`Saving number: ${number.msisdn}`);
     const { errorCode, errorCodeLabel } = await SDK.numbers.updateNumber(number);
     stop();
-    console.debug(`Update result: ${errorCode} ${errorCodeLabel}`);
+    console.debug(`Result: ${errorCode} ${errorCodeLabel}`);
     if (errorCode !== '200') {
       throw new FakeError(errorCodeLabel, errorCode);
     }
@@ -32,6 +34,5 @@ exports.writeNumberToSDK = async (SDK, number) => {
     console.debug(error);
     fail();
     sdkError(error);
-    return false;
   }
 };

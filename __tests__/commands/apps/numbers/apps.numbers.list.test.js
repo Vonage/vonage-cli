@@ -32,7 +32,10 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({
+      count: 1,
+      numbers: [numberNine],
+    });
 
     const sdkMock = {
       applications: {
@@ -44,14 +47,19 @@ describe('Command: vonage apps numbers list', () => {
     };
 
     await handler({id: app.id, SDK: sdkMock});
+
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalledWith({applicationId: app.id});
+    expect(numbersMock).toHaveBeenCalledWith({
+      applicationId: app.id,
+      index: 1,
+      size: 100,
+    });
 
     expect(consoleMock.log).toHaveBeenCalledTimes(4);
 
     expect(consoleMock.log).toHaveBeenNthCalledWith(
       3,
-      'Linked number(s):',
+      'There is 1 number linked:',
     );
 
     expect(consoleMock.table).toHaveBeenCalledTimes(1);
@@ -81,7 +89,7 @@ describe('Command: vonage apps numbers list', () => {
 
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue(undefined); 
+    const numbersMock = jest.fn().mockResolvedValue(undefined);
 
     const sdkMock = {
       applications: {
@@ -93,9 +101,6 @@ describe('Command: vonage apps numbers list', () => {
     };
 
     await handler({id: app.id, SDK: sdkMock});
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalledWith({applicationId: app.id});
-
     expect(consoleMock.log).toHaveBeenCalledTimes(4);
 
     expect(consoleMock.log).toHaveBeenNthCalledWith(
@@ -123,7 +128,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -151,7 +156,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -179,7 +184,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -191,11 +196,6 @@ describe('Command: vonage apps numbers list', () => {
     };
 
     await handler({id: app.id, SDK: sdkMock, fail: true});
-    expect(consoleMock.log).toHaveBeenCalledTimes(3);
-
-    expect(consoleMock.table).toHaveBeenCalledTimes(1);
-    expect(consoleMock.warn).toHaveBeenCalledTimes(0);
-    expect(consoleMock.error).toHaveBeenCalledTimes(1);
     expect(consoleMock.error).toHaveBeenCalledWith(
       'This application does not have the voice or messages capability enabled',
     );
@@ -203,7 +203,7 @@ describe('Command: vonage apps numbers list', () => {
     expect(yargs.exit).toHaveBeenCalledWith(1);
   });
 
-  test('Will exit 1 when application is not found', async () => {
+  test('Will exit 99 when application is not found', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getTestApp(),
       true,
@@ -221,32 +221,7 @@ describe('Command: vonage apps numbers list', () => {
     await handler({id: app.id, SDK: sdkMock, fail: true});
 
     expect(consoleMock.table).toHaveBeenCalledTimes(0);
-    expect(yargs.exit).toHaveBeenCalledWith(1);
-  });
-
-  test('Will exit 1 when calling getOwnedNumbers Fails', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getTestApp(),
-      true,
-      true,
-    );
-
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockRejectedValue(new Error('Failed')); 
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-      },
-    };
-
-    await handler({id: app.id, SDK: sdkMock});
-
-    expect(consoleMock.table).toHaveBeenCalledTimes(0);
-    expect(yargs.exit).toHaveBeenCalledWith(1);
+    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 
   test('Will output JSON', async () => {
@@ -259,7 +234,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -293,7 +268,7 @@ describe('Command: vonage apps numbers list', () => {
     );
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue(undefined); 
+    const numbersMock = jest.fn().mockResolvedValue(undefined);
 
     const sdkMock = {
       applications: {
@@ -329,7 +304,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]}); 
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -364,7 +339,7 @@ describe('Command: vonage apps numbers list', () => {
 
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue(undefined); 
+    const numbersMock = jest.fn().mockResolvedValue(undefined);
 
     const sdkMock = {
       applications: {

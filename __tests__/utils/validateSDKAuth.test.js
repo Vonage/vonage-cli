@@ -41,8 +41,14 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(process.stdout.write).toHaveBeenCalledTimes(2);
-    expect(process.stdout.write.mock.calls[0][0]).toBe('Checking App ID and Private Key: ...');
-    expect(process.stdout.write.mock.calls[1][0]).toBe('\rChecking App ID and Private Key: ✅ Valid\n');
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      1,
+      'Checking App ID and Private Key: ...',
+    );
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      2,
+      '\rChecking App ID and Private Key: ✅ Valid\n',
+    );
   });
 
   test('Will validate private key and app id with no progress', async () => {
@@ -93,8 +99,14 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(process.stdout.write).toHaveBeenCalledTimes(2);
-    expect(process.stdout.write.mock.calls[0][0]).toBe('Checking App ID and Private Key: ...');
-    expect(process.stdout.write.mock.calls[1][0]).toBe('\rChecking App ID and Private Key: ❌ Invalid\n');
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      1,
+      'Checking App ID and Private Key: ...',
+    );
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      2,
+      '\rChecking App ID and Private Key: ❌ Invalid\n',
+    );
   });
 
   test('Will not validate when private key does not match public and not report progress', async () => {
@@ -144,8 +156,14 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(process.stdout.write).toHaveBeenCalledTimes(2);
-    expect(process.stdout.write.mock.calls[0][0]).toBe('Checking App ID and Private Key: ...');
-    expect(process.stdout.write.mock.calls[1][0]).toBe('\rChecking App ID and Private Key: ❌ Invalid\n');
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      1,
+      'Checking App ID and Private Key: ...',
+    );
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      2,
+      '\rChecking App ID and Private Key: ❌ Invalid\n',
+    );
   });
 
   test('Will not validate when application not found and not repot progress', async () => {
@@ -196,8 +214,14 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(process.stdout.write).toHaveBeenCalledTimes(2);
-    expect(process.stdout.write.mock.calls[0][0]).toBe('Checking API Key Secret: ...');
-    expect(process.stdout.write.mock.calls[1][0]).toBe('\rChecking API Key Secret: ✅ Valid\n');
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      1,
+      'Checking API Key Secret: ...',
+    );
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      2,
+      '\rChecking API Key Secret: ✅ Valid\n',
+    );
   });
 
   test('Will validate api key and secret with no progress', async () => {
@@ -240,8 +264,14 @@ describe('Utils: Validate SDK Auth', () => {
     });
 
     expect(process.stdout.write).toHaveBeenCalledTimes(2);
-    expect(process.stdout.write.mock.calls[0][0]).toBe('Checking API Key Secret: ...');
-    expect(process.stdout.write.mock.calls[1][0]).toBe('\rChecking API Key Secret: ❌ Invalid\n');
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      1,
+      'Checking API Key Secret: ...',
+    );
+    expect(process.stdout.write).toHaveBeenNthCalledWith(
+      2,
+      '\rChecking API Key Secret: ❌ Invalid\n',
+    );
   });
 
   test('Will not validate api key and secret when call fails and will not report progress', async () => {

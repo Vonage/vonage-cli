@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const { handler } = require('./numbers/list');
 exports.command = 'numbers <command>';
 

@@ -1,6 +1,8 @@
 const { tokenGenerate } = require('@vonage/jwt');
+const { dumpCommand } = require('../../ux/dump');
 const Ajv = require('ajv/dist/2020');
 const schema = require('../../aclSchema.json');
+const { appId, privateKey } = require('../../credentialFlags');
 
 const ajv = new Ajv();
 const validate = ajv.compile(schema);
@@ -48,22 +50,36 @@ const jwtFlags = {
     describe: 'The access control list for the token',
     coerce: validateAcl,
   },
-  // Hide these flags since they don't apply for this command
-  'api-key': {
-    hidden: true,
-  },
-  'api-secret': {
-    hidden: true,
-  },
+  'app-id': appId,
+  'private-key': privateKey,
 };
 
 exports.jwtFlags = jwtFlags;
 
 exports.command = 'create';
 
-exports.desc = 'Create a JWT token for authentication';
+exports.description = 'Create a JWT token for authentication';
 
-exports.builder = jwtFlags;
+exports.builder = (yargs) => yargs.options(jwtFlags)
+  .example(
+    dumpCommand('$0 jwt create'),
+    'Create a token using the configured private key and application id',
+  )
+  .example(
+    dumpCommand('$0 jwt create --exp 3600 --ttl 600 --sub my-subject'),
+    'Create a token with a 1 hour expiry, 10 minute TTL and subject "my-subject"',
+  )
+  .example(
+    dumpCommand('$0 jwt create --app-id 000[...]000 --private-key ./path/to/private.key'),
+    'Create a token with a different application id and private key',
+  )
+  .epilogue([
+    '',
+    'By default, the private key and application id from the config will be used.',
+    `Use ${dumpCommand('vonage auth show')} check what those values are.`,
+    '',
+    `If you want to create a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
+  ].join('\n'));
 
 exports.handler = (argv) => {
   console.info('Creating JWT token');
