@@ -281,5 +281,40 @@ describe('Command: apps numbers link', () => {
     expect(updateMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(20);
   });
+
+  test('Will exit 99 when update fails', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+
+    const appMock = jest.fn().mockResolvedValue(app);
+
+    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
+    const updateMock = jest.fn().mockResolvedValue({errorCode: '500'});
+
+    confirm.mockResolvedValue(false);
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+    });
+
+    expect(yargs.exit).toHaveBeenCalledWith(99);
+  });
 });
 
