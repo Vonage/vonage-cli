@@ -1,4 +1,5 @@
 const yaml = require('yaml');
+const { spinner } = require('../../ux/spinner');
 const snakecase = require('snakecase');
 const { Client } = require('@vonage/server-client');
 const { listApplications } = require('../../apps/display');
@@ -90,9 +91,23 @@ exports.handler = async (argv) => {
   const { SDK } = argv;
   let apps = [];
 
-  // Load in all applications
-  for await (const result of SDK.applications.listAllApplications()) {
-    apps.push(Client.transformers.snakeCaseObjectKeys(result, true, false));
+  const { stop, fail } = spinner({
+    message: 'Loading applications...',
+  });
+  try {
+    let stopped = false;
+
+    // Load in all applications
+    for await (const result of SDK.applications.listAllApplications()) {
+      !stopped && stop('Loading applications... Done');
+      stopped = true;
+      apps.push(Client.transformers.snakeCaseObjectKeys(result, true, false));
+    }
+  } catch (error) {
+    fail();
+    console.error('Loading applications... Failed');
+    console.error(error);
+    return;
   }
 
   if (argv.appName) {

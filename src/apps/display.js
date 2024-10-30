@@ -10,7 +10,7 @@ const capabilitiesSummary = ({capabilities = {}}) => {
   console.debug(appCapabilities);
 
   return appCapabilities.length > 0
-    ? appCapabilities.map((capability) => capabilityLabels[capability]).join(', ')
+    ? appCapabilities.sort().map((capability) => capabilityLabels[capability]).join(', ')
     : 'None';
 };
 

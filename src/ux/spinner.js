@@ -48,14 +48,20 @@ exports.spinner = ({
   }, 80);
 
   return {
-    stop: () => {
+    stop: (endMsg) => {
       clearInterval(intervalId);
-      process.stderr.write(`\r${endEmoji || ' '} ${message}\n`);
+      process.stderr.clearLine();
+      process.stderr.write(endMsg
+        ? `\r${endMsg}\n`
+        : `\r${endEmoji || ''} ${message}\n`);
       resetCursor();
     },
-    fail: () => {
+    fail: (failMsg) => {
       clearInterval(intervalId);
-      process.stderr.write(`\r${failedEmoji || ' '} ${message}\n`);
+      process.stderr.clearLine();
+      process.stderr.write(failMsg
+        ? `\r${failMsg}\n`
+        : `\r${failedEmoji || ''} ${message}\n`);
       resetCursor();
     },
   };

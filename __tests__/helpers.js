@@ -7,6 +7,8 @@ exports.mockConsole = () => {
   console.debug = jest.spyOn(console, 'debug');
   console.error = jest.spyOn(console, 'error');
   console.table = jest.spyOn(console, 'table');
+  process.stdout.clearLine = jest.fn();
+  process.stderr.clearLine = jest.fn();
   process.stdout.write = jest.fn();
   process.stderr.write = jest.fn();
   return console;

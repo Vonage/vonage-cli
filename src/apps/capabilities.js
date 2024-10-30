@@ -10,11 +10,16 @@ const capabilityLabels = {
   'voice': 'Voice',
 };
 
-const getAppCapabilities = ({capabilities = {}}) =>
-  Object.keys(capabilities).sort().map(capability => camelCase(capability));
+const capabilities = Object.keys(capabilityLabels);
+
+const getAppCapabilities = ({capabilities: appCapabilities = {}}) =>
+  Object.keys(appCapabilities)
+    .filter((capability) => capabilities.includes(camelCase(capability)))
+    .sort()
+    .map(capability => camelCase(capability));
 
 exports.getAppCapabilities = getAppCapabilities;
 
 exports.capabilityLabels = capabilityLabels;
 
-exports.capabilities = Object.keys(capabilityLabels);
+exports.capabilities = capabilities;

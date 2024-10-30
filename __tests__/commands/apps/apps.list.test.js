@@ -15,17 +15,23 @@ const {
   coerceCapability,
 } = require('../../../src/commands/apps/list');
 const { mockConsole } = require('../../helpers');
+const { spinner } = require('../../../src/ux/spinner');
 const { Vonage } = require('@vonage/server-sdk');
 const { Client } = require('@vonage/server-client');
 
 jest.mock('@vonage/server-sdk');
+jest.mock('../../../src/ux/spinner');
 
 describe('Command: vonage apps', () => {
   beforeEach(() => {
+    const stop = jest.fn();
+    const fail = jest.fn();
+    spinner.mockReturnValue({stop, fail});
     mockConsole();
   });
 
   test('Will list applications when there are none', async () => {
+
     const sdk = Vonage();
 
     Vonage._mockListAllApplications.mockImplementation(async function* () {
