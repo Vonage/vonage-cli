@@ -3,7 +3,7 @@ const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFr
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
-const { displayExtendedNumber } = require('../../../numbers/display');
+const { displayFullNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
 const YAML = require('yaml');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
@@ -78,7 +78,7 @@ exports.handler = async (argv) => {
   if (number.appId === app.id) {
     console.log('Number is already linked to this application');
     console.log('');
-    console.log(descriptionList(displayExtendedNumber(number)));
+    console.log(descriptionList(displayFullNumber(number)));
     return;
   }
 
@@ -99,6 +99,6 @@ exports.handler = async (argv) => {
 
   console.log('');
   console.log('Number linked');
-  console.log(descriptionList(displayExtendedNumber(number)));
+  console.log(descriptionList(displayFullNumber(number)));
   return;
 };
