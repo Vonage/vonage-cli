@@ -16,16 +16,29 @@ const displayNumber = (number = {}) => Object.assign({
 const displayExtendedNumber = (number = {}) => Object.assign({
   ...displayNumber(number),
   'Linked Application ID': number.appId,
+});
+
+const displayFullNumber = (number = {}) => Object.assign({
+  ...displayExtendedNumber(number),
   'Message Outbound HTTP URL': number.moHttpUrl,
   'Voice Callback': number.voiceCallback,
   'Voice Callback Value': number.voiceCallbackValue,
   'Voice Status Callback': number.voiceStatusCallback,
 });
 
+const displayExtendedNumbers = (numbers = []) => {
+  const numbersToDisplay = numbers.map(displayExtendedNumber);
+  console.table(numbersToDisplay);
+};
+
 const displayNumbers = (numbers = []) => {
   const numbersToDisplay = numbers.map(displayNumber);
   console.table(numbersToDisplay);
 };
+
+exports.displayFullNumber = displayFullNumber;
+
+exports.displayExtendedNumbers = displayExtendedNumbers;
 
 exports.displayExtendedNumber = displayExtendedNumber;
 

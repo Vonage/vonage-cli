@@ -3,7 +3,7 @@ const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFr
 const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
-const { displayExtendedNumber } = require('../../../numbers/display');
+const { displayFullNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
 const { json, yaml } = require('../../../commonFlags');
@@ -104,5 +104,5 @@ exports.handler = async (argv) => {
   }
 
   console.log('Number unlinked');
-  console.log(descriptionList(displayExtendedNumber(numberWithoutAppId)));
+  console.log(descriptionList(displayFullNumber(numberWithoutAppId)));
 };
