@@ -11,9 +11,11 @@ const {
 const { mockConsole } = require('../helpers');
 const fs = require('fs');
 const yargs = require('yargs');
+const os = require('os');
 
 jest.mock('fs');
 jest.mock('yargs');
+jest.mock('os');
 
 const oldEnv = process.env;
 const oldCwd = process.cwd;
@@ -32,7 +34,12 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    process.env.HOME = globalFile.globalConfigPath;
+    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
+
+    console.log(os.homedir());
+    expect(os.homedir()).toBe(globalFile.globalConfigPath);
+
+    //process.env.HOME = globalFile.globalConfigPath;
     const derivedConfigPath = `${globalFile.globalConfigPath}/.vonage`;
     const derivedConfigFile = `${derivedConfigPath}/config.json`;
 
@@ -104,7 +111,7 @@ describe('Middeleware: Config', () => {
   });
 
   test('Will decide to use the cli arguments when local or global is not set', () => {
-    process.env.HOME = '/dev/null';
+    os.homedir = jest.fn().mockReturnValue('/dev/null');
     process.cwd = jest.fn(() => '/dev/null');
 
     const cliConfig = getCLIConfig();
@@ -132,7 +139,7 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    process.env.HOME = globalFile.globalConfigPath;
+    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}/.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}/config.json`;
 
@@ -183,7 +190,7 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    process.env.HOME = globalFile.globalConfigPath;
+    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}/.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}/config.json`;
 

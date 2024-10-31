@@ -6,10 +6,10 @@ const { indentLines } = require('../ux/indentLines');
 const path = require('path');
 const chalk = require('chalk');
 const yargs = require('yargs');
-
-const homedir = require('os').homedir();
+const os = require('os');
 
 const getSharedConfig = () => {
+  const homedir = os.homedir();
   const globalConfigPath = path.join(homedir, '.vonage');
   const globalConfigFileName = 'config.json';
   const globalConfigFile = path.join(globalConfigPath, globalConfigFileName);
@@ -33,20 +33,21 @@ const getSharedConfig = () => {
   };
 };
 
-const { localConfigFile, globalConfigFile } = getSharedConfig();
-
 // Used as an array to allow commands to control as needed
-exports.configLoadingHelp = [
-  'The Vonage CLI will load configuration in the following order:',
-  '',
-  `1. The command line flags ${dumpCommand('--api-key')} and ${dumpCommand('--api-secret')} or ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')}`,
-  '2. A local configuration file in the current working directory',
-  indentLines(`(${dumpCommand(localConfigFile)})`),
-  `3. A global configuration file in the ${dumpCommand('.vonage')} folder in your home directory`,
-  indentLines(`(${dumpCommand(globalConfigFile)})`),
-  '',
-  `${chalk.yellow('NOTE')}: only the CLI will use these values. The SDK will use the values provided in the SDK initialization.`,
-];
+exports.configLoadingHelp = () => {
+  const { localConfigFile, globalConfigFile } = getSharedConfig();
+  return [
+    'The Vonage CLI will load configuration in the following order:',
+    '',
+    `1. The command line flags ${dumpCommand('--api-key')} and ${dumpCommand('--api-secret')} or ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')}`,
+    '2. A local configuration file in the current working directory',
+    indentLines(`(${dumpCommand(localConfigFile)})`),
+    `3. A global configuration file in the ${dumpCommand('.vonage')} folder in your home directory`,
+    indentLines(`(${dumpCommand(globalConfigFile)})`),
+    '',
+    `${chalk.yellow('NOTE')}: only the CLI will use these values. The SDK will use the values provided in the SDK initialization.`,
+  ];
+};
 
 const decideConfig = (argv, config) => {
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {

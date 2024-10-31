@@ -37,7 +37,7 @@ exports.builder = (yargs) => yargs.options(showFlags)
     '',
     `This will display (and validate) the configured API key, API secret, private key, and application ID the Vonage CLI will use when making calls. The API secret and private key will be redacted (unless using ${dumpCommand('--json')} or ${dumpCommand('--yaml')}). Use the ${dumpCommand('--show-all')} flag to display them. `,
     '',
-    ...configLoadingHelp,
+    ...configLoadingHelp(),
 
   ].join('\n'));
 
