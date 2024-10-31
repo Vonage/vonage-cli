@@ -7,8 +7,10 @@ const path = require('path');
 const chalk = require('chalk');
 const yargs = require('yargs');
 
+const homedir = require('os').homedir();
+
 const getSharedConfig = () => {
-  const globalConfigPath = path.join(process.env.HOME, '.vonage');
+  const globalConfigPath = path.join(homedir, '.vonage');
   const globalConfigFileName = 'config.json';
   const globalConfigFile = path.join(globalConfigPath, globalConfigFileName);
   const globalConfigExists = existsSync(globalConfigFile);
