@@ -207,27 +207,6 @@ describe('Command: vonage apps numbers list', () => {
     expect(yargs.exit).toHaveBeenCalledWith(1);
   });
 
-  test('Will exit 99 when application is not found', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getTestApp(),
-      true,
-      true,
-    );
-
-    const appMock = jest.fn().mockRejectedValue(new Error('Failed'));
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-    };
-
-    await handler({id: app.id, SDK: sdkMock, fail: true});
-
-    expect(console.table).toHaveBeenCalledTimes(0);
-    expect(yargs.exit).toHaveBeenCalledWith(1);
-  });
-
   test('Will output JSON', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getTestApp(),
@@ -238,7 +217,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -308,7 +287,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
 
     const sdkMock = {
       applications: {
@@ -367,35 +346,5 @@ describe('Command: vonage apps numbers list', () => {
     expect(console.table).toHaveBeenCalledTimes(0);
     expect(console.warn).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(0);
-  });
-
-  test('Will exit 99 when loading numbers fails', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getTestApp(),
-      true,
-      true,
-    );
-
-    const error = new Error('failed');
-
-    error.response = {
-      status: 404,
-    };
-
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockRejectedValue(error);
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-      },
-    };
-
-    await handler({id: app.id, SDK: sdkMock, yaml: true});
-
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

@@ -27,12 +27,15 @@ describe('Command: apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [
-      {
-        ...numberNine,
-        appId: app.id,
-      },
-    ]});
+    const numbersMock = jest.fn().mockResolvedValue({
+      count: 1,
+      numbers: [
+        {
+          ...numberNine,
+          appId: app.id,
+        },
+      ],
+    });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
     confirm.mockResolvedValue(true);
 
@@ -74,12 +77,15 @@ describe('Command: apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [
-      {
-        ...numberNine,
-        appId: app.id,
-      },
-    ]});
+    const numbersMock = jest.fn().mockResolvedValue({
+      count: 1,
+      numbers: [
+        {
+          ...numberNine,
+          appId: app.id,
+        },
+      ],
+    });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
     confirm.mockResolvedValue(true);
 
@@ -119,12 +125,15 @@ describe('Command: apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [
-      {
-        ...numberNine,
-        appId: app.id,
-      },
-    ]});
+    const numbersMock = jest.fn().mockResolvedValue({
+      count: 1,
+      numbers: [
+        {
+          ...numberNine,
+          appId: app.id,
+        },
+      ],
+    });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
     confirm.mockResolvedValue(true);
 
@@ -165,12 +174,15 @@ describe('Command: apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [
-      {
-        ...numberNine,
-        appId: app.id,
-      },
-    ]});
+    const numbersMock = jest.fn().mockResolvedValue({
+      count: 1,
+      numbers: [
+        {
+          ...numberNine,
+          appId: app.id,
+        },
+      ],
+    });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
     confirm.mockResolvedValue(false);
 

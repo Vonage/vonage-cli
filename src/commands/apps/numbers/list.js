@@ -37,19 +37,18 @@ exports.handler = async (argv) => {
   console.info(`Listing numbers linked to application ${id}`);
 
   const application = await loadAppFromSDK(SDK, id);
-  if (!application) {
-    return;
-  }
 
   const { totalNumbers, numbers } = await loadOwnedNumbersFromSDK(
     SDK,
     {
       appId: id,
-      message: `Fetching numbers linked to application: ${application.name}`,
+      message: `Fetching numbers linked to application ${application?.name}`,
       size: 100,
       all: true,
     },
   ) || {};
+
+  console.debug('Numbers:', numbers);
 
   if (argv.yaml) {
     console.log(YAML.stringify(

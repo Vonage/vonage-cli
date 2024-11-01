@@ -1,4 +1,6 @@
 afterEach(jest.restoreAllMocks);
+process.stdout.clearLine = jest.fn();
+process.stderr.clearLine = jest.fn();
 
 exports.mockConsole = () => {
   console.log = jest.spyOn(console, 'log');

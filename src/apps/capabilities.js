@@ -12,7 +12,7 @@ const capabilityLabels = {
 
 const capabilities = Object.keys(capabilityLabels);
 
-const getAppCapabilities = ({capabilities: appCapabilities = {}}) =>
+const getAppCapabilities = ({capabilities: appCapabilities = {}} = {}) =>
   Object.keys(appCapabilities)
     .filter((capability) => capabilities.includes(camelCase(capability)))
     .sort()
