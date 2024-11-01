@@ -61,11 +61,11 @@ exports.handler = async (argv) => {
       size: 100,
       all: true,
     },
-  ) || {};
+  );
 
   if (argv.yaml) {
     console.log(YAML.stringify(
-      (numbers || []).map(
+      (numbers).map(
         (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
       ),
       null,
@@ -76,7 +76,7 @@ exports.handler = async (argv) => {
 
   if (argv.json) {
     console.log(JSON.stringify(
-      (numbers || []).map(
+      (numbers).map(
         (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
       ),
       null,
@@ -88,7 +88,7 @@ exports.handler = async (argv) => {
   console.log('');
 
   const qualifiers = [
-    ...(country && [` in the ${getCountryName(country)}`]) || [],
+    ...(country && [` in ${getCountryName(country)}`]) || [],
     ...((pattern && searchPattern === 'contains' ) && [` containing ${pattern}`]) || [],
     ...((pattern && searchPattern === 'ends' ) && [` ending with ${pattern}`]) || [],
     ...((pattern && searchPattern === 'starts' ) && [` starting with ${pattern}`]) || [],
