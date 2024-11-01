@@ -1,4 +1,4 @@
-const { spinner } = require('../ux/spinner');
+const { progress } = require('../ux/progress');
 const { sdkError } = require('../utils/sdkError');
 const { Client } = require('@vonage/server-client');
 
@@ -26,8 +26,7 @@ const loadOwnedNumbersFromSDK = async (
     || appId && `Fetching numbers linked to application ${appId}`
     || 'Fetching Owned numbers';
 
-  // TODO Progress bar
-  const { stop, fail } = spinner({ message: spinnerMessage });
+  const { increment, setTotalSteps, finished } = progress({ message: spinnerMessage });
   try {
     let ownedNumbers = [];
     let totalPages = 1;
@@ -54,12 +53,12 @@ const loadOwnedNumbersFromSDK = async (
       totalNumbers = response.count || 0;
       limit = limit || totalNumbers;
       totalPages = Math.ceil(totalNumbers / size);
+      setTotalSteps(totalPages);
+      increment(index);
       index++;
       console.debug(`Total pages: ${totalPages}`);
       console.debug(`Total numbers: ${totalNumbers}`);
-    } while(all && index <= totalPages && ownedNumbers.length < limit);
-
-    stop();
+    } while(all && index < totalPages && ownedNumbers.length < limit);
 
     // The SDK does not transform this response.
     return {
@@ -67,8 +66,9 @@ const loadOwnedNumbersFromSDK = async (
       numbers: ownedNumbers.slice(0, limit),
     };
   } catch (error) {
-    fail();
     sdkError(error);
+  } finally {
+    finished();
   }
 };
 
