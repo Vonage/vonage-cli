@@ -54,11 +54,11 @@ const loadOwnedNumbersFromSDK = async (
       limit = limit || totalNumbers;
       totalPages = Math.ceil(totalNumbers / size);
       setTotalSteps(totalPages);
-      increment(index);
+      increment();
       index++;
-      console.debug(`Total pages: ${totalPages}`);
-      console.debug(`Total numbers: ${totalNumbers}`);
-    } while(all && index < totalPages && ownedNumbers.length < limit);
+      console.debug(`Total owned numbers: ${totalNumbers}`);
+      console.debug(`Total pages for numbers: ${totalPages}`);
+    } while(all && index <= totalPages && ownedNumbers.length < limit);
 
     // The SDK does not transform this response.
     return {
