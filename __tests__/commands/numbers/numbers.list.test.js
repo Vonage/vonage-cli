@@ -20,11 +20,11 @@ describe('numbers list', () => {
       () => {
         const number = {
           ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean() 
+          appId: faker.datatype.boolean()
             ? faker.string.uuid()
             : undefined,
         };
-        
+
         return number;
       },
     );
@@ -60,12 +60,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': number.appId || 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
@@ -103,11 +103,11 @@ describe('numbers list', () => {
       () => {
         const number = {
           ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean() 
+          appId: faker.datatype.boolean()
             ? faker.string.uuid()
             : undefined,
         };
-        
+
         return number;
       },
     );
@@ -158,11 +158,11 @@ describe('numbers list', () => {
       () => {
         const number = {
           ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean() 
+          appId: faker.datatype.boolean()
             ? faker.string.uuid()
             : undefined,
         };
-        
+
         return number;
       },
     );
@@ -217,7 +217,7 @@ describe('numbers list', () => {
           ...getTestPhoneNumber(),
           country: country,
         };
-        
+
         return number;
       },
     );
@@ -248,12 +248,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
@@ -294,12 +294,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
@@ -340,12 +340,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
@@ -387,12 +387,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
@@ -440,12 +440,12 @@ describe('numbers list', () => {
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
-      numbers.map((numberNine) => ({
-        'Country': buildCountryString(numberNine.country),
-        'Number': numberNine.msisdn,
-        'Type': typeLabels[numberNine.type],
-        'Linked Application ID': numberNine.appId,
-        'Features': numberNine.features.sort().join(', '),
+      numbers.map((number) => ({
+        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Linked Application ID': 'Not linked to any application',
+        'Features': number.features.sort().join(', '),
       }),
       ),
     );
