@@ -1,4 +1,5 @@
 const { buildCountryString } = require('../utils/countries');
+const { dumpValue } = require('../ux/dump');
 
 const typeLabels = {
   'landline': 'Landline',
@@ -15,7 +16,7 @@ const displayNumber = (number = {}) => Object.assign({
 
 const displayExtendedNumber = (number = {}) => Object.assign({
   ...displayNumber(number),
-  'Linked Application ID': number.appId,
+  'Linked Application ID': number.appId || dumpValue('Not linked to any application'),
 });
 
 const displayFullNumber = (number = {}) => Object.assign({
