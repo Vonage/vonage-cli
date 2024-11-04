@@ -1,111 +1,108 @@
 process.env.FORCE_COLOR = 0;
 const { faker } = require('@faker-js/faker');
 const yaml = require('yaml');
-const { handler } = require('../../../src/commands/numbers/list');
+const { handler } = require('../../../src/commands/numbers/search');
 const { typeLabels } = require('../../../src/numbers/types');
 const { mockConsole } = require('../../helpers');
-const { buildCountryString, countryCodes, getCountryName } = require('../../../src/utils/countries');
+const { countryCodes, getCountryName } = require('../../../src/utils/countries');
 const { getTestPhoneNumber } = require('../../numbers');
 const { Client } = require('@vonage/server-client');
 
 jest.mock('yargs');
-describe('numbers list', () => {
+describe('numbers search', () => {
   beforeEach(() => {
     mockConsole();
   });
 
-  test('Will list all numbers', async () => {
-    const numbers = Array.from(
-      { length: 102 },
-      () => {
-        const number = {
-          ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean()
-            ? faker.string.uuid()
-            : undefined,
-        };
+  test('Will search for numbers', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
 
-        return number;
-      },
+    const numbers = Array.from(
+      { length: 100 },
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
     );
 
     const numbersMock = jest.fn().mockResolvedValueOnce({
       count: numbers.length,
-      numbers: numbers.slice(0, 100),
-    })
-      .mockResolvedValueOnce({
-        count: numbers.length,
-        numbers: numbers.slice(100),
-      });
+      numbers: numbers,
+    });
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({ SDK: sdkMock});
-
-    expect(numbersMock).toHaveBeenCalledTimes(2);
+    await handler({country: country, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledWith({
+      country: country,
       index: 1,
       size: 100,
     });
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      'There are 102 numbers',
+      `There are 100 numbers available for purchase in ${getCountryName(country)}`,
     );
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
       numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
-        'Linked Application ID': number.appId || 'Not linked to any application',
         'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
       }),
       ),
     );
   });
 
   test('Will not list numbers when there are none', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const numbersMock = jest.fn().mockResolvedValueOnce({});
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({ SDK: sdkMock});
+    await handler({ country: country, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledTimes(1);
 
     expect(numbersMock).toHaveBeenCalledWith({
+      country: country,
       index: 1,
       size: 100,
     });
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      'You do not have any numbers',
+      `There are no matching numbers available for purchase in ${getCountryName(country)}`,
+    );
+    expect(console.log).toHaveBeenNthCalledWith(
+      3,
+      'Try to broaden your search criteria',
     );
 
     expect(console.table).not.toHaveBeenCalled();
   });
 
   test('Will output json', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const numbers = Array.from(
       { length: 10 },
       () => {
         const number = {
           ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean()
-            ? faker.string.uuid()
-            : undefined,
         };
 
         return number;
@@ -119,11 +116,11 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({json: true, SDK: sdkMock});
+    await handler({country: country, json: true, SDK: sdkMock});
 
     expect(console.log).toHaveBeenCalledWith(
       JSON.stringify(
@@ -138,29 +135,28 @@ describe('numbers list', () => {
   });
 
   test('Will output empty json', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const numbersMock = jest.fn().mockResolvedValueOnce({
     });
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({json: true, SDK: sdkMock});
+    await handler({country: country, json: true, SDK: sdkMock});
 
     expect(console.log).toHaveBeenCalledWith('[]');
   });
 
   test('Will output yaml', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const numbers = Array.from(
       { length: 10 },
       () => {
         const number = {
           ...getTestPhoneNumber(),
-          appId: faker.datatype.boolean()
-            ? faker.string.uuid()
-            : undefined,
         };
 
         return number;
@@ -174,11 +170,11 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({yaml: true, SDK: sdkMock});
+    await handler({country: country, yaml: true, SDK: sdkMock});
 
     expect(console.log).toHaveBeenCalledWith(
       yaml.stringify(
@@ -193,78 +189,33 @@ describe('numbers list', () => {
   });
 
   test('Will output empty yaml', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const numbersMock = jest.fn().mockResolvedValueOnce({
     });
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({yaml: true, SDK: sdkMock});
+    await handler({country: country, yaml: true, SDK: sdkMock});
 
     expect(console.log).toHaveBeenCalledWith('[]\n');
   });
 
-  test('Will list all numbers for country', async () => {
+  test('Will search for numbers containing pattern', async () => {
     const country = faker.helpers.shuffle(countryCodes)[0];
-
-    const numbers = Array.from(
-      { length: 10 },
-      () => {
-        const number = {
-          ...getTestPhoneNumber(),
-          country: country,
-        };
-
-        return number;
-      },
-    );
-
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-      count: numbers.length,
-      numbers: numbers,
-    });
-
-    const sdkMock = {
-      numbers: {
-        getOwnedNumbers: numbersMock,
-      },
-    };
-
-    await handler({country: country, SDK: sdkMock});
-
-    expect(numbersMock).toHaveBeenCalledWith({
-      country: country,
-      index: 1,
-      size: 100,
-    });
-
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      `There are 10 numbers in ${getCountryName(country)}`,
-    );
-
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
-      numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
-        'Number': number.msisdn,
-        'Type': typeLabels[number.type],
-        'Linked Application ID': 'Not linked to any application',
-        'Features': number.features.sort().join(', '),
-      }),
-      ),
-    );
-  });
-
-  test('Will list all numbers containing pattern', async () => {
     const pattern = faker.phone.number({ style: 'international' });
 
     const numbers = Array.from(
       { length: 10 },
-      getTestPhoneNumber,
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
     );
 
     const numbersMock = jest.fn().mockResolvedValueOnce({
@@ -274,13 +225,14 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({searchPattern: 'contains', pattern: pattern, SDK: sdkMock});
+    await handler({country: country, searchPattern: 'contains', pattern: pattern, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledWith({
+      country: country,
       pattern: pattern,
       searchPattern: 1,
       index: 1,
@@ -289,28 +241,34 @@ describe('numbers list', () => {
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      `There are 10 numbers containing ${pattern}`,
+      `There are 10 numbers available for purchase in ${getCountryName(country)} containing ${pattern}`,
     );
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
       numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
-        'Linked Application ID': 'Not linked to any application',
         'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
       }),
       ),
     );
   });
 
-  test('Will list all numbers starting with pattern', async () => {
+  test('Will search for numbers starting with pattern', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const pattern = faker.phone.number({ style: 'international' });
 
     const numbers = Array.from(
       { length: 10 },
-      getTestPhoneNumber,
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
     );
 
     const numbersMock = jest.fn().mockResolvedValueOnce({
@@ -320,13 +278,14 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({searchPattern: 'starts', pattern: pattern, SDK: sdkMock});
+    await handler({country: country, searchPattern: 'starts', pattern: pattern, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledWith({
+      country: country,
       pattern: pattern,
       searchPattern: 0,
       index: 1,
@@ -335,29 +294,35 @@ describe('numbers list', () => {
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      `There are 10 numbers starting with ${pattern}`,
+      `There are 10 numbers available for purchase in ${getCountryName(country)} starting with ${pattern}`,
     );
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
       numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
-        'Linked Application ID': 'Not linked to any application',
         'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
       }),
       ),
     );
   });
 
 
-  test('Will list all numbers ending with pattern', async () => {
+  test('Will search for numbers ending with pattern', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
     const pattern = faker.phone.number({ style: 'international' });
 
     const numbers = Array.from(
-      { length: 10 },
-      getTestPhoneNumber,
+      { length: 1 },
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
     );
 
     const numbersMock = jest.fn().mockResolvedValueOnce({
@@ -367,13 +332,14 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledWith({
+      country: country,
       pattern: pattern,
       searchPattern: 2,
       index: 1,
@@ -382,29 +348,34 @@ describe('numbers list', () => {
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      `There are 10 numbers ending with ${pattern}`,
+      `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern}`,
     );
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
       numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
-        'Linked Application ID': 'Not linked to any application',
         'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
       }),
       ),
     );
   });
 
-  test('Will list the number containg pattern for a country', async () => {
+  test('Will search for numbers by type', async () => {
     const country = faker.helpers.shuffle(countryCodes)[0];
     const pattern = faker.phone.number({ style: 'international' });
 
     const numbers = Array.from(
       { length: 1 },
-      getTestPhoneNumber,
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
     );
 
     const numbersMock = jest.fn().mockResolvedValueOnce({
@@ -414,38 +385,141 @@ describe('numbers list', () => {
 
     const sdkMock = {
       numbers: {
-        getOwnedNumbers: numbersMock,
+        getAvailableNumbers: numbersMock,
       },
     };
 
-    await handler({
-      country: country,
-      searchPattern: 'contains',
-      pattern: pattern,
-      SDK: sdkMock,
-    });
+    await handler({type: 'mobile-lvn', country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
 
     expect(numbersMock).toHaveBeenCalledWith({
+      type: 'mobile-lvn',
       country: country,
       pattern: pattern,
-      searchPattern: 1,
+      searchPattern: 2,
       index: 1,
       size: 100,
     });
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
-      `There is 1 number in ${getCountryName(country)} containing ${pattern}`,
+      `There is 1 Mobile number available for purchase in ${getCountryName(country)} ending with ${pattern}`,
     );
 
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.table).toHaveBeenCalledWith(
       numbers.map((number) => ({
-        'Country': buildCountryString(number.country),
+        'Number': number.msisdn,
+        'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
+      }),
+      ),
+    );
+  });
+
+  test('Will search for numbers having MMS feature', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
+    const pattern = faker.phone.number({ style: 'international' });
+
+    const numbers = Array.from(
+      { length: 1 },
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
+    );
+
+    const numbersMock = jest.fn().mockResolvedValueOnce({
+      count: numbers.length,
+      numbers: numbers,
+    });
+
+    const sdkMock = {
+      numbers: {
+        getAvailableNumbers: numbersMock,
+      },
+    };
+
+    await handler({features: ['MMS'], country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+
+    expect(numbersMock).toHaveBeenCalledWith({
+      features: 'MMS',
+      country: country,
+      pattern: pattern,
+      searchPattern: 2,
+      index: 1,
+      size: 100,
+    });
+
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
+      `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern} having the MMS feature`,
+    );
+
+    expect(console.table).toHaveBeenCalledTimes(1);
+    expect(console.table).toHaveBeenCalledWith(
+      numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
-        'Linked Application ID': 'Not linked to any application',
         'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
+      }),
+      ),
+    );
+  });
+
+  test('Will search for numbers having multiple features', async () => {
+    const country = faker.helpers.shuffle(countryCodes)[0];
+    const pattern = faker.phone.number({ style: 'international' });
+
+    const numbers = Array.from(
+      { length: 1 },
+      () => ({
+        ...getTestPhoneNumber(),
+        country: country,
+        cost: faker.commerce.price(),
+        initialPrice: faker.commerce.price(),
+      }),
+    );
+
+    const numbersMock = jest.fn().mockResolvedValueOnce({
+      count: numbers.length,
+      numbers: numbers,
+    });
+
+    const sdkMock = {
+      numbers: {
+        getAvailableNumbers: numbersMock,
+      },
+    };
+
+    await handler({features: ['MMS', 'SMS', 'VOICE'], country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+
+    expect(numbersMock).toHaveBeenCalledWith({
+      features: 'MMS,SMS,VOICE',
+      country: country,
+      pattern: pattern,
+      searchPattern: 2,
+      index: 1,
+      size: 100,
+    });
+
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
+      `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern} having the MMS, SMS, VOICE features`,
+    );
+
+    expect(console.table).toHaveBeenCalledTimes(1);
+    expect(console.table).toHaveBeenCalledWith(
+      numbers.map((number) => ({
+        'Number': number.msisdn,
+        'Type': typeLabels[number.type],
+        'Features': number.features.sort().join(', '),
+        'Monthly Cost': `€ ${number.cost}`,
+        'Setup Cost': `€ ${number.initialPrice}`,
       }),
       ),
     );

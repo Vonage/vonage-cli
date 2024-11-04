@@ -96,7 +96,7 @@ exports.handler = async (argv) => {
   );
   console.log('');
 
-  displayNumbers(numbers);
+  displayNumbers(numbers, ['type', 'feature', 'country']);
 
   if (numbers.length > 0 && !hasCorrectCapabilities && fail) {
     console.error(

@@ -1,51 +1,44 @@
 const { buildCountryString } = require('../utils/countries');
 const { dumpValue } = require('../ux/dump');
+const { typeLabels } = require('./types');
 
-const typeLabels = {
-  'landline': 'Landline',
-  'landline-toll-free': 'Toll-free',
-  'mobile-lvn': 'Mobile',
-};
-
-const displayNumber = (number = {}) => Object.assign({
+const displayNumber = (number = {}, fields = []) => Object.assign({
   'Number': number.msisdn,
-  'Country': buildCountryString(number.country),
-  'Type': `${typeLabels[number.type]}`,
-  'Features': number.features.sort().join(', '),
+  ...(fields.includes('country') ? {'Country': buildCountryString(number.country)} : {}),
+  ...(fields.includes('type') ? {'Type': typeLabels[number.type]} : {}),
+  ...(fields.includes('feature') ? {'Features': number.features.sort().join(', ')} : {}),
+  ...(fields.includes('monthly_cost') ? {'Monthly Cost': `€ ${number.cost || 0.0}`} : {}),
+  ...(fields.includes('setup_cost') ? {'Setup Cost': `€ ${number.initialPrice || 0.0}`} : {}),
+  ...(fields.includes('app_id') ? {'Linked Application ID': number.appId || dumpValue('Not linked to any application') } : {}),
+  ...(fields.includes('mo_outbound') ? {'Message Outbound HTTP URL': number.moHttpUrl} : {}),
+  ...(fields.includes('voice_callback') ? {'Voice Callback': number.voiceCallback} : {}),
+  ...(fields.includes('voice_callback_value') ? {'Voice Callback Value': number.voiceCallbackValue } : {}),
+  ...(fields.includes('voice_status_callback') ? {'Voice Status Callback': number.voiceStatusCallback} : {}),
 });
 
-const displayExtendedNumber = (number = {}) => Object.assign({
-  ...displayNumber(number),
-  'Linked Application ID': number.appId || dumpValue('Not linked to any application'),
-});
-
-const displayFullNumber = (number = {}) => Object.assign({
-  ...displayExtendedNumber(number),
-  'Message Outbound HTTP URL': number.moHttpUrl,
-  'Voice Callback': number.voiceCallback,
-  'Voice Callback Value': number.voiceCallbackValue,
-  'Voice Status Callback': number.voiceStatusCallback,
-});
-
-const displayExtendedNumbers = (numbers = []) => {
-  const numbersToDisplay = numbers.map(displayExtendedNumber);
-  console.table(numbersToDisplay);
+const displayNumbers = (numbers = [], fields = []) => {
+  console.table(numbers.map((number) => displayNumber(
+    number,
+    fields,
+  )));
 };
 
-const displayNumbers = (numbers = []) => {
-  const numbersToDisplay = numbers.map(displayNumber);
-  console.table(numbersToDisplay);
-};
-
-exports.displayFullNumber = displayFullNumber;
-
-exports.displayExtendedNumbers = displayExtendedNumbers;
-
-exports.displayExtendedNumber = displayExtendedNumber;
+exports.displayFullNumber = (number) => displayNumber(
+  number,
+  [
+    'country',
+    'type',
+    'feature',
+    'monthly_cost',
+    'setup_cost',
+    'app_id',
+    'mo_outbound',
+    'voice_callback',
+    'voice_callback_value',
+    'voice_status_callback',
+  ]);
 
 exports.displayNumber = displayNumber;
 
 exports.displayNumbers = displayNumbers;
-
-exports.typeLabels = typeLabels;
 
