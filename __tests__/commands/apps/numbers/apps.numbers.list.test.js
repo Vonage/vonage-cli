@@ -2,7 +2,7 @@ process.env.FORCE_COLOR = 0;
 const yargs = require('yargs');
 const yaml = require('yaml');
 const { handler } = require('../../../../src/commands/apps/numbers/list');
-const { typeLabels } = require('../../../../src/numbers/display');
+const { typeLabels } = require('../../../../src/numbers/types');
 const { buildCountryString } = require('../../../../src/utils/countries');
 const { mockConsole } = require('../../../helpers');
 const {

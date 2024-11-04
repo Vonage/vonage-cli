@@ -1,50 +1,48 @@
 const YAML = require('yaml');
-const { displayExtendedNumbers } = require('../../numbers/display');
+const { displayNumbers } = require('../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../ux/dump');
 const { loadOwnedNumbersFromSDK, searchPatterns } = require('../../numbers/loadOwnedNumbersFromSDK');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { yaml, json } = require('../../commonFlags');
-const { countries, getCountryName } = require('../../utils/countries');
+const { countryFlag, getCountryName } = require('../../utils/countries');
 const { coerceNumber } = require('../../utils/coerceNumber');
+
+
+const flags = {
+  'country': {
+    ...countryFlag,
+    group: 'Numbers',
+  },
+  'pattern': {
+    describe: `The number pattern you want to search for. Use in conjunction with ${dumpCommand('--search-pattern')}`,
+    group: 'Numbers',
+  },
+  'search-pattern': {
+    describe: 'The strategy you want to use for matching',
+    choices: Object.keys(searchPatterns),
+    default: 'contains',
+    group: 'Numbers',
+  },
+  'limit': {
+    describe: 'The maximum number of numbers to return',
+    coerce: coerceNumber('limit', { min: 1 }),
+    group: 'Numbers',
+  },
+  'api-key': apiKey,
+  'api-secret': apiSecret,
+  'yaml': yaml,
+  'json': json,
+};
+
+exports.flags = flags;
 
 exports.command = 'list';
 
 exports.desc = 'List all numbers that you own';
 
 exports.builder = (yargs) => yargs
-  .options({
-    'country': {
-      describe: 'Filter by country using the two character country code in ISO 3166-1 alpha-2 format',
-      coerce: (arg) => {
-        if (!Object.keys(countries).includes(arg.toUpperCase())) {
-          throw new Error(`Invalid country code: ${arg}`);
-        }
-
-        return arg.toUpperCase();
-      },
-      group: 'Numbers',
-    },
-    'pattern': {
-      describe: `The number pattern you want to search for. Use in conjunction with ${dumpCommand('--search-pattern')}`,
-      group: 'Numbers',
-    },
-    'search-pattern': {
-      describe: 'The strategy you want to use for matching',
-      choices: Object.keys(searchPatterns),
-      default: 'contains',
-      group: 'Numbers',
-    },
-    'limit': {
-      describe: 'The maximum number of numbers to return',
-      coerce: coerceNumber('limit', { min: 1 }),
-      group: 'Numbers',
-    },
-    'api-key': apiKey,
-    'api-secret': apiSecret,
-    'yaml': yaml,
-    'json': json,
-  })
+  .options(flags)
   .epilogue(`To list numbers that are linked to an application, use ${dumpCommand('vonage apps numbers list <id>')}.`);
 
 exports.handler = async (argv) => {
@@ -115,6 +113,6 @@ exports.handler = async (argv) => {
 
   console.log('');
 
-  displayExtendedNumbers(numbers);
+  displayNumbers(numbers, ['country', 'type', 'feature', 'app_id']);
 };
 
