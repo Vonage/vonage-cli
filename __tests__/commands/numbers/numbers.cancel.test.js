@@ -9,7 +9,7 @@ const { getTestPhoneNumber } = require('../../numbers');
 jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
-describe('numbers cancel', () => {
+describe('Command: vonage numbers cancel', () => {
   beforeEach(() => {
     mockConsole();
   });

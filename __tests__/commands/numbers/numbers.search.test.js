@@ -10,7 +10,7 @@ const { Client } = require('@vonage/server-client');
 
 jest.mock('yargs');
 
-describe('numbers search', () => {
+describe('Command: vonage numbers search', () => {
   beforeEach(() => {
     mockConsole();
   });

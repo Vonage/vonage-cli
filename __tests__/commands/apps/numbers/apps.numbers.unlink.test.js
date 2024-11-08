@@ -12,7 +12,7 @@ const { Client } = require('@vonage/server-client');
 jest.mock('../../../../src/ux/confirm');
 jest.mock('yargs');
 
-describe('Command: apps numbers link', () => {
+describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {
     mockConsole();
   });

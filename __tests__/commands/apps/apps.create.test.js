@@ -12,7 +12,7 @@ jest.mock('fs');
 jest.mock('../../../src/ux/confirm');
 jest.mock('yargs');
 
-describe('Command: apps create', () => {
+describe('Command: vonage apps create', () => {
   beforeEach(() => {
     mockConsole();
   });

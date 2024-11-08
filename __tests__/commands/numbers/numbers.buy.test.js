@@ -13,7 +13,7 @@ const { Client } = require('@vonage/server-client');
 jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
-describe('numbers buy', () => {
+describe('Command: numbers buy', () => {
   beforeEach(() => {
     mockConsole();
   });
