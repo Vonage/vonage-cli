@@ -31,7 +31,7 @@ exports.flags = flags;
 
 exports.command = 'buy <country> <msisdn>';
 
-exports.desc = 'List all numbers that you own';
+exports.desc = 'Purchase a number';
 
 exports.builder = (yargs) => yargs
   .positional(
