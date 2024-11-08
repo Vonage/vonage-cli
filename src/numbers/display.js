@@ -1,5 +1,6 @@
 const { buildCountryString } = require('../utils/countries');
 const { dumpValue } = require('../ux/dump');
+const { displayCurrency } = require('../ux/currency');
 const { typeLabels } = require('./types');
 
 const displayNumber = (number = {}, fields = []) => Object.assign({
@@ -7,8 +8,8 @@ const displayNumber = (number = {}, fields = []) => Object.assign({
   ...(fields.includes('country') ? {'Country': buildCountryString(number.country)} : {}),
   ...(fields.includes('type') ? {'Type': typeLabels[number.type]} : {}),
   ...(fields.includes('feature') ? {'Features': number.features.sort().join(', ')} : {}),
-  ...(fields.includes('monthly_cost') ? {'Monthly Cost': `€ ${number.cost || 0.0}`} : {}),
-  ...(fields.includes('setup_cost') ? {'Setup Cost': `€ ${number.initialPrice || 0.0}`} : {}),
+  ...(fields.includes('monthly_cost') ? {'Monthly Cost': displayCurrency(number.cost)} : {}),
+  ...(fields.includes('setup_cost') ? {'Setup Cost': displayCurrency(number.initialPrice) } : {}),
   ...(fields.includes('app_id') ? {'Linked Application ID': number.appId || dumpValue('Not linked to any application') } : {}),
   ...(fields.includes('mo_outbound') ? {'Message Outbound HTTP URL': number.moHttpUrl} : {}),
   ...(fields.includes('voice_callback') ? {'Voice Callback': number.voiceCallback} : {}),

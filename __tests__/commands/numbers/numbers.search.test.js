@@ -9,6 +9,7 @@ const { getTestPhoneNumber } = require('../../numbers');
 const { Client } = require('@vonage/server-client');
 
 jest.mock('yargs');
+
 describe('numbers search', () => {
   beforeEach(() => {
     mockConsole();
@@ -57,8 +58,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -250,8 +251,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -303,8 +304,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -357,8 +358,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -410,8 +411,8 @@ describe('numbers search', () => {
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -464,8 +465,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );
@@ -518,8 +519,8 @@ describe('numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€ ${number.cost}`,
-        'Setup Cost': `€ ${number.initialPrice}`,
+        'Monthly Cost': `€${number.cost}`,
+        'Setup Cost': `€${number.initialPrice}`,
       }),
       ),
     );

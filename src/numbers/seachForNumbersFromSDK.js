@@ -6,6 +6,7 @@ const { searchPatterns } = require('./loadOwnedNumbersFromSDK');
 const searchForNumbersFromSDK = async (
   SDK,
   {
+    message = 'Searching for numbers',
     type,
     pattern,
     country,
@@ -15,7 +16,7 @@ const searchForNumbersFromSDK = async (
     index = 1,
   } = {},
 ) => {
-  const { stop, fail } = spinner({ message: 'Searching for numbers' });
+  const { stop, fail } = spinner({ message: message });
   try {
     console.debug(`Fetching numbers page ${index}`);
     const response = Client.transformers.camelCaseObjectKeys(
