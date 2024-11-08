@@ -85,7 +85,6 @@ describe('Command: numbers buy', () => {
         `Monthly Cost: €${testNumber.cost}`,
         `Setup Cost: €${testNumber.initialPrice}`,
         'Linked Application ID: Not linked to any application',
-        'Message Outbound HTTP URL: Not Set',
         'Voice Callback: Not Set',
         'Voice Callback Value: Not Set',
         'Voice Status Callback: Not Set',

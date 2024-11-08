@@ -41,7 +41,7 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   const { SDK, country, msisdn } = argv;
-  console.info('Listing owned numbers');
+  console.info('Cancelling number');
 
   const { numbers } = await loadOwnedNumbersFromSDK(
     SDK,

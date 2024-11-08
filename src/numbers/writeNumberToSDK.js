@@ -34,5 +34,6 @@ exports.writeNumberToSDK = async (SDK, number) => {
     console.debug(error);
     fail();
     sdkError(error);
+    return false;
   }
 };
