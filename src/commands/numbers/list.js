@@ -8,7 +8,6 @@ const { yaml, json } = require('../../commonFlags');
 const { countryFlag, getCountryName } = require('../../utils/countries');
 const { coerceNumber } = require('../../utils/coerceNumber');
 
-
 const flags = {
   'country': {
     ...countryFlag,
