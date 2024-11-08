@@ -5,7 +5,7 @@ const { Client } = require('@vonage/server-client');
 const { handler } = require('../../../src/commands/apps/update');
 const yaml = require('yaml');
 
-describe('Command: apps update', () => {
+describe('Command: vonage apps update', () => {
   beforeEach(() => {
     mockConsole();
   });

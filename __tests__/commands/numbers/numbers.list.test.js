@@ -9,7 +9,7 @@ const { getTestPhoneNumber } = require('../../numbers');
 const { Client } = require('@vonage/server-client');
 
 jest.mock('yargs');
-describe('numbers list', () => {
+describe('Command: numbers list', () => {
   beforeEach(() => {
     mockConsole();
   });
