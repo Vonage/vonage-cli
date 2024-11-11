@@ -4,7 +4,7 @@ const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=fal
 
 exports.dumpBoolean = dumpBoolean;
 
-exports.dumpYesNo = (value, includeText=false) => dumpBoolean({
+exports.dumpYesNo = (value, includeText=true) => dumpBoolean({
   value: value,
   trueWord: 'Yes',
   falseWord: 'No',
