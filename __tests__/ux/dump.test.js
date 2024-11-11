@@ -22,11 +22,11 @@ describe('UX: description list', () => {
 
 describe('UX: boolean dump', () => {
   test('Will return Yes or No', () => {
-    expect(dumpYesNo(true)).toBe('✅ ');
-    expect(dumpYesNo(false)).toBe('❌ ');
+    expect(dumpYesNo(true)).toBe('✅ Yes');
+    expect(dumpYesNo(false)).toBe('❌ No');
 
-    expect(dumpYesNo(true, true)).toBe('✅ Yes');
-    expect(dumpYesNo(false, true)).toBe('❌ No');
+    expect(dumpYesNo(true, false)).toBe('✅ ');
+    expect(dumpYesNo(false, false)).toBe('❌ ');
   });
 
   test('Will return On or Off', () => {
