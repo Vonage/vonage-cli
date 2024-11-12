@@ -4,25 +4,38 @@ const parser = require('yargs-parser');
 const { argv } = parser.detailed(process.argv);
 const { force } = argv;
 
-exports.confirm = (
-  message,
-  noForce = false,
-) => new Promise((resolve) => {
-  if (!noForce && force) {
-    console.debug(`Forcing: ${message}`);
-    resolve(true);
-    return;
-  }
-
-  console.debug(`Confirming: ${message}`);
+const ask = (message) => new Promise((resolve) => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
   rl.question(`${message} [y/n] `, (answer) => {
-    console.debug(`Answer: ${answer}`);
-    resolve(answer.toLowerCase() === 'y');
+    resolve(answer.toLowerCase());
     rl.close();
   });
 });
+
+exports.confirm = async (
+  message,
+  noForce = false,
+) =>{
+  if (!noForce && force) {
+    console.debug(`Forcing: ${message}`);
+    return true;
+  }
+
+  console.debug(`Confirming: ${message}`);
+
+  let answerCorrectly = false;
+  do {
+    const answer = await ask(message);
+
+    if ([ 'y', 'n' ].includes(answer)) {
+      answerCorrectly = true;
+      return answer === 'y';
+    }
+
+    process.stderr.write('Please answer with y for yes or n for no\n');
+  } while (!answerCorrectly);
+};
