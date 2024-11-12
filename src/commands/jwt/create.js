@@ -1,30 +1,8 @@
 const { tokenGenerate } = require('@vonage/jwt');
 const { dumpCommand } = require('../../ux/dump');
-const Ajv = require('ajv/dist/2020');
+const { coerceJSON } = require('../../utils/coerceJSON');
 const schema = require('../../aclSchema.json');
 const { appId, privateKey } = require('../../credentialFlags');
-
-const ajv = new Ajv();
-const validate = ajv.compile(schema);
-
-const validateAcl = (arg) => {
-  let acl;
-  try {
-    acl = JSON.parse(arg);
-  } catch (error) {
-    throw new Error(`Failed to parse JSON for ACL: ${error}`);
-  }
-
-  const data = validate(acl);
-  if (data) {
-    return acl;
-  }
-
-  // TODO Dump to debug log
-  throw new Error(
-    `ACL Failed to validate against schema:\n${JSON.stringify(validate.errors, null, 2)}`,
-  );
-};
 
 const jwtFlags = {
   exp: {
@@ -48,7 +26,7 @@ const jwtFlags = {
     string: true,
     group: 'JWT Options:',
     describe: 'The access control list for the token',
-    coerce: validateAcl,
+    coerce: coerceJSON('ACL', schema),
   },
   'app-id': appId,
   'private-key': privateKey,
