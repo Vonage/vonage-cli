@@ -2,6 +2,14 @@ const Ajv = require('ajv/dist/2020');
 const ajv = new Ajv();
 
 const coerceJSON = (argName, schema) => (json) => {
+  if (!json) {
+    return json;
+  }
+
+  if (Array.isArray(json)) {
+    return json.map((item) => coerceJSON(argName, schema)(item));
+  }
+
   let arg;
   try {
     arg = JSON.parse(json);
