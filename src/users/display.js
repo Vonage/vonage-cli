@@ -53,9 +53,9 @@ const userWebsocketChannelLines = ({websocket}) => websocket
   ? [
     chalk.underline('Web Socket'),
     indentLines(
-      websocket.map(({uri, contentType, headers}) =>
+      websocket.map(({url, contentType, headers}) =>
         descriptionList({
-          ['URI']: uri,
+          ['URL']: url,
           ['Content Type']: contentType,
         }) + userWebsocketChannelHeaderLines(headers),
       ).join('\n'),

@@ -177,6 +177,91 @@ describe('Command: vonage users create', () => {
     });
   });
 
+  test('Will create a user with Viber channels', async () => {
+    const user = addViberChannelToUser(addViberChannelToUser(getTestUserForAPI()));
+
+    const userMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const sdkMock = {
+      users: {
+        createUser: userMock,
+      },
+    };
+
+    await handler({
+      SDK: sdkMock,
+      name: user.name,
+      viberNumber: user.channels.viber.map((channel) => channel.number),
+    });
+
+    expect(userMock).toHaveBeenCalledWith({
+      name: user.name,
+      properties: {},
+      channels: {
+        viber: user.channels.viber,
+      },
+    });
+  });
+
+  test('Will create a user with SIP channels', async () => {
+    const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
+
+    const userMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const sdkMock = {
+      users: {
+        createUser: userMock,
+      },
+    };
+
+    await handler({
+      SDK: sdkMock,
+      name: user.name,
+      sipUrl: user.channels.sip.map((channel) => channel.uri),
+      sipUsername: user.channels.sip.map((channel) => channel.username),
+      sipPassword: user.channels.sip.map((channel) => channel.password),
+    });
+
+    expect(userMock).toHaveBeenCalledWith({
+      name: user.name,
+      properties: {},
+      channels: {
+        sip: user.channels.sip,
+      },
+    });
+  });
+
+  test('Will create a user with Websocket channels', async () => {
+    const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
+
+    const userMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const sdkMock = {
+      users: {
+        createUser: userMock,
+      },
+    };
+
+    await handler({
+      SDK: sdkMock,
+      name: user.name,
+      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
+      websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
+    });
+
+    expect(userMock).toHaveBeenCalledWith({
+      name: user.name,
+      properties: {},
+      channels: {
+        websocket: user.channels.websocket,
+      },
+    });
+  });
+
   test('Will create a user with WhatsApp channels', async () => {
     const user = addWhatsAppChannelToUser(addWhatsAppChannelToUser(getTestUserForAPI()));
 
@@ -192,7 +277,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      whatsapp: user.channels.whatsapp.map((channel) => channel.number),
+      whatsAppNumber: user.channels.whatsapp.map((channel) => channel.number),
     });
 
     expect(userMock).toHaveBeenCalledWith({
