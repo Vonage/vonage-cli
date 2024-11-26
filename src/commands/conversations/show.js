@@ -1,27 +1,27 @@
 const { appId, privateKey } = require('../../credentialFlags');
 const { loadConversationFromSDK } = require('../../conversations/loadConversationFromSDK');
 const { displayConversation } = require('../../conversations/display');
+const { conversationIdFlag } = require('../../conversations/conversationFlags');
 
-exports.command = 'show <id>';
+exports.command = 'show <conversation-id>';
 
 exports.desc = 'Show conversation';
 
 exports.builder = (yargs) => yargs
   .positional(
-    'id',
-    {
-      describe: 'The conversation ID',
-    })
+    'conversation-id',
+    conversationIdFlag,
+  )
   .options({
     'app-id': appId,
     'private-key': privateKey,
   });
 
 exports.handler = async (argv) => {
-  const { SDK, id } = argv;
+  const { SDK, conversationId } = argv;
   console.info('Showing conversation details');
 
-  const conversation = await loadConversationFromSDK(SDK, id);
+  const conversation = await loadConversationFromSDK(SDK, conversationId);
   if (!conversation) {
     console.error('No conversation found');
     return;

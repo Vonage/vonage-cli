@@ -94,7 +94,7 @@ exports.progress = ({
         message,
         ' ',
         openChar,
-        completedChar.repeat(completedLength),
+        completedChar.repeat(completedLength > -1 ? completedLength : 0),
         arrow,
         remainingChar.repeat(remainingLength),
         closeChar,

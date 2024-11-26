@@ -175,5 +175,6 @@ const displayFullUser = (user) =>{
   userChannelLines(user);
 };
 
+exports.fullUser = fullUser;
 exports.displayFullUser = displayFullUser;
 exports.userSummary = userSummary;

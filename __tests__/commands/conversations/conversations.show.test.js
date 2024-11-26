@@ -25,7 +25,7 @@ describe('Command: vonage conversations show', () => {
       },
     };
 
-    await handler({ SDK: sdkMock, id: conversation.id });
+    await handler({ SDK: sdkMock, conversationId: conversation.id });
 
     expect(conversationMock).toHaveBeenCalledWith(conversation.id);
 
