@@ -10,6 +10,7 @@ exports.command = 'show <id>';
 
 exports.desc = 'Get information for an application';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -32,23 +33,23 @@ exports.handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);
   const { SDK, id } = argv;
 
-  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   if (argv.yaml) {
     console.log(YAML.stringify(
-      Client.transformers.snakeCaseObjectKeys(application, true, false),
+      Client.transformers.snakeCaseObjectKeys(app, true, false),
     ));
     return;
   }
 
   if (argv.json) {
     console.log(JSON.stringify(
-      Client.transformers.snakeCaseObjectKeys(application, true, false),
+      Client.transformers.snakeCaseObjectKeys(app, true, false),
       null,
       2,
     ));
     return;
   }
 
-  displayApplication(application);
+  displayApplication(app);
 };

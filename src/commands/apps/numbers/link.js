@@ -2,7 +2,6 @@ const yargs = require('yargs');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { confirm } = require('../../../ux/confirm');
-const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayFullNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
 const YAML = require('yaml');
@@ -85,7 +84,11 @@ exports.handler = async (argv) => {
   console.info('Linking number to application');
 
   number.appId = id;
-  await writeNumberToSDK(SDK, number);
+  await makeSDKCall(
+    SDK.numbers.updateNumber,
+    'Linking number',
+    number,
+  );
 
   if (argv.json) {
     console.log(JSON.stringify(number, null, 2));

@@ -2,7 +2,6 @@ const YAML = require('yaml');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
 const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { confirm } = require('../../../ux/confirm');
-const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayFullNumber } = require('../../../numbers/display');
 const { descriptionList } = require('../../../ux/descriptionList');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
@@ -83,8 +82,9 @@ exports.handler = async (argv) => {
   // eslint-disable-next-line no-unused-vars
   const { appId, ...numberWithoutAppId } = number;
 
-  await writeNumberToSDK(
-    SDK,
+  await makeSDKCall(
+    SDK.numbers.updateNumber,
+    'Unlinking number',
     numberWithoutAppId,
   );
 

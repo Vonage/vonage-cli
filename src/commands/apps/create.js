@@ -7,12 +7,13 @@ const { displayApplication } = require('../../apps/display');
 const { dumpCommand } = require('../../ux/dump');
 const { coerceKey } = require('../../utils/coerceKey');
 const { apiKey, apiSecret } = require('../../credentialFlags');
-const { json, yaml } = require('../../commonFlags');
+const { json, yaml, force } = require('../../commonFlags');
 
 exports.command = 'create <name>';
 
 exports.desc = 'Create a new application';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'name',
@@ -41,6 +42,7 @@ exports.builder = (yargs) => yargs
     },
     'api-key': apiKey,
     'api-secret': apiSecret,
+    'force': force,
     'json': json,
     'yaml': yaml,
   })
@@ -54,7 +56,7 @@ exports.builder = (yargs) => yargs
   )
   .epilogue([
     `After creating the application, you can use ${dumpCommand('vonage apps capability')} to manage the capabilities.`,
-    `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to run ${dumpCommand('vonage apps update')} to generate a new private key.`,
+    `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to use ${dumpCommand('vonage apps update')} to generate a new private key.`,
   ].join('\n'));
 
 exports.handler = async (argv) => {

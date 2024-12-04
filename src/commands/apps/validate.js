@@ -13,6 +13,7 @@ exports.description = 'Validate an application';
 
 exports.command = 'validate <id>';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -21,8 +22,6 @@ exports.builder = (yargs) => yargs
     },
   )
   .options({
-    'api-key': apiKey,
-    'api-secret': apiSecret,
     'private-key-file': {
       ...privateKey,
       describe: 'Validate this private key is paired with the application',
@@ -79,8 +78,11 @@ exports.builder = (yargs) => yargs
       describe: 'Validate the application has these numbers linked',
       type: 'string',
       group: flagGroup,
+      /* istanbul ignore next */
       coerce: (numbers) => numbers.split(','),
     },
+    'api-key': apiKey,
+    'api-secret': apiSecret,
   })
   .epilogue([
     'The validate command checks an application for the following (at least one check must be provided:',
@@ -107,11 +109,13 @@ exports.builder = (yargs) => yargs
     'Validate application has the specified linked numbers',
   );
 
-const checkCapability = (capability, appCapabilities) => {
+const appHasCapability = (capability, app) => getAppCapabilities(app).includes(capability);
+
+const checkCapability = (capability, app) => {
   const checkCapability = capability === 'network_apis' ? 'network' : capability;
   console.debug(`Checking capability ${checkCapability}`);
 
-  const hasCapability = appCapabilities.includes(checkCapability);
+  const hasCapability = appHasCapability(checkCapability, app);
   console.log(
     `Application has ${capabilityLabels[capability]} capability: ${dumpEnabledDisabled(hasCapability, true)}`,
   );
@@ -131,24 +135,29 @@ exports.handler = async (argv) => {
 
   const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
-  if (!application) {
-    return;
-  }
-
   console.debug(`Application ${application.name} loaded`);
   let allCapabilitiesValid = true;
-  let appNumbers = [];
+  let numbersOk =  true;
 
+  const { numbers } = await loadOwnedNumbersFromSDK(
+    SDK,
+    {
+      id: application.id,
+      message: `Fetching numbers linked to application: ${application.name}`,
+      all: true,
+    },
+  );
+
+  const appNumbers = numbers.map(({msisdn}) => msisdn);
   if (linkedNumbers) {
     console.info('Fetching numbers linked to application');
-    appNumbers = await loadOwnedNumbersFromSDK(
-      SDK,
-      {
-        id: application.id,
-        message: `Fetching numbers linked to application: ${application.name}`,
-        all: true,
-      },
-    );
+
+    console.debug('Application numbers', appNumbers);
+    numbersOk = linkedNumbers.every((number) => {
+      const numberIncluded = appNumbers.includes(number);
+      console.log(`Checking if application has number ${number}: ${dumpBoolean({value: numberIncluded, ...dumpConfig})}`);
+      return numberIncluded;
+    });
   }
 
   console.log('');
@@ -162,7 +171,7 @@ exports.handler = async (argv) => {
 
   const appCapabilities = getAppCapabilities(application);
 
-  console.debug(`Application capabilities ${appCapabilities}`);
+  console.debug('Application capabilities', appCapabilities);
 
   const capabilitiesToValidate = capabilities.filter((capability) => argv.all
     || argv[capability]
@@ -172,15 +181,8 @@ exports.handler = async (argv) => {
   console.debug(`Validating capabilities [${capabilitiesToValidate}]`);
 
   for(const capability of capabilitiesToValidate) {
-    allCapabilitiesValid = checkCapability(capability, appCapabilities)&& allCapabilitiesValid;
+    allCapabilitiesValid = checkCapability(capability, application) && allCapabilitiesValid;
   }
-
-  const numbersOk = linkedNumbers.every((number) => {
-    console.info(`Checking if application has number ${number}`);
-    const numberIncluded = appNumbers.includes(number);
-    console.log(`Checking if application has number ${number}: ${dumpBoolean({value: numberIncluded, ...dumpConfig})}`);
-    return numberIncluded;
-  });
 
   if (!correctPublicKey) {
     console.error('Application has incorrect public key');
@@ -194,7 +196,6 @@ exports.handler = async (argv) => {
     return;
   }
 
-
   if (!numbersOk) {
     console.error('Application is missing linked numbers');
     yargs.exit(2);
@@ -202,12 +203,13 @@ exports.handler = async (argv) => {
   }
 
   if (argv.linkedNumbers
-    && ['messages', 'voice'].some((capability) => !appCapabilities.includes(capability))) {
+    && !(appHasCapability('messages', application)
+      || appHasCapability('voice', application))
+  ) {
     console.error('Application has numbers linked but is missing messages or voice capabilities');
     yargs.exit(15);
     return;
   }
-
 
   console.log('Application validation passed ✅');
 };

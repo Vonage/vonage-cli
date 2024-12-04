@@ -64,6 +64,7 @@ exports.command = 'list';
 
 exports.desc = 'List applications';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs.options({
   'api-key': apiKey,
   'api-secret': apiSecret,

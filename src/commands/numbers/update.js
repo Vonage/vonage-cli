@@ -1,6 +1,6 @@
 const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { writeNumberToSDK } = require('../../numbers/writeNumberToSDK');
 const { descriptionList } = require('../../ux/descriptionList');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayFullNumber } = require('../../numbers/display');
 const yargs = require('yargs');
 const { coerceUrl } = require('../../utils/coerceUrl');
@@ -85,9 +85,11 @@ exports.handler = async (argv) => {
   numberToUpdate.voiceCallbackValue = argv.voiceCallbackValue;
   numberToUpdate.voiceStatusCallback = argv.voiceStatusCallback;
 
-  if (!await writeNumberToSDK(SDK, numberToUpdate)) {
-    return;
-  }
+  await makeSDKCall(
+    SDK.numbers.updateNumber,
+    'Updating number',
+    numberToUpdate,
+  );
 
   console.log('');
   console.log('Number updated successfully');

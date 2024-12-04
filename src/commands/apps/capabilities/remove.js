@@ -10,6 +10,7 @@ exports.command = 'rm <id> <which>';
 
 exports.description = 'Remove a capability from an application';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .options({
     'api-key': apiKey,

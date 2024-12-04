@@ -39,6 +39,29 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
     expect(updateAppMock).toHaveBeenCalledWith(expected);
   });
 
+  test.each(removeTestCases)('Will not $label when user declines', async ({app, args}) => {
+    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const updateAppMock = jest.fn().mockResolvedValue();
+    const sdkMock = {
+      applications: {
+        getApplication: getAppMock,
+        updateApplication: updateAppMock,
+      },
+    };
+
+    confirm.mockResolvedValue(false);
+
+    await handler({
+      SDK: sdkMock,
+      id: app.id,
+      ...args,
+    });
+
+    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(getAppMock).toHaveBeenCalledWith(app.id);
+    expect(updateAppMock).not.toHaveBeenCalled();
+  });
+
   test('Will not call when there are no capabilities', async () => {
     const app = getBasicApplication();
     const getAppMock = jest.fn().mockResolvedValue(app);

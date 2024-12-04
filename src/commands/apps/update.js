@@ -10,6 +10,7 @@ exports.command = 'update <id>';
 
 exports.desc = 'Create a new application';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -17,8 +18,6 @@ exports.builder = (yargs) => yargs
       describe: 'The ID of the application to delete',
     },
   ).options({
-    'api-key': apiKey,
-    'api-secret': apiSecret,
     'name': {
       describe: 'The name you want to give the application',
       type: 'string',
@@ -35,19 +34,19 @@ exports.builder = (yargs) => yargs
       group: 'Update Application',
       coerce: coerceKey('public'),
     },
+    'api-key': apiKey,
+    'api-secret': apiSecret,
   })
   .example(
     dumpCommand('vonage apps update 000[...]000 --name "New Name"'),
     'Update the name of application 000[...]000',
   );
 
-;
-
 exports.handler = async (argv) => {
   console.info(`Updating application: ${argv.id}`);
   const { SDK, id } = argv;
 
-  const currentApplication = await makeSDKCall(
+  const app = await makeSDKCall(
     SDK.applications.getApplication,
     'Fetching Application',
     id,
@@ -56,26 +55,26 @@ exports.handler = async (argv) => {
   let changed = false;
 
   if (argv.name !== undefined
-    && argv.name !== currentApplication.name
+    && argv.name !== app.name
   ) {
     console.debug('Updating name');
-    currentApplication.name = argv.name;
+    app.name = argv.name;
     changed = true;
   }
 
   if (argv.improveAi !== undefined
-    && argv.improveAi !== currentApplication.privacy.improveAi
+    && argv.improveAi !== app.privacy.improveAi
   ) {
-    console.debug(`Updating improveAI from ${currentApplication.privacy.improveAi} to ${argv.improveAi}`);
-    currentApplication.privacy.improveAi = argv.improveAi;
+    console.debug(`Updating improveAI from ${app.privacy.improveAi} to ${argv.improveAi}`);
+    app.privacy.improveAi = argv.improveAi;
     changed = true;
   }
 
   if (argv.publicKeyFile !== undefined
-    && argv.publicKeyFile !== currentApplication.keys.publicKey
+    && argv.publicKeyFile !== app.keys.publicKey
   ) {
     console.debug('Updating publicKey');
-    currentApplication.keys.publicKey = argv.publicKeyFile;
+    app.keys.publicKey = argv.publicKeyFile;
     changed = true;
   }
 
@@ -84,13 +83,13 @@ exports.handler = async (argv) => {
     await makeSDKCall(
       SDK.applications.updateApplication,
       'Updating Application',
-      currentApplication,
+      app,
     );
   }
 
   if (argv.json) {
     console.log(JSON.stringify(
-      Client.transformers.snakeCaseObjectKeys(currentApplication, true),
+      Client.transformers.snakeCaseObjectKeys(app, true),
       null,
       2,
     ));
@@ -99,7 +98,7 @@ exports.handler = async (argv) => {
 
   if (argv.yaml) {
     console.log(yaml.stringify(
-      Client.transformers.snakeCaseObjectKeys(currentApplication, true),
+      Client.transformers.snakeCaseObjectKeys(app, true),
     ));
     return;
   }
@@ -109,5 +108,5 @@ exports.handler = async (argv) => {
   }
 
   console.log('');
-  displayApplication(currentApplication);
+  displayApplication(app);
 };
