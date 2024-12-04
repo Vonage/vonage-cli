@@ -11,11 +11,7 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will update application name', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
 
     const getAppMock = jest.fn().mockResolvedValue({...app});
     const updateAppMock = jest.fn().mockResolvedValue();
@@ -40,11 +36,8 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will update application AI', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
+    app.privacy.improveAi = false;
 
     const getAppMock = jest.fn().mockResolvedValue({...app});
     const updateAppMock = jest.fn().mockResolvedValue();
@@ -58,24 +51,20 @@ describe('Command: vonage apps update', () => {
     await handler({
       id: app.id,
       SDK: sdkMock,
-      improveAi: !app.privacy.improveAi,
+      improveAi: true,
     });
 
     expect(getAppMock).toHaveBeenCalledWith(app.id);
     expect(updateAppMock).toHaveBeenCalledWith({
       ...app,
       privacy: {
-        improveAi: !app.privacy.improveAi,
+        improveAi: true,
       },
     });
   });
 
   test('Will update application public key', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
     const getAppMock = jest.fn().mockResolvedValue({...app});
@@ -103,11 +92,8 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will update all application information', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
+    app.privacy.improveAi = false;
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
     const getAppMock = jest.fn().mockResolvedValue({...app});
@@ -123,7 +109,7 @@ describe('Command: vonage apps update', () => {
       id: app.id,
       SDK: sdkMock,
       name: `${app.name} new`,
-      improveAi: !app.privacy.improveAi,
+      improveAi: true,
       publicKeyFile: newPublicKey,
     });
 
@@ -132,7 +118,7 @@ describe('Command: vonage apps update', () => {
       id: app.id,
       name: `${app.name} new`,
       privacy: {
-        improveAi: !app.privacy.improveAi,
+        improveAi: true,
       },
       keys: {
         publicKey: newPublicKey,
@@ -141,11 +127,7 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will no op when no changes detected', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
 
     const getAppMock = jest.fn().mockResolvedValue({...app});
     const updateAppMock = jest.fn().mockResolvedValue();
@@ -170,11 +152,7 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will output JSON when requested', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
     const getAppMock = jest.fn().mockResolvedValue({...app});
@@ -190,7 +168,6 @@ describe('Command: vonage apps update', () => {
       id: app.id,
       SDK: sdkMock,
       name: `${app.name} new`,
-      improveAi: !app.privacy.improveAi,
       publicKeyFile: newPublicKey,
       json: true,
     });
@@ -208,7 +185,7 @@ describe('Command: vonage apps update', () => {
               public_key: newPublicKey,
             },
             privacy: {
-              improve_ai: !app.privacy.improveAi,
+              improve_ai: app.privacy.improveAi,
             },
           },
           true,
@@ -221,11 +198,7 @@ describe('Command: vonage apps update', () => {
   });
 
   test('Will output YAML when requested', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
+    const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
     const getAppMock = jest.fn().mockResolvedValue({...app});
@@ -241,7 +214,6 @@ describe('Command: vonage apps update', () => {
       id: app.id,
       SDK: sdkMock,
       name: `${app.name} new`,
-      improveAi: !app.privacy.improveAi,
       publicKeyFile: newPublicKey,
       yaml: true,
     });
@@ -257,7 +229,7 @@ describe('Command: vonage apps update', () => {
               public_key: newPublicKey,
             },
             privacy: {
-              improve_ai: !app.privacy.improveAi,
+              improve_ai: app.privacy.improveAi,
             },
           },
           true,

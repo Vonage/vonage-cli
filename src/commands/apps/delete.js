@@ -1,7 +1,5 @@
-const { sdkError } = require('../../utils/sdkError');
-const { spinner } = require('../../ux/spinner');
 const { confirm } = require('../../ux/confirm');
-const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { force } = require('../../commonFlags');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 
@@ -26,7 +24,7 @@ exports.handler = async (argv) => {
 
   const { SDK, id } = argv;
 
-  const app = await loadAppFromSDK(SDK, id);
+  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   const okToDelete = await confirm(`Delete application ${app.name} (${app.id})?`);
 
@@ -34,16 +32,5 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const {stop, fail } = spinner({message: 'Deleting application'});
-
-  try {
-    await SDK.applications.deleteApplication(argv.id);
-    stop();
-
-    console.log('Application deleted');
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  await makeSDKCall(SDK.applications.deleteApplication, 'Deleting application', id);
 };

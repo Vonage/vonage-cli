@@ -1,8 +1,7 @@
 const yargs = require('yargs');
 const { displayApplication } = require('../../../apps/display');
-const { writeAppToSDK } = require('../../../apps/writeAppToSDK');
-const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { rtcFlags, updateRTC } = require('../../../apps/rtc');
+const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { verifyFlags, updateVerify } = require('../../../apps/verify');
 const { videoFlags, updateVideo } = require('../../../apps/video');
 const { voiceFlags, updateVoice } = require('../../../apps/voice');
@@ -77,7 +76,7 @@ exports.builder = (yargs) => yargs
   );
 
 exports.handler = async (argv) => {
-  const { id, which } = argv;
+  const { SDK, id, which } = argv;
   console.info(`Modifying ${which} capability on application: ${id}`);
 
   const invalidFlags = [];
@@ -118,7 +117,7 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const app = await loadAppFromSDK(argv.SDK, id);
+  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
   console.debug(`Loaded application ${app.name} (${app.id})`);
 
   if (!app.capabilities) {
@@ -129,6 +128,10 @@ exports.handler = async (argv) => {
 
   app.capabilities = clearRemoved(app.capabilities);
 
-  await writeAppToSDK(argv.SDK, app);
+  await makeSDKCall(
+    SDK.applications.updateApplication,
+    `Adding ${which} capability to application ${id}`,
+    app,
+  );
   displayApplication(app);
 };

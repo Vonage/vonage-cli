@@ -2,7 +2,7 @@ const { validateApplicationKey } = require('../../utils/validateSDKAuth');
 const { capabilities, capabilityLabels, getAppCapabilities } = require('../../apps/capabilities');
 const { dumpEnabledDisabled, dumpBoolean, dumpValidInvalid } = require('../../ux/dumpYesNo');
 const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { apiKey, apiSecret, privateKey } = require('../../credentialFlags');
 const yargs = require('yargs');
 const { dumpCommand } = require('../../ux/dump');
@@ -129,7 +129,7 @@ exports.handler = async (argv) => {
   const { id, SDK, linkedNumbers } = argv;
   console.info(`Validating application ${id}`);
 
-  const application = await loadAppFromSDK(SDK, id);
+  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   if (!application) {
     return;

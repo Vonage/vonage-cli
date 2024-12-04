@@ -1,9 +1,8 @@
 const yaml = require('yaml');
-const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
 const { displayApplication } = require('../../apps/display');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { coerceKey } = require('../../utils/coerceKey');
 const { Client } = require('@vonage/server-client');
-const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { dumpCommand } = require('../../ux/dump');
 
@@ -46,8 +45,14 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   console.info(`Updating application: ${argv.id}`);
+  const { SDK, id } = argv;
 
-  const currentApplication = await loadAppFromSDK(argv.SDK, argv.id);
+  const currentApplication = await makeSDKCall(
+    SDK.applications.getApplication,
+    'Fetching Application',
+    id,
+  );
+
   let changed = false;
 
   if (argv.name !== undefined
@@ -61,7 +66,7 @@ exports.handler = async (argv) => {
   if (argv.improveAi !== undefined
     && argv.improveAi !== currentApplication.privacy.improveAi
   ) {
-    console.debug('Updating improveAI');
+    console.debug(`Updating improveAI from ${currentApplication.privacy.improveAi} to ${argv.improveAi}`);
     currentApplication.privacy.improveAi = argv.improveAi;
     changed = true;
   }
@@ -76,7 +81,11 @@ exports.handler = async (argv) => {
 
   if (changed) {
     console.debug('Changes detected applying updates');
-    await writeAppToSDK(argv.SDK, currentApplication);
+    await makeSDKCall(
+      SDK.applications.updateApplication,
+      'Updating Application',
+      currentApplication,
+    );
   }
 
   if (argv.json) {

@@ -1,8 +1,8 @@
 const { Client } = require('@vonage/server-client');
 const chalk = require('chalk');
 const YAML = require('yaml');
-const { writeAppToSDK } = require('../../apps/writeAppToSDK');
 const { writeFile } = require('../../utils/fs');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayApplication } = require('../../apps/display');
 const { dumpCommand } = require('../../ux/dump');
 const { coerceKey } = require('../../utils/coerceKey');
@@ -60,6 +60,7 @@ exports.builder = (yargs) => yargs
 exports.handler = async (argv) => {
   console.info('Creating new application');
   let dumpPrivateKey = false;
+  const { SDK } = argv;
 
   const appData = {
     name: argv.name,
@@ -71,7 +72,11 @@ exports.handler = async (argv) => {
     },
   };
 
-  const newApplication = await writeAppToSDK(argv.SDK, appData);
+  const newApplication = await makeSDKCall(
+    SDK.applications.createApplication,
+    'Creating Application',
+    appData,
+  );
 
   try {
     if (argv.privateKeyFile) {

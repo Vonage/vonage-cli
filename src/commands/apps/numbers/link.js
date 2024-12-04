@@ -1,6 +1,6 @@
 const yargs = require('yargs');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
-const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
+const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayFullNumber } = require('../../../numbers/display');
@@ -42,7 +42,7 @@ exports.handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Linking number ${msisdn} to application ${id}`);
 
-  const app = await loadAppFromSDK(SDK, id);
+  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   const numbers = await loadOwnedNumbersFromSDK(
     SDK,

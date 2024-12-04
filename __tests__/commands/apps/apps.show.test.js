@@ -1,5 +1,4 @@
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
 const yaml = require('yaml');
 const {
   getTestApp,
@@ -389,29 +388,5 @@ describe('Command: vonage apps', () => {
         '  NB: VBC capabilities is not supported through the command line.',
       ].join('\n'),
     );
-  });
-
-  test('Will exit 5 when not authorized', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getTestApp(),
-      true,
-      true,
-    );
-
-    const error = new Error('failed');
-
-    error.response = {
-      status: 401,
-    };
-
-    const appMock = jest.fn().mockRejectedValue(error);
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-    };
-
-    await handler({id: app.id, SDK: sdkMock});
-    expect(yargs.exit).toHaveBeenCalledWith(5);
   });
 });

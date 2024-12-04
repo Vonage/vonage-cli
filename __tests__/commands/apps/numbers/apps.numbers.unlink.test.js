@@ -1,6 +1,5 @@
 process.env.FORCE_COLOR = 0;
 const yaml = require('yaml');
-const yargs = require('yargs');
 const { faker } = require('@faker-js/faker');
 const { getBasicApplication } = require('../../../app');
 const { handler } = require('../../../../src/commands/apps/numbers/unlink');
@@ -325,51 +324,6 @@ describe('Command: vonage apps numbers link', () => {
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(confirm).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
-  });
-
-  test('Will exit 20 when application not found', async () => {
-    const app = Client.transformers.camelCaseObjectKeys(
-      getBasicApplication(),
-      true,
-      true,
-    );
-
-    const numberNine = getTestPhoneNumber();
-
-    const error = new Error('failed');
-
-    error.response = {
-      status: 404,
-    };
-
-    const appMock = jest.fn().mockRejectedValue(error);
-
-    const numbersMock = jest.fn();
-    const updateMock = jest.fn();
-
-    confirm.mockResolvedValue(false);
-
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-        updateNumber: updateMock,
-      },
-    };
-
-    await handler({
-      id: app.id,
-      msisdn: numberNine.msisdn,
-      SDK: sdkMock,
-    });
-
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).not.toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(20);
   });
 });
 

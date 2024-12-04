@@ -1,6 +1,6 @@
 const YAML = require('yaml');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayApplication } = require('../../apps/display');
-const { loadAppFromSDK } = require('../../apps/loadAppFromSDK');
 const { Client } = require('@vonage/server-client');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { json, yaml } = require('../../commonFlags');
@@ -30,8 +30,9 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);
+  const { SDK, id } = argv;
 
-  const application = await loadAppFromSDK(argv.SDK, argv.id) || {};
+  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   if (argv.yaml) {
     console.log(YAML.stringify(

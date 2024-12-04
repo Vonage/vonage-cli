@@ -4,8 +4,8 @@ const { displayNumbers } = require('../../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../../ux/dump');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
-const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { getAppCapabilities } = require('../../../apps/capabilities');
+const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
 const { yaml, json } = require('../../../commonFlags');
 
@@ -36,8 +36,7 @@ exports.handler = async (argv) => {
   const { id, SDK, fail } = argv;
   console.info(`Listing numbers linked to application ${id}`);
 
-  const application = await loadAppFromSDK(SDK, id);
-
+  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
   const { totalNumbers, numbers } = await loadOwnedNumbersFromSDK(
     SDK,
     {

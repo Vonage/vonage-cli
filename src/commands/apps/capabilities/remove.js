@@ -1,7 +1,6 @@
 const { displayApplication } = require('../../../apps/display');
-const { writeAppToSDK } = require('../../../apps/writeAppToSDK');
-const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
 const { getAppCapabilities, capabilities, capabilityLabels } = require('../../../apps/capabilities');
+const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { apiKey, apiSecret } = require('../../../credentialFlags');
 const { dumpCommand } = require('../../../ux/dump');
 const { confirm } = require('../../../ux/confirm');
@@ -37,10 +36,10 @@ exports.builder = (yargs) => yargs
   );
 
 exports.handler = async (argv) => {
-  const { id, which } = argv;
+  const { SDK, id, which } = argv;
   console.info(`Removing ${which} capability from application ${id}`);
 
-  const app = await loadAppFromSDK(argv.SDK, id);
+  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
   console.log('');
   console.debug(`Loaded application ${app.name} (${app.id})`);
   console.debug(`Current capabilities: ${getAppCapabilities(app).length}`);
@@ -55,7 +54,11 @@ exports.handler = async (argv) => {
 
   if (okToRemove) {
     app.capabilities[which === 'network_apis' ? 'networkApis' : which] = undefined;
-    await writeAppToSDK(argv.SDK, app);
+    await makeSDKCall(
+      SDK.applications.updateApplication,
+      `Removing ${which} capability from application ${id}`,
+      app,
+    );
   }
 
   console.log( okToRemove

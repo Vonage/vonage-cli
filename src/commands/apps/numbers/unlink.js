@@ -1,6 +1,6 @@
 const YAML = require('yaml');
 const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
-const { loadAppFromSDK } = require('../../../apps/loadAppFromSDK');
+const { makeSDKCall } = require('../../../utils/makeSDKCall');
 const { confirm } = require('../../../ux/confirm');
 const { writeNumberToSDK } = require('../../../numbers/writeNumberToSDK');
 const { displayFullNumber } = require('../../../numbers/display');
@@ -41,10 +41,7 @@ exports.handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Unlinking number ${msisdn} to application ${id}`);
 
-  const application = await loadAppFromSDK(SDK, id);
-  if (!application) {
-    return;
-  }
+  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
 
   const  numbers  = await loadOwnedNumbersFromSDK(
     SDK,
