@@ -1,6 +1,6 @@
 process.env.FORCE_COLOR = 0;
 const yargs = require('yargs');
-const { handler } = require('../../../src/commands/users/create');
+const { handler } = require('../../../src/commands/users/update');
 const { mockConsole } = require('../../helpers');
 const {
   getTestUserForAPI,
@@ -16,30 +16,34 @@ const {
 
 jest.mock('yargs');
 
-describe('Command: vonage users create', () => {
+describe('Command: vonage users update', () => {
   beforeEach(() => {
     mockConsole();
   });
 
-  test('Will create a user with no options', async () => {
+  test('Will update a user with no options', async () => {
     const user = getTestUserForAPI();
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
-    await handler({ SDK: sdkMock });
+    await handler({
+      SDK: sdkMock,
+      id: user.id,
+    });
     expect(yargs.exit).not.toHaveBeenCalled();
 
-    expect(userMock).toHaveBeenCalledWith({
-      properties: {},
-      channels: {},
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
@@ -53,20 +57,25 @@ describe('Command: vonage users create', () => {
     );
   });
 
-  test('Will create a user', async () => {
+  test('Will update a user', async () => {
     const user = getTestUserForAPI();
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       displayName: user.displayName,
       imageUrl: user.imageUrl,
@@ -74,11 +83,13 @@ describe('Command: vonage users create', () => {
       customData: user.properties.customData,
     });
 
-    expect(userMock).toHaveBeenCalledWith({
+    expect(updateUserMock).toHaveBeenCalledWith({
+      id: user.id,
       displayName: user.displayName,
       imageUrl: user.imageUrl,
       name: user.name,
       properties: {
+        customData: user.properties.customData,
         ttl: user.properties.ttl,
       },
       channels: {},
@@ -96,42 +107,43 @@ describe('Command: vonage users create', () => {
     );
   });
 
-  test('Will create a user with PSTN channels', async () => {
+  test('Will update a user with PSTN channels', async () => {
     const user = addPSTNChannelToUser(addPSTNChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       pstnNumber: user.channels.pstn.map((channel) => channel.number),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        pstn: user.channels.pstn,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with SMS channels', async () => {
+  test('Will update a user with SMS channels', async () => {
     const user = addSMSChannelToUser(addSMSChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
@@ -141,384 +153,402 @@ describe('Command: vonage users create', () => {
       smsNumber: user.channels.sms.map((channel) => channel.number),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        sms: user.channels.sms,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with MMS channels', async () => {
+  test('Will update a user with MMS channels', async () => {
     const user = addMMSChannelToUser(addMMSChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       mmsNumber: user.channels.mms.map((channel) => channel.number),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        mms: user.channels.mms,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with Viber channels', async () => {
+  test('Will update a user with Viber channels', async () => {
     const user = addViberChannelToUser(addViberChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       viberNumber: user.channels.viber.map((channel) => channel.number),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        viber: user.channels.viber,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with SIP channels', async () => {
+  test('Will update a user with SIP channels', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       sipUrl: user.channels.sip.map((channel) => channel.uri),
       sipUsername: user.channels.sip.map((channel) => channel.username),
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        sip: user.channels.sip,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will not create a user with SIP channels when username is missing', async () => {
+  test('Will not update a user with SIP channels when username is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       sipUrl: user.channels.sip.map((channel) => channel.uri),
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 
-  test('Will not create a user with SIP channels when password is missing', async () => {
+  test('Will not update a user with SIP channels when password is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       sipUrl: user.channels.sip.map((channel) => channel.uri),
       sipUsername: user.channels.sip.map((channel) => channel.username),
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 
-  test('Will not create a user with SIP channels when missing a username', async () => {
+  test('Will not update a user with SIP channels when missing a username', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       sipUrl: user.channels.sip.map((channel) => channel.uri),
       sipUsername: [user.channels.sip[0].username],
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 
-  test('Will not create a user with SIP channels when missing a password', async () => {
+  test('Will not update a user with SIP channels when missing a password', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
       .mockResolvedValue(user);
 
+    const getUserMock = jest.fn()
+      .mockResolvedValue(user);
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       sipUrl: user.channels.sip.map((channel) => channel.uri),
       sipUsername: user.channels.sip.map((channel) => channel.username),
       sipPassword: [user.channels.sip[0].password],
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 
-  test('Will create a user with Websocket channels', async () => {
+  test('Will update a user with Websocket channels', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       websocketUrl: user.channels.websocket.map((channel) => channel.url),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        websocket: user.channels.websocket,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with Websocket channels and no headers', async () => {
+  test('Will update a user with Websocket channels and no headers', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       websocketUrl: user.channels.websocket.map((channel) => channel.url),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
+    expect(updateUserMock).toHaveBeenCalledWith({
+      ...user,
       channels: {
-        websocket: [
-          {
-            url: user.channels.websocket[0].url,
-            contentType: user.channels.websocket[0].contentType,
-          },
-        ],
+        ...user.channels,
+        websocket: user.channels.websocket.map((channel) => ({
+          url: channel.url,
+          contentType: channel.contentType,
+        })),
       },
     });
   });
 
-  test('Will create a user with Websocket channels and no content type', async () => {
+  test('Will update a user with Websocket channels and no content type', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       websocketUrl: user.channels.websocket.map((channel) => channel.url),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
+    expect(updateUserMock).toHaveBeenCalledWith({
+      ...user,
       channels: {
-        websocket: [
-          {
-            url: user.channels.websocket[0].url,
-            headers: user.channels.websocket[0].headers,
-          },
-        ],
+        ...user.channels,
+        websocket: user.channels.websocket.map((channel) => ({
+          url: channel.url,
+          headers: channel.headers,
+        })),
       },
     });
   });
 
-  test('Will not create a user with Websocket when missing header', async () => {
+  test('Will not update a user with Websocket when missing header', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       websocketUrl: user.channels.websocket.map((channel) => channel.url),
       websocketHeaders: [user.channels.websocket[0].headers],
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
   });
 
-  test('Will not create a user with Websocket when missing content type', async () => {
+  test('Will not update a user with Websocket when missing content type', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       websocketUrl: user.channels.websocket.map((channel) => channel.url),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: [user.channels.websocket[0].contentType],
     });
 
-    expect(userMock).not.toHaveBeenCalled();
+    expect(updateUserMock).not.toHaveBeenCalled();
   });
 
-  test('Will create a user with WhatsApp channels', async () => {
+  test('Will update a user with WhatsApp channels', async () => {
     const user = addWhatsAppChannelToUser(addWhatsAppChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       whatsAppNumber: user.channels.whatsapp.map((channel) => channel.number),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        whatsapp: user.channels.whatsapp,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 
-  test('Will create a user with Messenger channels', async () => {
+  test('Will update a user with Messenger channels', async () => {
     const user = addMessengerChannelToUser(addMessengerChannelToUser(getTestUserForAPI()));
 
-    const userMock = jest.fn()
+    const updateUserMock = jest.fn()
+      .mockResolvedValue(user);
+
+    const getUserMock = jest.fn()
       .mockResolvedValue(user);
 
     const sdkMock = {
       users: {
-        createUser: userMock,
+        updateUser: updateUserMock,
+        getUser: getUserMock,
       },
     };
 
     await handler({
       SDK: sdkMock,
+      id: user.id,
       name: user.name,
       facebookMessengerId: user.channels.messenger.map((channel) => channel.id),
     });
 
-    expect(userMock).toHaveBeenCalledWith({
-      name: user.name,
-      properties: {},
-      channels: {
-        messenger: user.channels.messenger,
-      },
-    });
+    expect(updateUserMock).toHaveBeenCalledWith(user);
   });
 });

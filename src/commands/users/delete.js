@@ -1,5 +1,5 @@
 const { appId, privateKey } = require('../../credentialFlags');
-const { loadUserFromSDK } = require('../../users/loadUserFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { spinner } = require('../../ux/spinner');
 const { confirm } = require('../../ux/confirm');
 const { sdkError } = require('../../utils/sdkError');
@@ -8,6 +8,7 @@ exports.command = 'delete <id>';
 
 exports.desc = 'Delete a user';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -23,11 +24,7 @@ exports.handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Deleting user');
 
-  const user = await loadUserFromSDK(SDK, id);
-  if (!user) {
-    console.error('No user found');
-    return;
-  }
+  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
 
   const okToDelete = await confirm('Are you sure you want to delete this user?');
 

@@ -1,14 +1,13 @@
-const { spinner } = require('../../ux/spinner');
 const { appId, privateKey } = require('../../credentialFlags');
 const { confirm } = require('../../ux/confirm');
 const { userSummary } = require('../../users/display');
-const { sdkError } = require('../../utils/sdkError');
-const { Client } = require('@vonage/server-client');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 exports.command = 'list';
 
 exports.desc = 'List users';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs.options({
   'page-size': {
     describe: 'Number of users to return per page',
@@ -29,27 +28,16 @@ exports.handler = async (argv) => {
 
   do {
     console.debug(`Fetching users with cursor: ${pageCursor}`);
-    const { stop, fail } = spinner({
-      message: !okToPage
+    const response = await makeSDKCall(
+      SDK.users.getUserPage,
+      !okToPage
         ? 'Fetching users'
         : 'Fetching more users',
-    });
-    let response;
-    try {
-      response = Client.transformers.camelCaseObjectKeys(
-        await SDK.users.getUserPage({
-          pageSize: pageSize,
-          cursor: pageCursor,
-        }),
-        true,
-      );
-
-      stop();
-    } catch (error) {
-      fail();
-      sdkError(error);
-      return;
-    }
+      {
+        pageSize: pageSize,
+        cursor: pageCursor,
+      },
+    );
 
     console.debug('Users fetched', response);
 

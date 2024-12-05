@@ -5,6 +5,7 @@ const addSIPChannelToUser = (user) => ({
   channels: {
     ...user.channels,
     sip: [
+      ...user.channels?.sip || [],
       {
         uri: faker.internet.url({protocol: 'sip'}),
         username: faker.internet.username(),
@@ -19,6 +20,7 @@ const addWebsocketChannelToUser = (user) => ({
   channels: {
     ...user.channels,
     websocket: [
+      ...user.channels?.websocket || [],
       {
         url: faker.internet.url({protocol: 'wss'}),
         contentType: `audio/l16;rate=${faker.helpers.shuffle([8000, 16000, 32000])[0]}`,
@@ -79,6 +81,18 @@ const addWhatsAppChannelToUser = (user) => ({
   },
 });
 
+const addMessengerChannelToUser = (user) => ({
+  ...user,
+  channels: {
+    ...user.channels,
+    messenger: [
+      {
+        id:faker.internet.username(),
+      },
+    ],
+  },
+});
+
 const addViberChannelToUser = (user) => ({
   ...user,
   channels: {
@@ -100,6 +114,7 @@ const getTestUserForAPI = () => Object.freeze({
   properties: {
     ttl: faker.number.int(),
   },
+  channels: {},
 });
 
 exports.getTestUserForAPI = getTestUserForAPI;
@@ -111,4 +126,5 @@ exports.addSMSChannelToUser = addSMSChannelToUser;
 exports.addMMSChannelToUser = addMMSChannelToUser;
 exports.addWhatsAppChannelToUser = addWhatsAppChannelToUser;
 exports.addViberChannelToUser = addViberChannelToUser;
+exports.addMessengerChannelToUser = addMessengerChannelToUser;
 

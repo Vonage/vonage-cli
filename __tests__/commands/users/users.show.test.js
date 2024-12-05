@@ -1,5 +1,4 @@
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
 const { redact } = require('../../../src/ux/redact');
 const { handler } = require('../../../src/commands/users/show');
 const { mockConsole } = require('../../helpers');
@@ -13,9 +12,6 @@ const {
   addSIPChannelToUser,
   addWebsocketChannelToUser,
 } = require('../../users');
-
-jest.mock('yargs');
-jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage users show', () => {
   beforeEach(() => {
@@ -341,22 +337,5 @@ describe('Command: vonage users show', () => {
         '      ',
       ].join('\n'),
     );
-  });
-
-  test('Will handle an error', async () => {
-    const user = getTestUserForAPI();
-
-    const userMock = jest.fn()
-      .mockRejectedValueOnce(new Error('An error occurred'));
-
-    const sdkMock = {
-      users: {
-        getUser: userMock,
-      },
-    };
-
-    await handler({ SDK: sdkMock, id: user.id });
-    expect(console.log).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

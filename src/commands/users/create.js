@@ -1,7 +1,6 @@
-const { spinner } = require('../../ux/spinner');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const yargs = require('yargs');
 const { appId, privateKey } = require('../../credentialFlags');
-const { sdkError } = require('../../utils/sdkError');
 const { displayFullUser } = require('../../users/display');
 const { coerceUrl } = require('../../utils/coerceUrl');
 const { coerceJSON } = require('../../utils/coerceJson');
@@ -126,7 +125,10 @@ const validateSip = ({sipUrl, sipUsername, sipPassword}) => {
     return true;
   }
 
-  if (sipUsername.length > 0 && sipUsername.length !== sipPassword.length) {
+  if (!sipUsername
+    || !sipPassword
+    || sipUsername.length > 0 && sipUsername.length !== sipPassword.length
+  ) {
     yargs.exit(2);
     return false;
   }
@@ -153,12 +155,12 @@ const validateWss = ({websocketUrl, websocketHeaders, websocketContentType }) =>
     return true;
   }
 
-  if (websocketContentType.length > 0 && websocketContentType.length !==  websocketUrl.length) {
+  if (websocketContentType?.length > 0 && websocketContentType.length !==  websocketUrl.length) {
     yargs.exit(2);
     return false;
   }
 
-  if(websocketHeaders.length > 0 && websocketHeaders.length !== websocketUrl.length) {
+  if(websocketHeaders?.length > 0 && websocketHeaders.length !== websocketUrl.length) {
     yargs.exit(2);
     return false;
   }
@@ -172,8 +174,8 @@ const normalizeWss = ({websocketUrl, websocketHeaders, websocketContentType }) =
       ...acc,
       {
         url: url,
-        ...(websocketContentType[index] ? {contentType: websocketContentType[index]} : {}),
-        ...(websocketHeaders[index] ? {headers: websocketHeaders[index]} : {}),
+        ...((websocketContentType || [])[index] ? {contentType: websocketContentType[index]} : {}),
+        ...((websocketHeaders || [])[index] ? {headers: websocketHeaders[index]} : {}),
       },
     ],
     [],
@@ -194,6 +196,7 @@ exports.command = 'create';
 
 exports.desc = 'Create a user';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .options({
     ...userFlags,
@@ -203,6 +206,7 @@ exports.builder = (yargs) => yargs
 
 exports.handler = async (argv) => {
   console.info('Creating user');
+  const { SDK } = argv;
 
   if (!validateSip(argv)) {
     console.error('Invalid SIP configuration');
@@ -216,43 +220,28 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { SDK } = argv;
+  console.debug(argv);
+  const user = JSON.parse(JSON.stringify({
+    name: argv.name,
+    displayName: argv.displayName,
+    imageUrl: argv.imageUrl,
+    properties: {
+      customData: argv.customData,
+      ttl: argv.ttl,
+    },
+    channels: {
+      sip: normalizeSip(argv),
+      websocket: normalizeWss(argv),
+      pstn: argv.pstnNumber?.map((number) => ({ number: number })),
+      sms: argv.smsNumber?.map((number) => ({ number: number })),
+      mms: argv.mmsNumber?.map((number) => ({ number: number })),
+      whatsapp: argv.whatsAppNumber?.map((number) => ({ number: number})),
+      viber: argv.viberNumber?.map((number) => ({ number: number})),
+      messenger: argv.facebookMessengerId?.map((id) => ({ id: id})),
+    },
+  }));
 
-  const { stop, fail } = spinner({
-    message: 'Creating user',
-  });
-
-  let createdUser;
-  try {
-    const user = JSON.parse(JSON.stringify({
-      name: argv.name,
-      displayName: argv.displayName,
-      imageUrl: argv.imageUrl,
-      properties: {
-        customData: argv.customData,
-        ttl: argv.ttl,
-      },
-      channels: {
-        sip: normalizeSip(argv),
-        websocket: normalizeWss(argv),
-        pstn: argv.pstnNumber?.map((number) => ({ number: number })),
-        sms: argv.smsNumber?.map((number) => ({ number: number })),
-        mms: argv.mmsNumber?.map((number) => ({ number: number })),
-        whatsapp: argv.whatsAppNumber?.map((number) => ({ number: number})),
-        viber: argv.viberNumber?.map((number) => ({ number: number})),
-        messenger: argv.facebookMessengerId?.map((id) => ({ id: id})),
-      },
-    }));
-
-    console.debug('Creating user', user);
-    createdUser = await SDK.users.createUser(user);
-    console.debug('User created', createdUser);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  const createdUser = await makeSDKCall(SDK.users.createUser, 'Creating User', user);
 
   console.log('');
   displayFullUser(createdUser);

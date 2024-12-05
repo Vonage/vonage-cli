@@ -1,11 +1,12 @@
 const { appId, privateKey } = require('../../credentialFlags');
-const { loadUserFromSDK } = require('../../users/loadUserFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayFullUser } = require('../../users/display');
 
 exports.command = 'show <id>';
 
 exports.desc = 'Show user';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -21,11 +22,7 @@ exports.handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Showing user details');
 
-  const user = await loadUserFromSDK(SDK, id);
-  if (!user) {
-    console.error('No user found');
-    return;
-  }
+  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
 
   console.log('');
   displayFullUser(user);

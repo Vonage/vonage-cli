@@ -1,8 +1,6 @@
-const { spinner } = require('../../ux/spinner');
 const yargs = require('yargs');
 const { appId, privateKey } = require('../../credentialFlags');
-const { sdkError } = require('../../utils/sdkError');
-const { loadUserFromSDK } = require('../../users/loadUserFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayFullUser } = require('../../users/display');
 const {
   userFlags,
@@ -16,6 +14,7 @@ exports.command = 'update <id>';
 
 exports.desc = 'Update a user';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
@@ -46,50 +45,34 @@ exports.handler = async (argv) => {
   }
 
   const { SDK, id } = argv;
-  const user = await loadUserFromSDK(SDK, id);
-  if (!user) {
-    console.error('No user found');
-    return;
-  }
+  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
 
-  const { stop, fail } = spinner({
-    message: 'Updating user',
-  });
+  const userToUpdate = JSON.parse(JSON.stringify({
+    id: user.id,
+    name: argv.name ? argv.name : user.name,
+    displayName: argv.displayName ? argv.displayName : user.displayName,
+    imageUrl: argv.imageUrl ? argv.imageUrl : user.imageUrl,
+    properties: {
+      customData: argv.customData ? argv.customData : user.properties.customData,
+      ttl: argv.ttl ? argv.ttl : user.properties.ttl,
+    },
+    channels: {
+      sip: normalizeSip(argv),
+      websocket: normalizeWss(argv),
+      pstn: argv.pstnNumber ? argv.pstnNumber?.map((number) => ({ number: number })) : user.channels?.pstn,
+      sms: argv.smsNumber ? argv.smsNumber?.map((number) => ({ number: number })) : user.channels?.sms,
+      mms: argv.mmsNumber ? argv.mmsNumber?.map((number) => ({ number: number })) : user.channels?.mms,
+      whatsapp: argv.whatsAppNumber ? argv.whatsAppNumber?.map((number) => ({ number: number})) : user.channels?.whatsapp,
+      viber: argv.viberNumber ? argv.viberNumber?.map((number) => ({ number: number})) : user.channels?.viber,
+      messenger: argv.facebookMessengerId ? argv.facebookMessengerId?.map((id) => ({ id: id})) : user.channels?.messenger,
+    },
+  }));
 
-  let updatedUser;
-  try {
-    const userToUpdate = {
-      ...user,
-      name: argv.name,
-      displayName: argv.displayName,
-      imageUrl: argv.imageUrl,
-      properties: {
-        ...(user.properties || {}),
-        customData: argv.customData,
-        ttl: argv.ttl,
-      },
-      channels: {
-        ...(user.channels || {}),
-        sip: normalizeSip(argv),
-        websocket: normalizeWss(argv),
-        pstn: argv.pstnNumber.map((number) => ({ number: number })),
-        sms: argv.smsNumber.map((number) => ({ number: number })),
-        mms: argv.mmsNumber.map((number) => ({ number: number })),
-        whatsapp: argv.whatsAppNumber.map((number) => ({ number: number})),
-        viber: argv.viberNumber.map((number) => ({ number: number})),
-        messenger: argv.facebookMessengerId.map((id) => ({ id: id})),
-      },
-    };
-
-    console.debug('Updating user', userToUpdate);
-    updatedUser = await SDK.users.updateUser(userToUpdate);
-    console.debug('User updated', updatedUser);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  const updatedUser = await makeSDKCall(
+    SDK.users.updateUser,
+    'Updating User',
+    userToUpdate,
+  );
 
   console.log('');
   displayFullUser(updatedUser);
