@@ -40,7 +40,11 @@ exports.handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Unlinking number ${msisdn} to application ${id}`);
 
-  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const application = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
 
   const  numbers  = await loadOwnedNumbersFromSDK(
     SDK,
@@ -83,7 +87,7 @@ exports.handler = async (argv) => {
   const { appId, ...numberWithoutAppId } = number;
 
   await makeSDKCall(
-    SDK.numbers.updateNumber,
+    SDK.numbers.updateNumber.bind(SDK.numbers),
     'Unlinking number',
     numberWithoutAppId,
   );

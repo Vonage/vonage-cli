@@ -75,7 +75,7 @@ exports.handler = async (argv) => {
   };
 
   const newApplication = await makeSDKCall(
-    SDK.applications.createApplication,
+    SDK.applications.createApplication.bind(SDK.applications),
     'Creating Application',
     appData,
   );

@@ -47,7 +47,7 @@ exports.handler = async (argv) => {
   const { SDK, id } = argv;
 
   const app = await makeSDKCall(
-    SDK.applications.getApplication,
+    SDK.applications.getApplication.bind(SDK.applications),
     'Fetching Application',
     id,
   );
@@ -81,7 +81,7 @@ exports.handler = async (argv) => {
   if (changed) {
     console.debug('Changes detected applying updates');
     await makeSDKCall(
-      SDK.applications.updateApplication,
+      SDK.applications.updateApplication.bind(SDK.applications),
       'Updating Application',
       app,
     );

@@ -36,7 +36,11 @@ exports.handler = async (argv) => {
   const { id, SDK, fail } = argv;
   console.info(`Listing numbers linked to application ${id}`);
 
-  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const application = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
   const { totalNumbers, numbers } = await loadOwnedNumbersFromSDK(
     SDK,
     {

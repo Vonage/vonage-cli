@@ -40,7 +40,11 @@ exports.handler = async (argv) => {
   const { SDK, id, which } = argv;
   console.info(`Removing ${which} capability from application ${id}`);
 
-  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
   console.log('');
   console.debug(`Loaded application ${app.name} (${app.id})`);
   console.debug(`Current capabilities: ${getAppCapabilities(app).length}`);
@@ -56,7 +60,7 @@ exports.handler = async (argv) => {
   if (okToRemove) {
     app.capabilities[which === 'network_apis' ? 'networkApis' : which] = undefined;
     await makeSDKCall(
-      SDK.applications.updateApplication,
+      SDK.applications.updateApplication.bind(SDK.applications),
       `Removing ${which} capability from application ${id}`,
       app,
     );

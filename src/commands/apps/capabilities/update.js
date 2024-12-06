@@ -117,7 +117,11 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
   console.debug(`Loaded application ${app.name} (${app.id})`);
 
   if (!app.capabilities) {
@@ -129,7 +133,7 @@ exports.handler = async (argv) => {
   app.capabilities = clearRemoved(app.capabilities);
 
   await makeSDKCall(
-    SDK.applications.updateApplication,
+    SDK.applications.updateApplication.bind(SDK.applications),
     `Adding ${which} capability to application ${id}`,
     app,
   );

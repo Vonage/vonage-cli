@@ -45,7 +45,11 @@ exports.handler = async (argv) => {
   }
 
   const { SDK, id } = argv;
-  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
+  const user = await makeSDKCall(
+    SDK.users.getUser.bind(SDK.users),
+    'Fetching User',
+    id,
+  );
 
   const userToUpdate = JSON.parse(JSON.stringify({
     id: user.id,
@@ -69,7 +73,7 @@ exports.handler = async (argv) => {
   }));
 
   const updatedUser = await makeSDKCall(
-    SDK.users.updateUser,
+    SDK.users.updateUser.bind(SDK.users),
     'Updating User',
     userToUpdate,
   );

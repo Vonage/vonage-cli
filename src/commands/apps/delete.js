@@ -30,7 +30,11 @@ exports.handler = async (argv) => {
 
   const { SDK, id } = argv;
 
-  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
 
   const okToDelete = await confirm(`Delete application ${app.name} (${app.id})?`);
 
@@ -38,5 +42,9 @@ exports.handler = async (argv) => {
     return;
   }
 
-  await makeSDKCall(SDK.applications.deleteApplication, 'Deleting application', id);
+  await makeSDKCall(
+    SDK.applications.deleteApplication.bind(SDK.applications),
+    'Deleting application',
+    id,
+  );
 };

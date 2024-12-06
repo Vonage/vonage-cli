@@ -241,7 +241,11 @@ exports.handler = async (argv) => {
     },
   }));
 
-  const createdUser = await makeSDKCall(SDK.users.createUser, 'Creating User', user);
+  const createdUser = await makeSDKCall(
+    SDK.users.createUser.bind(SDK.users),
+    'Creating User',
+    user,
+  );
 
   console.log('');
   displayFullUser(createdUser);

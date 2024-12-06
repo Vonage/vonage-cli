@@ -41,7 +41,11 @@ exports.handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Linking number ${msisdn} to application ${id}`);
 
-  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
 
   const numbers = await loadOwnedNumbersFromSDK(
     SDK,
@@ -85,7 +89,7 @@ exports.handler = async (argv) => {
 
   number.appId = id;
   await makeSDKCall(
-    SDK.numbers.updateNumber,
+    SDK.numbers.updateNumber.bind(SDK.numbers),
     'Linking number',
     number,
   );

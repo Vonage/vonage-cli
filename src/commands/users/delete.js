@@ -24,7 +24,11 @@ exports.handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Deleting user');
 
-  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
+  const user = await makeSDKCall(
+    SDK.users.getUser.bind(SDK.users),
+    'Fetching User',
+    id,
+  );
 
   const okToDelete = await confirm('Are you sure you want to delete this user?');
 

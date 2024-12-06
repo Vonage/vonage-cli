@@ -133,7 +133,11 @@ exports.handler = async (argv) => {
   const { id, SDK, linkedNumbers } = argv;
   console.info(`Validating application ${id}`);
 
-  const application = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const application = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
 
   console.debug(`Application ${application.name} loaded`);
   let allCapabilitiesValid = true;

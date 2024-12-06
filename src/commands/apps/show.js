@@ -33,7 +33,11 @@ exports.handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);
   const { SDK, id } = argv;
 
-  const app = await makeSDKCall(SDK.applications.getApplication, 'Fetching Application', id);
+  const app = await makeSDKCall(
+    SDK.applications.getApplication.bind(SDK.applications),
+    'Fetching Application',
+    id,
+  );
 
   if (argv.yaml) {
     console.log(YAML.stringify(

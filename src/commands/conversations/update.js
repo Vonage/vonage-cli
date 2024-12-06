@@ -13,6 +13,7 @@ exports.command = 'update <id>';
 
 exports.desc = 'Update conversation';
 
+/* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',

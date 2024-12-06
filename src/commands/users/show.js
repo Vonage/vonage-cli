@@ -22,7 +22,11 @@ exports.handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Showing user details');
 
-  const user = await makeSDKCall(SDK.users.getUser, 'Fetching User', id);
+  const user = await makeSDKCall(
+    SDK.users.getUser.bind(SDK.users),
+    'Fetching User',
+    id,
+  );
 
   console.log('');
   displayFullUser(user);

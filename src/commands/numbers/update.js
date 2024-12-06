@@ -86,7 +86,7 @@ exports.handler = async (argv) => {
   numberToUpdate.voiceStatusCallback = argv.voiceStatusCallback;
 
   await makeSDKCall(
-    SDK.numbers.updateNumber,
+    SDK.numbers.updateNumber.bind(SDK.numbers),
     'Updating number',
     numberToUpdate,
   );
