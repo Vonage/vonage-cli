@@ -1,12 +1,9 @@
-const { spinner } = require('../../ux/spinner');
 const merge = require('deepmerge');
 const { conversationFlags, validateEvents } = require('./create');
 const { appId, privateKey } = require('../../credentialFlags');
 const { force } = require('../../commonFlags');
-const { sdkError } = require('../../utils/sdkError');
 const { displayConversation } = require('../../conversations/display');
-const { loadConversationFromSDK } = require('../../conversations/loadConversationFromSDK');
-const { unsetRemove, coerceRemove, coerceRemoveCallback } = require('../../utils/coerceRemove');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const yargs = require('yargs');
 
 exports.command = 'update <id>';
@@ -25,44 +22,67 @@ exports.builder = (yargs) => yargs
     ...conversationFlags,
     'display-name': {
       ...conversationFlags['display-name'],
-      coerce: coerceRemove,
     },
     'image-url': {
       ...conversationFlags['image-url'],
-      coerce: coerceRemoveCallback(conversationFlags['image-url'].coerce),
+      coerce: conversationFlags['image-url'].coerce,
     },
     'ttl': {
       ...conversationFlags['ttl'],
-      coerce: coerceRemove,
     },
     'custom-data': {
       ...conversationFlags['custom-data'],
-      coerce: coerceRemoveCallback(conversationFlags['custom-data'].coerce),
+      coerce: conversationFlags['custom-data'].coerce,
     },
     'callback-url': {
       ...conversationFlags['callback-url'],
-      coerce: coerceRemoveCallback(conversationFlags['callback-url'].coerce),
+      coerce: conversationFlags['callback-url'].coerce,
     },
     'callback-event-mask': {
       ...conversationFlags['callback-event-mask'],
-      coerce: coerceRemove,
     },
     'callback-application-id': {
       ...conversationFlags['callback-application-id'],
-      coerce: coerceRemove,
     },
     'callback-ncco-url': {
       ...conversationFlags['callback-ncco-url'],
-      coerce: coerceRemoveCallback(conversationFlags['callback-ncco-url'].coerce),
+      coerce: conversationFlags['callback-ncco-url'].coerce,
     },
     'app-id': appId,
     'private-key': privateKey,
     'force': force,
   });
 
+const updateCallback = ({
+  callbackEventMask,
+  callbackUrl,
+  callbackMethod,
+  ...rest
+}) => {
+  const callback = JSON.parse(JSON.stringify({
+    eventMask: callbackEventMask?.join(','),
+    method: callbackMethod,
+    url: callbackUrl,
+    params: updateParams(rest),
+  }));
+
+  return Object.keys(callback).length > 0 ? callback : undefined ;
+};
+
+const updateParams = ({
+  callbackApplicationId,
+  callbackNccoUrl,
+}) => {
+  const params = JSON.parse(JSON.stringify({
+    applicationId: callbackApplicationId,
+    nccoUrl: callbackNccoUrl,
+  }));
+
+  return Object.keys(params).length > 0 ? params : undefined ;
+};
 
 exports.handler = async (argv) => {
-  console.info('Creating conversation');
+  console.info('Updating conversation');
   const { SDK, callbackEventMask } = argv;
 
   if (!await validateEvents(callbackEventMask)) {
@@ -70,48 +90,34 @@ exports.handler = async (argv) => {
     yargs.exit(1);
     return;
   }
-
-  const conversation = unsetRemove(
-    merge(
-      await loadConversationFromSDK(SDK, argv.id),
-      {
-        name: argv.name,
-        displayName: argv.displayName,
-        imageUrl: argv.imageUrl,
-        properties: {
-          ttl: argv.ttl,
-          customData: argv.customData,
-        },
-        callback: {
-          url: argv.callbackUrl,
-          method: argv.callbackMethod,
-          eventMask: callbackEventMask ? callbackEventMask.join(',') : undefined,
-          params: {
-            applicationId: argv.callbackApplicationId,
-            nccoUrl: argv.callbackNccoUrl,
-          },
-        },
-      },
-    ),
-    true,
+  const conversation = await makeSDKCall(
+    SDK.conversations.getConversation.bind(SDK.conversations),
+    'Fetching conversation',
+    argv.id,
   );
 
-  const { stop, fail } = spinner({
-    message: 'Updateing conversation',
-  });
+  const conversationToUpdate = {
+    id: conversation.id,
+    displayName: argv.displayName || conversation.displayName,
+    name: argv.name || conversation.name,
+    imageUrl: argv.imageUrl || conversation.imageUrl,
+    properties: merge(conversation.properties, {
+      ttl: argv.ttl || conversation.properties?.ttl,
+      customData: argv.customData || conversation.properties?.customData,
+    }),
+    callback: updateCallback(argv),
+  };
 
-  let updatedConversation;
-  try {
-    console.debug('Updating conversation', conversation);
-    updatedConversation = await SDK.conversations.updateConversation(conversation);
-    console.debug('Conversation updated', updatedConversation);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  console.debug('Updated conversation', conversationToUpdate);
+  const updatedConversation = makeSDKCall(
+    SDK.conversations.updateConversation.bind(SDK.conversations),
+    'Updating conversation',
+    conversationToUpdate,
+  );
 
   console.log('');
-  displayConversation(updatedConversation);
+  displayConversation({
+    ...conversation,
+    ...updatedConversation,
+  });
 };

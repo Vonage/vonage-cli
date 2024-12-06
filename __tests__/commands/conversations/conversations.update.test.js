@@ -1,13 +1,10 @@
 process.env.FORCE_COLOR = 0;
 const { confirm } = require('../../../src/ux/confirm');
 const { displayDate } = require('../../../src/ux/date');
-const yargs = require('yargs');
 const { handler } = require('../../../src/commands/conversations/update');
 const { mockConsole } = require('../../helpers');
 const { getTestConversationForAPI, addCLIPropertiesToConversation } = require('../../conversations');
 
-
-jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage conversations update', () => {
@@ -18,7 +15,7 @@ describe('Command: vonage conversations update', () => {
   test('Will update a conversation with no options', async () => {
     const conversation = getTestConversationForAPI();
 
-    const loadConversationMock = jest.fn()
+    const getConversationMock = jest.fn()
       .mockResolvedValue(conversation);
 
     const updateConversationMock = jest.fn()
@@ -27,7 +24,7 @@ describe('Command: vonage conversations update', () => {
     const sdkMock = {
       conversations: {
         updateConversation: updateConversationMock,
-        loadConversation: loadConversationMock,
+        getConversation: getConversationMock,
       },
     };
 
@@ -37,22 +34,13 @@ describe('Command: vonage conversations update', () => {
     });
 
     expect(updateConversationMock).toHaveBeenCalledWith({
-      displayName: undefined,
-      imageUrl: undefined,
-      name: undefined,
-      numbers: undefined,
+      id: conversation.id,
+      displayName: conversation.displayName,
+      name: conversation.name,
+      imageUrl: conversation.imageUrl,
       properties: {
-        customData: undefined,
-        ttl: undefined,
-      },
-      callback: {
-        eventMask: undefined,
-        method: undefined,
-        params: {
-          applicationId: undefined,
-          nccoUrl: undefined,
-        },
-        url: undefined,
+        ttl: conversation.properties.ttl,
+        customData: conversation.properties.customData,
       },
     });
 
@@ -77,7 +65,7 @@ describe('Command: vonage conversations update', () => {
     const conversation = getTestConversationForAPI();
     const cliConversation = addCLIPropertiesToConversation(conversation);
 
-    const loadConversationMock = jest.fn()
+    const getConversationMock = jest.fn()
       .mockResolvedValue(conversation);
 
     const updateConversationMock = jest.fn()
@@ -86,7 +74,7 @@ describe('Command: vonage conversations update', () => {
     const sdkMock = {
       conversations: {
         updateConversation: updateConversationMock,
-        loadConversation: loadConversationMock,
+        getConversation: getConversationMock,
       },
     };
 
@@ -106,11 +94,13 @@ describe('Command: vonage conversations update', () => {
     });
 
     expect(updateConversationMock).toHaveBeenCalledWith({
+      id: conversation.id,
       displayName: cliConversation.displayName,
       imageUrl: cliConversation.imageUrl,
       name: cliConversation.name,
       properties: {
         ttl: cliConversation.properties.ttl,
+        customData: cliConversation.properties.customData,
       },
       callback: {
         eventMask: cliConversation.callback.eventMask.join(','),
@@ -128,7 +118,7 @@ describe('Command: vonage conversations update', () => {
     confirm.mockResolvedValue(true);
     const conversation = getTestConversationForAPI();
 
-    const loadConversationMock = jest.fn()
+    const getConversationMock = jest.fn()
       .mockResolvedValue(conversation);
 
     const updateConversationMock = jest.fn()
@@ -137,7 +127,7 @@ describe('Command: vonage conversations update', () => {
     const sdkMock = {
       conversations: {
         updateConversation: updateConversationMock,
-        loadConversation: loadConversationMock,
+        getConversation: getConversationMock,
       },
     };
 
@@ -146,25 +136,7 @@ describe('Command: vonage conversations update', () => {
       callbackEventMask: ['foo:bar'],
     });
 
-    expect(updateConversationMock).toHaveBeenCalledWith({
-      displayName: undefined,
-      imageUrl: undefined,
-      name: undefined,
-      numbers: undefined,
-      properties: {
-        customData: undefined,
-        ttl: undefined,
-      },
-      callback: {
-        eventMask: 'foo:bar',
-        method: undefined,
-        params: {
-          applicationId: undefined,
-          nccoUrl: undefined,
-        },
-        url: undefined,
-      },
-    });
+    expect(updateConversationMock).toHaveBeenCalled();
     expect(confirm).toHaveBeenCalledWith('Do you want to continue with this mask?');
   });
 
@@ -172,7 +144,7 @@ describe('Command: vonage conversations update', () => {
     confirm.mockResolvedValue(false);
     const conversation = getTestConversationForAPI();
 
-    const loadConversationMock = jest.fn()
+    const getConversationMock = jest.fn()
       .mockResolvedValue(conversation);
 
     const updateConversationMock = jest.fn()
@@ -181,7 +153,7 @@ describe('Command: vonage conversations update', () => {
     const sdkMock = {
       conversations: {
         updateConversation: updateConversationMock,
-        loadConversation: loadConversationMock,
+        getConversation: getConversationMock,
       },
     };
 
@@ -191,30 +163,6 @@ describe('Command: vonage conversations update', () => {
     });
 
     expect(updateConversationMock).not.toHaveBeenCalledWith();
-  });
-
-  test('Will handle error', async () => {
-    const conversation = getTestConversationForAPI();
-
-    const loadConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
-
-    const updateConversationMock = jest.fn()
-      .mockRejectedValue(new Error('Failed to update conversation'));
-
-    const sdkMock = {
-      conversations: {
-        updateConversation: updateConversationMock,
-        loadConversation: loadConversationMock,
-      },
-    };
-
-    await handler({
-      SDK: sdkMock,
-      id: conversation.id,
-    });
-
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });
 

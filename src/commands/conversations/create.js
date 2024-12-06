@@ -1,14 +1,13 @@
-const { spinner } = require('../../ux/spinner');
 const { confirm } = require('../../ux/confirm');
 const { suggest } = require('@laboralphy/did-you-mean');
 const { EventType } = require('@vonage/conversations');
 const { appId, privateKey } = require('../../credentialFlags');
 const { force } = require('../../commonFlags');
-const { sdkError } = require('../../utils/sdkError');
 const { displayConversation } = require('../../conversations/display');
 const { coerceUrl } = require('../../utils/coerceUrl');
 const { coerceJSON } = require('../../utils/coerceJson');
 const yargs = require('yargs');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 const conversationEvents = Object.values(EventType);
 
@@ -126,48 +125,40 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { stop, fail } = spinner({
-    message: 'Creating conversation',
-  });
-
-  let createdConversation;
-  try {
-    const conversation = {
-      name: argv.name,
-      displayName: argv.displayName,
-      imageUrl: argv.imageUrl,
-      properties: {
-        ttl: argv.ttl,
-        customData: argv.customData,
-      },
-      numbers: argv.phoneNumber
-        ? [
-          {
-            type: 'phone',
-            number: argv.phoneNumber,
-          },
-        ]
-        : undefined,
-      callback: {
-        url: argv.callbackUrl,
-        method: argv.callbackMethod,
-        eventMask: callbackEventMask ? callbackEventMask.join(',') : undefined,
-        params: {
-          applicationId: argv.callbackApplicationId,
-          nccoUrl: argv.callbackNccoUrl,
+  const conversation = {
+    name: argv.name,
+    displayName: argv.displayName,
+    imageUrl: argv.imageUrl,
+    properties: {
+      ttl: argv.ttl,
+      customData: argv.customData,
+    },
+    numbers: argv.phoneNumber
+      ? [
+        {
+          type: 'phone',
+          number: argv.phoneNumber,
         },
+      ]
+      : undefined,
+    callback: {
+      url: argv.callbackUrl,
+      method: argv.callbackMethod,
+      eventMask: callbackEventMask ? callbackEventMask.join(',') : undefined,
+      params: {
+        applicationId: argv.callbackApplicationId,
+        nccoUrl: argv.callbackNccoUrl,
       },
-    };
+    },
+  };
 
-    console.debug('Creating conversation', conversation);
-    createdConversation = await SDK.conversations.createConversation(conversation);
-    console.debug('Conversation created', createdConversation);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  console.debug('Creating conversation', conversation);
+  const createdConversation = await makeSDKCall(
+    SDK.conversations.createConversation.bind(SDK.conversations),
+    'Creating conversation',
+    conversation,
+  );
+  console.debug('Conversation created', createdConversation);
 
   console.log('');
   displayConversation(createdConversation);

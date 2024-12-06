@@ -1,11 +1,9 @@
 process.env.FORCE_COLOR = 0;
 const { confirm } = require('../../../src/ux/confirm');
-const yargs = require('yargs');
 const { handler } = require('../../../src/commands/conversations/delete');
 const { mockConsole } = require('../../helpers');
 const { getTestConversationForAPI } = require('../../conversations');
 
-jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage conversations delete', () => {
@@ -65,27 +63,5 @@ describe('Command: vonage conversations delete', () => {
       1,
       'Conversation not deleted',
     );
-  });
-
-  test('Will handle an error', async () => {
-    confirm.mockResolvedValueOnce(true);
-    const conversation = getTestConversationForAPI();
-
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
-    const deleteConversationMock = jest.fn()
-      .mockRejectedValueOnce(new Error('An error occurred'));
-
-    const sdkMock = {
-      conversations: {
-        getConversation: conversationMock,
-        deleteConversation: deleteConversationMock,
-      },
-    };
-
-    await handler({ SDK: sdkMock, id: conversation.id });
-    expect(console.log).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

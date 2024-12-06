@@ -2,14 +2,12 @@ process.env.FORCE_COLOR = 0;
 const { confirm } = require('../../../src/ux/confirm');
 const { EventType } = require('@vonage/conversations');
 const { displayDate } = require('../../../src/ux/date');
-const yargs = require('yargs');
 const { handler } = require('../../../src/commands/conversations/create');
 const { mockConsole } = require('../../helpers');
 const { getTestConversationForAPI, addCLIPropertiesToConversation } = require('../../conversations');
 
 const conversationEvents = Object.values(EventType);
 
-jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage conversations create', () => {
@@ -257,22 +255,5 @@ describe('Command: vonage conversations create', () => {
     });
 
     expect(conversationMock).not.toHaveBeenCalled();
-  });
-
-  test('Will handle SDK error', async () => {
-
-    const conversationMock = jest.fn()
-      .mockRejectedValue(new Error('SDK Error'));
-
-    const sdkMock = {
-      conversations: {
-        createConversation: conversationMock,
-      },
-    };
-
-    await handler({ SDK: sdkMock });
-
-    expect(conversationMock).toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

@@ -1,5 +1,5 @@
 const { appId, privateKey } = require('../../credentialFlags');
-const { loadConversationFromSDK } = require('../../conversations/loadConversationFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { displayConversation } = require('../../conversations/display');
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
 
@@ -21,7 +21,12 @@ exports.handler = async (argv) => {
   const { SDK, conversationId } = argv;
   console.info('Showing conversation details');
 
-  const conversation = await loadConversationFromSDK(SDK, conversationId);
+  const conversation = await makeSDKCall(
+    SDK.conversations.getConversation.bind(SDK.conversations),
+    'Fetching conversation',
+    conversationId,
+  );
+
   if (!conversation) {
     console.error('No conversation found');
     return;
