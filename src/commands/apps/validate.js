@@ -152,7 +152,7 @@ exports.handler = async (argv) => {
     },
   );
 
-  const appNumbers = numbers.map(({msisdn}) => msisdn);
+  const appNumbers = numbers?.map(({msisdn}) => msisdn);
   if (linkedNumbers) {
     console.info('Fetching numbers linked to application');
 
