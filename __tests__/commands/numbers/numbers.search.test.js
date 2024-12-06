@@ -39,7 +39,12 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, SDK: sdkMock});
+    await handler({
+      country: country,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
@@ -75,7 +80,12 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({ country: country, SDK: sdkMock});
+    await handler({
+      country: country,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledTimes(1);
 
@@ -89,6 +99,7 @@ describe('Command: vonage numbers search', () => {
       2,
       `There are no matching numbers available for purchase in ${getCountryName(country)}`,
     );
+
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       'Try to broaden your search criteria',
@@ -121,7 +132,13 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, json: true, SDK: sdkMock});
+    await handler({
+      country: country,
+      json: true,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(console.log).toHaveBeenCalledWith(
       JSON.stringify(
@@ -146,7 +163,13 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, json: true, SDK: sdkMock});
+    await handler({
+      country: country,
+      json: true,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(console.log).toHaveBeenCalledWith('[]');
   });
@@ -175,7 +198,13 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, yaml: true, SDK: sdkMock});
+    await handler({
+      country: country,
+      yaml: true,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(console.log).toHaveBeenCalledWith(
       yaml.stringify(
@@ -200,7 +229,13 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, yaml: true, SDK: sdkMock});
+    await handler({
+      country: country,
+      yaml: true,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(console.log).toHaveBeenCalledWith('[]\n');
   });
@@ -230,7 +265,14 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, searchPattern: 'contains', pattern: pattern, SDK: sdkMock});
+    await handler({
+      country: country,
+      searchPattern: 'contains',
+      pattern: pattern,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
@@ -283,7 +325,14 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, searchPattern: 'starts', pattern: pattern, SDK: sdkMock});
+    await handler({
+      country: country,
+      searchPattern: 'starts',
+      pattern: pattern,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
@@ -337,7 +386,14 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({
+      country: country,
+      searchPattern: 'ends',
+      pattern: pattern,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
@@ -390,7 +446,15 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({type: 'mobile-lvn', country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({
+      type: 'mobile-lvn',
+      country: country,
+      searchPattern: 'ends',
+      pattern: pattern,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       type: 'mobile-lvn',
@@ -443,7 +507,16 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({features: ['MMS'], country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({
+      features: ['MMS'],
+      country: country,
+      searchPattern: 'ends',
+      pattern: pattern,
+      SDK: sdkMock,
+
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       features: 'MMS',
@@ -497,7 +570,15 @@ describe('Command: vonage numbers search', () => {
       },
     };
 
-    await handler({features: ['MMS', 'SMS', 'VOICE'], country: country, searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({
+      features: ['MMS', 'SMS', 'VOICE'],
+      country: country,
+      searchPattern: 'ends',
+      pattern: pattern,
+      SDK: sdkMock,
+      page: 1,
+      limit: 100,
+    });
 
     expect(numbersMock).toHaveBeenCalledWith({
       features: 'MMS,SMS,VOICE',

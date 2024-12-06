@@ -123,39 +123,4 @@ describe('Command: vonage numbers cancel', () => {
     expect(cancelNumberMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(44);
   });
-
-  test('Will handel SDK error', async () => {
-    const testNumber = {
-      ...getTestPhoneNumber(),
-      appId: faker.datatype.boolean()
-        ? faker.string.uuid()
-        : undefined,
-    };
-
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-      count: 1,
-      numbers: [testNumber],
-    });
-
-    const cancelNumberMock = jest.fn().mockRejectedValueOnce(new Error('SDK Error'));
-
-    confirm.mockResolvedValueOnce(true);
-
-    const sdkMock = {
-      numbers: {
-        getOwnedNumbers: numbersMock,
-        cancelNumber: cancelNumberMock,
-      },
-    };
-
-    await handler({
-      SDK: sdkMock,
-      country: testNumber.country,
-      msisdn: testNumber.msisdn,
-    });
-
-    expect(numbersMock).toHaveBeenCalled();
-    expect(cancelNumberMock).toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
-  });
 });

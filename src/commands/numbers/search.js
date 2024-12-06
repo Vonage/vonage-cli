@@ -3,9 +3,7 @@ const { displayNumbers } = require('../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../ux/dump');
 const { searchPatterns } = require('../../numbers/loadOwnedNumbersFromSDK');
-const {
-  searchForNumbersFromSDK,
-} = require('../../numbers/seachForNumbersFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { yaml, json } = require('../../commonFlags');
 const { countryFlag, getCountryName } = require('../../utils/countries');
@@ -64,22 +62,25 @@ exports.handler = async (argv) => {
   console.info('Search for numbers');
   console.debug(features);
 
-  const { totalNumbers, numbers } = await searchForNumbersFromSDK(
-    SDK,
+  const { count, numbers } = await makeSDKCall(
+    SDK.numbers.getAvailableNumbers.bind(SDK.numbers),
+    'Searching for numbers',
     {
       type: type,
       pattern: pattern,
-      searchPattern: searchPattern,
+      searchPattern: searchPatterns[searchPattern],
       country: country,
-      features: features,
+      features: features?.join(','),
       size: limit,
       index: page,
     },
   );
 
+  const totalNumbers = count || 0;
+
   if (argv.yaml) {
     console.log(YAML.stringify(
-      (numbers).map(
+      (numbers || []).map(
         (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
       ),
       null,
@@ -90,7 +91,7 @@ exports.handler = async (argv) => {
 
   if (argv.json) {
     console.log(JSON.stringify(
-      (numbers).map(
+      (numbers || []).map(
         (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
       ),
       null,

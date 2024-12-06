@@ -1,7 +1,6 @@
 const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
 const yargs = require('yargs');
-const { spinner } = require('../../ux/spinner');
-const { sdkError } = require('../../utils/sdkError');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { confirm } = require('../../ux/confirm');
 const { dumpCommand } = require('../../ux/dump');
 const { apiKey, apiSecret } = require('../../credentialFlags');
@@ -73,19 +72,14 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const { stop, fail } = spinner({message: 'Cancelling number'});
-  try {
-    await SDK.numbers.cancelNumber({
+  await makeSDKCall(
+    SDK.numbers.cancelNumber.bind(SDK.numbers),
+    'Cancelling number',
+    {
       country: country,
       msisdn: numberToCancel.msisdn,
     });
-    console.info(`Number ${numberToCancel.msisdn} has been cancelled`);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  console.info(`Number ${numberToCancel.msisdn} has been cancelled`);
 
   console.log('');
   console.log('Number cancelled');

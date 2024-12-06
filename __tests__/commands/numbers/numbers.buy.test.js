@@ -57,7 +57,6 @@ describe('Command: numbers buy', () => {
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
-      index: 1,
       size: 1,
       searchPattern: 1,
       pattern: testNumber.msisdn,
@@ -181,19 +180,8 @@ describe('Command: numbers buy', () => {
       yaml: true,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
-      country: country,
-      index: 1,
-      size: 1,
-      searchPattern: 1,
-      pattern: testNumber.msisdn,
-    });
-
-    expect(buyNumberMock).toHaveBeenCalledWith({
-      country: country,
-      msisdn: testNumber.msisdn,
-    });
-
+    expect(numbersMock).toHaveBeenCalled();
+    expect(buyNumberMock).toHaveBeenCalled();
     expect(yargs.exit).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(

@@ -1,16 +1,12 @@
 const YAML = require('yaml');
 const yargs = require('yargs');
-const { spinner } = require('../../ux/spinner');
-const { sdkError } = require('../../utils/sdkError');
 const { confirm } = require('../../ux/confirm');
 const { descriptionList } = require('../../ux/descriptionList');
 const { displayCurrency } = require('../../ux/currency');
 const { displayFullNumber } = require('../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../ux/dump');
-const {
-  searchForNumbersFromSDK,
-} = require('../../numbers/seachForNumbersFromSDK');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { yaml, json, force } = require('../../commonFlags');
 const { countryFlag } = require('../../utils/countries');
@@ -57,18 +53,18 @@ exports.handler = async (argv) => {
   const { SDK, country, msisdn} = argv;
   console.info('Purchase a number');
 
-  const { numbers } = await searchForNumbersFromSDK(
-    SDK,
+  const { numbers } = await makeSDKCall(
+    SDK.numbers.getAvailableNumbers.bind(SDK.numbers),
+    'Searching for numbers',
     {
-      message: 'Checking if number is available',
       pattern: msisdn,
-      searchPattern: 'contains',
+      searchPattern: 1,
       country: country,
       size: 1,
     },
   );
 
-  const numberToPurchase = numbers[0];
+  const numberToPurchase = numbers ? numbers[0] : null;
   console.debug('Nubmer to purchase:', numberToPurchase);
 
   if (!numberToPurchase) {
@@ -86,19 +82,14 @@ exports.handler = async (argv) => {
 
   console.log('');
 
-  const { stop, fail } = spinner({message: 'Purchasing number'});
-
-  try {
-    await SDK.numbers.buyNumber({
+  await makeSDKCall(
+    SDK.numbers.buyNumber.bind(SDK.numbers),
+    'Purchasing number',
+    {
       country: country,
       msisdn: msisdn,
-    });
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+    },
+  );
 
   if (argv.yaml) {
     console.log(YAML.stringify(

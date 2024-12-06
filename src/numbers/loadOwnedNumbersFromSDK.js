@@ -67,6 +67,7 @@ const loadOwnedNumbersFromSDK = async (
     };
   } catch (error) {
     sdkError(error);
+    return {};
   } finally {
     finished();
   }
