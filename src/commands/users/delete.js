@@ -1,8 +1,6 @@
 const { appId, privateKey } = require('../../credentialFlags');
 const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { spinner } = require('../../ux/spinner');
 const { confirm } = require('../../ux/confirm');
-const { sdkError } = require('../../utils/sdkError');
 
 exports.command = 'delete <id>';
 
@@ -37,15 +35,11 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const {stop, fail} = spinner({message: 'Deleting user'});
-
-  try {
-    await SDK.users.deleteUser(user.id);
-    stop();
-    console.log('');
-    console.log('User deleted');
-  } catch (error) {
-    fail();
-    sdkError(error);
-  }
+  await makeSDKCall(
+    SDK.users.deleteUser.bind(SDK.users),
+    'Deleting user',
+    user.id,
+  );
+  console.log('');
+  console.log('User deleted');
 };
