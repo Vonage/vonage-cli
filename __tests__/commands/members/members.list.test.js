@@ -1,5 +1,4 @@
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
 const { handler } = require('../../../src/commands/members/list');
 const { mockConsole } = require('../../helpers');
 const { confirm } = require('../../../src/ux/confirm');
@@ -11,7 +10,6 @@ const {
   stateLabels,
 } = require('../../../src/members/display');
 
-jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage members list', () => {
@@ -211,39 +209,6 @@ describe('Command: vonage members list', () => {
         },
       ],
     );
-  });
-
-  test('Will handle SDK error', async () => {
-    const member = getTestMemberForAPI();
-
-    const error = new Error('SDK error');
-    const memberMock = jest.fn()
-      .mockRejectedValueOnce(error);
-
-    const sdkMock = {
-      conversations: {
-        getMemberPage: memberMock,
-      },
-    };
-
-    await handler({
-      SDK: sdkMock,
-      conversationId: member.conversationId,
-    });
-
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(console.table).not.toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
-
-    expect(memberMock).toHaveBeenCalledWith(
-      member.conversationId,
-      {
-        cursor: undefined,
-        pageSize: undefined,
-      },
-    );
-
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });
 

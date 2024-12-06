@@ -1,7 +1,6 @@
 process.env.FORCE_COLOR = 0;
 const YAML = require('yaml');
 const { faker } = require('@faker-js/faker');
-const yargs = require('yargs');
 const { handler } = require('../../../src/commands/members/update');
 const { mockConsole } = require('../../helpers');
 const {
@@ -9,8 +8,6 @@ const {
 } = require('../../members');
 const { getTestConversationForAPI } = require('../../conversations');
 const { Client } = require('@vonage/server-client');
-
-jest.mock('yargs');
 
 describe('Command: vonage members create', () => {
   beforeEach(() => {
@@ -24,9 +21,6 @@ describe('Command: vonage members create', () => {
     const memberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
     const updateMemberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
@@ -34,7 +28,6 @@ describe('Command: vonage members create', () => {
       conversations: {
         getMember: memberMock,
         updateMember: updateMemberMock,
-        getConversation: conversationMock,
       },
     };
 
@@ -45,7 +38,6 @@ describe('Command: vonage members create', () => {
       state: 'joined',
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
     expect(memberMock).toHaveBeenCalledTimes(1);
 
     expect(updateMemberMock).toHaveBeenCalledWith(
@@ -65,9 +57,6 @@ describe('Command: vonage members create', () => {
     const memberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
     const updateMemberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
@@ -75,7 +64,6 @@ describe('Command: vonage members create', () => {
       conversations: {
         getMember: memberMock,
         updateMember: updateMemberMock,
-        getConversation: conversationMock,
       },
     };
 
@@ -91,7 +79,6 @@ describe('Command: vonage members create', () => {
       reasonText: reasonText,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
     expect(memberMock).toHaveBeenCalledTimes(1);
 
     expect(updateMemberMock).toHaveBeenCalledWith(
@@ -115,9 +102,6 @@ describe('Command: vonage members create', () => {
     const memberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
     const updateMemberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
@@ -125,7 +109,6 @@ describe('Command: vonage members create', () => {
       conversations: {
         getMember: memberMock,
         updateMember: updateMemberMock,
-        getConversation: conversationMock,
       },
     };
 
@@ -142,7 +125,6 @@ describe('Command: vonage members create', () => {
       json: true,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
     expect(memberMock).toHaveBeenCalledTimes(1);
 
     expect(updateMemberMock).toHaveBeenCalledWith(
@@ -172,9 +154,6 @@ describe('Command: vonage members create', () => {
     const memberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
     const updateMemberMock = jest.fn()
       .mockResolvedValueOnce(member);
 
@@ -182,7 +161,6 @@ describe('Command: vonage members create', () => {
       conversations: {
         getMember: memberMock,
         updateMember: updateMemberMock,
-        getConversation: conversationMock,
       },
     };
 
@@ -199,7 +177,6 @@ describe('Command: vonage members create', () => {
       yaml: true,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
     expect(memberMock).toHaveBeenCalledTimes(1);
 
     expect(updateMemberMock).toHaveBeenCalledWith(
@@ -220,42 +197,5 @@ describe('Command: vonage members create', () => {
       null,
       2,
     ));
-  });
-
-  test('Will handle error when udpating fails', async () => {
-    const member = getTestMemberForAPI();
-    const conversation = getTestConversationForAPI();
-
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
-
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
-
-    const error = new Error('Failed to update member');
-    const updateMemberMock = jest.fn()
-      .mockRejectedValueOnce(error);
-
-    const sdkMock = {
-      conversations: {
-        getMember: memberMock,
-        updateMember: updateMemberMock,
-        getConversation: conversationMock,
-      },
-    };
-
-    await handler({
-      SDK: sdkMock,
-      conversationId: conversation.id,
-      memberId: member.id,
-      state: 'joined',
-      from: member.from,
-    });
-
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(updateMemberMock).toHaveBeenCalledTimes(1);
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

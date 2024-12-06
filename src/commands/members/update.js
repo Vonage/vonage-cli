@@ -1,13 +1,10 @@
 const YAML = require('yaml');
 const { appId, privateKey } = require('../../credentialFlags');
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { loadMemberFromSDK } = require('../../members/loadMemberFromSdk');
-const { loadConversationFromSDK } = require('../../conversations/loadConversationFromSdk');
-const { spinner } = require('../../ux/spinner');
-const { sdkError } = require('../../utils/sdkError');
 const { yaml, json, force } = require('../../commonFlags');
 const { displayFullMember } = require('../../members/display');
 const { Client } = require('@vonage/server-client');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 exports.command = 'update <conversation-id> <member-id>';
 
@@ -58,34 +55,29 @@ exports.handler = async (argv) => {
   console.info('Update member');
   const { SDK, conversationId, memberId } = argv;
 
-  await loadConversationFromSDK(SDK, conversationId);
-  await loadMemberFromSDK(SDK, conversationId, memberId);
+  await makeSDKCall(
+    SDK.conversations.getMember.bind(SDK.conversations),
+    'Fetching member',
+    conversationId,
+    memberId,
+  );
 
-  let updatedMember;
+  const updatedMember = await makeSDKCall(
+    SDK.conversations.updateMember.bind(SDK.conversations),
+    'Updating member',
+    conversationId,
+    memberId,
+    JSON.parse(JSON.stringify({
+      state: argv.state,
+      from: argv.from,
+      reason: {
+        code: argv.reasonCode,
+        text: argv.reasonText,
+      },
+    })),
+  );
 
-  const { stop, fail } = spinner({
-    message: 'Updating member',
-  });
-
-  try {
-    updatedMember = await SDK.conversations.updateMember(
-      conversationId,
-      memberId,
-      JSON.parse(JSON.stringify({
-        state: argv.state,
-        from: argv.from,
-        reason: {
-          code: argv.reasonCode,
-          text: argv.reasonText,
-        },
-      })),
-    );
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  console.debug('Updated member', updatedMember);
 
   if (argv.json) {
     console.log(JSON.stringify(

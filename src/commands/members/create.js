@@ -1,12 +1,10 @@
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { spinner } = require('../../ux/spinner');
 const { displayFullMember } = require('../../members/display');
-const { loadConversationFromSDK } = require('../../conversations/loadConversationFromSdk');
 const { appId, privateKey } = require('../../credentialFlags');
 const { yaml, json } = require('../../commonFlags');
 const YAML = require('yaml');
-const { sdkError } = require('../../utils/sdkError');
 const { Client } = require('@vonage/server-client');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 exports.command = 'create <conversation-id>';
 
@@ -342,51 +340,45 @@ exports.handler = async (argv) => {
 
   const { SDK, conversationId } = argv;
 
-  await loadConversationFromSDK(SDK, conversationId);
+  await makeSDKCall(
+    SDK.conversations.getConversation.bind(SDK.conversations),
+    'Fetching conversation',
+    conversationId,
+  );
 
-  const { stop, fail } = spinner({
-    message: 'Creating member',
-  });
+  const member = JSON.parse(JSON.stringify(addChannelToMember({
+    user: {
+      id: argv.userId,
+      name: argv.userName,
+    },
+    state: argv.state,
+    channel: {
+      from: {
+        type: argv.channelFromType?.join(','),
+        number: argv.channelFromPhone,
+      },
+    },
+    media: {
+      audioSettings: {
+        enabled: argv.audioEnabled,
+        earmuffed: argv.audioEarmuffed,
+        muted: argv.audioMuted,
+      },
+      audio: argv.audio,
+    },
+    knockingId: argv.knockingId,
+    memberIdInviting: argv.memberIdInviting,
+    from: argv.fromMemberId,
+  }, argv)));
 
-  let createdMember;
-  try {
-    const member = JSON.parse(JSON.stringify(addChannelToMember({
-      user: {
-        id: argv.userId,
-        name: argv.userName,
-      },
-      state: argv.state,
-      channel: {
-        from: {
-          type: argv.channelFromType?.join(','),
-          number: argv.channelFromPhone,
-        },
-      },
-      media: {
-        audioSettings: {
-          enabled: argv.audioEnabled,
-          earmuffed: argv.audioEarmuffed,
-          muted: argv.audioMuted,
-        },
-        audio: argv.audio,
-      },
-      knockingId: argv.knockingId,
-      memberIdInviting: argv.memberIdInviting,
-      from: argv.fromMemberId,
-    }, argv)));
-
-    console.debug('Creating member', member);
-    createdMember = await SDK.conversations.createMember(
-      conversationId,
-      member,
-    );
-    console.debug('Member created', createdMember);
-    stop();
-  } catch (error) {
-    fail();
-    sdkError(error);
-    return;
-  }
+  console.debug('Creating member', member);
+  const createdMember = await makeSDKCall(
+    SDK.conversations.createMember.bind(SDK.conversations),
+    'Creating member',
+    conversationId,
+    member,
+  );
+  console.debug('Member created', createdMember);
 
   if (argv.json) {
     console.log(JSON.stringify(

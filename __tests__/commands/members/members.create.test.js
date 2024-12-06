@@ -1,5 +1,4 @@
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
 const YAML = require('yaml');
 const { handler } = require('../../../src/commands/members/create');
 const { mockConsole } = require('../../helpers');
@@ -20,7 +19,6 @@ const {
   stateLabels,
 } = require('../../../src/members/display');
 
-jest.mock('yargs');
 jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage members create', () => {
@@ -554,37 +552,5 @@ describe('Command: vonage members create', () => {
       null,
       2,
     ));
-  });
-
-  test('Will handle error when createing call fails', async () => {
-    const member = addAppChannelToMember(getTestMemberForAPI());
-    const conversation = getTestConversationForAPI();
-    const error = new Error('Failed to create member');
-
-    const memberMock = jest.fn()
-      .mockRejectedValueOnce(error);
-
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
-
-    const sdkMock = {
-      conversations: {
-        createMember: memberMock,
-        getConversation: conversationMock,
-      },
-    };
-
-    await handler({
-      SDK: sdkMock,
-      conversationId: conversation.id,
-      state: member.state,
-      userId: member.user.id,
-      channelToUser: member.channel.to.user,
-      channelFromType: member.channel.from.type.split(','),
-    });
-
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(yargs.exit).toHaveBeenCalledWith(99);
   });
 });

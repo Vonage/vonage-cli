@@ -1,10 +1,10 @@
 const { appId, privateKey } = require('../../credentialFlags');
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { loadMemberFromSDK } = require('../../members/loadMemberFromSdk');
 const { displayFullMember } = require('../../members/display');
 const { json, yaml } = require('../../commonFlags');
 const YAML = require('yaml');
 const { Client } = require('@vonage/server-client');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 exports.command = 'show <conversation-id> <member-id>';
 
@@ -34,7 +34,12 @@ exports.handler = async (argv) => {
   console.info('Show member');
   const { SDK, conversationId, memberId } = argv;
 
-  const member = await loadMemberFromSDK(SDK, conversationId, memberId);
+  const member = await makeSDKCall(
+    SDK.conversations.getMember.bind(SDK.conversations),
+    'Fetching member',
+    conversationId,
+    memberId,
+  );
 
   if (argv.json) {
     console.log(JSON.stringify(

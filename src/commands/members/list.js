@@ -1,9 +1,8 @@
-const { spinner } = require('../../ux/spinner');
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
 const { appId, privateKey } = require('../../credentialFlags');
 const { confirm } = require('../../ux/confirm');
 const { memberSummary } = require('../../members/display');
-const { sdkError } = require('../../utils/sdkError');
+const { makeSDKCall } = require('../../utils/makeSDKCall');
 
 exports.command = 'list <conversation-id>';
 
@@ -40,27 +39,17 @@ exports.handler = async (argv) => {
 
   do {
     console.debug(`Fetching members for conversation ${conversationId} with cursor: ${pageCursor}`);
-    const { stop, fail } = spinner({
-      message: !okToPage
+    const response = await makeSDKCall(
+      SDK.conversations.getMemberPage.bind(SDK.conversations),
+      !okToPage
         ? 'Fetching members'
         : 'Fetching more members',
-    });
-    let response;
-    try {
-      response = await SDK.conversations.getMemberPage(
-        conversationId,
-        {
-          pageSize: pageSize,
-          cursor: pageCursor,
-        },
-      ),
-
-      stop();
-    } catch (error) {
-      fail();
-      sdkError(error);
-      return;
-    }
+      conversationId,
+      {
+        pageSize: pageSize,
+        cursor: pageCursor,
+      },
+    );
 
     console.debug('Members fetched', response);
     console.debug('Members', response);
