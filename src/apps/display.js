@@ -7,7 +7,6 @@ const { capabilityLabels, getAppCapabilities } = require('./capabilities');
 
 const capabilitiesSummary = ({capabilities = {}}) => {
   const appCapabilities = getAppCapabilities({capabilities});
-  console.debug(appCapabilities);
 
   return appCapabilities.length > 0
     ? appCapabilities.sort().map((capability) => capabilityLabels[capability]).join(', ')
