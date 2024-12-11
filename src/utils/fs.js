@@ -1,6 +1,13 @@
 const { existsSync, writeFileSync, mkdirSync } = require('fs');
 const { confirm } = require('../ux/confirm');
 
+class UserDeclinedError extends Error {
+  constructor() {
+    super('User declined to overwrite file');
+    this.name = 'UserDeclinedError';
+  }
+}
+
 const createDirectory = (directory) => {
   if (existsSync(directory)) {
     console.debug('Directory already exists');
@@ -32,7 +39,7 @@ const writeFile = async (filePath, data, message) => {
   const okToWrite = await checkOkToWrite(filePath, message);
   if (!okToWrite) {
     console.debug('Not writing to file');
-    throw new Error('User declined to overwrite file');
+    throw new UserDeclinedError();
   }
 
   console.debug(`Writing to: ${filePath}`);
@@ -47,6 +54,7 @@ const writeJSONFile = async (filePath, data, message) =>  writeFile(
   message,
 );
 
+exports.UserDeclinedError = UserDeclinedError;
 exports.createDirectory = createDirectory;
 exports.checkOkToWrite = checkOkToWrite;
 exports.writeFile = writeFile;

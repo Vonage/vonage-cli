@@ -8,14 +8,14 @@ const { dumpCommand } = require('../../ux/dump');
 
 exports.command = 'update <id>';
 
-exports.desc = 'Create a new application';
+exports.desc = 'Update an application';
 
 /* istanbul ignore next */
 exports.builder = (yargs) => yargs
   .positional(
     'id',
     {
-      describe: 'The ID of the application to delete',
+      describe: 'The ID of the application to update',
     },
   ).options({
     'name': {

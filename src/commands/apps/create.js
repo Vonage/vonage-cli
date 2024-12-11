@@ -21,17 +21,16 @@ exports.builder = (yargs) => yargs
       describe: 'The name you want to give the application',
     },
   ).options({
-    'private-key-file': {
-      describe: 'Path where you want to save the private key file',
-      default: process.cwd() + '/private.key',
-      type: 'string',
-      group: 'Create Application',
-      implies: 'public-key',
-    },
     'improve-ai': {
       describe: 'Allow Vonage to improve AI models by using your data',
       type: 'boolean',
       default: false,
+      group: 'Create Application',
+    },
+    'private-key-file': {
+      describe: 'Path where you want to save the private key file',
+      default: process.cwd() + '/private.key',
+      type: 'string',
       group: 'Create Application',
     },
     'public-key-file': {
@@ -87,9 +86,16 @@ exports.handler = async (argv) => {
       process.stderr.write('\rSaving private key ... Done!\n');
     }
   } catch (error) {
-    process.stderr.write('\rSaving private key ... Failed\n');
-    console.error('Error saving private key:', error);
     dumpPrivateKey = true;
+    console.debug(error.name);
+    switch(error.name) {
+    case 'UserDeclinedError':
+      process.stderr.write('\rSaving private key ... User declined\n');
+      break;
+    default:
+      process.stderr.write('\rSaving private key ... Failed\n');
+      console.error('Error saving private key:', error);
+    }
   }
 
   if (argv.json) {
