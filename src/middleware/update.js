@@ -34,7 +34,7 @@ exports.checkForUpdate = async () => {
   const installedVersion = require('../../package.json').version;
   console.debug(`Installed version: ${installedVersion}`);
 
-  const res = await fetch('https://registry.npmjs.org/@vonage/cli/beta');
+  const res = await fetch('https://registry.npmjs.org/@vonage/cli/latest');
   const registryPackageJson = await res.json();
   const latestVersion = registryPackageJson.version;
   const forceMinVersion = registryPackageJson?.vonageCli?.forceMinVersion || installedVersion;
