@@ -5,7 +5,7 @@ const { appId, privateKey } = require('../../credentialFlags');
 const { force } = require('../../commonFlags');
 const { displayConversation } = require('../../conversations/display');
 const { coerceUrl } = require('../../utils/coerceUrl');
-const { coerceJSON } = require('../../utils/coerceJson');
+const { coerceJSON } = require('../../utils/coerceJSON');
 const yargs = require('yargs');
 const { makeSDKCall } = require('../../utils/makeSDKCall');
 

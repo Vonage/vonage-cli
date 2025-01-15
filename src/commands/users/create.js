@@ -3,7 +3,7 @@ const yargs = require('yargs');
 const { appId, privateKey } = require('../../credentialFlags');
 const { displayFullUser } = require('../../users/display');
 const { coerceUrl } = require('../../utils/coerceUrl');
-const { coerceJSON } = require('../../utils/coerceJson');
+const { coerceJSON } = require('../../utils/coerceJSON');
 
 const userFlags = {
   'name': {
