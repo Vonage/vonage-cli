@@ -67,6 +67,7 @@ const errorNoConfig = (local=false) => {
   console.log('      use the --help option for more information');
   yargs.exit(2);
 };
+
 // Used as an array to allow commands to control as needed
 exports.configLoadingHelp = () => {
   const { localConfigFile, globalConfigFile } = getSharedConfig();
@@ -147,7 +148,7 @@ exports.setConfig = (argv) => {
 
   if (!authConfig) {
     errorNoConfig();
-    return {};
+    return;
   }
 
   const SDKAuth = new Auth({

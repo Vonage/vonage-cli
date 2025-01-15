@@ -3,6 +3,7 @@ const { Auth } = require('@vonage/auth');
 const winston = require('winston');
 const Transport = require('winston-transport');
 const { format } = winston;
+const { sep } = require('path');
 
 class NullTransport extends Transport {
   log(_, callback) {
@@ -95,19 +96,19 @@ const getCLIConfig = () => Object.freeze({
 });
 
 const getLocalFile = () => {
-  const localPath = faker.system.directoryPath();
+  const localPath = faker.system.directoryPath().replace(/\//g, sep);
   return Object.freeze({
     localConfigPath: localPath,
-    localConfigFile: `${localPath}/.vonagerc`,
+    localConfigFile: `${localPath}${sep}.vonagerc`,
     localConfigExists: true,
   });
 };
 
 const getGlobalFile = () => {
-  const globalPath = faker.system.directoryPath();
+  const globalPath = faker.system.directoryPath().replace(/\//g, sep);
   return Object.freeze({
     globalConfigPath: globalPath,
-    globalConfigFile: `${globalPath}/config.json`,
+    globalConfigFile: `${globalPath}${sep}config.json`,
     globalConfigExists: true,
   });
 };

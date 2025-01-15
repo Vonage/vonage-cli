@@ -46,9 +46,17 @@ jobs:
         run: npm install
 
       - name: Test
-        run: npm run test
+        env:
+          JEST_JUNIT_CLASSNAME: "{filepath}"
+        run: npm run test -- --coverage --reporters=jest-junit
 
       - name: Run codecov
         uses: codecov/codecov-action@v3
         with:
           directory: ./coverage
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

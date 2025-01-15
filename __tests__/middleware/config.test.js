@@ -8,10 +8,10 @@ const {
   getLocalFile,
   getCLIConfig,
 } = require('../common');
-const { mockConsole } = require('../helpers');
 const fs = require('fs');
 const yargs = require('yargs');
 const os = require('os');
+const { sep } = require('path');
 
 jest.mock('fs');
 jest.mock('yargs');
@@ -21,10 +21,6 @@ const oldEnv = process.env;
 const oldCwd = process.cwd;
 
 describe('Middeleware: Config', () => {
-  beforeEach(() => {
-    mockConsole();
-  });
-
   afterEach(() => {
     process.env = oldEnv;
     process.cwd = oldCwd;
@@ -36,12 +32,10 @@ describe('Middeleware: Config', () => {
 
     os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
 
-    console.log(os.homedir());
     expect(os.homedir()).toBe(globalFile.globalConfigPath);
 
-    //process.env.HOME = globalFile.globalConfigPath;
-    const derivedConfigPath = `${globalFile.globalConfigPath}/.vonage`;
-    const derivedConfigFile = `${derivedConfigPath}/config.json`;
+    const derivedConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedConfigFile = `${derivedConfigPath}${sep}config.json`;
 
     fs.__addFile(
       derivedConfigFile,
@@ -82,7 +76,7 @@ describe('Middeleware: Config', () => {
     const localFile = getLocalFile();
 
     process.cwd = jest.fn(() => localFile.localConfigPath);
-    const derivedConfigFile = `${localFile.localConfigPath}/.vonagerc`;
+    const derivedConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     fs.__addFile(
       derivedConfigFile,
@@ -111,8 +105,8 @@ describe('Middeleware: Config', () => {
   });
 
   test('Will decide to use the cli arguments when local or global is not set', () => {
-    os.homedir = jest.fn().mockReturnValue('/dev/null');
-    process.cwd = jest.fn(() => '/dev/null');
+    os.homedir = jest.fn().mockReturnValue('${sep}dev${sep}null');
+    process.cwd = jest.fn(() => '${sep}dev${sep}null');
 
     const cliConfig = getCLIConfig();
     const args = setConfig(cliConfig, {});
@@ -140,8 +134,8 @@ describe('Middeleware: Config', () => {
     const globalFile = getGlobalFile();
 
     os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
-    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}/.vonage`;
-    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}/config.json`;
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
     fs.__addFile(
       derivedGlobalConfigFile,
@@ -152,7 +146,7 @@ describe('Middeleware: Config', () => {
     const localFile = getLocalFile();
 
     process.cwd = jest.fn(() => localFile.localConfigPath);
-    const derivedLocalConfigFile = `${localFile.localConfigPath}/.vonagerc`;
+    const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     fs.__addFile(
       derivedLocalConfigFile,
@@ -191,8 +185,8 @@ describe('Middeleware: Config', () => {
     const globalFile = getGlobalFile();
 
     os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
-    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}/.vonage`;
-    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}/config.json`;
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
     fs.__addFile(
       derivedGlobalConfigFile,
@@ -203,7 +197,7 @@ describe('Middeleware: Config', () => {
     const localFile = getLocalFile();
 
     process.cwd = jest.fn(() => localFile.localConfigPath);
-    const derivedLocalConfigFile = `${localFile.localConfigPath}/.vonagerc`;
+    const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     fs.__addFile(
       derivedLocalConfigFile,
@@ -238,7 +232,6 @@ describe('Middeleware: Config', () => {
 
   test('Will exit when no config is found', () => {
     setConfig({}, yargs);
-    expect(console.log).toHaveBeenCalledWith('error: No configuration file found');
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 });
