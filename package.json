@@ -32,7 +32,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky",
-    "test": "jest --silent --verbose",
+    "test": "jest --silent --run-in-band",
     "test:watch": "jest --verbose --silent --watchAll"
   },
   "lint-staged": {

@@ -33,7 +33,7 @@ body:
  - type: input
    id: cli_version
    attributes:
-    label: SDK Version
+    label: CLI Version
     description: What version of the CLI are you using (run `voange --version`)?
     placeholder: 3.x.x
    validations:

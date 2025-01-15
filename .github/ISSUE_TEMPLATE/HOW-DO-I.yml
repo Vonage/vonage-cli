@@ -5,11 +5,11 @@ title: "How Do I: "
 labels: ["question"]
 assignees: ["manchuck", "pardel", "dragonmantank"]
 body:
- - type: input
+ - type: textarea
    id: question
    attributes:
     label: How do I
-    description: Ask the question on how to do X with Y
+    description: Ask the question about a command or how to do something with the CLI
     placeholder: configure the CLI
    validations:
     required: true
