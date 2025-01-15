@@ -147,7 +147,7 @@ exports.setConfig = (argv) => {
 
   if (!authConfig) {
     errorNoConfig();
-    return;
+    return {};
   }
 
   const SDKAuth = new Auth({
