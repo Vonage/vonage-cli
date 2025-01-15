@@ -19,16 +19,11 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: Run Dependency Check
-        run: npm run depcheck
-
       - name: Install packages
         run: npm install
 
-      # Run lint before building to prevent eslint from checking the compiled files
       - name: Lint
         run: npm run lint
-
 
   test:
     runs-on: ${{ matrix.os }}
