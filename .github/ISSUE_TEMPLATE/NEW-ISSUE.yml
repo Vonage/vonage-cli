@@ -1,0 +1,62 @@
+---
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "Triage"]
+assignees: ["manchuck", "pardel", "dragonmantank"]
+body:
+ - type: dropdown
+   id: node_version
+   attributes:
+    label: Node Version
+    description: What version of NodeJS are you using?
+    options:
+     - 18.x
+     - 20.x
+     - 22.x
+   validations:
+    required: true
+ - type: dropdown
+   id: platform
+   attributes:
+    label: Platform
+    description: What is the platform you are having the issue on?
+    multiple: true
+    options:
+     - "Windows"
+     - "Linux"
+     - "Mac (intel)"
+     - "Mac (Apple Silcon)"
+     - "Docker Container"
+   validations:
+    required: true
+ - type: input
+   id: cli_version
+   attributes:
+    label: SDK Version
+    description: What version of the CLI are you using (run `voange --version`)?
+    placeholder: 3.x.x
+   validations:
+    required: true
+ - type: textarea
+   id: command_example
+   attributes:
+    label: Command
+    description: Please provide the command you are trying to run
+   validations:
+    required: true
+ - type: textarea
+   id: expected_behavior
+   attributes:
+    label: Expected Behavior
+    description: Please provide a brief description of what you wanted to
+      happen
+   validations:
+    required: true
+ - type: textarea
+   id: actual_behavior
+   attributes:
+    label: Actual Behavior
+    description: Please provide a brief description of what happened
+   validations:
+    required: true
