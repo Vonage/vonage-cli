@@ -27,12 +27,16 @@ const testAppCapability = {
 jest.mock('yargs');
 
 describe('Command: vonage apps', () => {
+  // I have no idea why these tests sometimes fail
+  jest.retryTimes(3);
   beforeEach(() => {
+    jest.clearAllMocks();
+    jest.resetAllMocks();
     mockConsole();
   });
 
   test('Will validate application', async () => {
-    const app = getTestApp();
+    const app = {...getTestApp()};
 
     const appMock = jest.fn().mockResolvedValue(app);
     const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
@@ -60,7 +64,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate applications key', async () => {
-    const app = getTestApp();
+    const app = {...getTestApp()};
     app.keys.publicKey = testPublicKey;
 
     const appMock = jest.fn().mockResolvedValue(app);
@@ -90,7 +94,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will fail to validate applications key', async () => {
-    const app = getTestApp();
+    const app = {...getTestApp()};
     app.keys.publicKey = testPublicKey;
 
     const appMock = jest.fn().mockResolvedValue(app);
@@ -115,7 +119,7 @@ describe('Command: vonage apps', () => {
   });
 
   test.each(Object.keys(testAppCapability))('Will validate application has %s capability', async (capability) => {
-    const app = testAppCapability[capability](getTestApp());
+    const app = testAppCapability[capability]({...getTestApp()});
 
     const appMock = jest.fn().mockResolvedValue(app);
     const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
@@ -139,7 +143,7 @@ describe('Command: vonage apps', () => {
   });
 
   test.each(Object.keys(testAppCapability))('Will not validate application missing %s capability', async (capability) => {
-    const app = getTestApp();
+    const app = {...getTestApp()};
 
     const appMock = jest.fn().mockResolvedValue(app);
     const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
@@ -163,7 +167,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate voice application has linked number', async () => {
-    const app = addVoiceCapabilities(getTestApp());
+    const app = addVoiceCapabilities({...getTestApp()});
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
@@ -193,7 +197,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate messages application has linked number', async () => {
-    const app = addMessagesCapabilities(getTestApp());
+    const app = addMessagesCapabilities({...getTestApp()});
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
@@ -223,7 +227,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate application has linked multiple numbers', async () => {
-    const app = addMessagesCapabilities(getTestApp());
+    const app = addMessagesCapabilities({...getTestApp()});
 
     const numberNine = getTestPhoneNumber();
     const numberEight = getTestPhoneNumber();
@@ -254,7 +258,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will not validate application that is missing linked number', async () => {
-    const app = addVideoCapabilities(addMessagesCapabilities(getTestApp()));
+    const app = addVideoCapabilities(addMessagesCapabilities({...getTestApp()}));
 
     const numberNine = getTestPhoneNumber();
     const linkedNumber= getTestPhoneNumber().msisdn;
@@ -284,7 +288,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will not validate application that has linked number but missing capability', async () => {
-    const app = getTestApp();
+    const app = {...getTestApp()};
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);

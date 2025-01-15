@@ -48,7 +48,7 @@ jobs:
       - name: Test
         env:
           JEST_JUNIT_CLASSNAME: "{filepath}"
-        run: npm run test -- --coverage --reporters=jest-junit
+        run: npm run test -- --coverage --reporters=jest-junit --reporters=default
 
       - name: Run codecov
         uses: codecov/codecov-action@v3
