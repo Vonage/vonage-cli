@@ -2,7 +2,6 @@ const yargs = require('yargs');
 const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
 const { dumpCommand } = require('../../ux/dump');
 const { dumpBoolean } = require('../../ux/dumpYesNo');
-const { lineBreak } = require('../../ux/lineBreak');
 const { dumpAuth } = require('../../ux/dumpAuth');
 const { json, yaml: yamlFlag } = require('../../commonFlags');
 const { configLoadingHelp } = require('../../middleware/config');
@@ -89,21 +88,29 @@ exports.handler = async (argv) => {
     return;
   }
 
-  const hasLocal = localConfigExists
-    && (config.local.apiKey
-      || config.local.apiSecret
-      || config.local.privateKey
-      || config.local.appId);
+  const hasLocalApiKey = localConfigExists
+    && config.local.apiKey
+      && config.local.apiSecret;
 
-  const hasGlobal = globalConfigExists
-    && (config.global.apiKey
-      || config.global.apiSecret
-      || config.global.privateKey
-      || config.global.appId);
+  const hasLocalAppId= localConfigExists
+    && config.local.apiKey
+      && config.local.apiSecret
+      && config.local.privateKey
+      && config.local.appId;
+
+  const hasGlobalApiKey = globalConfigExists
+    && config.global.apiKey
+      && config.global.apiSecret;
+
+  const hasGlobalAppId = globalConfigExists
+    && config.global.apiKey
+      && config.global.apiSecret
+      && config.global.privateKey
+      && config.global.appId;
 
   let configOk = true;
 
-  if (hasLocal) {
+  if (hasLocalApiKey) {
     console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
     console.log('');
     dumpAuth(config.local, argv.showAll);
@@ -113,7 +120,9 @@ exports.handler = async (argv) => {
       config.local.apiKey,
       config.local.apiSecret,
     ) && configOk;
+  }
 
+  if (hasLocalAppId) {
     configOk = await validatePrivateKeyAndAppId(
       config.local.apiKey,
       config.local.apiSecret,
@@ -122,11 +131,7 @@ exports.handler = async (argv) => {
     ) && configOk;
   }
 
-  if (hasLocal && hasGlobal) {
-    lineBreak();
-  }
-
-  if (hasGlobal) {
+  if (hasGlobalApiKey) {
     console.log(`${dumpBoolean({value: globalConfigExists, ...dumpOptions})}Global credentials found at: ${config.globalConfigFile}`);
     console.log('');
     dumpAuth(config.global, argv.showAll);
@@ -137,6 +142,9 @@ exports.handler = async (argv) => {
       config.global.apiSecret,
     ) && configOk;
 
+  }
+
+  if (hasGlobalAppId) {
     configOk = await validatePrivateKeyAndAppId(
       config.global.apiKey,
       config.global.apiSecret,

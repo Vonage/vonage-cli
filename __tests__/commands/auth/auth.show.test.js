@@ -58,11 +58,11 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(8, `Global credentials found at: ${config.globalConfigFile}`);
+    expect(console.log).toHaveBeenNthCalledWith(5, `Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
     expect(console.log).toHaveBeenNthCalledWith(
-      10,
+      7,
       [
         `API Key: ${config.global.apiKey}`,
         `API Secret: ${redactedGlobal}`,
@@ -201,11 +201,12 @@ describe('Command: vonage auth show and vonage auth', () => {
     Vonage._mockGetApplication.mockResolvedValue(application);
 
     const args = { ...getTestMiddlewareArgs()};
-
     args.config = {
       ...args.config,
       local: {},
       global: {
+        apiKey: args.config.global.apiKey,
+        apiSecret: args.config.global.apiSecret,
         appId: args.config.global.appId,
         privateKey: testPrivateKey,
       },
@@ -214,18 +215,22 @@ describe('Command: vonage auth show and vonage auth', () => {
     await handler(args);
 
     const { config } = args;
+
+    const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
     expect(console.info).toHaveBeenCalledWith('Displaying auth information');
     expect(console.log).toHaveBeenNthCalledWith(1, `Global credentials found at: ${config.globalConfigFile}`);
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
+        `API Key: ${config.global.apiKey}`,
+        `API Secret: ${redactedGlobal}`,
         `App ID: ${config.global.appId}`,
         'Private Key: Is Set',
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).not.toHaveBeenCalled();
+    expect(Vonage._mockGetApplicationPage).toHaveBeenCalled();
     expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
     expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
