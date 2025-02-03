@@ -1,3 +1,5 @@
+const yargs = require('yargs');
+const { dumpCommand } = require('../../ux/dump');
 const { conversationIdFlag } = require('../../conversations/conversationFlags');
 const { displayFullMember } = require('../../members/display');
 const { appId, privateKey } = require('../../credentialFlags');
@@ -238,6 +240,8 @@ const addChannelToMember = (member, argv) => {
   if (argv.channelToMessenger) {
     return addMessengerChannel(member, argv);
   }
+
+  return member;
 };
 
 const addUserChannel = (member, argv) => Object.assign(
@@ -339,6 +343,11 @@ exports.handler = async (argv) => {
   console.info('Create member');
 
   const { SDK, conversationId } = argv;
+
+  if (!argv.userId && !argv.userName) {
+    console.error(`You must provide either the ${dumpCommand('--user-id')} or ${dumpCommand('--user-name')} flag`);
+    yargs.exit(1);
+  }
 
   await makeSDKCall(
     SDK.conversations.getConversation.bind(SDK.conversations),
