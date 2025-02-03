@@ -173,7 +173,7 @@ const normalizeWss = ({websocketUrl, websocketHeaders, websocketContentType }) =
     (acc, url, index) => [
       ...acc,
       {
-        url: url,
+        uri: url,
         ...((websocketContentType || [])[index] ? {contentType: websocketContentType[index]} : {}),
         ...((websocketHeaders || [])[index] ? {headers: websocketHeaders[index]} : {}),
       },

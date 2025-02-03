@@ -47,15 +47,15 @@ const userWebsocketChannelHeaderLines = (headers) => headers
       ).join('\n'),
     ),
   ].join('\n')
-  : null;
+  : [];
 
 const userWebsocketChannelLines = ({websocket}) => websocket
   ? [
     chalk.underline('Web Socket'),
     indentLines(
-      websocket.map(({url, contentType, headers}) =>
+      websocket.map(({uri, contentType, headers}) =>
         descriptionList({
-          ['URL']: url,
+          ['URL']: uri,
           ['Content Type']: contentType,
         }) + userWebsocketChannelHeaderLines(headers),
       ).join('\n'),

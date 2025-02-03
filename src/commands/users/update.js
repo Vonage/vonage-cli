@@ -72,6 +72,8 @@ exports.handler = async (argv) => {
     },
   }));
 
+  console.debug('User to update:', userToUpdate);
+
   const updatedUser = await makeSDKCall(
     SDK.users.updateUser.bind(SDK.users),
     'Updating User',
