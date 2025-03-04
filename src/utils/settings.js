@@ -1,5 +1,5 @@
 const { getSharedConfig } = require('../middleware/config');
-const { readFileSync, writeFileSync } = require('fs');
+const { mkdirSync, existsSync, readFileSync, writeFileSync } = require('fs');
 
 let settings = null;
 let changed = false;
@@ -27,8 +27,15 @@ const loadSettingsFile = () => {
 };
 
 const saveSettingsFile = () => {
-  const { settingsFile } = getSharedConfig();
+  const { settingsFile, globalConfigPath} = getSharedConfig();
+
+  if (!existsSync(globalConfigPath)) {
+    console.debug(`Creating global config folder: ${globalConfigPath}`);
+    mkdirSync(globalConfigPath, {recursive: true});
+  }
+
   console.debug(`Saving settings file to: ${settingsFile}`);
+
   writeFileSync(settingsFile, JSON.stringify(settings, null, 2));
 };
 
