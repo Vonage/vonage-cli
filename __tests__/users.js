@@ -22,7 +22,7 @@ const addWebsocketChannelToUser = (user) => ({
     websocket: [
       ...user.channels?.websocket || [],
       {
-        url: faker.internet.url({protocol: 'wss'}),
+        uri: faker.internet.url({protocol: 'wss'}),
         contentType: `audio/l16;rate=${faker.helpers.shuffle([8000, 16000, 32000])[0]}`,
         headers: {
           'X-Header': faker.internet.userAgent(),

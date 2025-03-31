@@ -330,7 +330,7 @@ describe('Command: vonage users show', () => {
       [
         'Channels:',
         '  Web Socket',
-        `    URL: ${user.channels.websocket[0].url}`,
+        `    URL: ${user.channels.websocket[0].uri}`,
         `    Content Type: ${user.channels.websocket[0].contentType}`,
         '    Headers',
         `      X-Header: ${user.channels.websocket[0].headers['X-Header']}`,

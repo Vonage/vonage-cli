@@ -364,7 +364,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
@@ -392,7 +392,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
@@ -401,7 +401,7 @@ describe('Command: vonage users update', () => {
       channels: {
         ...user.channels,
         websocket: user.channels.websocket.map((channel) => ({
-          url: channel.url,
+          uri: channel.uri,
           contentType: channel.contentType,
         })),
       },
@@ -428,7 +428,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
     });
 
@@ -437,7 +437,7 @@ describe('Command: vonage users update', () => {
       channels: {
         ...user.channels,
         websocket: user.channels.websocket.map((channel) => ({
-          url: channel.url,
+          uri: channel.uri,
           headers: channel.headers,
         })),
       },
@@ -464,7 +464,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: [user.channels.websocket[0].headers],
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
@@ -492,7 +492,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: [user.channels.websocket[0].contentType],
     });

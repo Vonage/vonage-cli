@@ -342,7 +342,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
@@ -371,7 +371,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
@@ -381,7 +381,7 @@ describe('Command: vonage users create', () => {
       channels: {
         websocket: [
           {
-            url: user.channels.websocket[0].url,
+            uri: user.channels.websocket[0].uri,
             contentType: user.channels.websocket[0].contentType,
           },
         ],
@@ -404,7 +404,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
     });
 
@@ -414,7 +414,7 @@ describe('Command: vonage users create', () => {
       channels: {
         websocket: [
           {
-            url: user.channels.websocket[0].url,
+            uri: user.channels.websocket[0].uri,
             headers: user.channels.websocket[0].headers,
           },
         ],
@@ -437,7 +437,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: [user.channels.websocket[0].headers],
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
@@ -460,7 +460,7 @@ describe('Command: vonage users create', () => {
     await handler({
       SDK: sdkMock,
       name: user.name,
-      websocketUrl: user.channels.websocket.map((channel) => channel.url),
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
       websocketContentType: [user.channels.websocket[0].contentType],
     });
