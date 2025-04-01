@@ -46,6 +46,7 @@ const vonageCLI = yargs(hideBin(process.argv))
   .scriptName('vonage')
   .commandDir('../src/commands')
   .demandCommand()
+  .showHelpOnFail(false)
   .help()
   .alias('help', 'h')
   .wrap(yargs.terminalWidth());
