@@ -4,10 +4,9 @@ const { getSettings, setSetting } = require('../utils/settings');
 
 const now = new Date();
 
-
 exports.checkForUpdate = async () => {
   let lastUpdateCheck;
-  const checkDate = parseInt(`${now.getFullYear()}${now.getMonth()+1}${now.getDate()}`);
+  const checkDate = parseInt(`${now.getFullYear()}${('0' + (now.getMonth()+1)).slice(-2)}${('0' + now.getDate()).slice(-2)}`);
   const settings = getSettings();
   if (settings.needsUpdate) {
     return;
@@ -25,7 +24,7 @@ exports.checkForUpdate = async () => {
     setSetting('lastUpdateCheck', lastUpdateCheck);
   }
 
-  if (checkDate >= lastUpdateCheck) {
+  if (checkDate <= lastUpdateCheck) {
     console.debug('Skipping update check');
     return;
   }
@@ -44,11 +43,12 @@ exports.checkForUpdate = async () => {
 
   console.debug('Force min version:', forceMinVersion);
   console.debug(`Latest version: ${latestVersion}`);
-  console.debug('Needs update:', needsUpdate);
-  console.debug('Force update:', forceUpdate);
+  console.debug(`Needs update: ${needsUpdate ? 'Yes' : 'No'}`);
+  console.debug(`Force update: ${forceUpdate ? 'Yes' : 'No'}`);
 
   setSetting('needsUpdate', needsUpdate);
   setSetting('forceUpdate', forceUpdate);
   setSetting('latestVersion', latestVersion);
   setSetting('forceMinVersion', forceMinVersion);
+  setSetting('lastUpdateCheck', checkDate);
 };
