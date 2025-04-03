@@ -19,10 +19,11 @@ if (needsUpdate) {
 }
 
 const vonageCLI = yargs(hideBin(process.argv))
-  .fail((msg, err, yargs) => {
+  .fail((msg) => {
     yargs.showHelp();
     console.log('');
-    console.error(chalk.red('Error:'), msg);
+    console.error(chalk.red('Error'), msg);
+    yargs.exit(99);
   })
   .options({
     'verbose': {
