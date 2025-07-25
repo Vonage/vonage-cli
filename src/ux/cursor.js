@@ -1,16 +1,15 @@
-const yargs = require('yargs');
-
 const resetCursor = () => {
   process.stderr.write('\u001B[?25h');
+  process.stdout.write('\u001B[?25h');
 };
 
 const hideCursor = () => {
   process.stderr.write('\u001B[?25l');
+  process.stdout.write('\u001B[?25l');
 };
 
 const exitAndShowCursor = () => {
   resetCursor();
-  yargs.exit(0);
 };
 
 

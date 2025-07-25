@@ -1,41 +1,38 @@
-const readline  = require('readline');
 const parser = require('yargs-parser');
+const { inputFromTTY } = require('./input.js');
+const { EOL } = require('os');
 
 const { argv } = parser.detailed(process.argv);
 const { force } = argv;
 
-const ask = (message) => new Promise((resolve) => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  rl.question(`${message} [y/n] `, (answer) => {
-    resolve(answer.toLowerCase());
-    rl.close();
-  });
-});
-
 exports.confirm = async (
   message,
-  noForce = false,
+  {
+    noForce,
+    allowedResponses = ['y', 'n'],
+    invalidMessage = 'Please answer with a y for yes and n for no',
+  } = {},
 ) =>{
   if (!noForce && force) {
     console.debug(`Forcing: ${message}`);
     return true;
   }
 
-  console.debug(`Confirming: ${message}`);
-
   let answerCorrectly = false;
   do {
-    const answer = await ask(message);
+    const answer = await inputFromTTY(
+      {
+        message: message,
+        length: 1,
+      },
+    );
 
-    if ([ 'y', 'n' ].includes(answer)) {
+    if (allowedResponses.includes(String(answer))) {
       answerCorrectly = true;
+      process.stderr.write(EOL);
       return answer === 'y';
     }
 
-    process.stderr.write('Please answer with y for yes or n for no\n');
+    process.stderr.write(`${EOL}${invalidMessage}${EOL}`);
   } while (!answerCorrectly);
 };
