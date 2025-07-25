@@ -63,6 +63,7 @@ const inputFromTTY = (
     message = null,
     reminderMessage = null,
     reminderInterval = 5000,
+    echo = true,
     signal,
     length,
     onKeyPress = () => {},
@@ -151,7 +152,7 @@ const inputFromTTY = (
 
     // Only push printable characters
     const isPrintable =
-      str.length > 0 &&
+      str?.length > 0 &&
       !key.ctrl &&
       !key.meta &&
       key.name !== 'escape' &&
@@ -175,7 +176,7 @@ const inputFromTTY = (
 
     if (intervalId) {
       intervalId = setInterval(
-        () => returnAndPrintMessage(reminderMessage, keysPressed),
+        () => returnAndPrintMessage(reminderMessage, echo ? keysPressed : []),
         reminderInterval,
       );
     }
@@ -202,7 +203,7 @@ const inputFromTTY = (
     printMessageAndKeys(message, keysPressed);
 
     intervalId = setInterval(
-      () => returnAndPrintMessage(reminderMessage, keysPressed),
+      () => returnAndPrintMessage(reminderMessage, echo ? keysPressed : []),
       reminderInterval,
     );
   }
