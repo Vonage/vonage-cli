@@ -17,6 +17,13 @@ const readline = require('readline');
  */
 
 /**
+ * Callback invoked after the reminder message has been printed
+ * @callback onReminder
+ * @param { string } str - A string of all the string characters pressed
+ * @returns { void }
+ */
+
+/**
  * @typedef { object } InputParams
  * @property { string } [message] - Printable message
  * @property { string } [reminderMessage] - Optional reminder message (defaults to message)
@@ -26,6 +33,7 @@ const readline = require('readline');
  * @property { number } [length] - How many key presses to accept before resolving
  * @property { onKeyPress } [onKeyPress] - Optional keypress function
  * @property { onComplete } [onComplete] - Optional completed function
+ * @property { onReminder } [onReminder] - Optional reminder function
  */
 
 /**
@@ -47,6 +55,7 @@ const inputFromTTY = (
     length,
     onKeyPress = () => {},
     onComplete = () => {},
+    onReminder = () => {},
   } = {},
 ) => new Promise((resolve, reject) => {
   let done = false;
@@ -172,7 +181,10 @@ const inputFromTTY = (
 
     if (message) {
       intervalId = setInterval(
-        () => overwriteLine(reminderMessage, echo ? keysPressed : []),
+        () => {
+          overwriteLine(reminderMessage, echo ? keysPressed : []);
+          onReminder(keysPressed);
+        },
         reminderInterval,
       );
     }
