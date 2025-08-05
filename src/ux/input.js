@@ -1,52 +1,31 @@
+const { overwriteLine, overwriteWithNewLine } = require('./clear');
 const readline = require('readline');
 
 /**
- * Print out the message to stdErr and the keys keys the user has pressed
- */
-const printMessageAndKeys = (message, keysPressed) => process.stderr.write(
-  `${message} ${keysPressed.join('')}`,
-);
-
-/**
- * Prints the message with a carriage return
- */
-const returnAndPrintMessage = (message, keysPressed) => {
-  process.stderr.write('\r');
-  printMessageAndKeys(message, keysPressed);
-};
-
-/**
- * @typedef { Object } Key
- * @property { string } name - The name of the key pressed (e.g., 'a', 'return', 'escape', 'left', etc.)
- * @property { string } [sequence] - The raw sequence of characters representing the key
- * @property { boolean } [ctrl] - Whether the Control key was held down
- * @property { boolean } [meta] - Whether the Meta key (Alt/Option) was held down
- * @property { boolean } [shift] - Whether the Shift key was held down
- * @property { string } [code] - Raw code of the key, if available
- */
-
-/**
+ * Callback invoked on each key press.
  * @callback onKeyPress
- * @params { Key } key Data about the key
- * @params { string } str All the string characters pressed during input
+ * @param { Key } key - Data about the key
+ * @param { string } str - The string characters pressed during input
  * @returns { void }
  */
 
 /**
+ * Callback invoked when input is complete.
  * @callback onComplete
- * @params { String } str a string of all the string characters pressed
- * @returns { voice }
-
+ * @param { string } str - A string of all the string characters pressed
+ * @returns { void }
+ */
 
 /**
  * @typedef { object } InputParams
- * @property { String } [message] Printable message
- * @property { String } [reminderMessage] Optional reminder message (defaults to message)
- * @property { Number } [reminderInterval] How often to print the reminder message (defaults to 5000)
- * @property { AbortSignal } [signal] Abort controller
- * @property { Number } [length] How many key presses to accept before resolving
- * @property { onKeyPress } [onKeyPress] Optional keypress function
- * @property { onComplete } [onComplete] Optional completed function
+ * @property { string } [message] - Printable message
+ * @property { string } [reminderMessage] - Optional reminder message (defaults to message)
+ * @property { number } [reminderInterval] - How often to print the reminder message (defaults to 5000)
+ * @property { boolean } [echo] - Whether to echo the typed characters
+ * @property { AbortSignal } [signal] - Abort controller
+ * @property { number } [length] - How many key presses to accept before resolving
+ * @property { onKeyPress } [onKeyPress] - Optional keypress function
+ * @property { onComplete } [onComplete] - Optional completed function
  */
 
 /**
@@ -55,7 +34,7 @@ const returnAndPrintMessage = (message, keysPressed) => {
  * This will continue to listen for keypress events until either the return key
  * is pressed, or the number of printable characters has reached the length.
  *
- * @params { InputParams } parameters for the function
+ * @params { InputParams } params for the function
  * @returns { Promise }
  */
 const inputFromTTY = (
@@ -70,6 +49,18 @@ const inputFromTTY = (
     onComplete = () => {},
   } = {},
 ) => new Promise((resolve, reject) => {
+  let done = false;
+
+  const finish = (err, value) => {
+    if (done) {
+      return;
+    }
+
+    done = true;
+    cleanup();
+    err ? reject(err) : resolve(value);
+  };
+
   // Turn on key press events from stdin and set raw mode
   readline.emitKeypressEvents(process.stdin);
   if (process.stdin.isTTY) {
@@ -78,7 +69,7 @@ const inputFromTTY = (
 
   // Allow signal controller
   if (signal?.aborted) {
-    reject(signal.reason);
+    finish(signal.reason);
     return;
   }
 
@@ -92,12 +83,14 @@ const inputFromTTY = (
    */
   const cleanup = () => {
     clearInterval(intervalId);
-    rl.input.off('keypress', handlePress);
-    rl.close();
+    if (rl) {
+      rl.input.off('keypress', handlePress);
+      rl.close();
+      rl.off('close', cleanup);
+    }
     process.off('SIGINT', handleSignal);
     process.off('SIGQUIT', handleSignal);
     process.off('SIGTSTP', handleSignal);
-    rl.off('close', cleanup);
   };
 
   /**
@@ -108,12 +101,14 @@ const inputFromTTY = (
     switch (signal) {
     case 'SIGINT':
       cleanup();
-      process.exitCode(130);
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(130);
       break;
 
     case 'SIGQUIT':
       cleanup();
-      process.exitCode(131);
+      // eslint-disable-next-line n/no-process-exit
+      process.exit(131);
       break;
 
     case 'SIGTSTP':
@@ -126,7 +121,6 @@ const inputFromTTY = (
     * Handles key press events
     */
   const handlePress = (str, key) => {
-    Object.freeze(key);
     clearInterval(intervalId);
 
     if (key.ctrl && key.name === 'c') {
@@ -144,9 +138,10 @@ const inputFromTTY = (
       return;
     }
 
+    // Remove typed characters
     if (key.name === 'backspace' || key.name === 'delete') {
       keysPressed.pop();
-      onKeyPress(key, str);
+      onKeyPress(Object.freeze({ ...key }), str);
       return;
     }
 
@@ -156,7 +151,8 @@ const inputFromTTY = (
       !key.ctrl &&
       !key.meta &&
       key.name !== 'escape' &&
-      !/[\p{C}]/u.test(str);
+      // eslint-disable-next-line no-control-regex
+      !/[\x00-\x1F\x7F]/.test(str);
 
     if (isPrintable) {
       keysPressed.push(str);
@@ -169,14 +165,14 @@ const inputFromTTY = (
       (length && keysPressed.length >= length)
     ) {
       cleanup();
-      resolve(keysPressed.join('').trim());
       onComplete(keysPressed.join('').trim());
+      finish(null, keysPressed.join('').trim());
       return;
     }
 
-    if (intervalId) {
+    if (message) {
       intervalId = setInterval(
-        () => returnAndPrintMessage(reminderMessage, echo ? keysPressed : []),
+        () => overwriteLine(reminderMessage, echo ? keysPressed : []),
         reminderInterval,
       );
     }
@@ -185,14 +181,14 @@ const inputFromTTY = (
   // Cleanup on abort
   signal?.addEventListener('abort', () => {
     cleanup();
-    reject(signal.reason);
+    finish(signal.reason);
   });
 
   // Setup readline
   process.stdin.setEncoding('utf8');
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stderr,
+    output: echo ? process.stderr : undefined,
     terminal: true,
   });
 
@@ -200,10 +196,10 @@ const inputFromTTY = (
   rl.input.on('keypress', handlePress);
 
   if (message) {
-    printMessageAndKeys(message, keysPressed);
+    overwriteWithNewLine(message, keysPressed);
 
     intervalId = setInterval(
-      () => returnAndPrintMessage(reminderMessage, echo ? keysPressed : []),
+      () => overwriteLine(reminderMessage, echo ? keysPressed : []),
       reminderInterval,
     );
   }
