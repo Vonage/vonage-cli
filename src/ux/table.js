@@ -1,7 +1,9 @@
-const { detectPlainOutput } = require('./detectScreenReader');
+const { detectPlainOutput, detectScreenReader } = require('./detectScreenReader');
+const { descriptionList } = require('./descriptionList');
 const { EOL } = require('os');
 
 const isPlain = detectPlainOutput();
+const isScreenReader = detectScreenReader();
 
 /**
  * Custom error for invalid table rendering usage.
@@ -78,6 +80,11 @@ const table = (
 ) => {
   if (!Array.isArray(data) || data.length === 0) {
     throw new TableError('renderTable() requires `data` to be an array.', data);
+  }
+
+  if (isScreenReader) {
+    stream.write([...data.map(descriptionList), EOL].join(EOL));
+    return;
   }
 
   const headers = Object.keys(data[0]);
