@@ -1,99 +1,65 @@
 const chalk = require('chalk');
+const { descriptionDetail } = require('./descriptionList');
 
-const dumpKey = (key) => `${chalk.bold(key)}`;
+const dumpKey = (key) => chalk.bold(String(key));
 
-const dumpValue = (value) => {
-  const varType = Array.isArray(value) ? 'array' : typeof value;
-
-  if (value === undefined || value === null) {
-    return `${chalk.dim.yellow('Not Set')}`;
-  }
-
-  switch (varType) {
-  case 'number':
-    return `${chalk.dim(value)}`;
-
-  case 'array':
-    return dumpArray(value);
-
-  case 'object':
-    return dumpObject(value);
-
-  case 'string':
-    // falls through
-  default:
-    return `${chalk.blue(value)}`;
-  }
-};
-
-const dumpObject = (
-  data,
-  indent = 2,
-) => [
-  `${' '.repeat(indent - 2)}${chalk.yellow('{')}`,
-  ...Object.entries(data).map(([key, value]) => {
-    if (value === undefined || value === null) {
-      return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpValue(value)}`;
+/**
+ * Formats a value using chalk styles.
+ *
+ * @param { any } value - The value to format
+ * @returns { string } - The chalk-formatted string
+ */
+const dumpValue = (value) => descriptionDetail(value, '', {
+  indent: 2,
+  recursive: false,
+  detailFormatter: (val) => {
+    if (val === undefined || val === null) {
+      return chalk.dim.yellow('Not Set');
     }
 
-    const varType = Array.isArray(value) ? 'array' : typeof value;
-    switch (varType) {
-    case 'object':
-      return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpObject(
-        value,
-        indent + 2,
-      ).trimStart()}`;
+    const type = Array.isArray(val) ? 'array' : typeof val;
 
-    case 'array':
-      return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpArray(
-        value,
-        indent + 2,
-      ).trimStart()}`;
-
+    switch (type) {
+    case 'number':
+    case 'bigint':
+      return chalk.dim(String(val));
+    case 'string':
     default:
-      return `${' '.repeat(indent)}${dumpKey(key)}: ${dumpValue(value)}`;
+      return chalk.blue(val);
     }
-  }),
-  `${' '.repeat(indent - 2)}${chalk.yellow('}')}`,
-].join('\n');
+  },
+});
 
+/**
+ * Formats an object into a string representation
+ *
+ * @param { Object } data - The object to format
+ * @param { number } indent - Starting indentation level
+ * @returns { string } - The formatted string
+ */
+const dumpObject = dumpValue;
 
-const dumpArray = (data, indent = 2) => [
-  `${' '.repeat(indent - 2)}${chalk.yellow('[')}`,
-  ...data.map((value) => {
-    if (value === undefined || value === null) {
-      return `${' '.repeat(indent)}${dumpValue(value)}`;
-    }
+/**
+ * Formats an array into a string representation
+ *
+ * @param { Array<any> } data - The array to format
+ * @param { number } indent - Starting indentation level
+ * @returns { string } - The formatted string
+ */
+const dumpArray = dumpValue;
 
-    const varType = Array.isArray(value) ? 'array' : typeof value;
-    switch (varType) {
-    case 'object':
-      return `${' '.repeat(indent)}${dumpObject(
-        value,
-        indent + 2,
-      ).trimStart()}`;
-
-    case 'array':
-      return `${' '.repeat(indent)}${dumpArray(
-        value,
-        indent + 2,
-      ).trimStart()}`;
-
-    default:
-      return `${' '.repeat(indent)}${dumpValue(value)}`;
-    }
-  }),
-  `${' '.repeat(indent - 2)}${chalk.yellow(']')}`,
-].join('\n');
-
+/**
+ * Formats a command string using a common style
+ * @param { string } command - The command to print
+ * @returns { string } - The formmated string
+ */
 const dumpCommand = (command) => chalk.green(command);
 
-exports.dumpCommand = dumpCommand;
+module.exports = {
+  dumpKey,
+  dumpValue,
+  dumpObject,
+  dumpArray,
+  dumpCommand,
+};
 
-exports.dumpKey = dumpKey;
-
-exports.dumpValue = dumpValue;
-
-exports.dumpObject = dumpObject;
-
-exports.dumpArray = dumpArray;
