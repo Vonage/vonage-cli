@@ -3,6 +3,12 @@ const { dumpValue } = require('../ux/dump');
 const { descriptionList } = require('../ux/descriptionList');
 const { redact } = require('../ux/redact');
 
+/**
+  * Prints out the auth information
+  *
+  * @param { Object } config - The auth config
+  * @param { boolean } noRedact - Set to true to show the API secret
+  */
 exports.dumpAuth = (config, noRedact=false) => {
   const dumpConfig = Client.transformers.camelCaseObjectKeys(config);
   let privateKey = dumpConfig.privateKey ? 'Is Set' : null;
