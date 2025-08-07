@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const { descriptionList } = require('../ux/descriptionList');
 const { indentLines } = require('../ux/indentLines');
 const { dumpYesNo } = require('../ux/dumpYesNo');
-const { displayDate } = require('../ux/date');
+const { displayDate } = require('../ux/locale');
 
 const stateLabels = {
   INVITED: 'Invited',

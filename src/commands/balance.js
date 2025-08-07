@@ -4,7 +4,7 @@ const { json, yaml } = require('../commonFlags');
 const { makeSDKCall } = require('../utils/makeSDKCall');
 const { dumpCommand } = require('../ux/dump');
 const { dumpYesNo } = require('../ux/dumpYesNo');
-const { displayCurrency } = require('../ux/currency');
+const { displayCurrency } = require('../ux/locale');
 const { descriptionList } = require('../ux/descriptionList');
 const { Client } = require('@vonage/server-client');
 

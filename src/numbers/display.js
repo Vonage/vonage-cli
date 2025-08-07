@@ -1,6 +1,6 @@
 const { buildCountryString } = require('../utils/countries');
 const { dumpValue } = require('../ux/dump');
-const { displayCurrency } = require('../ux/currency');
+const { displayCurrency } = require('../ux/locale');
 const { typeLabels } = require('./types');
 
 const displayNumber = (number = {}, fields = []) => Object.assign({

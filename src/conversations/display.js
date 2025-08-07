@@ -2,7 +2,7 @@ const chalk = require('chalk');
 const { dumpYesNo } = require('../ux/dumpYesNo');
 const { indentLines } = require('../ux/indentLines');
 const { descriptionList } = require('../ux/descriptionList');
-const { displayDate } = require('../ux/date');
+const { displayDate } = require('../ux/locale');
 
 const conversationSummary = ({
   name,

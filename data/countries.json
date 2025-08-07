@@ -1,1034 +1,1292 @@
 {
   "AC": {
     "name": "Ascension Island",
-    "emoji": "🇦🇨"
+    "emoji": "🇦🇨",
+    "currency": "SHP"
   },
   "AD": {
     "name": "Andorra",
-    "emoji": "🇦🇩"
+    "emoji": "🇦🇩",
+    "currency": "EUR"
   },
   "AE": {
     "name": "United Arab Emirates",
-    "emoji": "🇦🇪"
+    "emoji": "🇦🇪",
+    "currency": "AED"
   },
   "AF": {
     "name": "Afghanistan",
-    "emoji": "🇦🇫"
+    "emoji": "🇦🇫",
+    "currency": "AFN"
   },
   "AG": {
     "name": "Antigua & Barbuda",
-    "emoji": "🇦🇬"
+    "emoji": "🇦🇬",
+    "currency": "XCD"
   },
   "AI": {
     "name": "Anguilla",
-    "emoji": "🇦🇮"
+    "emoji": "🇦🇮",
+    "currency": "XCD"
   },
   "AL": {
     "name": "Albania",
-    "emoji": "🇦🇱"
+    "emoji": "🇦🇱",
+    "currency": "ALL"
   },
   "AM": {
     "name": "Armenia",
-    "emoji": "🇦🇲"
+    "emoji": "🇦🇲",
+    "currency": "AMD"
   },
   "AO": {
     "name": "Angola",
-    "emoji": "🇦🇴"
+    "emoji": "🇦🇴",
+    "currency": "AOA"
   },
   "AQ": {
     "name": "Antarctica",
-    "emoji": "🇦🇶"
+    "emoji": "🇦🇶",
+    "currency": "USD"
   },
   "AR": {
     "name": "Argentina",
-    "emoji": "🇦🇷"
+    "emoji": "🇦🇷",
+    "currency": "ARS"
   },
   "AS": {
     "name": "American Samoa",
-    "emoji": "🇦🇸"
+    "emoji": "🇦🇸",
+    "currency": "EUR"
   },
   "AT": {
     "name": "Austria",
-    "emoji": "🇦🇹"
+    "emoji": "🇦🇹",
+    "currency": "EUR"
   },
   "AU": {
     "name": "Australia",
-    "emoji": "🇦🇺"
+    "emoji": "🇦🇺",
+    "currency": "AUD"
   },
   "AW": {
     "name": "Aruba",
-    "emoji": "🇦🇼"
+    "emoji": "🇦🇼",
+    "currency": "AWG"
   },
   "AX": {
     "name": "Åland Islands",
-    "emoji": "🇦🇽"
+    "emoji": "🇦🇽",
+    "currency": "EUR"
   },
   "AZ": {
     "name": "Azerbaijan",
-    "emoji": "🇦🇿"
+    "emoji": "🇦🇿",
+    "currency": "AZN"
   },
   "BA": {
     "name": "Bosnia & Herzegovina",
-    "emoji": "🇧🇦"
+    "emoji": "🇧🇦",
+    "currency": "BAM"
   },
   "BB": {
     "name": "Barbados",
-    "emoji": "🇧🇧"
+    "emoji": "🇧🇧",
+    "currency": "BBD"
   },
   "BD": {
     "name": "Bangladesh",
-    "emoji": "🇧🇩"
+    "emoji": "🇧🇩",
+    "currency": "BDT"
   },
   "BE": {
     "name": "Belgium",
-    "emoji": "🇧🇪"
+    "emoji": "🇧🇪",
+    "currency": "EUR"
   },
   "BF": {
     "name": "Burkina Faso",
-    "emoji": "🇧🇫"
+    "emoji": "🇧🇫",
+    "currency": "XOF"
   },
   "BG": {
     "name": "Bulgaria",
-    "emoji": "🇧🇬"
+    "emoji": "🇧🇬",
+    "currency": "BGN"
   },
   "BH": {
     "name": "Bahrain",
-    "emoji": "🇧🇭"
+    "emoji": "🇧🇭",
+    "currency": "BHD"
   },
   "BI": {
     "name": "Burundi",
-    "emoji": "🇧🇮"
+    "emoji": "🇧🇮",
+    "currency": "BIF"
   },
   "BJ": {
     "name": "Benin",
-    "emoji": "🇧🇯"
+    "emoji": "🇧🇯",
+    "currency": "XOF"
   },
   "BL": {
     "name": "St. Barthélemy",
-    "emoji": "🇧🇱"
+    "emoji": "🇧🇱",
+    "currency": "EUR"
   },
   "BM": {
     "name": "Bermuda",
-    "emoji": "🇧🇲"
+    "emoji": "🇧🇲",
+    "currency": "BMD"
   },
   "BN": {
     "name": "Brunei",
-    "emoji": "🇧🇳"
+    "emoji": "🇧🇳",
+    "currency": "BND"
   },
   "BO": {
     "name": "Bolivia",
-    "emoji": "🇧🇴"
+    "emoji": "🇧🇴",
+    "currency": "BOB"
   },
   "BQ": {
     "name": "Caribbean Netherlands",
-    "emoji": "🇧🇶"
+    "emoji": "🇧🇶",
+    "currency": "EUR"
   },
   "BR": {
     "name": "Brazil",
-    "emoji": "🇧🇷"
+    "emoji": "🇧🇷",
+    "currency": "BRL"
   },
   "BS": {
     "name": "Bahamas",
-    "emoji": "🇧🇸"
+    "emoji": "🇧🇸",
+    "currency": "BSD"
   },
   "BT": {
     "name": "Bhutan",
-    "emoji": "🇧🇹"
+    "emoji": "🇧🇹",
+    "currency": "BTN"
   },
   "BV": {
     "name": "Bouvet Island",
-    "emoji": "🇧🇻"
+    "emoji": "🇧🇻",
+    "currency": "EUR"
   },
   "BW": {
     "name": "Botswana",
-    "emoji": "🇧🇼"
+    "emoji": "🇧🇼",
+    "currency": "BWP"
   },
   "BY": {
     "name": "Belarus",
-    "emoji": "🇧🇾"
+    "emoji": "🇧🇾",
+    "currency": "BYN"
   },
   "BZ": {
     "name": "Belize",
-    "emoji": "🇧🇿"
+    "emoji": "🇧🇿",
+    "currency": "BZD"
   },
   "CA": {
     "name": "Canada",
-    "emoji": "🇨🇦"
+    "emoji": "🇨🇦",
+    "currency": "CAD"
   },
   "CC": {
     "name": "Cocos (Keeling) Islands",
-    "emoji": "🇨🇨"
+    "emoji": "🇨🇨",
+    "currency": "EUR"
   },
   "CD": {
     "name": "Congo - Kinshasa",
-    "emoji": "🇨🇩"
+    "emoji": "🇨🇩",
+    "currency": "CDF"
   },
   "CF": {
     "name": "Central African Republic",
-    "emoji": "🇨🇫"
+    "emoji": "🇨🇫",
+    "currency": "XAF"
   },
   "CG": {
     "name": "Congo - Brazzaville",
-    "emoji": "🇨🇬"
+    "emoji": "🇨🇬",
+    "currency": "XAF"
   },
   "CH": {
     "name": "Switzerland",
-    "emoji": "🇨🇭"
+    "emoji": "🇨🇭",
+    "currency": "EUR"
   },
   "CI": {
     "name": "Côte d’Ivoire",
-    "emoji": "🇨🇮"
+    "emoji": "🇨🇮",
+    "currency": "XOF"
   },
   "CK": {
     "name": "Cook Islands",
-    "emoji": "🇨🇰"
+    "emoji": "🇨🇰",
+    "currency": "NZD"
   },
   "CL": {
     "name": "Chile",
-    "emoji": "🇨🇱"
+    "emoji": "🇨🇱",
+    "currency": "CLP"
   },
   "CM": {
     "name": "Cameroon",
-    "emoji": "🇨🇲"
+    "emoji": "🇨🇲",
+    "currency": "EUR"
   },
   "CN": {
     "name": "China",
-    "emoji": "🇨🇳"
+    "emoji": "🇨🇳",
+    "currency": "CNY"
   },
   "CO": {
     "name": "Colombia",
-    "emoji": "🇨🇴"
+    "emoji": "🇨🇴",
+    "currency": "COP"
   },
   "CP": {
     "name": "Clipperton Island",
-    "emoji": "🇨🇵"
+    "emoji": "🇨🇵",
+    "currency": "EUR"
   },
   "CR": {
     "name": "Costa Rica",
-    "emoji": "🇨🇷"
+    "emoji": "🇨🇷",
+    "currency": "CRC"
   },
   "CU": {
     "name": "Cuba",
-    "emoji": "🇨🇺"
+    "emoji": "🇨🇺",
+    "currency": "CUP"
   },
   "CV": {
     "name": "Cape Verde",
-    "emoji": "🇨🇻"
+    "emoji": "🇨🇻",
+    "currency": "EUR"
   },
   "CW": {
     "name": "Curaçao",
-    "emoji": "🇨🇼"
+    "emoji": "🇨🇼",
+    "currency": "ANG"
   },
   "CX": {
     "name": "Christmas Island",
-    "emoji": "🇨🇽"
+    "emoji": "🇨🇽",
+    "currency": "EUR"
   },
   "CY": {
     "name": "Cyprus",
-    "emoji": "🇨🇾"
+    "emoji": "🇨🇾",
+    "currency": "EUR"
   },
   "CZ": {
     "name": "Czechia",
-    "emoji": "🇨🇿"
+    "emoji": "🇨🇿",
+    "currency": "CZK"
   },
   "DE": {
     "name": "Germany",
-    "emoji": "🇩🇪"
+    "emoji": "🇩🇪",
+    "currency": "EUR"
   },
   "DG": {
     "name": "Diego Garcia",
-    "emoji": "🇩🇬"
+    "emoji": "🇩🇬",
+    "currency": "EUR"
   },
   "DJ": {
     "name": "Djibouti",
-    "emoji": "🇩🇯"
+    "emoji": "🇩🇯",
+    "currency": "DJF"
   },
   "DK": {
     "name": "Denmark",
-    "emoji": "🇩🇰"
+    "emoji": "🇩🇰",
+    "currency": "DKK"
   },
   "DM": {
     "name": "Dominica",
-    "emoji": "🇩🇲"
+    "emoji": "🇩🇲",
+    "currency": "XCD"
   },
   "DO": {
     "name": "Dominican Republic",
-    "emoji": "🇩🇴"
+    "emoji": "🇩🇴",
+    "currency": "DOP"
   },
   "DZ": {
     "name": "Algeria",
-    "emoji": "🇩🇿"
+    "emoji": "🇩🇿",
+    "currency": "DZD"
   },
   "EA": {
     "name": "Ceuta & Melilla",
-    "emoji": "🇪🇦"
+    "emoji": "🇪🇦",
+    "currency": "EUR"
   },
   "EC": {
     "name": "Ecuador",
-    "emoji": "🇪🇨"
+    "emoji": "🇪🇨",
+    "currency": "USD"
   },
   "EE": {
     "name": "Estonia",
-    "emoji": "🇪🇪"
+    "emoji": "🇪🇪",
+    "currency": "EUR"
   },
   "EG": {
     "name": "Egypt",
-    "emoji": "🇪🇬"
+    "emoji": "🇪🇬",
+    "currency": "EGP"
   },
   "EH": {
     "name": "Western Sahara",
-    "emoji": "🇪🇭"
+    "emoji": "🇪🇭",
+    "currency": "EUR"
   },
   "ER": {
     "name": "Eritrea",
-    "emoji": "🇪🇷"
+    "emoji": "🇪🇷",
+    "currency": "ERN"
   },
   "ES": {
     "name": "Spain",
-    "emoji": "🇪🇸"
+    "emoji": "🇪🇸",
+    "currency": "EUR"
   },
   "ET": {
     "name": "Ethiopia",
-    "emoji": "🇪🇹"
+    "emoji": "🇪🇹",
+    "currency": "ETB"
   },
   "EU": {
     "name": "European Union",
-    "emoji": "🇪🇺"
+    "emoji": "🇪🇺",
+    "currency": "EUR"
   },
   "FI": {
     "name": "Finland",
-    "emoji": "🇫🇮"
+    "emoji": "🇫🇮",
+    "currency": "EUR"
   },
   "FJ": {
     "name": "Fiji",
-    "emoji": "🇫🇯"
+    "emoji": "🇫🇯",
+    "currency": "FJD"
   },
   "FK": {
     "name": "Falkland Islands",
-    "emoji": "🇫🇰"
+    "emoji": "🇫🇰",
+    "currency": "EUR"
   },
   "FM": {
     "name": "Micronesia",
-    "emoji": "🇫🇲"
+    "emoji": "🇫🇲",
+    "currency": "EUR"
   },
   "FO": {
     "name": "Faroe Islands",
-    "emoji": "🇫🇴"
+    "emoji": "🇫🇴",
+    "currency": "EUR"
   },
   "FR": {
     "name": "France",
-    "emoji": "🇫🇷"
+    "emoji": "🇫🇷",
+    "currency": "EUR"
   },
   "GA": {
     "name": "Gabon",
-    "emoji": "🇬🇦"
+    "emoji": "🇬🇦",
+    "currency": "XAF"
   },
   "GB": {
     "name": "United Kingdom",
-    "emoji": "🇬🇧"
+    "emoji": "🇬🇧",
+    "currency": "GBP"
   },
   "GD": {
     "name": "Grenada",
-    "emoji": "🇬🇩"
+    "emoji": "🇬🇩",
+    "currency": "XCD"
   },
   "GE": {
     "name": "Georgia",
-    "emoji": "🇬🇪"
+    "emoji": "🇬🇪",
+    "currency": "GEL"
   },
   "GF": {
     "name": "French Guiana",
-    "emoji": "🇬🇫"
+    "emoji": "🇬🇫",
+    "currency": "EUR"
   },
   "GG": {
     "name": "Guernsey",
-    "emoji": "🇬🇬"
+    "emoji": "🇬🇬",
+    "currency": "EUR"
   },
   "GH": {
     "name": "Ghana",
-    "emoji": "🇬🇭"
+    "emoji": "🇬🇭",
+    "currency": "GHS"
   },
   "GI": {
     "name": "Gibraltar",
-    "emoji": "🇬🇮"
+    "emoji": "🇬🇮",
+    "currency": "EUR"
   },
   "GL": {
     "name": "Greenland",
-    "emoji": "🇬🇱"
+    "emoji": "🇬🇱",
+    "currency": "DKK"
   },
   "GM": {
     "name": "Gambia",
-    "emoji": "🇬🇲"
+    "emoji": "🇬🇲",
+    "currency": "GMD"
   },
   "GN": {
     "name": "Guinea",
-    "emoji": "🇬🇳"
+    "emoji": "🇬🇳",
+    "currency": "GNF"
   },
   "GP": {
     "name": "Guadeloupe",
-    "emoji": "🇬🇵"
+    "emoji": "🇬🇵",
+    "currency": "EUR"
   },
   "GQ": {
     "name": "Equatorial Guinea",
-    "emoji": "🇬🇶"
+    "emoji": "🇬🇶",
+    "currency": "XAF"
   },
   "GR": {
     "name": "Greece",
-    "emoji": "🇬🇷"
+    "emoji": "🇬🇷",
+    "currency": "EUR"
   },
   "GS": {
     "name": "South Georgia & South Sandwich Islands",
-    "emoji": "🇬🇸"
+    "emoji": "🇬🇸",
+    "currency": "EUR"
   },
   "GT": {
     "name": "Guatemala",
-    "emoji": "🇬🇹"
+    "emoji": "🇬🇹",
+    "currency": "GTQ"
   },
   "GU": {
     "name": "Guam",
-    "emoji": "🇬🇺"
+    "emoji": "🇬🇺",
+    "currency": "USD"
   },
   "GW": {
     "name": "Guinea-Bissau",
-    "emoji": "🇬🇼"
+    "emoji": "🇬🇼",
+    "currency": "XOF"
   },
   "GY": {
     "name": "Guyana",
-    "emoji": "🇬🇾"
+    "emoji": "🇬🇾",
+    "currency": "GYD"
   },
   "HK": {
     "name": "Hong Kong SAR China",
-    "emoji": "🇭🇰"
+    "emoji": "🇭🇰",
+    "currency": "HKD"
   },
   "HM": {
     "name": "Heard & McDonald Islands",
-    "emoji": "🇭🇲"
+    "emoji": "🇭🇲",
+    "currency": "EUR"
   },
   "HN": {
     "name": "Honduras",
-    "emoji": "🇭🇳"
+    "emoji": "🇭🇳",
+    "currency": "HNL"
   },
   "HR": {
     "name": "Croatia",
-    "emoji": "🇭🇷"
+    "emoji": "🇭🇷",
+    "currency": "EUR"
   },
   "HT": {
     "name": "Haiti",
-    "emoji": "🇭🇹"
+    "emoji": "🇭🇹",
+    "currency": "HTG"
   },
   "HU": {
     "name": "Hungary",
-    "emoji": "🇭🇺"
+    "emoji": "🇭🇺",
+    "currency": "HUF"
   },
   "IC": {
     "name": "Canary Islands",
-    "emoji": "🇮🇨"
+    "emoji": "🇮🇨",
+    "currency": "EUR"
   },
   "ID": {
     "name": "Indonesia",
-    "emoji": "🇮🇩"
+    "emoji": "🇮🇩",
+    "currency": "IDR"
   },
   "IE": {
     "name": "Ireland",
-    "emoji": "🇮🇪"
+    "emoji": "🇮🇪",
+    "currency": "EUR"
   },
   "IL": {
     "name": "Israel",
-    "emoji": "🇮🇱"
+    "emoji": "🇮🇱",
+    "currency": "ILS"
   },
   "IM": {
     "name": "Isle of Man",
-    "emoji": "🇮🇲"
+    "emoji": "🇮🇲",
+    "currency": "GBP"
   },
   "IN": {
     "name": "India",
-    "emoji": "🇮🇳"
+    "emoji": "🇮🇳",
+    "currency": "INR"
   },
   "IO": {
     "name": "British Indian Ocean Territory",
-    "emoji": "🇮🇴"
+    "emoji": "🇮🇴",
+    "currency": "USD"
   },
   "IQ": {
     "name": "Iraq",
-    "emoji": "🇮🇶"
+    "emoji": "🇮🇶",
+    "currency": "IQD"
   },
   "IR": {
     "name": "Iran",
-    "emoji": "🇮🇷"
+    "emoji": "🇮🇷",
+    "currency": "IRR"
   },
   "IS": {
     "name": "Iceland",
-    "emoji": "🇮🇸"
+    "emoji": "🇮🇸",
+    "currency": "ISK"
   },
   "IT": {
     "name": "Italy",
-    "emoji": "🇮🇹"
+    "emoji": "🇮🇹",
+    "currency": "EUR"
   },
   "JE": {
     "name": "Jersey",
-    "emoji": "🇯🇪"
+    "emoji": "🇯🇪",
+    "currency": "GBP"
   },
   "JM": {
     "name": "Jamaica",
-    "emoji": "🇯🇲"
+    "emoji": "🇯🇲",
+    "currency": "JMD"
   },
   "JO": {
     "name": "Jordan",
-    "emoji": "🇯🇴"
+    "emoji": "🇯🇴",
+    "currency": "JOD"
   },
   "JP": {
     "name": "Japan",
-    "emoji": "🇯🇵"
+    "emoji": "🇯🇵",
+    "currency": "JPY"
   },
   "KE": {
     "name": "Kenya",
-    "emoji": "🇰🇪"
+    "emoji": "🇰🇪",
+    "currency": "KES"
   },
   "KG": {
     "name": "Kyrgyzstan",
-    "emoji": "🇰🇬"
+    "emoji": "🇰🇬",
+    "currency": "EUR"
   },
   "KH": {
     "name": "Cambodia",
-    "emoji": "🇰🇭"
+    "emoji": "🇰🇭",
+    "currency": "EUR"
   },
   "KI": {
     "name": "Kiribati",
-    "emoji": "🇰🇮"
+    "emoji": "🇰🇮",
+    "currency": "EUR"
   },
   "KM": {
     "name": "Comoros",
-    "emoji": "🇰🇲"
+    "emoji": "🇰🇲",
+    "currency": "KMF"
   },
   "KN": {
     "name": "St. Kitts & Nevis",
-    "emoji": "🇰🇳"
+    "emoji": "🇰🇳",
+    "currency": "EUR"
   },
   "KP": {
     "name": "North Korea",
-    "emoji": "🇰🇵"
+    "emoji": "🇰🇵",
+    "currency": "KPW"
   },
   "KR": {
     "name": "South Korea",
-    "emoji": "🇰🇷"
+    "emoji": "🇰🇷",
+    "currency": "KRW"
   },
   "KW": {
     "name": "Kuwait",
-    "emoji": "🇰🇼"
+    "emoji": "🇰🇼",
+    "currency": "KWD"
   },
   "KY": {
     "name": "Cayman Islands",
-    "emoji": "🇰🇾"
+    "emoji": "🇰🇾",
+    "currency": "KYD"
   },
   "KZ": {
     "name": "Kazakhstan",
-    "emoji": "🇰🇿"
+    "emoji": "🇰🇿",
+    "currency": "EUR"
   },
   "LA": {
     "name": "Laos",
-    "emoji": "🇱🇦"
+    "emoji": "🇱🇦",
+    "currency": "EUR"
   },
   "LB": {
     "name": "Lebanon",
-    "emoji": "🇱🇧"
+    "emoji": "🇱🇧",
+    "currency": "LBP"
   },
   "LC": {
     "name": "St. Lucia",
-    "emoji": "🇱🇨"
+    "emoji": "🇱🇨",
+    "currency": "EUR"
   },
   "LI": {
     "name": "Liechtenstein",
-    "emoji": "🇱🇮"
+    "emoji": "🇱🇮",
+    "currency": "EUR"
   },
   "LK": {
     "name": "Sri Lanka",
-    "emoji": "🇱🇰"
+    "emoji": "🇱🇰",
+    "currency": "EUR"
   },
   "LR": {
     "name": "Liberia",
-    "emoji": "🇱🇷"
+    "emoji": "🇱🇷",
+    "currency": "EUR"
   },
   "LS": {
     "name": "Lesotho",
-    "emoji": "🇱🇸"
+    "emoji": "🇱🇸",
+    "currency": "EUR"
   },
   "LT": {
     "name": "Lithuania",
-    "emoji": "🇱🇹"
+    "emoji": "🇱🇹",
+    "currency": "EUR"
   },
   "LU": {
     "name": "Luxembourg",
-    "emoji": "🇱🇺"
+    "emoji": "🇱🇺",
+    "currency": "EUR"
   },
   "LV": {
     "name": "Latvia",
-    "emoji": "🇱🇻"
+    "emoji": "🇱🇻",
+    "currency": "EUR"
   },
   "LY": {
     "name": "Libya",
-    "emoji": "🇱🇾"
+    "emoji": "🇱🇾",
+    "currency": "LYD"
   },
   "MA": {
     "name": "Morocco",
-    "emoji": "🇲🇦"
+    "emoji": "🇲🇦",
+    "currency": "MAD"
   },
   "MC": {
     "name": "Monaco",
-    "emoji": "🇲🇨"
+    "emoji": "🇲🇨",
+    "currency": "EUR"
   },
   "MD": {
     "name": "Moldova",
-    "emoji": "🇲🇩"
+    "emoji": "🇲🇩",
+    "currency": "EUR"
   },
   "ME": {
     "name": "Montenegro",
-    "emoji": "🇲🇪"
+    "emoji": "🇲🇪",
+    "currency": "EUR"
   },
   "MF": {
     "name": "St. Martin",
-    "emoji": "🇲🇫"
+    "emoji": "🇲🇫",
+    "currency": "EUR"
   },
   "MG": {
     "name": "Madagascar",
-    "emoji": "🇲🇬"
+    "emoji": "🇲🇬",
+    "currency": "EUR"
   },
   "MH": {
     "name": "Marshall Islands",
-    "emoji": "🇲🇭"
+    "emoji": "🇲🇭",
+    "currency": "EUR"
   },
   "MK": {
     "name": "North Macedonia",
-    "emoji": "🇲🇰"
+    "emoji": "🇲🇰",
+    "currency": "EUR"
   },
   "ML": {
     "name": "Mali",
-    "emoji": "🇲🇱"
+    "emoji": "🇲🇱",
+    "currency": "EUR"
   },
   "MM": {
     "name": "Myanmar (Burma)",
-    "emoji": "🇲🇲"
+    "emoji": "🇲🇲",
+    "currency": "EUR"
   },
   "MN": {
     "name": "Mongolia",
-    "emoji": "🇲🇳"
+    "emoji": "🇲🇳",
+    "currency": "EUR"
   },
   "MO": {
     "name": "Macao SAR China",
-    "emoji": "🇲🇴"
+    "emoji": "🇲🇴",
+    "currency": "EUR"
   },
   "MP": {
     "name": "Northern Mariana Islands",
-    "emoji": "🇲🇵"
+    "emoji": "🇲🇵",
+    "currency": "EUR"
   },
   "MQ": {
     "name": "Martinique",
-    "emoji": "🇲🇶"
+    "emoji": "🇲🇶",
+    "currency": "EUR"
   },
   "MR": {
     "name": "Mauritania",
-    "emoji": "🇲🇷"
+    "emoji": "🇲🇷",
+    "currency": "EUR"
   },
   "MS": {
     "name": "Montserrat",
-    "emoji": "🇲🇸"
+    "emoji": "🇲🇸",
+    "currency": "EUR"
   },
   "MT": {
     "name": "Malta",
-    "emoji": "🇲🇹"
+    "emoji": "🇲🇹",
+    "currency": "EUR"
   },
   "MU": {
     "name": "Mauritius",
-    "emoji": "🇲🇺"
+    "emoji": "🇲🇺",
+    "currency": "EUR"
   },
   "MV": {
     "name": "Maldives",
-    "emoji": "🇲🇻"
+    "emoji": "🇲🇻",
+    "currency": "EUR"
   },
   "MW": {
     "name": "Malawi",
-    "emoji": "🇲🇼"
+    "emoji": "🇲🇼",
+    "currency": "EUR"
   },
   "MX": {
     "name": "Mexico",
-    "emoji": "🇲🇽"
+    "emoji": "🇲🇽",
+    "currency": "MXN"
   },
   "MY": {
     "name": "Malaysia",
-    "emoji": "🇲🇾"
+    "emoji": "🇲🇾",
+    "currency": "MYR"
   },
   "MZ": {
     "name": "Mozambique",
-    "emoji": "🇲🇿"
+    "emoji": "🇲🇿",
+    "currency": "EUR"
   },
   "NA": {
     "name": "Namibia",
-    "emoji": "🇳🇦"
+    "emoji": "🇳🇦",
+    "currency": "EUR"
   },
   "NC": {
     "name": "New Caledonia",
-    "emoji": "🇳🇨"
+    "emoji": "🇳🇨",
+    "currency": "EUR"
   },
   "NE": {
     "name": "Niger",
-    "emoji": "🇳🇪"
+    "emoji": "🇳🇪",
+    "currency": "EUR"
   },
   "NF": {
     "name": "Norfolk Island",
-    "emoji": "🇳🇫"
+    "emoji": "🇳🇫",
+    "currency": "EUR"
   },
   "NG": {
     "name": "Nigeria",
-    "emoji": "🇳🇬"
+    "emoji": "🇳🇬",
+    "currency": "NGN"
   },
   "NI": {
     "name": "Nicaragua",
-    "emoji": "🇳🇮"
+    "emoji": "🇳🇮",
+    "currency": "EUR"
   },
   "NL": {
     "name": "Netherlands",
-    "emoji": "🇳🇱"
+    "emoji": "🇳🇱",
+    "currency": "EUR"
   },
   "NO": {
     "name": "Norway",
-    "emoji": "🇳🇴"
+    "emoji": "🇳🇴",
+    "currency": "EUR"
   },
   "NP": {
     "name": "Nepal",
-    "emoji": "🇳🇵"
+    "emoji": "🇳🇵",
+    "currency": "EUR"
   },
   "NR": {
     "name": "Nauru",
-    "emoji": "🇳🇷"
+    "emoji": "🇳🇷",
+    "currency": "EUR"
   },
   "NU": {
     "name": "Niue",
-    "emoji": "🇳🇺"
+    "emoji": "🇳🇺",
+    "currency": "EUR"
   },
   "NZ": {
     "name": "New Zealand",
-    "emoji": "🇳🇿"
+    "emoji": "🇳🇿",
+    "currency": "NZD"
   },
   "OM": {
     "name": "Oman",
-    "emoji": "🇴🇲"
+    "emoji": "🇴🇲",
+    "currency": "OMR"
   },
   "PA": {
     "name": "Panama",
-    "emoji": "🇵🇦"
+    "emoji": "🇵🇦",
+    "currency": "EUR"
   },
   "PE": {
     "name": "Peru",
-    "emoji": "🇵🇪"
+    "emoji": "🇵🇪",
+    "currency": "EUR"
   },
   "PF": {
     "name": "French Polynesia",
-    "emoji": "🇵🇫"
+    "emoji": "🇵🇫",
+    "currency": "EUR"
   },
   "PG": {
     "name": "Papua New Guinea",
-    "emoji": "🇵🇬"
+    "emoji": "🇵🇬",
+    "currency": "EUR"
   },
   "PH": {
     "name": "Philippines",
-    "emoji": "🇵🇭"
+    "emoji": "🇵🇭",
+    "currency": "PHP"
   },
   "PK": {
     "name": "Pakistan",
-    "emoji": "🇵🇰"
+    "emoji": "🇵🇰",
+    "currency": "PKR"
   },
   "PL": {
     "name": "Poland",
-    "emoji": "🇵🇱"
+    "emoji": "🇵🇱",
+    "currency": "EUR"
   },
   "PM": {
     "name": "St. Pierre & Miquelon",
-    "emoji": "🇵🇲"
+    "emoji": "🇵🇲",
+    "currency": "EUR"
   },
   "PN": {
     "name": "Pitcairn Islands",
-    "emoji": "🇵🇳"
+    "emoji": "🇵🇳",
+    "currency": "EUR"
   },
   "PR": {
     "name": "Puerto Rico",
-    "emoji": "🇵🇷"
+    "emoji": "🇵🇷",
+    "currency": "EUR"
   },
   "PS": {
     "name": "Palestinian Territories",
-    "emoji": "🇵🇸"
+    "emoji": "🇵🇸",
+    "currency": "ILS"
   },
   "PT": {
     "name": "Portugal",
-    "emoji": "🇵🇹"
+    "emoji": "🇵🇹",
+    "currency": "EUR"
   },
   "PW": {
     "name": "Palau",
-    "emoji": "🇵🇼"
+    "emoji": "🇵🇼",
+    "currency": "EUR"
   },
   "PY": {
     "name": "Paraguay",
-    "emoji": "🇵🇾"
+    "emoji": "🇵🇾",
+    "currency": "EUR"
   },
   "QA": {
     "name": "Qatar",
-    "emoji": "🇶🇦"
+    "emoji": "🇶🇦",
+    "currency": "QAR"
   },
   "RE": {
     "name": "Réunion",
-    "emoji": "🇷🇪"
+    "emoji": "🇷🇪",
+    "currency": "EUR"
   },
   "RO": {
     "name": "Romania",
-    "emoji": "🇷🇴"
+    "emoji": "🇷🇴",
+    "currency": "EUR"
   },
   "RS": {
     "name": "Serbia",
-    "emoji": "🇷🇸"
+    "emoji": "🇷🇸",
+    "currency": "EUR"
   },
   "RU": {
     "name": "Russia",
-    "emoji": "🇷🇺"
+    "emoji": "🇷🇺",
+    "currency": "RUB"
   },
   "RW": {
     "name": "Rwanda",
-    "emoji": "🇷🇼"
+    "emoji": "🇷🇼",
+    "currency": "EUR"
   },
   "SA": {
     "name": "Saudi Arabia",
-    "emoji": "🇸🇦"
+    "emoji": "🇸🇦",
+    "currency": "SAR"
   },
   "SB": {
     "name": "Solomon Islands",
-    "emoji": "🇸🇧"
+    "emoji": "🇸🇧",
+    "currency": "EUR"
   },
   "SC": {
     "name": "Seychelles",
-    "emoji": "🇸🇨"
+    "emoji": "🇸🇨",
+    "currency": "EUR"
   },
   "SD": {
     "name": "Sudan",
-    "emoji": "🇸🇩"
+    "emoji": "🇸🇩",
+    "currency": "SDG"
   },
   "SE": {
     "name": "Sweden",
-    "emoji": "🇸🇪"
+    "emoji": "🇸🇪",
+    "currency": "EUR"
   },
   "SG": {
     "name": "Singapore",
-    "emoji": "🇸🇬"
+    "emoji": "🇸🇬",
+    "currency": "SGD"
   },
   "SH": {
     "name": "St. Helena",
-    "emoji": "🇸🇭"
+    "emoji": "🇸🇭",
+    "currency": "EUR"
   },
   "SI": {
     "name": "Slovenia",
-    "emoji": "🇸🇮"
+    "emoji": "🇸🇮",
+    "currency": "EUR"
   },
   "SJ": {
     "name": "Svalbard & Jan Mayen",
-    "emoji": "🇸🇯"
+    "emoji": "🇸🇯",
+    "currency": "EUR"
   },
   "SK": {
     "name": "Slovakia",
-    "emoji": "🇸🇰"
+    "emoji": "🇸🇰",
+    "currency": "EUR"
   },
   "SL": {
     "name": "Sierra Leone",
-    "emoji": "🇸🇱"
+    "emoji": "🇸🇱",
+    "currency": "EUR"
   },
   "SM": {
     "name": "San Marino",
-    "emoji": "🇸🇲"
+    "emoji": "🇸🇲",
+    "currency": "EUR"
   },
   "SN": {
     "name": "Senegal",
-    "emoji": "🇸🇳"
+    "emoji": "🇸🇳",
+    "currency": "EUR"
   },
   "SO": {
     "name": "Somalia",
-    "emoji": "🇸🇴"
+    "emoji": "🇸🇴",
+    "currency": "EUR"
   },
   "SR": {
     "name": "Suriname",
-    "emoji": "🇸🇷"
+    "emoji": "🇸🇷",
+    "currency": "EUR"
   },
   "SS": {
     "name": "South Sudan",
-    "emoji": "🇸🇸"
+    "emoji": "🇸🇸",
+    "currency": "SSP"
   },
   "ST": {
     "name": "São Tomé & Príncipe",
-    "emoji": "🇸🇹"
+    "emoji": "🇸🇹",
+    "currency": "EUR"
   },
   "SV": {
     "name": "El Salvador",
-    "emoji": "🇸🇻"
+    "emoji": "🇸🇻",
+    "currency": "USD"
   },
   "SX": {
     "name": "Sint Maarten",
-    "emoji": "🇸🇽"
+    "emoji": "🇸🇽",
+    "currency": "EUR"
   },
   "SY": {
     "name": "Syria",
-    "emoji": "🇸🇾"
+    "emoji": "🇸🇾",
+    "currency": "SYP"
   },
   "SZ": {
     "name": "Eswatini",
-    "emoji": "🇸🇿"
+    "emoji": "🇸🇿",
+    "currency": "SZL"
   },
   "TA": {
     "name": "Tristan da Cunha",
-    "emoji": "🇹🇦"
+    "emoji": "🇹🇦",
+    "currency": "EUR"
   },
   "TC": {
     "name": "Turks & Caicos Islands",
-    "emoji": "🇹🇨"
+    "emoji": "🇹🇨",
+    "currency": "EUR"
   },
   "TD": {
     "name": "Chad",
-    "emoji": "🇹🇩"
+    "emoji": "🇹🇩",
+    "currency": "XAF"
   },
   "TF": {
     "name": "French Southern Territories",
-    "emoji": "🇹🇫"
+    "emoji": "🇹🇫",
+    "currency": "EUR"
   },
   "TG": {
     "name": "Togo",
-    "emoji": "🇹🇬"
+    "emoji": "🇹🇬",
+    "currency": "EUR"
   },
   "TH": {
     "name": "Thailand",
-    "emoji": "🇹🇭"
+    "emoji": "🇹🇭",
+    "currency": "THB"
   },
   "TJ": {
     "name": "Tajikistan",
-    "emoji": "🇹🇯"
+    "emoji": "🇹🇯",
+    "currency": "EUR"
   },
   "TK": {
     "name": "Tokelau",
-    "emoji": "🇹🇰"
+    "emoji": "🇹🇰",
+    "currency": "EUR"
   },
   "TL": {
     "name": "Timor-Leste",
-    "emoji": "🇹🇱"
+    "emoji": "🇹🇱",
+    "currency": "EUR"
   },
   "TM": {
     "name": "Turkmenistan",
-    "emoji": "🇹🇲"
+    "emoji": "🇹🇲",
+    "currency": "EUR"
   },
   "TN": {
     "name": "Tunisia",
-    "emoji": "🇹🇳"
+    "emoji": "🇹🇳",
+    "currency": "TND"
   },
   "TO": {
     "name": "Tonga",
-    "emoji": "🇹🇴"
+    "emoji": "🇹🇴",
+    "currency": "EUR"
   },
   "TR": {
     "name": "Turkey",
-    "emoji": "🇹🇷"
+    "emoji": "🇹🇷",
+    "currency": "TRY"
   },
   "TT": {
     "name": "Trinidad & Tobago",
-    "emoji": "🇹🇹"
+    "emoji": "🇹🇹",
+    "currency": "EUR"
   },
   "TV": {
     "name": "Tuvalu",
-    "emoji": "🇹🇻"
+    "emoji": "🇹🇻",
+    "currency": "EUR"
   },
   "TW": {
     "name": "Taiwan",
-    "emoji": "🇹🇼"
+    "emoji": "🇹🇼",
+    "currency": "EUR"
   },
   "TZ": {
     "name": "Tanzania",
-    "emoji": "🇹🇿"
+    "emoji": "🇹🇿",
+    "currency": "EUR"
   },
   "UA": {
     "name": "Ukraine",
-    "emoji": "🇺🇦"
+    "emoji": "🇺🇦",
+    "currency": "UAH"
   },
   "UG": {
     "name": "Uganda",
-    "emoji": "🇺🇬"
+    "emoji": "🇺🇬",
+    "currency": "EUR"
   },
   "UM": {
     "name": "U.S. Outlying Islands",
-    "emoji": "🇺🇲"
+    "emoji": "🇺🇲",
+    "currency": "EUR"
   },
   "UN": {
     "name": "United Nations",
-    "emoji": "🇺🇳"
+    "emoji": "🇺🇳",
+    "currency": "EUR"
   },
   "US": {
     "name": "United States",
-    "emoji": "🇺🇸"
+    "emoji": "🇺🇸",
+    "currency": "USD"
   },
   "UY": {
     "name": "Uruguay",
-    "emoji": "🇺🇾"
+    "emoji": "🇺🇾",
+    "currency": "EUR"
   },
   "UZ": {
     "name": "Uzbekistan",
-    "emoji": "🇺🇿"
+    "emoji": "🇺🇿",
+    "currency": "EUR"
   },
   "VA": {
     "name": "Vatican City",
-    "emoji": "🇻🇦"
+    "emoji": "🇻🇦",
+    "currency": "EUR"
   },
   "VC": {
     "name": "St. Vincent & Grenadines",
-    "emoji": "🇻🇨"
+    "emoji": "🇻🇨",
+    "currency": "EUR"
   },
   "VE": {
     "name": "Venezuela",
-    "emoji": "🇻🇪"
+    "emoji": "🇻🇪",
+    "currency": "VES"
   },
   "VG": {
     "name": "British Virgin Islands",
-    "emoji": "🇻🇬"
+    "emoji": "🇻🇬",
+    "currency": "USD"
   },
   "VI": {
     "name": "U.S. Virgin Islands",
-    "emoji": "🇻🇮"
+    "emoji": "🇻🇮",
+    "currency": "EUR"
   },
   "VN": {
     "name": "Vietnam",
-    "emoji": "🇻🇳"
+    "emoji": "🇻🇳",
+    "currency": "VND"
   },
   "VU": {
     "name": "Vanuatu",
-    "emoji": "🇻🇺"
+    "emoji": "🇻🇺",
+    "currency": "EUR"
   },
   "WF": {
     "name": "Wallis & Futuna",
-    "emoji": "🇼🇫"
+    "emoji": "🇼🇫",
+    "currency": "EUR"
   },
   "WS": {
     "name": "Samoa",
-    "emoji": "🇼🇸"
+    "emoji": "🇼🇸",
+    "currency": "EUR"
   },
   "XK": {
     "name": "Kosovo",
-    "emoji": "🇽🇰"
+    "emoji": "🇽🇰",
+    "currency": "EUR"
   },
   "YE": {
     "name": "Yemen",
-    "emoji": "🇾🇪"
+    "emoji": "🇾🇪",
+    "currency": "YER"
   },
   "YT": {
     "name": "Mayotte",
-    "emoji": "🇾🇹"
+    "emoji": "🇾🇹",
+    "currency": "EUR"
   },
   "ZA": {
     "name": "South Africa",
-    "emoji": "🇿🇦"
+    "emoji": "🇿🇦",
+    "currency": "ZAR"
   },
   "ZM": {
     "name": "Zambia",
-    "emoji": "🇿🇲"
+    "emoji": "🇿🇲",
+    "currency": "EUR"
   },
   "ZW": {
     "name": "Zimbabwe",
-    "emoji": "🇿🇼"
+    "emoji": "🇿🇼",
+    "currency": "ZWL"
   }
 }
