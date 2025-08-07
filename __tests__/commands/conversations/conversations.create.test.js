@@ -1,7 +1,7 @@
 process.env.FORCE_COLOR = 0;
 const { confirm } = require('../../../src/ux/confirm');
 const { EventType } = require('@vonage/conversations');
-const { displayDate } = require('../../../src/ux/date');
+const { displayDate } = require('../../../src/ux/locale');
 const { handler } = require('../../../src/commands/conversations/create');
 const { mockConsole } = require('../../helpers');
 const { getTestConversationForAPI, addCLIPropertiesToConversation } = require('../../conversations');

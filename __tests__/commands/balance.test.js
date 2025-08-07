@@ -4,7 +4,7 @@ const YAML = require('yaml');
 const { faker } = require('@faker-js/faker');
 const { handler } = require('../../src/commands/balance');
 const { dumpYesNo } = require('../../src/ux/dumpYesNo');
-const { displayCurrency } = require('../../src/ux/currency');
+const { displayCurrency } = require('../../src/ux/locale');
 const { Client } = require('@vonage/server-client');
 
 describe('Command: vonage balance', () => {

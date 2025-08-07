@@ -2,7 +2,7 @@ process.env.FORCE_COLOR = 0;
 const YAML = require('yaml');
 const { handler } = require('../../../src/commands/members/show');
 const { mockConsole } = require('../../helpers');
-const { displayDate } = require('../../../src/ux/date');
+const { displayDate } = require('../../../src/ux/locale');
 const {
   getTestMemberForAPI,
   addAppChannelToMember,

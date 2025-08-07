@@ -1,5 +1,5 @@
 process.env.FORCE_COLOR = 0;
-const { displayDate } = require('../../../src/ux/date');
+const { displayDate } = require('../../../src/ux/locale');
 const yargs = require('yargs');
 const { handler } = require('../../../src/commands/conversations/show');
 const { mockConsole } = require('../../helpers');

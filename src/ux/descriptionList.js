@@ -1,4 +1,3 @@
-const { getTerminalWidth } = require('./getTerminalWidth');
 const { EOL } = require('os');
 
 const identity = (x) => x;
@@ -15,7 +14,7 @@ const descriptionDetail = (value, term, options) => {
   const varType = Array.isArray(value) ? 'array' : typeof value;
 
   if (value === undefined || value === null) {
-    return options.detailFormatter('-', term, value);
+    return options.detailFormatter('Not Set', term, value);
   }
 
   switch (varType) {
@@ -150,10 +149,10 @@ const descriptionList = (
     ...defaults,
     ...options,
   };
-  const { termFormatter, padding, indent } =  options;
+  const { termFormatter, indent } =  options;
 
   // process items
-  const { processedItems, maxTermLength } = (!Array.isArray(items)
+  const { processedItems } = (!Array.isArray(items)
     ? Object.entries(items)
     : items).reduce(
     (acc, [ term, detail ]) => {
@@ -172,13 +171,11 @@ const descriptionList = (
     { processedItems: [], maxTermLength: 0},
   );
 
-  const termWidth = Math.min(maxTermLength + padding, Math.floor(getTerminalWidth() / 2));
-
   return processedItems.map(
     ({ term, detail}) => [
       ' '.repeat(indent),
       term,
-      ' '.repeat(Math.max(termWidth - term.length, 1)),
+      ': ',
       descriptionDetail(detail, term, options),
     ].join(''),
   ).join(EOL);
