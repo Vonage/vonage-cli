@@ -4,8 +4,9 @@ const yaml = require('yaml');
 const { handler } = require('../../../src/commands/numbers/search');
 const { typeLabels } = require('../../../src/numbers/types');
 const { mockConsole } = require('../../helpers');
-const { countryCodes, getCountryName } = require('../../../src/utils/countries');
+const { countryCodes, getCountryName } = require('../../../src/ux/locale');
 const { getTestPhoneNumber } = require('../../numbers');
+const { displayCurrency } = require('../../../src/ux/locale');
 const { Client } = require('@vonage/server-client');
 
 jest.mock('yargs');
@@ -63,8 +64,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -293,8 +294,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -353,8 +354,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -414,8 +415,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -475,8 +476,8 @@ describe('Command: vonage numbers search', () => {
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -538,8 +539,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );
@@ -600,8 +601,8 @@ describe('Command: vonage numbers search', () => {
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
         'Features': number.features.sort().join(', '),
-        'Monthly Cost': `€${number.cost}`,
-        'Setup Cost': `€${number.initialPrice}`,
+        'Monthly Cost': displayCurrency(number.cost),
+        'Setup Cost': displayCurrency(number.initialPrice),
       }),
       ),
     );

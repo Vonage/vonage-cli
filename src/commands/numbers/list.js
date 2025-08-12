@@ -5,7 +5,7 @@ const { dumpCommand } = require('../../ux/dump');
 const { loadOwnedNumbersFromSDK, searchPatterns } = require('../../numbers/loadOwnedNumbersFromSDK');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { yaml, json } = require('../../commonFlags');
-const { countryFlag, getCountryName } = require('../../utils/countries');
+const { countryFlag, getCountryName } = require('../../ux/locale');
 const { coerceNumber } = require('../../utils/coerceNumber');
 
 const flags = {

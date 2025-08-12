@@ -65,12 +65,9 @@ const countryFlag =  {
  * Formats a date based on the user's locale.
  *
  * @param { string|Date } date - The date to format.
- * @returns { string|undefined } - The formatted date string or undefined if input is falsy.
+ * @returns { string|null } - The formatted date string or undefined if input is falsy.
  */
-const displayDate = (date) => {
-  if (!date) return undefined;
-  return new Date(date).toLocaleString(locale);
-};
+const displayDate = (date) => !date ? null : new Date(date).toLocaleString(locale);
 
 /**
  * Formats a number as currency in EUR.
@@ -81,8 +78,12 @@ const displayDate = (date) => {
  */
 const displayCurrency = (num, currencyCode = regionCurrencyCode) => {
   const parsed = parseFloat(num);
-  if (isNaN(parsed)) return undefined;
-  return parsed.toLocaleString('en-GB', {
+
+  if (isNaN(parsed)) {
+    return undefined;
+  }
+
+  return parsed.toLocaleString(resolvedLocale, {
     style: 'currency',
     currency: currencyCode,
   });

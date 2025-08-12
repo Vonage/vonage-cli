@@ -6,7 +6,7 @@ const yaml = require('yaml');
 const { handler } = require('../../../src/commands/numbers/buy');
 const { typeLabels } = require('../../../src/numbers/types');
 const { mockConsole } = require('../../helpers');
-const { countryCodes, buildCountryString } = require('../../../src/utils/countries');
+const { countryCodes, displayCurrency, buildCountryString } = require('../../../src/ux/locale');
 const { getTestPhoneNumber } = require('../../numbers');
 const { Client } = require('@vonage/server-client');
 
@@ -81,8 +81,8 @@ describe('Command: numbers buy', () => {
         `Country: ${buildCountryString(testNumber.country)}`,
         `Type: ${typeLabels[testNumber.type]}`,
         `Features: ${testNumber.features.join(', ')}`,
-        `Monthly Cost: €${testNumber.cost}`,
-        `Setup Cost: €${testNumber.initialPrice}`,
+        `Monthly Cost: ${displayCurrency(testNumber.cost)}`,
+        `Setup Cost: ${displayCurrency(testNumber.initialPrice)}`,
         'Linked Application ID: Not linked to any application',
         'Voice Callback: Not Set',
         'Voice Callback Value: Not Set',

@@ -5,7 +5,7 @@ const { confirm } = require('../../ux/confirm');
 const { dumpCommand } = require('../../ux/dump');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { force } = require('../../commonFlags');
-const { countryFlag } = require('../../utils/countries');
+const { countryFlag } = require('../../ux/locale');
 
 const flags = {
   'api-key': apiKey,

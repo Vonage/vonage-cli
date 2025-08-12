@@ -3,7 +3,7 @@ const yargs = require('yargs');
 const yaml = require('yaml');
 const { handler } = require('../../../../src/commands/apps/numbers/list');
 const { typeLabels } = require('../../../../src/numbers/types');
-const { buildCountryString } = require('../../../../src/utils/countries');
+const { buildCountryString } = require('../../../../src/ux/locale');
 const { mockConsole } = require('../../../helpers');
 const {
   getTestApp,

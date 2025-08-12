@@ -2,14 +2,13 @@ const YAML = require('yaml');
 const yargs = require('yargs');
 const { confirm } = require('../../ux/confirm');
 const { descriptionList } = require('../../ux/descriptionList');
-const { displayCurrency } = require('../../ux/locale');
+const { countryFlag, displayCurrency } = require('../../ux/locale');
 const { displayFullNumber } = require('../../numbers/display');
 const { Client } = require('@vonage/server-client');
 const { dumpCommand } = require('../../ux/dump');
 const { makeSDKCall } = require('../../utils/makeSDKCall');
 const { apiKey, apiSecret } = require('../../credentialFlags');
 const { yaml, json, force } = require('../../commonFlags');
-const { countryFlag } = require('../../utils/countries');
 
 const flags = {
   'target-api-key': {

@@ -4,7 +4,7 @@ const yaml = require('yaml');
 const { handler } = require('../../../src/commands/numbers/list');
 const { typeLabels } = require('../../../src/numbers/types');
 const { mockConsole } = require('../../helpers');
-const { buildCountryString, countryCodes, getCountryName } = require('../../../src/utils/countries');
+const { buildCountryString, countryCodes, getCountryName } = require('../../../src/ux/locale');
 const { getTestPhoneNumber } = require('../../numbers');
 const { Client } = require('@vonage/server-client');
 

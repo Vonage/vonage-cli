@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const { countryCodes } = require('../src/utils/countries');
+const { countryCodes } = require('../src/ux/locale');
 
 const getTestPhoneNumber = () => Object.freeze({
   'country': faker.helpers.shuffle(countryCodes)[0],
