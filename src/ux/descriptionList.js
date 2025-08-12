@@ -153,8 +153,10 @@ const descriptionList = (
     ...options,
   };
 
-  return items.map(
-    ({ term, detail}) => `${indentTerm(term)}: ${descriptionDetail(detail, term, options)}`,
+  return (!Array.isArray(items)
+    ? Object.entries(items)
+    : items).map(
+    ([ term, detail]) => `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`,
   ).join(EOL);
 };
 
