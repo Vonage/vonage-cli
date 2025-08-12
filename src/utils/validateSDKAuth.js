@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const { Vonage } = require('@vonage/server-sdk');
 const { spinner } = require('../ux/spinner');
+const { SDKConfig } = require('../middleware/config');
 
 const validateApplicationKey = (application, privateKey) => {
   console.debug('Validating application key');
@@ -34,12 +35,15 @@ const validatePrivateKeyAndAppId = async (apiKey, apiSecret, appId, privateKey) 
   const {fail, stop} = spinner({message: 'Checking App ID and Private Key: ...'});
 
   try {
-    const vonage = new Vonage({
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-      applicationId: appId,
-      privateKey: privateKey,
-    });
+    const vonage = new Vonage(
+      {
+        apiKey: apiKey,
+        apiSecret: apiSecret,
+        applicationId: appId,
+        privateKey: privateKey,
+      },
+      SDKConfig,
+    );
 
     console.debug('Loading application');
 
@@ -73,10 +77,13 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret) => {
   const {stop, fail} = spinner({message: 'Checking API Key Secret: ...'});
 
   try {
-    const vonage = new Vonage({
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-    });
+    const vonage = new Vonage(
+      {
+        apiKey: apiKey,
+        apiSecret: apiSecret,
+      },
+      SDKConfig,
+    );
 
     console.debug('Getting an application page');
     await vonage.applications.getApplicationPage({size: 1});

@@ -6,6 +6,7 @@ const { indentLines } = require('../ux/indentLines');
 const path = require('path');
 const chalk = require('chalk');
 const yargs = require('yargs');
+const { version } = require('../../package.json');
 const os = require('os');
 
 const getSharedConfig = () => {
@@ -66,6 +67,10 @@ const errorNoConfig = (local=false) => {
   console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
   console.log('      use the --help option for more information');
   yargs.exit(2);
+};
+
+const SDKConfig = {
+  appendUserAgent: `cli/${version}`,
 };
 
 // Used as an array to allow commands to control as needed
@@ -158,12 +163,16 @@ exports.setConfig = (argv) => {
     applicationId: authConfig.appId,
   });
 
+
   const finalConfig = {
     ...authConfig,
     config: config,
     AUTH: SDKAuth,
-    SDK: new Vonage(SDKAuth),
+    SDK: new Vonage(SDKAuth, SDKConfig),
+    SDKConfig: SDKConfig,
   };
 
   return finalConfig;
 };
+
+exports.SDKConfig = SDKConfig;
