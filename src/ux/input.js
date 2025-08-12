@@ -1,4 +1,4 @@
-const { overwriteLine, overwriteWithNewLine } = require('./clear');
+const { overwriteLine } = require('./clear');
 const readline = require('readline');
 
 /**
@@ -182,7 +182,7 @@ const inputFromTTY = (
     if (message) {
       intervalId = setInterval(
         () => {
-          overwriteLine(reminderMessage, echo ? keysPressed : []);
+          overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
           onReminder(keysPressed);
         },
         reminderInterval,
@@ -208,10 +208,10 @@ const inputFromTTY = (
   rl.input.on('keypress', handlePress);
 
   if (message) {
-    overwriteWithNewLine(message, keysPressed);
+    overwriteLine(`${message} ${keysPressed.join('')}`);
 
     intervalId = setInterval(
-      () => overwriteLine(reminderMessage, echo ? keysPressed : []),
+      () => overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`),
       reminderInterval,
     );
   }

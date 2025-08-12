@@ -21,11 +21,11 @@ const createDirectory = (directory) => {
 
 const checkOkToWrite = async (filePath, message=null) => {
   if (!existsSync(filePath)) {
-    console.debug('Config file does not exist ok to write');
+    console.debug('File does not exist ok to write');
     return true;
   }
 
-  console.debug('Config file exists, checking if ok to write');
+  console.debug('File exists, checking if ok to write');
   const okToWrite = await confirm(
     message ||
     `Overwirte file ${filePath}?`,
