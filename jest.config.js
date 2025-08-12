@@ -9,6 +9,7 @@ const config = {
     '<rootDir>/src/commands/apps/numbers.js',
   ],
   testMatch: ['<rootDir>/__tests__/**/*.test.js'],
+  setupFiles: ['<rootDir>/.jest/setEnvVars.js'],
 };
 
 module.exports = config;

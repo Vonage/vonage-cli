@@ -1,22 +1,13 @@
+const { EOL } = require('os');
 const { faker } = require('@faker-js/faker');
-const { dumpValue, dumpKey } = require('../../src/ux/dump');
-const { descriptionList } = require('../../src/ux/descriptionList');
+const { dumpValue } = require('../../src/ux/dump');
 const { dumpYesNo, dumpOnOff, dumpEnabledDisabled } = require('../../src/ux/dumpYesNo');
-const { table } = require('../../src/ux/table');
+const { table, defaultBorders } = require('../../src/ux/table');
 const uxTests = require('../__dataSets__/ux');
 
 describe('UX: dump', () => {
   test.each(uxTests)('Will $label', ({ value, expected }) => {
     expect(dumpValue(value)).toEqual(expected);
-  });
-});
-
-describe('UX: description list', () => {
-  test('Will return a string', () => {
-    expect(descriptionList([
-      ['term', 'details'],
-      ['foo', 'bar'],
-    ])).toBe(`${dumpKey('term')}: ${dumpValue('details')}\n${dumpKey('foo')}: ${dumpValue('bar')}`);
   });
 });
 
@@ -55,12 +46,12 @@ describe('UX: table', () => {
         desc: faker.string.alpha(10),
       },
     ];
-    const results = table(data).split('\n');
-    expect(results).toHaveLength(5);
-
-    expect(results[0]).toBe('id          desc      ');
-    expect(results[1]).toBe('----------  ----------');
-    expect(results[2]).toBe(`${data[0].id}  ${data[0].desc}`);
-    expect(results[3]).toBe(`${data[1].id}  ${data[1].desc}`);
+    const results = table(data);
+    expect(results).toBe([
+      ' id          desc       ',
+      `${defaultBorders.horizontal}`.repeat(24),
+      ` ${data[0].id}  ${data[0].desc} `,
+      ` ${data[1].id}  ${data[1].desc} `,
+    ].join(EOL));
   });
 });

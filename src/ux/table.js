@@ -75,7 +75,6 @@ const table = (
     dataBorders = defaultBorders,
     formatHeaderCell = defaultHeaderFormatter,
     formatDataCell = defaultDataFormatter,
-    stream = process.stdout,
   } = {},
 ) => {
   if (!Array.isArray(data) || data.length === 0) {
@@ -83,7 +82,7 @@ const table = (
   }
 
   if (isScreenReader) {
-    stream.write([...data.map(descriptionList), EOL].join(EOL));
+    [...data.map(descriptionList), EOL].join(EOL);
     return;
   }
 
@@ -137,14 +136,16 @@ const table = (
     ));
   }
 
-  stream.write([
+  return [
     ...output,
     ...outputRows,
-    EOL,
-  ].join(EOL));
+  ].join(EOL);
 };
 
-exports.table = table;
-exports.defaultTableHeaderFormatter = defaultHeaderFormatter;
-exports.defaultTableDataFormatter = defaultDataFormatter;
-exports.TableError = TableError;
+module.exports = {
+  table,
+  defaultHeaderFormatter,
+  defaultDataFormatter,
+  TableError,
+  defaultBorders,
+};
