@@ -1,6 +1,20 @@
 const { overwriteLine } = require('./clear');
 const readline = require('readline');
 
+const setRawMode = () => {
+  try {
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+  } catch (err) {
+    console.error(`Attempted to start raw mode for STDIN failed with error: ${err.message}`);
+    console.error('');
+    console.error('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+    // eslint-disable-next-line n/no-process-exit
+    process.exit(1);
+  }
+};
+
 /**
  * Callback invoked on each key press.
  * @callback onKeyPress
@@ -19,7 +33,7 @@ const readline = require('readline');
 /**
  * Callback invoked after the reminder message has been printed
  * @callback onReminder
- * @param { string } str - A string of all the string characters pressed
+ * @param { string[] } keysPressed - An array of characters containing all the printable characters pressed
  * @returns { void }
  */
 
@@ -42,7 +56,7 @@ const readline = require('readline');
  * This will continue to listen for keypress events until either the return key
  * is pressed, or the number of printable characters has reached the length.
  *
- * @params { InputParams } params for the function
+ * @param { InputParams } params for the function
  * @returns { Promise }
  */
 const inputFromTTY = (
@@ -59,7 +73,26 @@ const inputFromTTY = (
   } = {},
 ) => new Promise((resolve, reject) => {
   let done = false;
+  let intervalId;
+  let rl;
+  let handlePress;
+  const keysPressed = [];
 
+  reminderMessage = reminderMessage ?? message;
+
+  const restartReminder = () => {
+    if (!reminderMessage) {
+      return;
+    }
+
+    clearInterval(intervalId);
+    intervalId = setInterval(() => {
+      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
+      onReminder(keysPressed);
+    }, reminderInterval);
+  };
+
+  // Cleanup and resolve
   const finish = (err, value) => {
     if (done) {
       return;
@@ -70,42 +103,15 @@ const inputFromTTY = (
     err ? reject(err) : resolve(value);
   };
 
-  // Turn on key press events from stdin and set raw mode
-  readline.emitKeypressEvents(process.stdin);
-  if (process.stdin.isTTY) {
-    process.stdin.setRawMode(true);
-  }
-
-  // Allow signal controller
-  if (signal?.aborted) {
-    finish(signal.reason);
-    return;
-  }
-
-  const keysPressed = [];
-  let intervalId;
-  reminderMessage = reminderMessage ?? message;
-
-  /**
-   * @callback cleanup Cleanup registered listeners
-   * @returns { void }
-   */
-  const cleanup = () => {
-    clearInterval(intervalId);
-    if (rl) {
-      rl.input.off('keypress', handlePress);
-      rl.close();
-      rl.off('close', cleanup);
-    }
-    process.off('SIGINT', handleSignal);
-    process.off('SIGQUIT', handleSignal);
-    process.off('SIGTSTP', handleSignal);
+  // Clean up on signal abort
+  const onAbort = () => {
+    // ensure we remove this abort listener even if called
+    signal?.removeEventListener('abort', onAbort);
+    finish(signal?.reason);
   };
 
-  /**
-    * @callback handleSignal Handles control signals. This will exit and kill
-    * the process
-    */
+
+  // Signal Handles control signals. This will exit and kill
   const handleSignal = (signal) => {
     switch (signal) {
     case 'SIGINT':
@@ -126,11 +132,92 @@ const inputFromTTY = (
     }
   };
 
-  /**
-    * Handles key press events
-    */
-  const handlePress = (str, key) => {
+  // Handle signals globally
+  const onSigint  = () => handleSignal('SIGINT');
+  const onSigquit = () => handleSignal('SIGQUIT');
+  const onSigtstp = () => handleSignal('SIGTSTP');
+  const onSigCont = () => {
+    setRawMode();
+    if (reminderMessage) {
+      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
+    }
+  };
+
+  const onExit = () => {
+    try {
+      cleanup();
+    } catch (err) {
+      console.warn(`Trying to cleanup on exit failed with message ${err.message}`);
+      console.warn('');
+      console.warn('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+    };
+  };
+
+  // Cleanup registered listeners
+  const cleanup = () => {
     clearInterval(intervalId);
+
+    process.off('SIGINT', onSigint);
+    process.off('SIGQUIT', onSigquit);
+    process.off('SIGTSTP', onSigtstp);
+    process.off('SIGCONT', onSigCont);
+    process.off('exit', onExit);
+
+    // remove abort listener if still attached
+    signal?.removeEventListener?.('abort', onAbort);
+
+    if (rl) {
+      handlePress && rl?.input?.off('keypress', handlePress);
+      rl.off('close', cleanup);
+
+      try {
+        rl.close();
+      } catch (err) {
+        console.warn(`Attempted to close readline threw an error ${err.message}`);
+        console.warn('');
+        console.warn('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+      }
+    }
+
+    // restore raw mode if we set it
+    if (process.stdin.isTTY) {
+      try {
+        process.stdin.setRawMode(false);
+      } catch (err) {
+        console.warn(`Turning off raw mode for STDIN failed with message ${err.message}`);
+        console.warn('');
+        console.warn('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+      }
+    }
+  };
+
+  process.on('SIGINT', onSigint);
+  process.on('SIGQUIT', onSigquit);
+  process.on('SIGTSTP', onSigtstp);
+  process.on('SIGCONT', onSigCont);
+  process.once('exit', onExit);
+
+  // Allow signal controller to abort
+  if (signal?.aborted) {
+    finish(signal.reason);
+    return;
+  }
+
+  // Cleanup on abort
+  signal?.addEventListener('abort', onAbort, { once: true });
+
+  // Handles key press events
+  handlePress = (
+    str = '',
+    key = {
+      name: '',
+      ctrl: false,
+      meta: false,
+      shift: false,
+      sequence: '',
+    },
+  ) => {
+    restartReminder();
 
     if (key.ctrl && key.name === 'c') {
       process.kill(process.pid, 'SIGINT');
@@ -149,9 +236,9 @@ const inputFromTTY = (
 
     // Remove typed characters
     if (key.name === 'backspace' || key.name === 'delete') {
-      keysPressed.pop();
+      keysPressed.length > 0 && keysPressed.pop();
       onKeyPress(Object.freeze({ ...key }), str);
-      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
+      reminderMessage && overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
       return;
     }
 
@@ -165,84 +252,45 @@ const inputFromTTY = (
       !/[\x00-\x1F\x7F]/.test(str);
 
     if (isPrintable) {
-      keysPressed.push(str);
+      // Handle pastes
+      for (const ch of Array.from(str)) {
+        keysPressed.push(ch);
+      }
     }
 
-    onKeyPress(key, str);
+    onKeyPress(Object.freeze({...key}), str);
+    // Handle pastes
 
     if (
       (key.name === 'return') ||
-      (length && keysPressed.length >= length)
+      (length && keysPressed.join('').length >= length)
     ) {
-      cleanup();
-      onComplete(keysPressed.join('').trim());
-      finish(null, keysPressed.join('').trim());
+      const out = keysPressed.slice(0, length).join('').trim();
+      onComplete(out);
+      finish(null, out);
       return;
-    }
-
-    if (reminderMessage) {
-      intervalId = setInterval(
-        () => {
-          overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
-          onReminder(keysPressed);
-        },
-        reminderInterval,
-      );
     }
   };
 
-  // Cleanup on abort
-  signal?.addEventListener('abort', () => {
-    cleanup();
-    finish(signal.reason);
-  });
-
   // Setup readline
+
+  // Turn on key press events from stdin and set raw mode
+  readline.emitKeypressEvents(process.stdin);
+  setRawMode();
+
   process.stdin.setEncoding('utf8');
-  const rl = readline.createInterface({
+
+  rl = readline.createInterface({
     input: process.stdin,
     output: echo ? process.stderr : undefined,
-    terminal: true,
+    terminal: process.stdin.isTTY,
   });
 
   rl.on('close', cleanup);
   rl.input.on('keypress', handlePress);
 
-  if (message) {
-    overwriteLine(`${message} ${keysPressed.join('')}`);
-
-    intervalId = setInterval(
-      () => overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`),
-      reminderInterval,
-    );
-  }
-
-  // Handle signals globally
-  process.on('SIGINT', () => handleSignal('SIGINT'));
-  process.on('SIGQUIT', () => handleSignal('SIGQUIT'));
-  process.on('SIGTSTP', () => handleSignal('SIGTSTP'));
+  reminderMessage && overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
+  restartReminder();
 });
 
 exports.inputFromTTY = inputFromTTY;
-exports.prompt = (
-  message,
-  {
-    required = false,
-    requiredMessage = 'This is required',
-    ...options
-  } = {},
-) => {
-  while(true) {
-    const result = inputFromTTY({
-      ...options,
-      message: message,
-    });
-
-    if (required && !result) {
-      console.log(requiredMessage);
-      continue;
-    }
-
-    return result;
-  }
-};
