@@ -1,5 +1,4 @@
 #!/usr/bin/env -S node
-const chalk = require('chalk');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs');
 const { setConfig } = require('../src/middleware/config');
@@ -19,10 +18,12 @@ if (needsUpdate) {
 }
 
 const vonageCLI = yargs(hideBin(process.argv))
-  .fail((msg) => {
+  .fail((_, err) => {
     yargs.showHelp();
     console.log('');
-    console.error(chalk.red('Error'), msg);
+    console.error(err.message);
+    console.log('');
+    console.log('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
     yargs.exit(99);
   })
   .options({
