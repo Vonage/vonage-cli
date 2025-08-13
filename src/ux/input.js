@@ -151,6 +151,7 @@ const inputFromTTY = (
     if (key.name === 'backspace' || key.name === 'delete') {
       keysPressed.pop();
       onKeyPress(Object.freeze({ ...key }), str);
+      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
       return;
     }
 
@@ -179,7 +180,7 @@ const inputFromTTY = (
       return;
     }
 
-    if (message) {
+    if (reminderMessage) {
       intervalId = setInterval(
         () => {
           overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
@@ -223,3 +224,7 @@ const inputFromTTY = (
 });
 
 exports.inputFromTTY = inputFromTTY;
+exports.prompt = (message, options = {}) => inputFromTTY({
+  ...options,
+  message: message,
+}) ;
