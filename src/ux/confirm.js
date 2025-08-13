@@ -27,6 +27,7 @@ exports.confirm = async (
     allowedResponses = ['y', 'n'],
     truthyResponse = 'y',
     invalidMessage = 'Please answer with a y for yes and n for no',
+    defaultResponse,
   } = {},
 ) =>{
   if (!noForce && force) {
@@ -41,6 +42,11 @@ exports.confirm = async (
         length: 1,
       },
     );
+
+    if (defaultResponse && !answer) {
+      return defaultResponse;
+    }
+
     const normalized = String(answer).toLowerCase();
 
     if (allowedResponses.includes(normalized)) {
