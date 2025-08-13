@@ -224,7 +224,25 @@ const inputFromTTY = (
 });
 
 exports.inputFromTTY = inputFromTTY;
-exports.prompt = (message, options = {}) => inputFromTTY({
-  ...options,
-  message: message,
-}) ;
+exports.prompt = (
+  message,
+  {
+    required = false,
+    requiredMessage = 'This is required',
+    ...options
+  } = {},
+) => {
+  while(true) {
+    const result = inputFromTTY({
+      ...options,
+      message: message,
+    });
+
+    if (required && !result) {
+      console.log(requiredMessage);
+      continue;
+    }
+
+    return result;
+  }
+};
