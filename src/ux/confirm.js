@@ -43,7 +43,7 @@ exports.confirm = async (
       },
     );
 
-    if (defaultResponse && !answer) {
+    if (defaultResponse !== undefined && !answer) {
       return defaultResponse;
     }
 
