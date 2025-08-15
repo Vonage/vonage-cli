@@ -28,8 +28,9 @@ exports.confirm = async (
     truthyResponse = 'y',
     invalidMessage = 'Please answer with a y for yes and n for no',
     defaultResponse,
+    ...options
   } = {},
-) =>{
+) => {
   if (!noForce && force) {
     console.debug(`Forcing: ${message}`);
     return true;
@@ -38,6 +39,7 @@ exports.confirm = async (
   while (true) {
     const answer = await inputFromTTY(
       {
+        ...options,
         message: message,
         length: 1,
       },
