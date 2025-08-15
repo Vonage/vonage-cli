@@ -43,6 +43,8 @@ const setRawMode = () => {
  * @property { string } [reminderMessage] - Optional reminder message (defaults to message)
  * @property { number } [reminderInterval] - How often to print the reminder message (defaults to 5000)
  * @property { boolean } [echo] - Whether to echo the typed characters
+ * @property { string } [value] - A value to prefill
+ * @property { string } [hint] - Provide a hint for the correct value
  * @property { AbortSignal } [signal] - Abort controller
  * @property { number } [length] - How many key presses to accept before resolving
  * @property { onKeyPress } [onKeyPress] - Optional keypress function
@@ -65,6 +67,7 @@ const inputFromTTY = (
     reminderMessage = null,
     reminderInterval = 5000,
     echo = true,
+    value,
     hint,
     signal,
     length,
@@ -77,7 +80,7 @@ const inputFromTTY = (
   let intervalId;
   let rl;
   let handlePress;
-  const keysPressed = [];
+  const keysPressed = value ? value.split('') : [];
 
   reminderMessage = reminderMessage ?? message;
 
