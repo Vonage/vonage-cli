@@ -65,11 +65,12 @@ const inputFromTTY = (
     reminderMessage = null,
     reminderInterval = 5000,
     echo = true,
+    hint,
     signal,
     length,
-    onKeyPress = () => {},
-    onComplete = () => {},
-    onReminder = () => {},
+    onKeyPress = () => { },
+    onComplete = () => { },
+    onReminder = () => { },
   } = {},
 ) => new Promise((resolve, reject) => {
   let done = false;
@@ -80,16 +81,22 @@ const inputFromTTY = (
 
   reminderMessage = reminderMessage ?? message;
 
+  const printMessageAndKeys = () => reminderMessage
+    && overwriteLine(`${reminderMessage} ${hint && keysPressed.join('').length < 1 ? hint + ' ' : ''}${echo ? keysPressed.join('') : ''}`);
+
   const restartReminder = () => {
     if (!reminderMessage) {
       return;
     }
 
     clearInterval(intervalId);
-    intervalId = setInterval(() => {
-      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
-      onReminder(keysPressed);
-    }, reminderInterval);
+    intervalId = setInterval(
+      () => {
+        printMessageAndKeys();
+        onReminder(keysPressed);
+      },
+      reminderInterval,
+    );
   };
 
   // Cleanup and resolve
@@ -105,11 +112,9 @@ const inputFromTTY = (
 
   // Clean up on signal abort
   const onAbort = () => {
-    // ensure we remove this abort listener even if called
     signal?.removeEventListener('abort', onAbort);
     finish(signal?.reason);
   };
-
 
   // Signal Handles control signals. This will exit and kill
   const handleSignal = (signal) => {
@@ -129,29 +134,14 @@ const inputFromTTY = (
     case 'SIGTSTP':
       cleanup();
       process.kill(process.pid, 'SIGTSTP'); // Allow OS to suspend the process
+      break;
     }
   };
 
   // Handle signals globally
-  const onSigint  = () => handleSignal('SIGINT');
+  const onSigint = () => handleSignal('SIGINT');
   const onSigquit = () => handleSignal('SIGQUIT');
   const onSigtstp = () => handleSignal('SIGTSTP');
-  const onSigCont = () => {
-    setRawMode();
-    if (reminderMessage) {
-      overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
-    }
-  };
-
-  const onExit = () => {
-    try {
-      cleanup();
-    } catch (err) {
-      console.warn(`Trying to cleanup on exit failed with message ${err.message}`);
-      console.warn('');
-      console.warn('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
-    };
-  };
 
   // Cleanup registered listeners
   const cleanup = () => {
@@ -160,8 +150,6 @@ const inputFromTTY = (
     process.off('SIGINT', onSigint);
     process.off('SIGQUIT', onSigquit);
     process.off('SIGTSTP', onSigtstp);
-    process.off('SIGCONT', onSigCont);
-    process.off('exit', onExit);
 
     // remove abort listener if still attached
     signal?.removeEventListener?.('abort', onAbort);
@@ -194,8 +182,6 @@ const inputFromTTY = (
   process.on('SIGINT', onSigint);
   process.on('SIGQUIT', onSigquit);
   process.on('SIGTSTP', onSigtstp);
-  process.on('SIGCONT', onSigCont);
-  process.once('exit', onExit);
 
   // Allow signal controller to abort
   if (signal?.aborted) {
@@ -217,7 +203,6 @@ const inputFromTTY = (
       sequence: '',
     },
   ) => {
-    restartReminder();
 
     if (key.ctrl && key.name === 'c') {
       process.kill(process.pid, 'SIGINT');
@@ -234,11 +219,13 @@ const inputFromTTY = (
       return;
     }
 
+    restartReminder();
+
     // Remove typed characters
     if (key.name === 'backspace' || key.name === 'delete') {
       keysPressed.length > 0 && keysPressed.pop();
+      printMessageAndKeys();
       onKeyPress(Object.freeze({ ...key }), str);
-      reminderMessage && overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
       return;
     }
 
@@ -256,10 +243,10 @@ const inputFromTTY = (
       for (const ch of Array.from(str)) {
         keysPressed.push(ch);
       }
+      printMessageAndKeys();
     }
 
-    onKeyPress(Object.freeze({...key}), str);
-    // Handle pastes
+    onKeyPress(Object.freeze({ ...key }), str);
 
     if (
       (key.name === 'return') ||
@@ -289,7 +276,7 @@ const inputFromTTY = (
   rl.on('close', cleanup);
   rl.input.on('keypress', handlePress);
 
-  reminderMessage && overwriteLine(`${reminderMessage} ${echo ? keysPressed.join('') : ''}`);
+  printMessageAndKeys();
   restartReminder();
 });
 
