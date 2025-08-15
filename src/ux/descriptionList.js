@@ -1,6 +1,5 @@
+const chalk = require('chalk');
 const { EOL } = require('os');
-
-const identity = (x) => x;
 
 /**
  * Recursively formats detail values for description list.
@@ -43,12 +42,12 @@ const descriptionDetail = (value, term, options) => {
  * @param { Object } options - Current options.
  * @returns { Object } - Updated options with increased indent.
  */
-const increaseIndent = ({indent, ...rest}) => ({
+const increaseIndent = ({ indent, ...rest }) => ({
   ...rest,
   indent: Math.max(indent + 2, 0),
 });
 
-const decreseIndent = ({indent, ...rest}) => ({
+const decreseIndent = ({ indent, ...rest }) => ({
   ...rest,
   indent: Math.max(indent - 2, 0),
 });
@@ -133,8 +132,23 @@ const describeArray = (data, options) => [
 
 const defaults = {
   indent: 0,
-  termFormatter: identity,
-  detailFormatter: identity,
+  termFormatter: chalk.bold,
+  detailFormatter: (val) => {
+    if (val === undefined || val === null) {
+      return chalk.dim.yellow('Not Set');
+    }
+
+    const type = Array.isArray(val) ? 'array' : typeof val;
+
+    switch (type) {
+    case 'number':
+    case 'bigint':
+      return chalk.dim(String(val));
+    case 'string':
+    default:
+      return chalk.blue(val);
+    }
+  },
   padding: 2,
   numKeys: 3,
 };
@@ -156,7 +170,7 @@ const descriptionList = (
   return (!Array.isArray(items)
     ? Object.entries(items)
     : items).map(
-    ([ term, detail]) => `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`,
+    ([term, detail]) => `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`,
   ).join(EOL);
 };
 
