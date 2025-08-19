@@ -55,6 +55,7 @@ exports.handler = async (argv) => {
   process.stderr.write(chalk.underline('Application Capabilities'));
   appData.capabilities = await promptApplicationCapabilities();
 
+  console.info('Creating application');
   const newApplication = await makeSDKCall(
     SDK.applications.createApplication.bind(SDK.applications),
     'Creating Application',
