@@ -8,4 +8,4 @@ const isPlain = detectPlainOutput();
   * @param { string } emoji - The emoji to print
   * @return { string } - The emoji or empty string
   */
-exports.printEmoji = (emoji) => isPlain ? '' : emoji;
+exports.printEmoji = (emoji) => isPlain ? '' : emoji + ' ';
