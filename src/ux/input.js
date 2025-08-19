@@ -1,6 +1,30 @@
 const { overwriteLine } = require('./clear');
 const readline = require('readline');
 
+// ANSI: CSI, OSC (incl. hyperlinks), and 2-byte ESC sequences
+// eslint-disable-next-line no-control-regex
+const ANSI_PATTERN = /\u001B(?:\[[0-?]*[ -/]*[@-~]|\][^\u0007]*?(?:\u0007|\u001B\\)|[@-Z\\-_])/g;
+
+// Remove Unicode control (Cc) + format (Cf) chars.
+// Keep \n\r\t by default; override via { keep: "" } to drop everything.
+const stripUnicodeControlsAndFormats = (str, { keep = '\n\r\t' } = {}) => {
+  if (!str) {
+    return str;
+  }
+
+  const keepSet = new Set(keep.split(''));
+  return str.replace(/[\p{Cc}\p{Cf}]/gu, (char) => (keepSet.has(char) ? char : ''));
+};
+
+// Combined sanitizer for text coming from terminal
+const stripChalkInput = (str, { keep = '' } = {}) => {
+  if (!str) {
+    return str;
+  }
+
+  return stripUnicodeControlsAndFormats(str.replace(ANSI_PATTERN, ''), { keep });
+};
+
 const setRawMode = () => {
   try {
     if (process.stdin.isTTY) {
@@ -80,7 +104,7 @@ const inputFromTTY = (
   let intervalId;
   let rl;
   let handlePress;
-  const keysPressed = value ? value.split('') : [];
+  let keysPressed = value ? String(value).split('') : [];
 
   reminderMessage = reminderMessage ?? message;
 
@@ -232,6 +256,17 @@ const inputFromTTY = (
       return;
     }
 
+    const isTab =
+      key.name === 'tab' ||
+      str === '\t' ||
+      (key.ctrl === true && key.name === 'i' && key.sequence === '\t');
+
+    // Allow tab to accept the hint
+    if (hint && keysPressed.join('').length < 1 && isTab) {
+      keysPressed = stripChalkInput(hint).split('');
+      printMessageAndKeys();
+    }
+
     // Only push printable characters
     const isPrintable =
       str?.length > 0 &&
@@ -255,7 +290,7 @@ const inputFromTTY = (
       (key.name === 'return') ||
       (length && keysPressed.join('').length >= length)
     ) {
-      const out = keysPressed.slice(0, length).join('').trim();
+      const out = stripChalkInput(keysPressed.slice(0, length).join(''));
       onComplete(out);
       finish(null, out);
       return;
