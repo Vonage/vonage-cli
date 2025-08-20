@@ -20,10 +20,12 @@ if (needsUpdate) {
 const vonageCLI = yargs(hideBin(process.argv))
   .fail((_, err) => {
     yargs.showHelp();
-    console.log('');
-    console.error(err.message);
-    console.log('');
-    console.log('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+    if (err) {
+      console.log('');
+      console.error(err.message);
+      console.log('');
+      console.log('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+    }
     yargs.exit(99);
   })
   .options({
