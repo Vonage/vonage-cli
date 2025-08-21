@@ -21,7 +21,7 @@ const setAppIdAndPrivateKey = async (apiKey, apiSecret, appId, privateKey) => {
     appId,
     privateKey,
   );
-  return valid ? { 'app-id': appId, 'private-key': privateKey} : false;
+  return valid ? { 'app-id': appId, 'private-key': privateKey } : false;
 };
 
 exports.command = 'set';
@@ -39,6 +39,10 @@ exports.builder = (yargs) => yargs.options({
     'private-key': privateKey,
     'api-key': apiKey,
     'api-secret': apiSecret,
+    'appId': appId,
+    'privateKey': privateKey,
+    'apiKey': apiKey,
+    'apiSecret': apiSecret,
   })
   .demandOption(['api-key', 'api-secret']);
 

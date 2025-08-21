@@ -80,14 +80,22 @@ exports.handler = async (argv) => {
     }
   }
 
+  console.info('Creating local config file');
+
   const newAuthInformation = {
+    ...argv.config.global,
     'api-key': argv.config.global.apiKey,
     'api-secret': argv.config.global.apiSecret,
+    'appId': newApplication.id,
+    'privateKey': newApplication.keys.privateKey,
     'app-id': newApplication.id,
     'private-key': newApplication.keys.privateKey,
   };
 
+  console.debug('New Config', newAuthInformation);
+
   try {
+    console.info('Saiving local config');
     process.stderr.write('Saiving local config ...');
     await writeJSONFile(
       argv.config.localConfigFile,
@@ -96,6 +104,7 @@ exports.handler = async (argv) => {
     );
 
     overwriteWithNewLine('Saving local config ... Done!');
+    console.info('Config file saved');
   } catch (error) {
     console.error('Failed to save new configuration', error);
   }
