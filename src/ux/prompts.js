@@ -117,7 +117,10 @@ exports.urlPrompt = async (
     }
 
     if (allowedProtocols.includes(url.protocol)) {
-      return { method, url };
+      return {
+        method: method,
+        url: url.toString(),
+      };
     }
 
     console.log(protocolMessage);

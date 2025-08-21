@@ -56,6 +56,7 @@ exports.handler = async (argv) => {
   appData.capabilities = await promptApplicationCapabilities();
 
   console.info('Creating application');
+  console.debug('New Application', appData);
   const newApplication = await makeSDKCall(
     SDK.applications.createApplication.bind(SDK.applications),
     'Creating Application',

@@ -34,12 +34,20 @@ exports.promptMessageCapabilities = async () => {
   const { url: statusUrl } = await urlPrompt(
     'What is the URL for the status webhook?',
     {
-      hint: chalk.dim('https://example.com/messages/inbound'),
+      hint: chalk.dim('https://example.com/messages/status'),
+      required: !!inboundUrl,
     },
   );
 
-  messageCapabilities.webhooks.inboundUrl = inboundUrl;
-  messageCapabilities.webhooks.statusUrl = statusUrl;
+  messageCapabilities.webhooks.inboundUrl = {
+    address: inboundUrl?.toString(),
+    httpMethod: 'POST',
+  };
+
+  messageCapabilities.webhooks.statusUrl = {
+    address: statusUrl?.toString(),
+    httpMethod: 'POST',
+  };
 
   const version = await select({
     message: 'Which version for the data do you wish to use?',
@@ -65,5 +73,6 @@ exports.promptMessageCapabilities = async () => {
     },
   );
 
+  console.debug('Message capabilities', messageCapabilities);
   return messageCapabilities;
 };
