@@ -59,8 +59,8 @@ const decideConfig = (argv, config) => {
   return false;
 };
 
-const errorNoConfig = (local=false) => {
-  console.log(`${chalk.red('error')}: No ${local ? 'local ' :'' }configuration file found`);
+const errorNoConfig = (local = false) => {
+  console.log(`${chalk.red('error')}: No ${local ? 'local ' : ''}configuration file found`);
   console.log('');
   console.log(`Please run ${dumpCommand('vonage auth set')} to set the configuration`);
   console.log('');
@@ -107,10 +107,10 @@ exports.setConfig = (argv) => {
     local: {},
     global: {},
     cli: {
-      ...(argv.apiKey ? {apiKey: argv.apiKey} : {}),
-      ...(argv.apiSecret ? {apiSecret: argv.apiSecret} : {}),
-      ...(argv.privateKey ? {privateKey: argv.privateKey} : {}),
-      ...(argv.appId ? {appId: argv.appId} : {}),
+      ...(argv.apiKey ? { apiKey: argv.apiKey } : {}),
+      ...(argv.apiSecret ? { apiSecret: argv.apiSecret } : {}),
+      ...(argv.privateKey ? { privateKey: argv.privateKey } : {}),
+      ...(argv.appId ? { appId: argv.appId } : {}),
     },
   };
 
@@ -124,10 +124,10 @@ exports.setConfig = (argv) => {
     const localConfig = JSON.parse(readFileSync(localConfigFile, 'utf8'));
     console.debug('Local Config:', localConfig);
     config.local = {
-      apiKey: localConfig['api-key'],
-      apiSecret: localConfig['api-secret'],
-      privateKey: localConfig['private-key'],
-      appId: localConfig['app-id'],
+      apiKey: localConfig['apiKey'] || localConfig['api-key'],
+      apiSecret: localConfig['apiSecret'] || localConfig['api-secret'],
+      privateKey: localConfig['privateKey'] || localConfig['private-key'],
+      appId: localConfig['appId'] || localConfig['app-id'],
       source: 'Local Config File',
     };
   }
@@ -141,10 +141,10 @@ exports.setConfig = (argv) => {
     const globalConfig = JSON.parse(fileContents);
     console.debug('global Config:', globalConfig);
     config.global = {
-      apiKey: globalConfig['api-key'],
-      apiSecret: globalConfig['api-secret'],
-      privateKey: globalConfig['private-key'],
-      appId: globalConfig['app-id'],
+      apiKey: globalConfig['apiKey'] || globalConfig['api-key'],
+      apiSecret: globalConfig['apiSecret'] || globalConfig['api-secret'],
+      privateKey: globalConfig['privateKey'] || globalConfig['private-key'],
+      appId: globalConfig['appId'] || globalConfig['app-id'],
       source: 'Global Config File',
     };
   }
