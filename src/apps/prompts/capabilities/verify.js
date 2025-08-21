@@ -3,7 +3,7 @@ const { urlPrompt } = require('../../../ux/prompts');
 const { EOL } = require('os');
 
 exports.promptVerifyCapabilities = async () => {
-  process.stderr.write(chalk.bold.underline('Configuring Messages API'));
+  process.stderr.write(chalk.bold.underline('Configuring Verify API'));
   process.stderr.write(EOL);
 
   const { url, method } = await urlPrompt(

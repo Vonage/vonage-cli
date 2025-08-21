@@ -53,7 +53,7 @@ exports.promptApplicationCapabilities = async () => {
   }
 
   if (whichCapabilities.includes('verify')) {
-    appCapabilities.video = await promptVerifyCapabilities();
+    appCapabilities.verify = await promptVerifyCapabilities();
     process.stderr.write(EOL);
   }
 

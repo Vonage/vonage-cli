@@ -40,12 +40,12 @@ exports.promptMessageCapabilities = async () => {
   );
 
   messageCapabilities.webhooks.inboundUrl = {
-    address: inboundUrl?.toString(),
+    address: inboundUrl,
     httpMethod: 'POST',
   };
 
   messageCapabilities.webhooks.statusUrl = {
-    address: statusUrl?.toString(),
+    address: statusUrl,
     httpMethod: 'POST',
   };
 
