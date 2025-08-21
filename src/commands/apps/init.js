@@ -85,12 +85,8 @@ exports.handler = async (argv) => {
 
   const newAuthInformation = {
     ...argv.config.global,
-    'api-key': argv.config.global.apiKey,
-    'api-secret': argv.config.global.apiSecret,
     'appId': newApplication.id,
     'privateKey': newApplication.keys.privateKey,
-    'app-id': newApplication.id,
-    'private-key': newApplication.keys.privateKey,
   };
 
   console.debug('New Config', newAuthInformation);

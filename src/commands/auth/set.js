@@ -35,10 +35,6 @@ exports.builder = (yargs) => yargs.options({
   },
 })
   .options({
-    'app-id': appId,
-    'private-key': privateKey,
-    'api-key': apiKey,
-    'api-secret': apiSecret,
     'appId': appId,
     'privateKey': privateKey,
     'apiKey': apiKey,
