@@ -3,7 +3,7 @@ name: Bug Report
 description: File a bug report
 title: "[Bug]: "
 labels: ["bug", "Triage"]
-assignees: ["manchuck", "pardel", "dragonmantank"]
+assignees: ["manchuck", "dragonmantank"]
 body:
  - type: dropdown
    id: node_version
@@ -11,9 +11,10 @@ body:
     label: Node Version
     description: What version of NodeJS are you using?
     options:
-     - 18.x
+     - 18.x (security fixes only)
      - 20.x
      - 22.x
+     - 24.x
    validations:
     required: true
  - type: dropdown
@@ -34,7 +35,7 @@ body:
    id: cli_version
    attributes:
     label: CLI Version
-    description: What version of the CLI are you using (run `voange --version`)?
+    description: What version of the CLI are you using (run `vonage --version`)?
     placeholder: 3.x.x
    validations:
     required: true
