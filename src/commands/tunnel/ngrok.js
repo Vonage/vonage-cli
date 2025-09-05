@@ -27,21 +27,25 @@ exports.builder = (yargs) => yargs
     'auth-token': {
       describe: 'Ngrok auth token',
       type: 'string',
+      group: 'Ngrok',
     },
     'force': force,
     'subdomain': {
       describe: 'Set an ngrok subdomain',
       type: 'string',
+      group: 'Ngrok',
     },
     'port': {
       describe: 'The port ngrok will forward too',
       type: 'number',
       default: 3000,
+      group: 'Ngrok',
     },
     'region': {
       describe: 'One of the ngrok regions',
       choices: ['us', 'eu', 'au', 'ap', 'sa', 'jp', 'in'],
       default: 'us',
+      group: 'Ngrok',
     },
   });
 
@@ -75,7 +79,7 @@ exports.handler = async (argv) => {
   console.log('You have been warned');
   console.log('');
 
-  const okToProceed = await confirm('Are you sure you want to continue?');
+  const okToProceed = await confirm('Are you sure you want to continue? [y/n]');
 
   if (!okToProceed) {
     console.debug('User does not like to take risks');
