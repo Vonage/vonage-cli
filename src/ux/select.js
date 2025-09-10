@@ -83,10 +83,12 @@ exports.select = async (
     throw new SelectError('select() requires a non-empty items array.', items);
   }
 
+  let showHelp = false;
+
   overwriteWithNewLine(message);
   hideCursor();
 
-  const printOption = ({option, value, selected, highlighted }) => {
+  const printOption = ({ option, value, selected, highlighted }) => {
     let printStr = selected
       ? formatSelected(option, value)
       : formatUnselected(option, value);
@@ -99,16 +101,36 @@ exports.select = async (
   };
 
   let selectedIndex = 0;
+  let printedLineCount = 0;
   items[selectedIndex].highlighted = true;
 
   const printOptions = (clear = false) => {
     if (clear) {
-      clearPreviousLines(items.length);
+      clearPreviousLines(printedLineCount);
+      printedLineCount = 0;
     }
 
-    for (const item of items ) {
+    for (const item of items) {
+      printedLineCount++;
       printOption(item);
     }
+
+    printHelp();
+  };
+
+  const printHelp = () => {
+    overwriteWithNewLine('');
+    printedLineCount++;
+    if (!showHelp) {
+      overwriteWithNewLine('Press ? for help with controls');
+      printedLineCount++;
+      return;
+    }
+
+    overwriteWithNewLine('Use the cursor keys to move up and down');
+    overwriteWithNewLine('Press space to select or deselect');
+    overwriteWithNewLine('Press enter when complete');
+    printedLineCount += 3;
   };
 
   const getSelectedItem = () => items[selectedIndex] ? items[selectedIndex] : {};
@@ -140,7 +162,10 @@ exports.select = async (
     case 'space':
       !multiple && resetSelected();
       toggleSelected(getSelectedItem());
+    }
 
+    if (key.sequence === '?') {
+      showHelp = !showHelp;
     }
 
     printOptions(true);
@@ -159,7 +184,7 @@ exports.select = async (
   }
 
   return items.filter(({ selected }) => selected)
-    .map(({ option, value }) => ({ option, value}));
+    .map(({ option, value }) => ({ option, value }));
 };
 
 exports.formatSelected = selectedFormatter;
