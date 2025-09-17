@@ -15,8 +15,8 @@ const { printEmoji } = require('./printEmoji');
  * @returns { string } - The formatted string
  */
 const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=false, noEmoji=false}) => value
-  ? `${!noEmoji ? printEmoji('✅ ') : ''}${includeText ? trueWord : ''}`
-  : `${!noEmoji ? printEmoji('❌ ') : ''}${includeText ? falseWord : ''}`;
+  ? `${!noEmoji ? printEmoji('✅') : ''}${includeText ? trueWord : ''}`
+  : `${!noEmoji ? printEmoji('❌') : ''}${includeText ? falseWord : ''}`;
 
 exports.dumpBoolean = dumpBoolean;
 
