@@ -202,6 +202,7 @@ Commands:
   vonage conversations [command]  Manage conversations
   vonage jwt <command>            Manage JWT tokens
   vonage members [command]        Manage applications
+  vonage mock <api>               Launch a mock server for Vonage APIs using Prism
   vonage numbers [command]        Manage numbers
   vonage users [command]          Manage users
 ```
@@ -211,6 +212,70 @@ Use the `--help` flag with a command to get more information on how to use:
 ```shell
 vonage apps --help
 ```
+
+## Mock Server
+
+The Vonage CLI includes a built-in mock server feature that allows you to quickly set up a local mock server for Vonage APIs using Prism. This is particularly useful for development and testing.
+
+### Prerequisites
+
+**No additional installation required!** The CLI ships with a bundled version of [Prism](https://stoplight.io/prism) to ensure compatibility and avoid version conflicts with any globally installed versions.
+
+### Usage
+
+To start a mock server for an API:
+
+```shell
+vonage mock sms
+```
+
+This will:
+1. Download the latest OpenAPI specification for the SMS API from the Vonage Developer Portal
+2. Start a Prism mock server on `localhost:4010` using the bundled Prism CLI
+3. Display available endpoints based on the API specification
+
+### Options
+
+- `--port`: Specify a custom port (default: 4010)
+- `--host`: Specify a custom host (default: localhost)
+- `--download-only`: Only download the OpenAPI spec without starting the server
+- `--latest`: Force re-download of the OpenAPI spec even if it already exists
+
+### Examples
+
+```shell
+# Start SMS API mock server on default port 4010
+vonage mock sms
+
+# Start SMS API mock server on port 8080
+vonage mock sms --port 8080
+
+# Only download the OpenAPI spec without starting the server
+vonage mock sms --download-only
+
+# Force re-download the latest SMS API spec and start the server
+vonage mock sms --latest
+
+# Re-download the latest spec without starting the server
+vonage mock sms --download-only --latest
+```
+
+### Available APIs
+
+Currently supported APIs for mocking:
+- `sms` - SMS API
+
+More APIs will be added in future releases.
+
+### Downloaded Specifications
+
+OpenAPI specifications are downloaded to `~/.vonage/mock/` (alongside your CLI configuration) and can be reused with other tools or mock servers. This keeps your project directories clean while providing persistent access to the API specifications.
+
+**Smart Caching**: The CLI will automatically cache downloaded specs and reuse them on subsequent runs to improve performance. Use the `--latest` flag to force re-download when you need the most recent API specification.
+
+### Version Isolation
+
+The CLI uses its own bundled version of Prism (`@stoplight/prism-cli@5.14.2`) to ensure consistent behavior and avoid conflicts with any globally installed versions you might have.
 
 ## Need Help?
 

@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@laboralphy/did-you-mean": "2.3.0",
+    "@stoplight/prism-cli": "5.14.2",
     "@vonage/auth": "1.12.0",
     "@vonage/conversations": "1.7.2",
     "@vonage/jwt": "1.11.0",
