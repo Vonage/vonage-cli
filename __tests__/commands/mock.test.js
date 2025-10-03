@@ -13,6 +13,9 @@ jest.mock('../../src/middleware/config', () => ({
   getSharedConfig: jest.fn(() => ({
     globalConfigPath: '/tmp/.vonage',
   })),
+  APISpecs: {
+    'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
+  },
 }));
 jest.mock('child_process');
 jest.mock('../../src/ux/spinner', () => ({

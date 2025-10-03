@@ -176,3 +176,9 @@ exports.setConfig = (argv) => {
 };
 
 exports.SDKConfig = SDKConfig;
+
+// Map of APIs to their spec URLs
+const apiSpecs = {
+  'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
+};
+exports.APISpecs = apiSpecs;

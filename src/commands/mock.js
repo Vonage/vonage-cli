@@ -9,7 +9,7 @@ const { hideCursor, resetCursor } = require('../ux/cursor');
 const { inputFromTTY } = require('../ux/input');
 const { EOL } = require('os');
 const { createDirectory, writeFile } = require('../utils/fs');
-const { getSharedConfig } = require('../middleware/config');
+const { getSharedConfig, APISpecs } = require('../middleware/config');
 
 exports.command = 'mock <api>';
 
@@ -72,11 +72,6 @@ exports.builder = (yargs) => yargs
 exports.handler = async (argv) => {
   const { api, port, host, downloadOnly, latest } = argv;
 
-  // Map of APIs to their spec URLs
-  const apiSpecs = {
-    'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
-  };
-
   console.info(`Setting up mock server for ${api.toUpperCase()} API`);
 
   // Create mock directory in the same location as CLI config (~/.vonage/mock)
@@ -110,7 +105,7 @@ exports.handler = async (argv) => {
     });
 
     try {
-      const response = await fetch(apiSpecs[api]);
+      const response = await fetch(APISpecs[api]);
       
       if (!response.ok) {
         throw new Error(`Failed to download spec: ${response.status} ${response.statusText}`);
