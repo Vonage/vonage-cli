@@ -1,5 +1,15 @@
 const { apiKey, apiSecret } = require('../credentialFlags');
 const { json, yaml, force } = require('../commonFlags');
+const fetch = require('node-fetch');
+const { existsSync } = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
+const { spinner } = require('../ux/spinner');
+const { hideCursor, resetCursor } = require('../ux/cursor');
+const { inputFromTTY } = require('../ux/input');
+const { EOL } = require('os');
+const { createDirectory, writeFile } = require('../utils/fs');
+const { globalConfigPath } = require('../middleware/config');
 
 exports.command = 'mock <api>';
 
@@ -60,17 +70,6 @@ exports.builder = (yargs) => yargs
   );
 
 exports.handler = async (argv) => {
-  const fetch = require('node-fetch');
-  const fs = require('fs').promises;
-  const { existsSync } = require('fs');
-  const path = require('path');
-  const os = require('os');
-  const { spawn } = require('child_process');
-  const { spinner } = require('../ux/spinner');
-  const { hideCursor, resetCursor } = require('../ux/cursor');
-  const { inputFromTTY } = require('../ux/input');
-  const { EOL } = require('os');
-
   const { api, port, host, downloadOnly, latest } = argv;
 
   // Map of APIs to their spec URLs
@@ -81,19 +80,10 @@ exports.handler = async (argv) => {
   console.info(`Setting up mock server for ${api.toUpperCase()} API`);
 
   // Create mock directory in the same location as CLI config (~/.vonage/mock)
-  const homedir = os.homedir();
-  const configDir = path.join(homedir, '.vonage');
-  const mockDir = path.join(configDir, 'mock');
+  const mockDir = path.join(globalConfigPath, 'mock');
   const specPath = path.join(mockDir, `${api}-spec.json`);
 
-  try {
-    await fs.mkdir(mockDir, { recursive: true });
-  } catch (error) {
-    console.error('Failed to create mock directory:', error.message);
-    throw new Error('Failed to create mock directory');
-  }
-
-  // Check if spec file already exists
+  createDirectory(mockDir);
   const specExists = existsSync(specPath);
   const shouldDownload = !specExists || latest;
 
@@ -122,7 +112,7 @@ exports.handler = async (argv) => {
       }
 
       const spec = await response.json();
-      await fs.writeFile(specPath, JSON.stringify(spec, null, 2));
+      await writeFile(specPath, JSON.stringify(spec, null, 2));
       stopDownload();
       
       const action = latest ? 'Re-downloaded' : 'Downloaded';
@@ -141,7 +131,7 @@ exports.handler = async (argv) => {
   }
 
   // Use the bundled Prism CLI
-  const prismPath = path.join(__dirname, '../../node_modules/.bin/prism');
+  const prismPath = path.join(__dirname, '..', '..', 'node_modules', '.bin', 'prism');
   
   // Start the Prism mock server
   console.log('');
