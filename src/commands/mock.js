@@ -9,7 +9,7 @@ const { hideCursor, resetCursor } = require('../ux/cursor');
 const { inputFromTTY } = require('../ux/input');
 const { EOL } = require('os');
 const { createDirectory, writeFile } = require('../utils/fs');
-const { globalConfigPath } = require('../middleware/config');
+const { getSharedConfig } = require('../middleware/config');
 
 exports.command = 'mock <api>';
 
@@ -80,7 +80,7 @@ exports.handler = async (argv) => {
   console.info(`Setting up mock server for ${api.toUpperCase()} API`);
 
   // Create mock directory in the same location as CLI config (~/.vonage/mock)
-  const mockDir = path.join(globalConfigPath, 'mock');
+  const mockDir = path.join(getSharedConfig().globalConfigPath, 'mock');
   const specPath = path.join(mockDir, `${api}-spec.json`);
 
   createDirectory(mockDir);
