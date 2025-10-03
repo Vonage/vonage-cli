@@ -1,3 +1,6 @@
+const { apiKey, apiSecret } = require('../credentialFlags');
+const { json, yaml, force } = require('../commonFlags');
+
 exports.command = 'mock <api>';
 
 exports.desc = 'Launch a mock server for Vonage APIs using Prism';
@@ -33,6 +36,11 @@ exports.builder = (yargs) => yargs
       default: false,
       group: 'Mock Server',
     },
+    'api-key': apiKey,
+    'api-secret': apiSecret,
+    'force': force,
+    'json': json,
+    'yaml': yaml,
   })
   .example(
     'vonage mock sms',
