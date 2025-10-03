@@ -3,11 +3,16 @@ const { handler } = require('../../src/commands/mock');
 // Mock dependencies
 jest.mock('node-fetch');
 jest.mock('fs', () => ({
-  promises: {
-    mkdir: jest.fn(),
-    writeFile: jest.fn(),
-  },
   existsSync: jest.fn(),
+}));
+jest.mock('../../src/utils/fs', () => ({
+  createDirectory: jest.fn(),
+  writeFile: jest.fn(),
+}));
+jest.mock('../../src/middleware/config', () => ({
+  getSharedConfig: jest.fn(() => ({
+    globalConfigPath: '/tmp/.vonage',
+  })),
 }));
 jest.mock('child_process');
 jest.mock('../../src/ux/spinner', () => ({
@@ -25,8 +30,8 @@ jest.mock('../../src/ux/input', () => ({
 }));
 
 const fetch = require('node-fetch');
-const fs = require('fs').promises;
 const { existsSync } = require('fs');
+const { createDirectory, writeFile } = require('../../src/utils/fs');
 const { spawn } = require('child_process');
 
 describe('mock command', () => {
@@ -51,8 +56,8 @@ describe('mock command', () => {
         json: jest.fn().mockResolvedValue(mockSpec),
       });
 
-      fs.mkdir.mockResolvedValue();
-      fs.writeFile.mockResolvedValue();
+      createDirectory.mockReturnValue(true);
+      writeFile.mockResolvedValue();
 
       const argv = {
         api: 'sms',
@@ -66,8 +71,9 @@ describe('mock command', () => {
       expect(fetch).toHaveBeenCalledWith(
         'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
       );
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('sms-spec.json'),
+      expect(createDirectory).toHaveBeenCalledWith('/tmp/.vonage/mock');
+      expect(writeFile).toHaveBeenCalledWith(
+        '/tmp/.vonage/mock/sms-spec.json',
         JSON.stringify(mockSpec, null, 2),
       );
       expect(console.log).toHaveBeenCalledWith(
@@ -82,7 +88,7 @@ describe('mock command', () => {
         statusText: 'Not Found',
       });
 
-      fs.mkdir.mockResolvedValue();
+      createDirectory.mockReturnValue(true);
 
       const argv = {
         api: 'sms',
@@ -120,7 +126,9 @@ describe('mock command', () => {
 
   describe('directory creation', () => {
     it('should handle directory creation failure', async () => {
-      fs.mkdir.mockRejectedValue(new Error('Permission denied'));
+      createDirectory.mockImplementation(() => {
+        throw new Error('Permission denied');
+      });
 
       const argv = {
         api: 'sms',
@@ -150,8 +158,8 @@ describe('mock command', () => {
         ok: true,
         json: jest.fn().mockResolvedValue(mockSpec),
       });
-      fs.mkdir.mockResolvedValue();
-      fs.writeFile.mockResolvedValue();
+      createDirectory.mockReturnValue(true);
+      writeFile.mockResolvedValue();
     });
 
     it('should use cached spec when file exists and --latest is not used', async () => {
@@ -168,7 +176,7 @@ describe('mock command', () => {
       await handler(argv);
 
       expect(fetch).not.toHaveBeenCalled();
-      expect(fs.writeFile).not.toHaveBeenCalled();
+      expect(writeFile).not.toHaveBeenCalled();
       expect(console.log).toHaveBeenCalledWith(
         expect.stringContaining('Using cached SMS API specification'),
       );
@@ -193,8 +201,8 @@ describe('mock command', () => {
       expect(fetch).toHaveBeenCalledWith(
         'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
       );
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('sms-spec.json'),
+      expect(writeFile).toHaveBeenCalledWith(
+        '/tmp/.vonage/mock/sms-spec.json',
         JSON.stringify(mockSpec, null, 2),
       );
       expect(console.log).toHaveBeenCalledWith(
@@ -218,8 +226,8 @@ describe('mock command', () => {
       expect(fetch).toHaveBeenCalledWith(
         'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
       );
-      expect(fs.writeFile).toHaveBeenCalledWith(
-        expect.stringContaining('sms-spec.json'),
+      expect(writeFile).toHaveBeenCalledWith(
+        '/tmp/.vonage/mock/sms-spec.json',
         JSON.stringify(mockSpec, null, 2),
       );
       expect(console.log).toHaveBeenCalledWith(
@@ -236,8 +244,8 @@ describe('mock command', () => {
         ok: true,
         json: jest.fn().mockResolvedValue(mockSpec),
       });
-      fs.mkdir.mockResolvedValue();
-      fs.writeFile.mockResolvedValue();
+      createDirectory.mockReturnValue(true);
+      writeFile.mockResolvedValue();
       
       // Mock spawn to return a process-like object
       spawn.mockReturnValue({

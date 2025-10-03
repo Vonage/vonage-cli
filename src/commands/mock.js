@@ -83,7 +83,12 @@ exports.handler = async (argv) => {
   const mockDir = path.join(getSharedConfig().globalConfigPath, 'mock');
   const specPath = path.join(mockDir, `${api}-spec.json`);
 
-  createDirectory(mockDir);
+  try {
+    createDirectory(mockDir);
+  } catch (error) {
+    console.error('Failed to create mock directory:', error.message);
+    throw new Error('Failed to create mock directory');
+  }
   const specExists = existsSync(specPath);
   const shouldDownload = !specExists || latest;
 
@@ -112,7 +117,7 @@ exports.handler = async (argv) => {
       }
 
       const spec = await response.json();
-      await writeFile(specPath, JSON.stringify(spec, null, 2));
+      writeFile(specPath, JSON.stringify(spec, null, 2));
       stopDownload();
       
       const action = latest ? 'Re-downloaded' : 'Downloaded';
