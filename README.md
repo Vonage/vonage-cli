@@ -100,8 +100,8 @@ The CLI will load the configuration in the following order:
 > **Note:** Only the CLI will read these values from .vonagerc. The Vonage SDKs requires separate initialization with
 > its own credentials.
 
-> **Note**: The contents of the private key, will be stored inside the configuration file. This is be design to help
-> ensure the key is not overwritten when new keys are generated
+> **Note**: The contents of the private key, will be stored inside the configuration file. This is by design to help
+> ensure the key is not overwritten when new keys are generated.
 
 **Flags**:
 
