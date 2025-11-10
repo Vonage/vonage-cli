@@ -47,8 +47,16 @@ exports.handler = async (argv) => {
       return;
     }
 
+    const { conversations } = response;
+    console.debug(`Fetched ${conversations.length} conversations`);
+
+    if (conversations.length < 1) {
+      console.log('No conversations found');
+      continue;
+    }
+
     console.log('');
-    console.table([...response.conversations].map(conversationSummary));
+    console.table(conversations.map(conversationSummary));
 
     pageCursor = response.links?.next?.href
       ? new URL(response.links.next.href).searchParams.get('cursor')
