@@ -13,6 +13,43 @@ describe('Command: vonage conversations list', () => {
     mockConsole();
   });
 
+  test('Will list with no conversations', async () => {
+    confirm.mockResolvedValue(true);
+
+    const conversationMock = jest.fn()
+      .mockResolvedValueOnce({
+        conversations: [],
+        links: {
+          self: {
+            href: 'https://api.nexmo.com/conversations',
+          },
+        },
+      });
+
+    const sdkMock = {
+      conversations: {
+        getConversationPage: conversationMock,
+      },
+    };
+
+    await handler({ SDK: sdkMock, pageSize: 10 });
+
+    expect(conversationMock).toHaveBeenCalledTimes(1);
+    expect(conversationMock).toHaveBeenNthCalledWith(
+      1,
+      {
+        pageSize: 10,
+        cursor: undefined,
+      },
+    );
+
+    expect(console.log).toHaveBeenNthCalledWith(
+      1,
+      'No conversations found',
+    );
+    expect(console.table).toHaveBeenCalledTimes(0);
+  });
+
   test('Will list all conversations', async () => {
     confirm.mockResolvedValue(true);
 
@@ -31,7 +68,7 @@ describe('Command: vonage conversations list', () => {
         },
       })
       .mockResolvedValueOnce({
-        conversations: conversations.slice(10, 10),
+        conversations: conversations.slice(10, 20),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=2',
@@ -49,6 +86,11 @@ describe('Command: vonage conversations list', () => {
     };
 
     await handler({ SDK: sdkMock, pageSize: 10 });
+
+    console.log(conversations.length);
+    console.log(conversations.slice(0, 10).length);
+    console.log(conversations.slice(10, 20).length);
+    console.log(conversations.slice(20).length);
 
     expect(confirm).toHaveBeenCalledTimes(2);
     expect(confirm).toHaveBeenNthCalledWith(
@@ -96,7 +138,7 @@ describe('Command: vonage conversations list', () => {
 
     expect(console.table).toHaveBeenNthCalledWith(
       2,
-      conversations.slice(10, 10).map((conversation) => ({
+      conversations.slice(10, 20).map((conversation) => ({
         'Name': conversation.name,
         'Conversation ID': conversation.id,
         'Display Name': conversation.displayName,
@@ -133,7 +175,7 @@ describe('Command: vonage conversations list', () => {
         },
       })
       .mockResolvedValueOnce({
-        conversations: conversations.slice(10, 10),
+        conversations: conversations.slice(10, 20),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=2',
@@ -179,7 +221,7 @@ describe('Command: vonage conversations list', () => {
 
     expect(console.table).toHaveBeenNthCalledWith(
       2,
-      conversations.slice(10, 10).map((conversation) => ({
+      conversations.slice(10, 20).map((conversation) => ({
         'Name': conversation.name,
         'Conversation ID': conversation.id,
         'Display Name': conversation.displayName,
