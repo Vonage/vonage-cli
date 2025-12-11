@@ -14,7 +14,7 @@ To use it you will need a [free Vonage developer account](https://developer.vona
 
 The Vonage CLI has many commands that can bootstrap with Vonage's APIs. While you can use the dashboard to accomplish
 many CLI tasks, you can also programmatically set up and configure your application on your server. Already have a
-Voange application configured? The CLI can help you quickly export the configuration into JSON or YAML to consume in
+Vonage application configured? The CLI can help you quickly export the configuration into JSON or YAML to consume in
 your program.
 
 ## What's New in Version 3
@@ -48,7 +48,7 @@ See below for more information on how to configure the CLI
 ### Automatic updates
 
 Version 3 will periodically check for new updates and inform you when to upgrade. This will ensure that you are
-calling the Voange APIs correctly and that the tool is bug-free for you.
+calling the Vonage APIs correctly and that the tool is bug-free for you.
 
 ## Installation
 
