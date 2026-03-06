@@ -1,17 +1,31 @@
-process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const { confirm } = require('../../../src/ux/confirm');
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/numbers/cancel');
-const { mockConsole } = require('../../helpers');
-const { getTestPhoneNumber } = require('../../numbers');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
 
-jest.mock('yargs');
-jest.mock('../../../src/ux/confirm');
+const yargs = {
+  exit: jest.fn(),
+};
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/numbers/cancel.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestPhoneNumber } from '../../numbers.js';
 
 describe('Command: vonage numbers cancel', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will cancel a number', async () => {

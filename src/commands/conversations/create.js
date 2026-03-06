@@ -1,13 +1,13 @@
-const { confirm } = require('../../ux/confirm');
-const { suggest } = require('@laboralphy/did-you-mean');
-const { EventType } = require('@vonage/conversations');
-const { appId, privateKey } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { displayConversation } = require('../../conversations/display');
-const { coerceUrl } = require('../../utils/coerceUrl');
-const { coerceJSON } = require('../../utils/coerceJSON');
-const yargs = require('yargs');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import { confirm } from '../../ux/confirm.js';
+import { suggest } from '@laboralphy/did-you-mean';
+import { EventType } from '@vonage/conversations';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { displayConversation } from '../../conversations/display.js';
+import { coerceUrl } from '../../utils/coerceUrl.js';
+import { coerceJSON } from '../../utils/coerceJSON.js';
+import yargs from 'yargs';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
 const conversationEvents = Object.values(EventType);
 
@@ -80,8 +80,8 @@ const suggestEvent = (userEvents) => userEvents.forEach((event) => {
   }
 
   console.warn(`Invalid event mask: ${event}`);
-  const suggestions = suggest(event, conversationEvents);
-  if (suggestions.length) {
+  const suggestions = suggest(event, conversationEvents, { count: 1 });
+  if (suggestions.length > 0) {
     console.warn(`Did you mean: ${suggestions.join(', ')}?`);
   }
 });
@@ -99,15 +99,15 @@ const validateEvents = async (callbackEventMask) => {
   return true;
 };
 
-exports.validateEvents = validateEvents;
+export { validateEvents };
 
-exports.conversationFlags = conversationFlags;
+export { conversationFlags };
 
-exports.command = 'create';
+export const command = 'create';
 
-exports.desc = 'Create a conversation';
+export const desc = 'Create a conversation';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options({
     ...conversationFlags,
     'app-id': appId,
@@ -115,7 +115,7 @@ exports.builder = (yargs) => yargs
     'force': force,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Creating conversation');
   const { SDK, callbackEventMask } = argv;
 

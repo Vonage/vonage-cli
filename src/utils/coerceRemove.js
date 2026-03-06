@@ -21,9 +21,9 @@ const unsetRemove = (obj, setAsNull=false) => {
   );
 };
 
-exports.unsetRemove = unsetRemove;
+export { unsetRemove };
 
-exports.coerceRemove = (arg) => {
+export const coerceRemove = (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }
@@ -31,7 +31,7 @@ exports.coerceRemove = (arg) => {
   return arg;
 };
 
-exports.coerceRemoveCallback = (cb) => (arg) => {
+export const coerceRemoveCallback = (cb) => (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }
@@ -39,7 +39,7 @@ exports.coerceRemoveCallback = (cb) => (arg) => {
   return cb(arg);
 };
 
-exports.coerceRemoveList = (flagName, list) => (arg) => {
+export const coerceRemoveList = (flagName, list) => (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }

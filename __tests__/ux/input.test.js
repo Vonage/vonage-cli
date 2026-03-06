@@ -1,5 +1,6 @@
-const { inputFromTTY } = require('../../src/ux/input');
-const readline = require('readline');
+import { jest } from '@jest/globals';
+import { inputFromTTY } from '../../src/ux/input.js';
+import readline from 'readline';
 
 jest.mock('readline');
 jest.useFakeTimers();

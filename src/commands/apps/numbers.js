@@ -1,11 +1,11 @@
 /* istanbul ignore file */
-const { handler } = require('./numbers/list');
+import { handler } from './numbers/list.js';
 
-exports.command = 'numbers <command>';
+export const command = 'numbers <command>';
 
-exports.desc = 'Manage application numbers';
+export const desc = 'Manage application numbers';
 
-exports.builder = (yargs) => yargs.commandDir('numbers');
+export const builder = (yargs) => yargs.commandDir('numbers');
 
-exports.handler = handler;
+export { handler };
 

@@ -10,6 +10,7 @@ const config = {
   ],
   testMatch: ['<rootDir>/__tests__/**/*.test.js'],
   setupFiles: ['<rootDir>/.jest/setEnvVars.js'],
+  transform: {},
 };
 
-module.exports = config;
+export default config;

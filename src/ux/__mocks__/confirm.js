@@ -1,5 +1,7 @@
+import { jest, afterEach } from '@jest/globals';
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-exports.confirm = jest.fn();
+export const confirm = jest.fn();

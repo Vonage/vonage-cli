@@ -1,14 +1,14 @@
-const chalk = require('chalk');
-const console = require('console');
-const winston = require('winston');
-const { table } = require('../ux/table');
+import chalk from 'chalk';
+import console from 'console';
+import winston from 'winston';
+import { table } from '../ux/table.js';
 const { format, transports } = winston;
 
 const warning = (message) => process.stderr.write(`${chalk.yellow('Warning')}: ${message}\n`);
 
 const error = (message) => process.stderr.write(`${chalk.red('Error')}: ${message}\n`);
 
-exports.setupLog = (argv) => {
+export const setupLog = (argv) => {
   let level = 'emerg';
   if (argv.verbose) {
     level = 'info';

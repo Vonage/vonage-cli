@@ -1,9 +1,9 @@
-const { EOL } = require('os');
-const { faker } = require('@faker-js/faker');
-const { dumpValue } = require('../../src/ux/dump');
-const { dumpYesNo, dumpOnOff, dumpEnabledDisabled } = require('../../src/ux/dumpYesNo');
-const { table, defaultBorders } = require('../../src/ux/table');
-const uxTests = require('../__dataSets__/ux');
+import { EOL } from 'os';
+import { faker } from '@faker-js/faker';
+import { dumpValue } from '../../src/ux/dump.js';
+import { dumpYesNo, dumpOnOff, dumpEnabledDisabled } from '../../src/ux/dumpYesNo.js';
+import { table, defaultBorders } from '../../src/ux/table.js';
+import uxTests from '../__dataSets__/ux.js';
 
 describe('UX: dump', () => {
   test.each(uxTests)('Will $label', ({ value, expected }) => {

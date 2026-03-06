@@ -1,7 +1,7 @@
-const { Client } = require('@vonage/server-client');
-const { dumpValue } = require('../ux/dump');
-const { descriptionList } = require('../ux/descriptionList');
-const { redact } = require('../ux/redact');
+import { Client } from '@vonage/server-client';
+import { dumpValue } from '../ux/dump.js';
+import { descriptionList } from '../ux/descriptionList.js';
+import { redact } from '../ux/redact.js';
 
 /**
   * Prints out the auth information
@@ -9,7 +9,7 @@ const { redact } = require('../ux/redact');
   * @param { Object } config - The auth config
   * @param { boolean } noRedact - Set to true to show the API secret
   */
-exports.dumpAuth = (config, noRedact=false) => {
+export const dumpAuth = (config, noRedact=false) => {
   const dumpConfig = Client.transformers.camelCaseObjectKeys(config);
   let privateKey = dumpConfig.privateKey ? 'Is Set' : null;
 

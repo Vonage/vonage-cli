@@ -1,5 +1,5 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceRemoveCallback, coerceRemoveList } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceRemoveCallback, coerceRemoveList } from '../utils/coerceRemove.js';
 
 const updateRTC = (app, flags) => {
   const newRTC = {
@@ -60,8 +60,8 @@ const rtcFlags = {
   },
 };
 
-exports.rtcGroup = group;
+export const rtcGroup = group;
 
-exports.rtcFlags = rtcFlags;
+export { rtcFlags };
 
-exports.updateRTC = updateRTC;
+export { updateRTC };

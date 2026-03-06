@@ -1,4 +1,6 @@
-const path = require('path');
+console.log('I am error')
+
+import path from 'path'
 
 let mockFiles = {};
 

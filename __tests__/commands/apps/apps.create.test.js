@@ -1,20 +1,27 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yaml = require('yaml');
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/apps/create');
-const { getBasicApplication } = require('../../app');
-const { mockConsole } = require('../../helpers');
-const fs = require('fs');
-const { confirm } = require('../../../src/ux/confirm');
-const { Client } = require('@vonage/server-client');
+import yaml from 'yaml';
+import { faker } from '@faker-js/faker';
+import { getBasicApplication } from '../../app.js';
+import { mockConsole } from '../../helpers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('fs');
-jest.mock('../../../src/ux/confirm');
-jest.mock('yargs');
+const confirmMock = jest.fn();
+const writeFileMock = jest.fn();
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
+jest.unstable_mockModule('../../../src/utils/fs.js', () => ({ writeFile: writeFileMock }));
+
+const { handler } = await import('../../../src/commands/apps/create.js');
 
 describe('Command: vonage apps create', () => {
   beforeEach(() => {
     mockConsole();
+    confirmMock.mockReset();
+    writeFileMock.mockReset();
+    yargs.exit.mockReset();
   });
 
   test('Should create app and save private key', async () => {
@@ -30,13 +37,15 @@ describe('Command: vonage apps create', () => {
       },
     };
 
+    writeFileMock.mockResolvedValue();
+
     await handler({
       name: app.name,
       privateKeyFile: privateKeyFile,
       SDK: sdkMock,
     });
 
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(appMock).toHaveBeenCalledWith({
       name: app.name,
       privacy: {
@@ -47,7 +56,7 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
+    expect(writeFileMock).toHaveBeenCalledWith(
       privateKeyFile,
       app.keys.privateKey,
     );
@@ -78,8 +87,10 @@ describe('Command: vonage apps create', () => {
       },
     };
 
-    confirm.mockResolvedValue(false);
-    fs.__addFile(privateKeyFile, app.keys.privateKey);
+    const error = new Error('User declined');
+    error.name = 'UserDeclinedError';
+    writeFileMock.mockRejectedValue(error);
+
     await handler({
       name: app.name,
       privateKeyFile: privateKeyFile,
@@ -88,7 +99,6 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirm).toHaveBeenCalled();
     expect(appMock).toHaveBeenCalledWith({
       name: app.name,
       privacy: {
@@ -99,7 +109,7 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(fs.writeFileSync).not.toHaveBeenCalled();
+    expect(writeFileMock).toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(5, 'Private key:');
     expect(console.log).toHaveBeenNthCalledWith(6, app.keys.privateKey);
@@ -123,7 +133,7 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(appMock).toHaveBeenCalledWith({
       name: app.name,
       privacy: {
@@ -163,7 +173,7 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(appMock).toHaveBeenCalledWith({
       name: app.name,
       privacy: {
@@ -185,3 +195,4 @@ describe('Command: vonage apps create', () => {
     );
   });
 });
+

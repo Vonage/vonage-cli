@@ -1,18 +1,18 @@
-const yargs = require('yargs');
-const { dumpCommand } = require('../../ux/dump');
-const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { displayFullMember } = require('../../members/display');
-const { appId, privateKey } = require('../../credentialFlags');
-const { yaml, json } = require('../../commonFlags');
-const YAML = require('yaml');
-const { Client } = require('@vonage/server-client');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import yargs from 'yargs';
+import { dumpCommand } from '../../ux/dump.js';
+import { conversationIdFlag } from '../../conversations/conversationFlags.js';
+import { displayFullMember } from '../../members/display.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { yaml, json } from '../../commonFlags.js';
+import YAML from 'yaml';
+import { Client } from '@vonage/server-client';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
-exports.command = 'create <conversation-id>';
+export const command = 'create <conversation-id>';
 
-exports.desc = 'Create a member in a conversation';
+export const desc = 'Create a member in a conversation';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
     conversationIdFlag,
@@ -339,7 +339,7 @@ const addMessengerChannel = (member, argv) => Object.assign(
   },
 );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Create member');
 
   const { SDK, conversationId } = argv;

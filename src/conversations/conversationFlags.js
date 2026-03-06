@@ -1,3 +1,3 @@
-exports.conversationIdFlag = {
+export const conversationIdFlag = {
   describe: 'The conversation ID',
 };

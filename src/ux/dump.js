@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const { descriptionDetail } = require('./descriptionList');
+import chalk from 'chalk';
+import { descriptionDetail } from './descriptionList.js';
 
 const dumpKey = (key) => chalk.bold(String(key));
 
@@ -55,7 +55,7 @@ const dumpArray = dumpValue;
  */
 const dumpCommand = (command) => chalk.green(command);
 
-module.exports = {
+export {
   dumpKey,
   dumpValue,
   dumpObject,

@@ -1,18 +1,18 @@
-const chalk = require('chalk');
-const { capabilityLabels } = require('../capabilities');
-const { promptMessageCapabilities } = require('./capabilities/message');
-const { promptNetworkCapabilities } = require('./capabilities/network');
-const { promptRTCCapabilities } = require('./capabilities/rtc');
-const { promptVoiceCapabilities } = require('./capabilities/voice');
-const { promptVideoCapabilities } = require('./capabilities/video');
-const { promptVerifyCapabilities } = require('./capabilities/verify');
-const { checkbox,
+import chalk from 'chalk';
+import { capabilityLabels } from '../capabilities.js';
+import { promptMessageCapabilities } from './capabilities/message.js';
+import { promptNetworkCapabilities } from './capabilities/network.js';
+import { promptRTCCapabilities } from './capabilities/rtc.js';
+import { promptVoiceCapabilities } from './capabilities/voice.js';
+import { promptVideoCapabilities } from './capabilities/video.js';
+import { promptVerifyCapabilities } from './capabilities/verify.js';
+import { checkbox,
   checkboxSelectedFormatter,
   checkboxHighlightedFormatter,
-} = require('../../ux/checkbox');
-const { EOL } = require('os');
+} from '../../ux/checkbox.js';
+import { EOL } from 'os';
 
-exports.promptApplicationCapabilities = async () => {
+export const promptApplicationCapabilities = async () => {
   const appCapabilities = {};
   const whichCapabilities = await checkbox({
     message: 'Which capabilities do you wish to add?',

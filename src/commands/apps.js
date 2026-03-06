@@ -1,13 +1,13 @@
 /* istanbul ignore file */
-const { handler} = require('./apps/list');
-const { dumpCommand } = require('../ux/dump');
+import { handler} from './apps/list.js';
+import { dumpCommand } from '../ux/dump.js';
 
-exports.command = 'apps [command]';
+export const command = 'apps [command]';
 
-exports.desc = 'Manage applications';
+export const desc = 'Manage applications';
 
-exports.builder = (yargs) => yargs.commandDir('apps')
+export const builder = (yargs) => yargs.commandDir('apps')
   .epilogue(`When no command is given, ${dumpCommand('vonage apps')} will act the same as ${dumpCommand('vonage apps list')}. Run ${dumpCommand('vonage apps list --help')} to see options.`);
 
-exports.handler = handler;
+export { handler };
 

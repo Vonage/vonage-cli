@@ -1,5 +1,5 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceRemoveCallback } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceRemoveCallback } from '../utils/coerceRemove.js';
 
 const updateVerify = (app, flags) => {
   if (flags.verifyStatusUrl !== undefined) {
@@ -29,8 +29,8 @@ const verifyFlags = {
   },
 };
 
-exports.verifyGroup = group;
+export const verifyGroup = group;
 
-exports.verifyFlags = verifyFlags;
+export { verifyFlags };
 
-exports.updateVerify = updateVerify;
+export { updateVerify };

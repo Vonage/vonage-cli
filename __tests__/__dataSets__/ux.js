@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     label: 'dump string',
     value: 'Vonage CLI',

@@ -1,21 +1,21 @@
-const YAML = require('yaml');
-const { displayNumbers } = require('../../numbers/display');
-const { Client } = require('@vonage/server-client');
-const { dumpCommand } = require('../../ux/dump');
-const { searchPatterns } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { yaml, json } = require('../../commonFlags');
-const { countryFlag, getCountryName } = require('../../ux/locale');
-const { coerceNumber } = require('../../utils/coerceNumber');
-const { featureFlag } = require('../../numbers/features');
-const { typeFlag, typeLabels } = require('../../numbers/types');
+import YAML from 'yaml';
+import { displayNumbers } from '../../numbers/display.js';
+import { Client } from '@vonage/server-client';
+import { dumpCommand } from '../../ux/dump.js';
+import { searchPatterns } from '../../numbers/loadOwnedNumbersFromSDK.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { yaml, json } from '../../commonFlags.js';
+import { countryFlag, getCountryName } from '../../ux/locale.js';
+import { coerceNumber } from '../../utils/coerceNumber.js';
+import { featureFlag } from '../../numbers/features.js';
+import { typeFlag, typeLabels } from '../../numbers/types.js';
 
-exports.command = 'search <country>';
+export const command = 'search <country>';
 
-exports.desc = 'Search for numbers for purchase';
+export const desc = 'Search for numbers for purchase';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'country',
     countryFlag,
@@ -57,7 +57,7 @@ exports.builder = (yargs) => yargs
     'json': json,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, page, features, country, limit, type, pattern, searchPattern } = argv;
   console.info('Search for numbers');
   console.debug(features);

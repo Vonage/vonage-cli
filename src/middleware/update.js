@@ -1,10 +1,12 @@
-const fetch = require('node-fetch');
-const { compareVersions } = require('compare-versions');
-const { getSettings, setSetting } = require('../utils/settings');
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import fetch from 'node-fetch';
+import { compareVersions } from 'compare-versions';
+import { getSettings, setSetting } from '../utils/settings.js';
 
 const now = new Date();
 
-exports.checkForUpdate = async () => {
+export const checkForUpdate = async () => {
   let lastUpdateCheck;
   const checkDate = parseInt(`${now.getFullYear()}${('0' + (now.getMonth()+1)).slice(-2)}${('0' + now.getDate()).slice(-2)}`);
   const settings = getSettings();

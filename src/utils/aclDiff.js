@@ -1,4 +1,4 @@
-const jsonDiff = require('json-diff');
+import jsonDiff from 'json-diff';
 
 const status = {
   OK: 'OK',
@@ -121,5 +121,5 @@ const aclDiff = (tokenAcl, flagAcl) => {
   );
 };
 
-exports.aclDiff = aclDiff;
-exports.status = status;
+export { aclDiff };
+export { status };

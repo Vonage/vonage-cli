@@ -1,26 +1,49 @@
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const { Client } = require('@vonage/server-client');
-const { setConfig } = require('../../src/middleware/config');
-const {
+import { Client } from '@vonage/server-client';
+import { mockConsole } from '../helpers.js';
+import {
   getGlobalConfig,
   getGlobalFile,
   getLocalConfig,
   getLocalFile,
   getCLIConfig,
-} = require('../common');
-const fs = require('fs');
-const yargs = require('yargs');
-const os = require('os');
-const { sep } = require('path');
+} from '../common.js';
+import { sep } from 'path';
 
-jest.mock('fs');
-jest.mock('yargs');
-jest.mock('os');
+// Virtual filesystem for tests
+const mockFiles = new Map();
+const existsSyncMock = jest.fn((path) => mockFiles.has(path));
+const readFileSyncMock = jest.fn((path) => {
+  if (!mockFiles.has(path)) throw new Error(`ENOENT: no such file: ${path}`);
+  return mockFiles.get(path);
+});
+const homedirMock = jest.fn();
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('fs', () => ({
+  existsSync: existsSyncMock,
+  readFileSync: readFileSyncMock,
+}));
+jest.unstable_mockModule('os', () => ({ default: { homedir: homedirMock }, EOL: '\n' }));
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { setConfig } = await import('../../src/middleware/config.js');
 
 const oldEnv = process.env;
 const oldCwd = process.cwd;
 
 describe('Middeleware: Config', () => {
+  beforeEach(() => {
+    mockConsole()
+    mockFiles.clear();
+    existsSyncMock.mockClear();
+    readFileSyncMock.mockClear();
+    homedirMock.mockReset();
+    homedirMock.mockReturnValue('/dev/null');
+    yargs.exit.mockReset();
+  });
+
   afterEach(() => {
     process.env = oldEnv;
     process.cwd = oldCwd;
@@ -30,14 +53,12 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
-
-    expect(os.homedir()).toBe(globalFile.globalConfigPath);
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
 
     const derivedConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedConfigFile = `${derivedConfigPath}${sep}config.json`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
     );
@@ -78,7 +99,7 @@ describe('Middeleware: Config', () => {
     process.cwd = jest.fn(() => localFile.localConfigPath);
     const derivedConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
     );
@@ -105,8 +126,8 @@ describe('Middeleware: Config', () => {
   });
 
   test('Will decide to use the cli arguments when local or global is not set', () => {
-    os.homedir = jest.fn().mockReturnValue('${sep}dev${sep}null');
-    process.cwd = jest.fn(() => '${sep}dev${sep}null');
+    homedirMock.mockReturnValue(`${sep}dev${sep}null`);
+    process.cwd = jest.fn(() => `${sep}dev${sep}null`);
 
     const cliConfig = getCLIConfig();
     const args = setConfig(cliConfig, {});
@@ -133,11 +154,11 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedGlobalConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
     );
@@ -148,7 +169,7 @@ describe('Middeleware: Config', () => {
     process.cwd = jest.fn(() => localFile.localConfigPath);
     const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedLocalConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
     );
@@ -184,11 +205,11 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    os.homedir = jest.fn().mockReturnValue(globalFile.globalConfigPath);
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedGlobalConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
     );
@@ -199,7 +220,7 @@ describe('Middeleware: Config', () => {
     process.cwd = jest.fn(() => localFile.localConfigPath);
     const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
-    fs.__addFile(
+    mockFiles.set(
       derivedLocalConfigFile,
       JSON.stringify(Client.transformers.kebabCaseObjectKeys(localConfig)),
     );
@@ -231,7 +252,8 @@ describe('Middeleware: Config', () => {
   });
 
   test('Will exit when no config is found', () => {
-    setConfig({}, yargs);
+    setConfig({});
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 });
+

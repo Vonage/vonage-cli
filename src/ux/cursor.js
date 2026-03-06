@@ -19,7 +19,7 @@ process.on('SIGTERM', exitAndShowCursor);
 process.on('SIGQUIT', exitAndShowCursor);
 process.on('SIGHUP', exitAndShowCursor);
 
-exports.hideCursor = hideCursor;
-exports.resetCursor = resetCursor;
-exports.exitAndShowCursor = exitAndShowCursor;
+export { hideCursor };
+export { resetCursor };
+export { exitAndShowCursor };
 

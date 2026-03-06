@@ -1,6 +1,6 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceNumber } = require('../utils/coerceNumber');
-const { coerceRemoveCallback, coerceRemoveList } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceNumber } from '../utils/coerceNumber.js';
+import { coerceRemoveCallback, coerceRemoveList } from '../utils/coerceRemove.js';
 
 const updateVoice = async (app, flags) => {
   const newVoice = {
@@ -272,8 +272,8 @@ const voiceFlags = {
   },
 };
 
-exports.voiceGroup = helpGroup;
+export const voiceGroup = helpGroup;
 
-exports.voiceFlags = voiceFlags;
+export { voiceFlags };
 
-exports.updateVoice = updateVoice;
+export { updateVoice };

@@ -1,9 +1,10 @@
-const { faker } = require('@faker-js/faker');
-const { Auth } = require('@vonage/auth');
-const winston = require('winston');
-const Transport = require('winston-transport');
+import { jest } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { Auth } from '@vonage/auth';
+import winston from 'winston';
+import Transport from 'winston-transport';
 const { format } = winston;
-const { sep } = require('path');
+import { sep } from 'path';
 
 class NullTransport extends Transport {
   log(_, callback) {
@@ -148,17 +149,17 @@ const getTestMiddlewareArgs = () => {
   });
 };
 
-module.exports = {
-  getCLIConfig: getCLIConfig,
-  getConfigArgs: getConfigArgs,
-  getGlobalConfig: getGlobalConfig,
-  getLocalConfig: getLocalConfig,
-  getLocalFile: getLocalFile,
-  getLoggerMideleware: getLoggerMideleware,
-  getMiddlewareConfig: getMiddlewareConfig,
-  getTestMiddlewareArgs: getTestMiddlewareArgs,
-  getGlobalFile: getGlobalFile,
-  testLogger: testLogger,
-  testPrivateKey: testPrivateKey,
-  testPublicKey: testPublicKey,
+export {
+  getCLIConfig,
+  getConfigArgs,
+  getGlobalConfig,
+  getLocalConfig,
+  getLocalFile,
+  getLoggerMideleware,
+  getMiddlewareConfig,
+  getTestMiddlewareArgs,
+  getGlobalFile,
+  testLogger,
+  testPrivateKey,
+  testPublicKey,
 };

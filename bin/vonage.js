@@ -1,11 +1,11 @@
 #!/usr/bin/env -S node
-const { hideBin } = require('yargs/helpers');
-const yargs = require('yargs');
-const { setConfig } = require('../src/middleware/config');
-const { setupLog } = require('../src/middleware/log');
-const { checkForUpdate } = require('../src/middleware/update');
-const { dumpCommand } = require('../src/ux/dump');
-const { getSettings } = require('../src/utils/settings');
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+import { setConfig } from '../src/middleware/config.js';
+import { setupLog } from '../src/middleware/log.js';
+import { checkForUpdate } from '../src/middleware/update.js';
+import { dumpCommand } from '../src/ux/dump.js';
+import { getSettings } from '../src/utils/settings.js';
 const settings = getSettings();
 
 const { needsUpdate, forceUpdate, forceMinVersion } = settings;

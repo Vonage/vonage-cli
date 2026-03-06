@@ -1,12 +1,12 @@
 /* istanbul ignore file */
-const { handler } = require('./auth/show');
-const { dumpCommand } = require('../ux/dump');
+import { handler } from './auth/show.js';
+import { dumpCommand } from '../ux/dump.js';
 
-exports.command = 'auth [command]';
+export const command = 'auth [command]';
 
-exports.description = 'Manage authentication information',
+export const description = 'Manage authentication information',
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .commandDir('auth')
   .epilogue([
     `When ${dumpCommand('command')} is not passed, ${dumpCommand('vonage auth')} will function the same as ${dumpCommand('vonage auth show')}.`,
@@ -14,4 +14,4 @@ exports.builder = (yargs) => yargs
     `For more information, type ${dumpCommand('vonage auth show --help')}`,
   ].join('\n'));
 
-exports.handler = handler;
+export { handler };

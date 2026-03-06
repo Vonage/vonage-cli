@@ -1,6 +1,6 @@
-const { detectPlainOutput, detectScreenReader } = require('./detectScreenReader');
-const { descriptionList } = require('./descriptionList');
-const { EOL } = require('os');
+import { detectPlainOutput, detectScreenReader } from './detectScreenReader.js';
+import { descriptionList } from './descriptionList.js';
+import { EOL } from 'os';
 
 const isPlain = detectPlainOutput();
 const isScreenReader = detectScreenReader();
@@ -142,7 +142,7 @@ const table = (
   ].join(EOL);
 };
 
-module.exports = {
+export {
   table,
   defaultHeaderFormatter,
   defaultDataFormatter,

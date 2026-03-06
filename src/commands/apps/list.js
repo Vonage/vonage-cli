@@ -1,12 +1,12 @@
-const yaml = require('yaml');
-const { sdkError } = require('../../utils/sdkError');
-const { spinner } = require('../../ux/spinner');
-const snakecase = require('snakecase');
-const { Client } = require('@vonage/server-client');
-const { listApplications } = require('../../apps/display');
-const { capabilities, getAppCapabilities } = require('../../apps/capabilities');
-const { apiSecret, apiKey } = require('../../credentialFlags');
-const { dumpCommand } = require('../../ux/dump');
+import yaml from 'yaml';
+import { sdkError } from '../../utils/sdkError.js';
+import { spinner } from '../../ux/spinner.js';
+import snakecase from 'snakecase';
+import { Client } from '@vonage/server-client';
+import { listApplications } from '../../apps/display.js';
+import { capabilities, getAppCapabilities } from '../../apps/capabilities.js';
+import { apiSecret, apiKey } from '../../credentialFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 const coerceCapability = (capability) => {
   // Determine if we are looking for a single capability, multiple
@@ -56,16 +56,16 @@ const matchCapability = (app, [operation, capabilities]) => {
   }
 };
 
-exports.coerceCapability = coerceCapability;
+export { coerceCapability };
 
-exports.flags = flags;
+export { flags };
 
-exports.command = 'list';
+export const command = 'list';
 
-exports.desc = 'List applications';
+export const desc = 'List applications';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   'api-key': apiKey,
   'api-secret': apiSecret,
   ...flags,
@@ -87,7 +87,7 @@ exports.builder = (yargs) => yargs.options({
     'List all applications with that have voice and or messages capability',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Listing applications');
 
   const { SDK } = argv;

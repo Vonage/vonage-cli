@@ -1,12 +1,27 @@
-process.env.FORCE_COLOR = 0;
-const yaml = require('yaml');
-const { handler } = require('../../../src/commands/auth/show');
-const { mockConsole } = require('../../helpers');
-const { getTestMiddlewareArgs, testPrivateKey, testPublicKey } = require('../../common');
-const { Vonage } = require('@vonage/server-sdk');
-const { getBasicApplication } = require('../../app');
+import { jest, describe, test, beforeEach, afterAll, expect } from '@jest/globals';
+import yaml from 'yaml';
+import { mockConsole } from '../../helpers.js';
+import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
+import { getBasicApplication } from '../../app.js';
 
-jest.mock('@vonage/server-sdk');
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const mockGetApplicationPage = jest.fn();
+const mockGetApplication = jest.fn();
+
+jest.unstable_mockModule('@vonage/server-sdk', () => {
+  const Vonage = jest.fn();
+  return { Vonage };
+});
+
+const { Vonage } = await import('@vonage/server-sdk');
+const { handler } = await import('../../../src/commands/auth/show.js');
 
 const oldProcessStdoutWrite = process.stdout.write;
 
@@ -14,6 +29,15 @@ describe('Command: vonage auth show and vonage auth', () => {
   beforeEach(() => {
     process.stdout.write = jest.fn();
     mockConsole();
+    mockGetApplicationPage.mockReset();
+    mockGetApplication.mockReset();
+    Vonage.mockReset();
+    Vonage.mockImplementation(() => ({
+      applications: {
+        getApplication: mockGetApplication,
+        getApplicationPage: mockGetApplicationPage,
+      },
+    }));
   });
 
   afterAll(() => {
@@ -24,10 +48,10 @@ describe('Command: vonage auth show and vonage auth', () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -72,20 +96,20 @@ describe('Command: vonage auth show and vonage auth', () => {
     );
 
     // twice once for local and once for global
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(2);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(2);
-    expect(Vonage._mockGetApplication).toHaveBeenNthCalledWith(1, config.local.appId);
-    expect(Vonage._mockGetApplication).toHaveBeenNthCalledWith(2, config.global.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(2);
+    expect(mockGetApplication).toHaveBeenCalledTimes(2);
+    expect(mockGetApplication).toHaveBeenNthCalledWith(1, config.local.appId);
+    expect(mockGetApplication).toHaveBeenNthCalledWith(2, config.global.appId);
   });
 
   test('Should show only the local config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -113,19 +137,19 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.local.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.local.appId);
   });
 
   test('Should show only the global config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -153,18 +177,18 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
 
   test('Should show only the API Key and Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -190,17 +214,17 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).not.toHaveBeenCalled();
   });
 
   test('Should show only the App Id and Private Key', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
     args.config = {
       ...args.config,
       local: {},
@@ -230,18 +254,18 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalled();
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalled();
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
 
   test('Should show the full Private Key and API Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -277,7 +301,7 @@ describe('Command: vonage auth show and vonage auth', () => {
       json: true,
     });
 
-    const {config} = args;
+    const { config } = args;
     expect(console.table).not.toHaveBeenCalled();
     expect(console.log).toHaveBeenNthCalledWith(1, JSON.stringify([config.local, config.global], null, 2));
   });
@@ -289,7 +313,7 @@ describe('Command: vonage auth show and vonage auth', () => {
       yaml: true,
     });
 
-    const {config} = args;
+    const { config } = args;
     expect(console.table).not.toHaveBeenCalled();
     expect(console.log).toHaveBeenNthCalledWith(1, yaml.stringify([config.local, config.global], null, 2));
   });

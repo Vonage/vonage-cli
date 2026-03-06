@@ -1,11 +1,11 @@
-const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
-const yargs = require('yargs');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { confirm } = require('../../ux/confirm');
-const { dumpCommand } = require('../../ux/dump');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { countryFlag } = require('../../ux/locale');
+import { loadOwnedNumbersFromSDK } from '../../numbers/loadOwnedNumbersFromSDK.js';
+import yargs from 'yargs';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { confirm } from '../../ux/confirm.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { countryFlag } from '../../ux/locale.js';
 
 const flags = {
   'api-key': apiKey,
@@ -13,13 +13,13 @@ const flags = {
   'force': force,
 };
 
-exports.flags = flags;
+export { flags };
 
-exports.command = 'cancel <country> <msisdn>';
+export const command = 'cancel <country> <msisdn>';
 
-exports.desc = 'Cancel a number';
+export const desc = 'Cancel a number';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'country',
     {
@@ -38,7 +38,7 @@ exports.builder = (yargs) => yargs
   .options(flags);
 
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, country, msisdn } = argv;
   console.info('Cancelling number');
 

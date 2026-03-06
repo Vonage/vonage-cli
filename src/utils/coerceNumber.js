@@ -20,4 +20,4 @@ const coerceNumber = (argName, {min, max} = {}) => (value) => {
   return number;
 };
 
-exports.coerceNumber = coerceNumber;
+export { coerceNumber };

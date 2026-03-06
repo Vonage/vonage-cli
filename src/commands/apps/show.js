@@ -1,17 +1,17 @@
-const YAML = require('yaml');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { displayApplication } = require('../../apps/display');
-const { Client } = require('@vonage/server-client');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { json, yaml } = require('../../commonFlags');
-const { dumpCommand } = require('../../ux/dump');
+import YAML from 'yaml';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { displayApplication } from '../../apps/display.js';
+import { Client } from '@vonage/server-client';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { json, yaml } from '../../commonFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
-exports.command = 'show <id>';
+export const command = 'show <id>';
 
-exports.desc = 'Get information for an application';
+export const desc = 'Get information for an application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -29,7 +29,7 @@ exports.builder = (yargs) => yargs
     'Show information for application 000[...]000',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);
   const { SDK, id } = argv;
 

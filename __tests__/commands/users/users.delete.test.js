@@ -1,14 +1,22 @@
-process.env.FORCE_COLOR = 0;
-const { confirm } = require('../../../src/ux/confirm');
-const { handler } = require('../../../src/commands/users/delete');
-const { mockConsole } = require('../../helpers');
-const { getTestUserForAPI } = require('../../users');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-jest.mock('../../../src/ux/confirm');
+const confirm = jest.fn();
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/users/delete.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestUserForAPI } from '../../users.js';
 
 describe('Command: vonage users delete', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will delete a user', async () => {

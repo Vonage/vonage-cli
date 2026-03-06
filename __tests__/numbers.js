@@ -1,5 +1,5 @@
-const { faker } = require('@faker-js/faker');
-const { countryCodes } = require('../src/ux/locale');
+import { faker } from '@faker-js/faker';
+import { countryCodes } from '../src/ux/locale.js';
 
 const getTestPhoneNumber = () => Object.freeze({
   'country': faker.helpers.shuffle(countryCodes)[0],
@@ -12,4 +12,4 @@ const getTestPhoneNumber = () => Object.freeze({
   ], {min: 1, max: 3}).sort(),
 });
 
-exports.getTestPhoneNumber = getTestPhoneNumber;
+export { getTestPhoneNumber };

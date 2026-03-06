@@ -1,9 +1,9 @@
-const { indentLines } = require('../ux/indentLines');
-const { dumpObject, dumpKey } = require('../ux/dump');
-const { dumpOnOff, dumpOffOrValue } = require('../ux/dumpYesNo');
-const { descriptionList } = require('../ux/descriptionList');
-const chalk = require('chalk');
-const { capabilityLabels, getAppCapabilities } = require('./capabilities');
+import { indentLines } from '../ux/indentLines.js';
+import { dumpObject, dumpKey } from '../ux/dump.js';
+import { dumpOnOff, dumpOffOrValue } from '../ux/dumpYesNo.js';
+import { descriptionList } from '../ux/descriptionList.js';
+import chalk from 'chalk';
+import { capabilityLabels, getAppCapabilities } from './capabilities.js';
 
 const capabilitiesSummary = ({capabilities = {}}) => {
   const appCapabilities = getAppCapabilities({capabilities});
@@ -264,12 +264,12 @@ const displayVoiceApplication = ({voice}) => {
   ].join('\n');
 };
 
-module.exports = {
-  displayApplication: displayApplication,
-  displayCapabilities: displayCapabilities,
-  displayVoiceApplication: displayVoiceApplication,
-  displayRTCApplication: displayRTCApplication,
-  displayMessagesApplication: displayMessagesApplication,
-  displayVerifyApplication: displayVerifyApplication,
-  listApplications: listApplications,
+export {
+  displayApplication,
+  displayCapabilities,
+  displayVoiceApplication,
+  displayRTCApplication,
+  displayMessagesApplication,
+  displayVerifyApplication,
+  listApplications,
 };

@@ -1,4 +1,4 @@
-const { coerceUrl } = require('../../src/utils/coerceUrl');
+import { coerceUrl } from '../../src/utils/coerceUrl.js';
 
 describe('Utils: coerceURL', () => {
   test('Will return null if no URL is provided', () => {

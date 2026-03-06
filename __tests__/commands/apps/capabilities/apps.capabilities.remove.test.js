@@ -1,17 +1,22 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const { handler } = require('../../../../src/commands/apps/capabilities/remove');
-const { mockConsole } = require('../../../helpers');
-const { dataSets } = require('../../../__dataSets__/apps/index');
-const { getBasicApplication } = require('../../../app');
+import { mockConsole } from '../../../helpers.js';
+import { dataSets } from '../../../__dataSets__/apps/index.js';
+import { getBasicApplication } from '../../../app.js';
 
-const { confirm } = require('../../../../src/ux/confirm');
+const confirmMock = jest.fn();
+const yargs = { exit: jest.fn() };
 
-jest.mock('../../../../src/ux/confirm');
+jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../../src/commands/apps/capabilities/remove.js');
 
 describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, testCases}) => {
   beforeEach(() => {
     mockConsole();
+    confirmMock.mockReset();
+    yargs.exit.mockReset();
   });
 
   const removeTestCases = testCases.filter(({args}) => args.action === 'rm');
@@ -26,7 +31,7 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
       },
     };
 
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     await handler({
       SDK: sdkMock,
@@ -49,7 +54,7 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
       },
     };
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     await handler({
       SDK: sdkMock,
@@ -73,7 +78,7 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
       },
     };
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     expect(yargs.exit).not.toHaveBeenCalled();
     await handler({

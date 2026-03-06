@@ -1,21 +1,35 @@
-process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const { faker } = require('@faker-js/faker');
-const { confirm } = require('../../../src/ux/confirm');
-const yaml = require('yaml');
-const { handler } = require('../../../src/commands/numbers/buy');
-const { typeLabels } = require('../../../src/numbers/types');
-const { mockConsole } = require('../../helpers');
-const { countryCodes, displayCurrency, buildCountryString } = require('../../../src/ux/locale');
-const { getTestPhoneNumber } = require('../../numbers');
-const { Client } = require('@vonage/server-client');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import yaml from 'yaml';
+import { typeLabels } from '../../../src/numbers/types.js';
+import { countryCodes, displayCurrency, buildCountryString } from '../../../src/ux/locale.js';
+import { getTestPhoneNumber } from '../../numbers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('yargs');
-jest.mock('../../../src/ux/confirm');
+const yargs = {
+  exit: jest.fn(),
+};
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/numbers/buy.js');
+import { mockConsole } from '../../helpers.js';
 
 describe('Command: numbers buy', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will purchase number', async () => {

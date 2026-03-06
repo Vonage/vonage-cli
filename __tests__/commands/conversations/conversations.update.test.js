@@ -1,15 +1,31 @@
-process.env.FORCE_COLOR = 0;
-const { confirm } = require('../../../src/ux/confirm');
-const { displayDate } = require('../../../src/ux/locale');
-const { handler } = require('../../../src/commands/conversations/update');
-const { mockConsole } = require('../../helpers');
-const { getTestConversationForAPI, addCLIPropertiesToConversation } = require('../../conversations');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { displayDate } from '../../../src/ux/locale.js';
 
-jest.mock('../../../src/ux/confirm');
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/conversations/update.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 
 describe('Command: vonage conversations update', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will update a conversation with no options', async () => {

@@ -1,5 +1,5 @@
-const chalk = require('chalk');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { EOL } from 'os';
 
 /**
  * Recursively formats detail values for description list.
@@ -174,7 +174,4 @@ const descriptionList = (
   ).join(EOL);
 };
 
-module.exports = {
-  descriptionList,
-  descriptionDetail,
-};
+export { descriptionList, descriptionDetail };

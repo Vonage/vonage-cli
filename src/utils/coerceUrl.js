@@ -1,4 +1,4 @@
-const { URL } = require('node:url');
+import { URL } from 'node:url';
 
 const coerceUrl = (argName) => (url) => {
   if (!url) {
@@ -14,4 +14,4 @@ const coerceUrl = (argName) => (url) => {
   }
 };
 
-exports.coerceUrl = coerceUrl;
+export { coerceUrl };

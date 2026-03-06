@@ -1,11 +1,12 @@
+import { jest } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const { mockConsole } = require('../helpers');
-const YAML = require('yaml');
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../src/commands/balance');
-const { dumpYesNo } = require('../../src/ux/dumpYesNo');
-const { displayCurrency } = require('../../src/ux/locale');
-const { Client } = require('@vonage/server-client');
+import { mockConsole } from '../helpers.js';
+import YAML from 'yaml';
+import { faker } from '@faker-js/faker';
+import { handler } from '../../src/commands/balance.js';
+import { dumpYesNo } from '../../src/ux/dumpYesNo.js';
+import { displayCurrency } from '../../src/ux/locale.js';
+import { Client } from '@vonage/server-client';
 
 describe('Command: vonage balance', () => {
   beforeEach(() => {

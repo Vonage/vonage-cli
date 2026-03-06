@@ -1,4 +1,4 @@
-const { printEmoji } = require('./printEmoji');
+import { printEmoji } from './printEmoji.js';
 /**
  * @typedef { Object } DumpBooleanOptions
  * @property { boolean } value - The boolean value to format
@@ -18,7 +18,7 @@ const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=fal
   ? `${!noEmoji ? printEmoji('✅') : ''}${includeText ? trueWord : ''}`
   : `${!noEmoji ? printEmoji('❌') : ''}${includeText ? falseWord : ''}`;
 
-exports.dumpBoolean = dumpBoolean;
+export { dumpBoolean };
 
 /**
  * Formats a boolean value as "Yes" or "No", with optional emoji.
@@ -27,7 +27,7 @@ exports.dumpBoolean = dumpBoolean;
  * @param { boolean } [includeText=true] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-exports.dumpYesNo = (value, includeText=true) => dumpBoolean({
+export const dumpYesNo = (value, includeText=true) => dumpBoolean({
   value: value,
   trueWord: 'Yes',
   falseWord: 'No',
@@ -40,7 +40,7 @@ exports.dumpYesNo = (value, includeText=true) => dumpBoolean({
  * @param { boolean } value - The value to display
  * @returns { string } - The formatted string
  */
-exports.dumpOnOff = (value) => dumpBoolean({
+export const dumpOnOff = (value) => dumpBoolean({
   value: value,
   trueWord: 'On',
   falseWord: 'Off',
@@ -55,7 +55,7 @@ exports.dumpOnOff = (value) => dumpBoolean({
  * @param { boolean } [includeText=false] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-exports.dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
+export const dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
   value: value,
   trueWord: 'Enabled',
   falseWord: 'Disabled',
@@ -69,7 +69,7 @@ exports.dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
  * @param { boolean } [includeText=false] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-exports.dumpValidInvalid = (value, includeText=false) => dumpBoolean({
+export const dumpValidInvalid = (value, includeText=false) => dumpBoolean({
   value: value,
   trueWord: 'Valid',
   falseWord: 'Invalid',
@@ -82,7 +82,7 @@ exports.dumpValidInvalid = (value, includeText=false) => dumpBoolean({
  * @param { string|boolean } value - The value to display
  * @returns { string } - The formatted string
  */
-exports.dumpOffOrValue = (value) => dumpBoolean({
+export const dumpOffOrValue = (value) => dumpBoolean({
   value: value,
   trueWord: value,
   falseWord: 'Off',

@@ -1,15 +1,15 @@
-const chalk = require('chalk');
-const yargs = require('yargs');
-const { dumpCommand } = require('../../ux/dump');
-const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
-const { dumpAuth } = require('../../ux/dumpAuth');
-const { errorNoConfig } = require('../../middleware/config');
+import chalk from 'chalk';
+import yargs from 'yargs';
+import { dumpCommand } from '../../ux/dump.js';
+import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils/validateSDKAuth.js';
+import { dumpAuth } from '../../ux/dumpAuth.js';
+import { errorNoConfig } from '../../middleware/config.js';
 
-exports.command = 'check';
+export const command = 'check';
 
-exports.description = 'Checks Vonage credentials';
+export const description = 'Checks Vonage credentials';
 
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   'local': {
     describe: 'Use local configuration',
     type: 'boolean',
@@ -26,7 +26,7 @@ exports.builder = (yargs) => yargs.options({
   )
   .epilogue([`By default, the global configuration is checked. Use the ${dumpCommand('--local')} flag to check the local configuration.`].join('\n'));
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Displaying auth information');
 
   // start with global

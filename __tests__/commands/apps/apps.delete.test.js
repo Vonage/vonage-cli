@@ -1,17 +1,22 @@
-const { handler } = require('../../../src/commands/apps/delete');
-const { confirm } = require('../../../src/ux/confirm');
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication } = require('../../app');
-const { mockConsole } = require('../../helpers');
-const { Client } = require('@vonage/server-client');
-const { sdkError } = require('../../../src/utils/sdkError');
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { getBasicApplication } from '../../app.js';
+import { mockConsole } from '../../helpers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('../../../src/utils/sdkError');
-jest.mock('../../../src/ux/confirm');
+const confirmMock = jest.fn();
+const sdkErrorMock = jest.fn();
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
+jest.unstable_mockModule('../../../src/utils/sdkError.js', () => ({ sdkError: sdkErrorMock }));
+
+const { handler } = await import('../../../src/commands/apps/delete.js');
 
 describe('Command: vonage apps delete', () => {
   beforeEach(() => {
     mockConsole();
+    confirmMock.mockReset();
+    sdkErrorMock.mockReset();
   });
 
   test('Should delete app', async () => {
@@ -29,7 +34,7 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
     const appId = faker.string.uuid();
     await handler({
       id: appId,
@@ -54,7 +59,7 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
     const appId = faker.string.uuid();
     await handler({
       id: appId,
@@ -80,7 +85,7 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
     const appId = faker.string.uuid();
     await handler({
       id: appId,
@@ -88,7 +93,7 @@ describe('Command: vonage apps delete', () => {
     });
 
     expect(deleteMock).toHaveBeenCalled();
-    expect(sdkError).toHaveBeenCalledWith(testError);
+    expect(sdkErrorMock).toHaveBeenCalledWith(testError);
   });
 });
 

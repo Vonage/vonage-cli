@@ -1,4 +1,4 @@
-const Ajv = require('ajv/dist/2020');
+import Ajv from 'ajv/dist/2020';
 const ajv = new Ajv();
 
 const coerceJSON = (argName, schema) => (json) => {
@@ -34,4 +34,4 @@ const coerceJSON = (argName, schema) => (json) => {
   );
 };
 
-exports.coerceJSON = coerceJSON;
+export { coerceJSON };

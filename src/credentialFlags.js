@@ -1,20 +1,20 @@
-const { coerceKey } = require('./utils/coerceKey');
+import { coerceKey } from './utils/coerceKey.js';
 
-exports.apiKey = {
+export const apiKey = {
   describe: 'Your Vonage API key',
   type: 'string',
   group: 'Vonage Credentials:',
   implies: 'api-secret',
 };
 
-exports.apiSecret = {
+export const apiSecret = {
   describe: 'Your Vonage API secret',
   type: 'string',
   implies: 'api-key',
   group: 'Vonage Credentials:',
 };
 
-exports.privateKey = {
+export const privateKey = {
   describe: 'Your Vonage private key',
   type: 'string',
   group: 'Vonage Credentials:',
@@ -22,7 +22,7 @@ exports.privateKey = {
   coerce: coerceKey('private'),
 };
 
-exports.appId = {
+export const appId = {
   describe: 'Your Vonage application ID',
   group: 'Vonage Credentials:',
   type: 'string',

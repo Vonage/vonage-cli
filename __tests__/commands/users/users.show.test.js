@@ -1,8 +1,8 @@
-process.env.FORCE_COLOR = 0;
-const { redact } = require('../../../src/ux/redact');
-const { handler } = require('../../../src/commands/users/show');
-const { mockConsole } = require('../../helpers');
-const {
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { redact } from '../../../src/ux/redact.js';
+import { handler } from '../../../src/commands/users/show.js';
+import { mockConsole } from '../../helpers.js';
+import {
   getTestUserForAPI,
   addPSTNChannelToUser,
   addSMSChannelToUser,
@@ -11,7 +11,7 @@ const {
   addViberChannelToUser,
   addSIPChannelToUser,
   addWebsocketChannelToUser,
-} = require('../../users');
+} from '../../users.js';
 
 describe('Command: vonage users show', () => {
   beforeEach(() => {

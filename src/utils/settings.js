@@ -1,5 +1,5 @@
-const { getSharedConfig } = require('../middleware/config');
-const { mkdirSync, existsSync, readFileSync, writeFileSync } = require('fs');
+import { getSharedConfig } from '../middleware/config.js';
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 
 let settings = null;
 let changed = false;
@@ -44,8 +44,8 @@ const setSetting = (key, value) => {
   settings[key] = value;
 };
 
-exports.setSetting = setSetting;
-exports.getSettings = () => {
+export { setSetting };
+export const getSettings = () => {
   if (settings === null) {
     loadSettingsFile();
   }

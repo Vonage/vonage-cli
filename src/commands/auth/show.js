@@ -1,11 +1,11 @@
-const yargs = require('yargs');
-const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
-const { dumpCommand } = require('../../ux/dump');
-const { dumpBoolean } = require('../../ux/dumpYesNo');
-const { dumpAuth } = require('../../ux/dumpAuth');
-const { json, yaml: yamlFlag } = require('../../commonFlags');
-const { configLoadingHelp } = require('../../middleware/config');
-const yaml = require('yaml');
+import yargs from 'yargs';
+import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils/validateSDKAuth.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { dumpBoolean } from '../../ux/dumpYesNo.js';
+import { dumpAuth } from '../../ux/dumpAuth.js';
+import { json, yaml as yamlFlag } from '../../commonFlags.js';
+import { configLoadingHelp } from '../../middleware/config.js';
+import yaml from 'yaml';
 
 const dumpOptions = {
   noEmoji: true,
@@ -25,13 +25,13 @@ const showFlags = {
   'json': json,
 };
 
-exports.flags = showFlags;
+export const flags = showFlags;
 
-exports.command = 'show';
+export const command = 'show';
 
-exports.description = ['Show configured Vonage API authentication information'].join('\n');
+export const description = ['Show configured Vonage API authentication information'].join('\n');
 
-exports.builder = (yargs) => yargs.options(showFlags)
+export const builder = (yargs) => yargs.options(showFlags)
   .epilogue([
     '',
     `This will display (and validate) the configured API key, API secret, private key, and application ID the Vonage CLI will use when making calls. The API secret and private key will be redacted (unless using ${dumpCommand('--json')} or ${dumpCommand('--yaml')}). Use the ${dumpCommand('--show-all')} flag to display them. `,
@@ -40,7 +40,7 @@ exports.builder = (yargs) => yargs.options(showFlags)
 
   ].join('\n'));
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Displaying auth information');
   const { config } = argv;
 

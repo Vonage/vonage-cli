@@ -1,8 +1,8 @@
-const chalk = require('chalk');
-const { dumpYesNo } = require('../ux/dumpYesNo');
-const { indentLines } = require('../ux/indentLines');
-const { descriptionList } = require('../ux/descriptionList');
-const { displayDate } = require('../ux/locale');
+import chalk from 'chalk';
+import { dumpYesNo } from '../ux/dumpYesNo.js';
+import { indentLines } from '../ux/indentLines.js';
+import { descriptionList } from '../ux/descriptionList.js';
+import { displayDate } from '../ux/locale.js';
 
 const conversationSummary = ({
   name,
@@ -43,5 +43,5 @@ const displayConversation = (conversation) =>{
   ])));
 };
 
-exports.displayConversation = displayConversation;
-exports.conversationSummary = conversationSummary;
+export { displayConversation };
+export { conversationSummary };

@@ -1,12 +1,12 @@
-const YAML = require('yaml');
-const { displayNumbers } = require('../../numbers/display');
-const { Client } = require('@vonage/server-client');
-const { dumpCommand } = require('../../ux/dump');
-const { loadOwnedNumbersFromSDK, searchPatterns } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { yaml, json } = require('../../commonFlags');
-const { countryFlag, getCountryName } = require('../../ux/locale');
-const { coerceNumber } = require('../../utils/coerceNumber');
+import YAML from 'yaml';
+import { displayNumbers } from '../../numbers/display.js';
+import { Client } from '@vonage/server-client';
+import { dumpCommand } from '../../ux/dump.js';
+import { loadOwnedNumbersFromSDK, searchPatterns } from '../../numbers/loadOwnedNumbersFromSDK.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { yaml, json } from '../../commonFlags.js';
+import { countryFlag, getCountryName } from '../../ux/locale.js';
+import { coerceNumber } from '../../utils/coerceNumber.js';
 
 const flags = {
   'country': {
@@ -34,17 +34,17 @@ const flags = {
   'json': json,
 };
 
-exports.flags = flags;
+export { flags };
 
-exports.command = 'list';
+export const command = 'list';
 
-exports.desc = 'List all numbers that you own';
+export const desc = 'List all numbers that you own';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options(flags)
   .epilogue(`To list numbers that are linked to an application, use ${dumpCommand('vonage apps numbers list <id>')}.`);
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, country, limit, pattern, searchPattern } = argv;
   console.info('Listing owned numbers');
 

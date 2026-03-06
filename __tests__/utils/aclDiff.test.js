@@ -1,5 +1,5 @@
-const { aclDiff, status } = require('../../src/utils/aclDiff');
-const { dumpAclDiff } = require('../../src/ux/dumpAcl');
+import { aclDiff, status } from '../../src/utils/aclDiff.js';
+import { dumpAclDiff } from '../../src/ux/dumpAcl.js';
 
 describe('Utils: ACL Diff', () => {
   test('Will pass when path in token and acl match', () => {

@@ -1,17 +1,17 @@
-const yaml = require('yaml');
-const { displayApplication } = require('../../apps/display');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { coerceKey } = require('../../utils/coerceKey');
-const { Client } = require('@vonage/server-client');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { dumpCommand } = require('../../ux/dump');
+import yaml from 'yaml';
+import { displayApplication } from '../../apps/display.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { coerceKey } from '../../utils/coerceKey.js';
+import { Client } from '@vonage/server-client';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
-exports.command = 'update <id>';
+export const command = 'update <id>';
 
-exports.desc = 'Update an application';
+export const desc = 'Update an application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -42,7 +42,7 @@ exports.builder = (yargs) => yargs
     'Update the name of application 000[...]000',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info(`Updating application: ${argv.id}`);
   const { SDK, id } = argv;
 

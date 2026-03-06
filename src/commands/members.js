@@ -1,12 +1,12 @@
 /* istanbul ignore file */
-const { handler} = require('./members/list');
-const { dumpCommand } = require('../ux/dump');
+import { handler} from './members/list.js';
+import { dumpCommand } from '../ux/dump.js';
 
-exports.command = 'members [command]';
+export const command = 'members [command]';
 
-exports.desc = 'Manage applications';
+export const desc = 'Manage applications';
 
-exports.builder = (yargs) => yargs.commandDir('members')
+export const builder = (yargs) => yargs.commandDir('members')
   .epilogue(`When no command is given, ${dumpCommand('vonage members')} will act the same as ${dumpCommand('vonage members list')}. Run ${dumpCommand('vonage members list --help')} to see options.`);
 
-exports.handler = handler;
+export { handler };

@@ -1,5 +1,5 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceRemoveCallback, coerceRemove } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceRemoveCallback, coerceRemove } from '../utils/coerceRemove.js';
 
 const updateNetwork = (app, flags) => {
   const newNetwork = {
@@ -38,8 +38,8 @@ const networkFlags = {
   },
 };
 
-exports.networkGroup = group;
+export const networkGroup = group;
 
-exports.networkFlags = networkFlags;
+export { networkFlags };
 
-exports.updateNetwork = updateNetwork;
+export { updateNetwork };

@@ -1,10 +1,27 @@
-const { coerceKey } = require('../../src/utils/coerceKey');
-const { faker } = require('@faker-js/faker');
-const fs = require('fs');
+import { jest, describe, test, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
 
-jest.mock('fs');
+const mockFiles = new Map();
+const existsSyncMock = jest.fn((path) => mockFiles.has(path));
+const readFileSyncMock = jest.fn((path) => {
+  if (!mockFiles.has(path)) throw new Error(`ENOENT: ${path}`);
+  return mockFiles.get(path);
+});
+
+jest.unstable_mockModule('fs', () => ({
+  existsSync: existsSyncMock,
+  readFileSync: readFileSyncMock,
+}));
+
+const { coerceKey } = await import('../../src/utils/coerceKey.js');
 
 describe('Utils: coerce private key', () => {
+  beforeEach(() => {
+    mockFiles.clear();
+    existsSyncMock.mockClear();
+    readFileSyncMock.mockClear();
+  });
+
   test('Will return null if no private key is provided', () => {
     expect(coerceKey('private')(null)).toBeNull();
   });
@@ -18,7 +35,7 @@ describe('Utils: coerce private key', () => {
     const testPrivateKeyFile = faker.system.filePath();
     const privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PRIVATE KEY-----`;
     console.log(testPrivateKeyFile);
-    fs.__addFile(testPrivateKeyFile, privateKey);
+    mockFiles.set(testPrivateKeyFile, privateKey);
     expect(coerceKey('private')(testPrivateKeyFile)).toBe(privateKey);
   });
 
@@ -31,7 +48,7 @@ describe('Utils: coerce private key', () => {
     const testpublicKeyFile = faker.system.filePath();
     const publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PUBLIC KEY-----`;
     console.log(testpublicKeyFile);
-    fs.__addFile(testpublicKeyFile, publicKey);
+    mockFiles.set(testpublicKeyFile, publicKey);
     expect(coerceKey('public')(testpublicKeyFile)).toBe(publicKey);
   });
 
@@ -43,7 +60,7 @@ describe('Utils: coerce private key', () => {
   test('Will throw an error if the private key file is invalid', () => {
     const testPrivateKeyFile = faker.system.filePath();
     const privateKey = faker.string.alpha(128);
-    fs.__addFile(testPrivateKeyFile, privateKey);
+    mockFiles.set(testPrivateKeyFile, privateKey);
     expect(() => coerceKey('private')(testPrivateKeyFile)).toThrow('The key file does not contain a valid key string');
   });
 });

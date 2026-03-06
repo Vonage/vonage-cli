@@ -1,10 +1,10 @@
-const globals = require('globals');
-const eslint = require('@eslint/js');
-const stylisticJs = require('@stylistic/eslint-plugin-js');
-const jest = require('eslint-plugin-jest');
-const nodePlugin = require('eslint-plugin-n');
+import globals from 'globals';
+import eslint from '@eslint/js';
+import stylisticJs from '@stylistic/eslint-plugin-js';
+import jest from 'eslint-plugin-jest';
+import nodePlugin from 'eslint-plugin-n';
 
-module.exports = [
+export default [
   eslint.configs.recommended,
   stylisticJs.configs['disable-legacy'],
   nodePlugin.configs['flat/recommended'],
@@ -38,7 +38,7 @@ module.exports = [
   {
     settings: {
       node: {
-        version: '>=18.0.0',
+        version: '>=20.0.0',
       },
     },
     rules: {

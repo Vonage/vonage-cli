@@ -1,7 +1,7 @@
 /* istanbul ignore file */
-exports.command = 'capabilities <action>';
+export const command = 'capabilities <action>';
 
-exports.desc = 'Manage application capabilities';
+export const desc = 'Manage application capabilities';
 
-exports.builder = (yargs) => yargs.commandDir('capabilities');
+export const builder = (yargs) => yargs.commandDir('capabilities');
 

@@ -1,5 +1,5 @@
-const { overwriteLine } = require('./clear');
-const readline = require('readline');
+import { overwriteLine } from './clear.js';
+import readline from 'readline';
 
 // ANSI: CSI, OSC (incl. hyperlinks), and 2-byte ESC sequences
 // eslint-disable-next-line no-control-regex
@@ -318,4 +318,4 @@ const inputFromTTY = (
   restartReminder();
 });
 
-exports.inputFromTTY = inputFromTTY;
+export { inputFromTTY };

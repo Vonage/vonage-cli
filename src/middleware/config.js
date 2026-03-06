@@ -1,13 +1,15 @@
-const { readFileSync, existsSync } = require('fs');
-const { Auth } = require('@vonage/auth');
-const { Vonage } = require('@vonage/server-sdk');
-const { dumpCommand } = require('../ux/dump');
-const { indentLines } = require('../ux/indentLines');
-const path = require('path');
-const chalk = require('chalk');
-const yargs = require('yargs');
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import { readFileSync, existsSync } from 'fs';
+import { Auth } from '@vonage/auth';
+import { Vonage } from '@vonage/server-sdk';
+import { dumpCommand } from '../ux/dump.js';
+import { indentLines } from '../ux/indentLines.js';
+import path from 'path';
+import chalk from 'chalk';
+import yargs from 'yargs';
 const { version } = require('../../package.json');
-const os = require('os');
+import os from 'os';
 
 const getSharedConfig = () => {
   const homedir = os.homedir();
@@ -74,7 +76,7 @@ const SDKConfig = {
 };
 
 // Used as an array to allow commands to control as needed
-exports.configLoadingHelp = () => {
+export const configLoadingHelp = () => {
   const { localConfigFile, globalConfigFile } = getSharedConfig();
   return [
     'The Vonage CLI will load configuration in the following order:',
@@ -89,11 +91,11 @@ exports.configLoadingHelp = () => {
   ];
 };
 
-exports.getSharedConfig = getSharedConfig;
+export { getSharedConfig };
 
-exports.errorNoConfig = errorNoConfig;
+export { errorNoConfig };
 
-exports.setConfig = (argv) => {
+export const setConfig = (argv) => {
   const sharedConfig = getSharedConfig();
   const {
     globalConfigFile,
@@ -175,10 +177,10 @@ exports.setConfig = (argv) => {
   return finalConfig;
 };
 
-exports.SDKConfig = SDKConfig;
+export { SDKConfig };
 
 // Map of APIs to their spec URLs
 const apiSpecs = {
   'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
 };
-exports.APISpecs = apiSpecs;
+export const APISpecs = apiSpecs;

@@ -1,13 +1,13 @@
-const { aclDiff } = require('../../utils/aclDiff');
-const { dumpAclDiff } = require('../../ux/dumpAcl');
-const { dumpCommand } = require('../../ux/dump');
-const { indentLines } = require('../../ux/indentLines');
-const jwt = require('jsonwebtoken');
-const { dumpObject } = require('../../ux/dump');
-const { dumpBoolean } = require('../../ux/dumpYesNo');
-const { jwtFlags } = require('./create');
-const { appId, privateKey } = require('../../credentialFlags');
-const yargs = require('yargs');
+import { aclDiff } from '../../utils/aclDiff.js';
+import { dumpAclDiff } from '../../ux/dumpAcl.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { indentLines } from '../../ux/indentLines.js';
+import jwt from 'jsonwebtoken';
+import { dumpObject } from '../../ux/dump.js';
+import { dumpBoolean } from '../../ux/dumpYesNo.js';
+import { jwtFlags } from './create.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import yargs from 'yargs';
 
 class ExpiredTokenError extends Error {
   constructor() {
@@ -37,16 +37,16 @@ const validateAppId = (decoded, argv) => {
   console.debug(`Validating application id: ${decodedApp} equals ${argvApp}`);
 
   switch (true) {
-  case (!decodedApp):
-    console.log('❌ Application Id is not present in the token');
-    throw new Error('Application Id is not present in the token');
+    case (!decodedApp):
+      console.log('❌ Application Id is not present in the token');
+      throw new Error('Application Id is not present in the token');
 
-  case (decodedApp === argvApp):
-    console.log(`✅ Application Id [${decoded.application_id}] matches [${argv.appId}]`);
-    return;
-  default:
-    console.log(`❌ Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
-    throw new InvalidClaimError(InvalidClaimError.invlidClaims.APP_ID, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
+    case (decodedApp === argvApp):
+      console.log(`✅ Application Id [${decoded.application_id}] matches [${argv.appId}]`);
+      return;
+    default:
+      console.log(`❌ Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
+      throw new InvalidClaimError(InvalidClaimError.invlidClaims.APP_ID, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -56,21 +56,21 @@ const validateSubject = (decoded, argv) => {
   console.debug(`Validating subject: [${decoded.sub}] equals [${argv.sub}]`);
 
   switch (true) {
-  case (!decodedSub && !argvSub):
-    console.debug('Subject not passed as argument and not present in the token');
-    return;
+    case (!decodedSub && !argvSub):
+      console.debug('Subject not passed as argument and not present in the token');
+      return;
 
-  case (decodedSub && !argvSub):
-    console.log(`ℹ️ Subject [${decoded.sub}]`);
-    return;
+    case (decodedSub && !argvSub):
+      console.log(`ℹ️ Subject [${decoded.sub}]`);
+      return;
 
-  case (decodedSub === argvSub):
-    console.log(`✅ Subject [${decoded.sub}] matches [${argv.sub}]`);
-    return;
+    case (decodedSub === argvSub):
+      console.log(`✅ Subject [${decoded.sub}] matches [${argv.sub}]`);
+      return;
 
-  default:
-    console.log(`❌ Subject [${decoded.sub}] does not match [${argv.sub}]`);
-    throw new InvalidClaimError(InvalidClaimError.invlidClaims.SUB, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
+    default:
+      console.log(`❌ Subject [${decoded.sub}] does not match [${argv.sub}]`);
+      throw new InvalidClaimError(InvalidClaimError.invlidClaims.SUB, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -125,7 +125,7 @@ const validateAcl = (decoded, argv) => {
     return;
   };
 
-  if(!expectedAcl) {
+  if (!expectedAcl) {
     console.warn('ACL is present in the token but not in the validation arguments');
     expectedAcl = actualAcl;
   }
@@ -146,11 +146,11 @@ const validateAcl = (decoded, argv) => {
   console.log(indentLines(dumpAclDiff(results, !aclFlag), 2));
 };
 
-exports.command = 'validate <token>';
+export const command = 'validate <token>';
 
-exports.description = 'Validate a JWT token.';
+export const description = 'Validate a JWT token.';
 
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
   'app-id': appId,
@@ -177,7 +177,7 @@ exports.builder = (yargs) => yargs.options({
     },
   );
 
-exports.handler = (argv) => {
+export const handler = (argv) => {
   console.info('Validating JWT token');
   const decoded = jwt.verify(
     argv.token,
@@ -201,13 +201,15 @@ exports.handler = (argv) => {
     console.log('✅ All checks complete! Token is valid');
   } catch (error) {
     switch (error.constructor.name) {
-    case 'InvalidClaimError':
-      yargs.exit(22);
-      break;
+      case 'ExpiredTokenError':
+        yargs.exit(127);
+        break;
 
-    case 'ExpiredTokenError':
-      yargs.exit(127);
-      break;
+      case 'InvalidClaimError':
+      default:
+        yargs.exit(22);
+        break;
+
     }
   }
 

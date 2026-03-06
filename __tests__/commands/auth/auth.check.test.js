@@ -1,35 +1,60 @@
-process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/auth/check');
-const { mockConsole } = require('../../helpers');
-const { getTestMiddlewareArgs, testPrivateKey, testPublicKey } = require('../../common');
-const { Vonage } = require('@vonage/server-sdk');
-const { getBasicApplication } = require('../../app');
-const yargs = require('yargs');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { mockConsole } from '../../helpers';
+import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common';
+import { getBasicApplication } from '../../app';
 
-jest.mock('@vonage/server-sdk');
-jest.mock('yargs');
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
 
 const oldProcessStdoutWrite = process.stdout.write;
 
 describe('Command: vonage auth check', () => {
-  beforeEach(() => {
+  let mockGetApplicationPage = jest.fn();
+  let mockGetApplication = jest.fn();
+
+  let VonageClass = jest.fn().mockImplementation(() => {
+    return {
+      applications: {
+        getApplication: mockGetApplication,
+        getApplicationPage: mockGetApplicationPage
+      }
+    }
+  })
+  let handler;
+
+  jest.unstable_mockModule('@vonage/server-sdk', () => ({
+    Vonage: VonageClass,
+  }));
+
+
+  beforeEach(async () => {
     process.stdout.write = jest.fn();
     mockConsole();
+    mockGetApplicationPage = jest.fn();
+    mockGetApplication = jest.fn();
+
+    handler = (await import('../../../src/commands/auth/check.js')).handler;
   });
 
   afterAll(() => {
     process.stdout.write = oldProcessStdoutWrite;
+    jest.resetAllMocks();
   });
 
   test('Should validate the global config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -60,19 +85,19 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
   });
 
   test('Should validate the local config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -106,19 +131,19 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.local.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.local.appId);
   });
 
   test('Should validate the cli arguments config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
-    Vonage._mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplication.mockResolvedValue(application);
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -144,15 +169,15 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.cli.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.cli.appId);
   });
 
   test('Should validate the API Key and Secret only in the CLI', async () => {
-    Vonage._mockGetApplicationPage.mockResolvedValue({response: {status: 200}});
+    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -176,12 +201,12 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).not.toHaveBeenCalled();
   });
 
   test('Should fail to validate no config is found', async () => {
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -196,16 +221,16 @@ describe('Command: vonage auth check', () => {
 
     expect(console.log).toHaveBeenNthCalledWith(1, 'error: No configuration file found');
 
-    expect(Vonage._mockGetApplicationPage).not.toHaveBeenCalled();
-    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
+    expect(mockGetApplicationPage).not.toHaveBeenCalled();
+    expect(mockGetApplication).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(2);
   });
 
   test('Should fail to validate the config settings', async () => {
-    Vonage._mockGetApplicationPage.mockRejectedValue({response: {status: 401}});
-    Vonage._mockGetApplication.mockRejectedValue({response: {status: 401}});
+    mockGetApplicationPage.mockRejectedValue({ response: { status: 401 } });
+    mockGetApplication.mockRejectedValue({ response: { status: 401 } });
 
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -236,14 +261,14 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
     expect(yargs.exit).toHaveBeenCalledWith(5);
   });
 
   test('Should fail to validate the config settings with invalid private key', async () => {
-    const args = { ...getTestMiddlewareArgs()};
+    const args = { ...getTestMiddlewareArgs() };
 
     args.config = {
       ...args.config,
@@ -270,8 +295,8 @@ describe('Command: vonage auth check', () => {
       ].join('\n'),
     );
 
-    expect(Vonage._mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(Vonage._mockGetApplication).not.toHaveBeenCalled();
+    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
+    expect(mockGetApplication).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(22);
   });
 });

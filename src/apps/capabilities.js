@@ -1,4 +1,4 @@
-const camelCase = require('camelcase');
+import camelCase from 'camelcase';
 
 const capabilityLabels = {
   'messages': 'Messages',
@@ -18,8 +18,8 @@ const getAppCapabilities = ({capabilities: appCapabilities = {}} = {}) =>
     .sort()
     .map(capability => camelCase(capability));
 
-exports.getAppCapabilities = getAppCapabilities;
+export { getAppCapabilities };
 
-exports.capabilityLabels = capabilityLabels;
+export { capabilityLabels };
 
-exports.capabilities = capabilities;
+export { capabilities };

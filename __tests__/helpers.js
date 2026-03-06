@@ -1,8 +1,10 @@
+import { jest, afterEach } from '@jest/globals';
+
 afterEach(jest.restoreAllMocks);
 process.stdout.clearLine = jest.fn();
 process.stderr.clearLine = jest.fn();
 
-exports.mockConsole = () => {
+export const mockConsole = () => {
   console.log = jest.spyOn(console, 'log');
   console.warn = jest.spyOn(console, 'warn');
   console.info = jest.spyOn(console, 'info');

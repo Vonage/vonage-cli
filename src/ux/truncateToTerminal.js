@@ -1,4 +1,4 @@
-const { getTerminalWidth } = require('./getTerminalWidth');
+import { getTerminalWidth } from './getTerminalWidth.js';
 
 /**
  * Truncates a message so that the full line fits within the terminal width.
@@ -9,7 +9,7 @@ const { getTerminalWidth } = require('./getTerminalWidth');
  * @param {number} [reservedWidth=0] - Width of content printed after the message.
  * @returns {string} - Trimmed message that fits.
  */
-exports.truncateToTerminal = (
+export const truncateToTerminal = (
   message,
   reservedWidth = 0,
 ) => {

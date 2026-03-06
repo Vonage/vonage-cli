@@ -1,8 +1,16 @@
-process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const { handler } = require('../../../src/commands/users/update');
-const { mockConsole } = require('../../helpers');
-const {
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const { handler } = await import('../../../src/commands/users/update.js');
+import { mockConsole } from '../../helpers.js';
+import {
   getTestUserForAPI,
   addPSTNChannelToUser,
   addSMSChannelToUser,
@@ -12,13 +20,15 @@ const {
   addSIPChannelToUser,
   addWebsocketChannelToUser,
   addMessengerChannelToUser,
-} = require('../../users');
-
-jest.mock('yargs');
+} from '../../users.js';
 
 describe('Command: vonage users update', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will update a user with no options', async () => {

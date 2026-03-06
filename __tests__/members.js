@@ -1,7 +1,7 @@
-const { faker } = require('@faker-js/faker');
-const { getTestConversationForAPI } = require('./conversations');
-const { getTestUserForAPI } = require('./users');
-const { stateLabels } = require('../src/members/display');
+import { faker } from '@faker-js/faker';
+import { getTestConversationForAPI } from './conversations.js';
+import { getTestUserForAPI } from './users.js';
+import { stateLabels } from '../src/members/display.js';
 
 const fromChannels = [
   'app',
@@ -138,12 +138,12 @@ const addMessengerChannelToMember = (member) => Object.freeze({
   },
 });
 
-exports.getTestMemberForAPI = getTestMemberForAPI;
-exports.addAppChannelToMember = addAppChannelToMember;
-exports.addPhoneChannelToMember = addPhoneChannelToMember;
-exports.addSMSChannelToMember = addSMSChannelToMember;
-exports.addMMSChannelToMember = addMMSChannelToMember;
-exports.addWhatsAppChannelToMember = addWhatsAppChannelToMember;
-exports.addViberChannelToMember = addViberChannelToMember;
-exports.addMessengerChannelToMember = addMessengerChannelToMember;
+export { getTestMemberForAPI };
+export { addAppChannelToMember };
+export { addPhoneChannelToMember };
+export { addSMSChannelToMember };
+export { addMMSChannelToMember };
+export { addWhatsAppChannelToMember };
+export { addViberChannelToMember };
+export { addMessengerChannelToMember };
 

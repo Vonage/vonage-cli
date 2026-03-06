@@ -1,20 +1,20 @@
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const yargs = require('yargs');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { spinner } = require('../../ux/spinner');
-const { confirm } = require('../../ux/confirm');
-const { inputFromTTY } = require('../../ux/input');
-const { hideCursor, resetCursor } = require('../../ux/cursor');
-const ngrok = require('ngrok');
-const { EOL } = require('os');
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import yargs from 'yargs';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { spinner } from '../../ux/spinner.js';
+import { confirm } from '../../ux/confirm.js';
+import { inputFromTTY } from '../../ux/input.js';
+import { hideCursor, resetCursor } from '../../ux/cursor.js';
+import ngrok from 'ngrok';
+import { EOL } from 'os';
 
-exports.command = 'ngrok <id>';
+export const command = 'ngrok <id>';
 
-exports.desc = 'Open an ngrok tunnel for application';
+export const desc = 'Open an ngrok tunnel for application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -71,7 +71,7 @@ const updateHooks = (config, ngrokUrl) => Object.entries(config).reduce(
   {},
 );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info(`Opening ngrok tunnel for application ${argv.id}`);
   console.log('⚠️ ⚠️ This will update the all the WebHooks for your application ⚠️ ⚠️ ');
   console.log('This will cause WebHooks to directed to Ngrok instead of your servers');

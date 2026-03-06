@@ -1,4 +1,4 @@
-const { detectPlainOutput } = require('./detectScreenReader');
+import { detectPlainOutput } from './detectScreenReader.js';
 
 const isPlain = detectPlainOutput();
 
@@ -8,4 +8,4 @@ const isPlain = detectPlainOutput();
   * @param { string } emoji - The emoji to print
   * @return { string } - The emoji or empty string
   */
-exports.printEmoji = (emoji) => isPlain ? '' : emoji + ' ';
+export const printEmoji = (emoji) => isPlain ? '' : emoji + ' ';

@@ -1,12 +1,12 @@
 /* istanbul ignore file */
-const { handler} = require('./conversations/list');
-const { dumpCommand } = require('../ux/dump');
+import { handler} from './conversations/list.js';
+import { dumpCommand } from '../ux/dump.js';
 
-exports.command = 'conversations [command]';
+export const command = 'conversations [command]';
 
-exports.desc = 'Manage conversations';
+export const desc = 'Manage conversations';
 
-exports.builder = (yargs) => yargs.commandDir('conversations')
+export const builder = (yargs) => yargs.commandDir('conversations')
   .epilogue(`When no command is given, ${dumpCommand('vonage conversations')} will act the same as ${dumpCommand('vonage conversations list')}. Run ${dumpCommand('vonage conversations list --help')} to see options.`);
 
-exports.handler = handler;
+export { handler };

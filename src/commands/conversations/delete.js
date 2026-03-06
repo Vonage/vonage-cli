@@ -1,13 +1,13 @@
-const { confirm } = require('../../ux/confirm');
-const { appId, privateKey } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import { confirm } from '../../ux/confirm.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
-exports.command = 'delete <id>';
+export const command = 'delete <id>';
 
-exports.desc = 'Delete conversation';
+export const desc = 'Delete conversation';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -19,7 +19,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Deleting conversation');
 

@@ -1,13 +1,11 @@
-process.env.FORCE_COLOR = 0;
-const YAML = require('yaml');
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/members/update');
-const { mockConsole } = require('../../helpers');
-const {
-  getTestMemberForAPI,
-} = require('../../members');
-const { getTestConversationForAPI } = require('../../conversations');
-const { Client } = require('@vonage/server-client');
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import YAML from 'yaml';
+import { faker } from '@faker-js/faker';
+import { handler } from '../../../src/commands/members/update.js';
+import { mockConsole } from '../../helpers.js';
+import { getTestMemberForAPI } from '../../members.js';
+import { getTestConversationForAPI } from '../../conversations.js';
+import { Client } from '@vonage/server-client';
 
 describe('Command: vonage members create', () => {
   beforeEach(() => {

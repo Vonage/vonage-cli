@@ -1,9 +1,9 @@
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const yargs = require('yargs');
-const { appId, privateKey } = require('../../credentialFlags');
-const { displayFullUser } = require('../../users/display');
-const { coerceUrl } = require('../../utils/coerceUrl');
-const { coerceJSON } = require('../../utils/coerceJSON');
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import yargs from 'yargs';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { displayFullUser } from '../../users/display.js';
+import { coerceUrl } from '../../utils/coerceUrl.js';
+import { coerceJSON } from '../../utils/coerceJSON.js';
 
 const userFlags = {
   'name': {
@@ -120,7 +120,7 @@ const userFlags = {
   },
 };
 
-const validateSip = ({sipUrl, sipUsername, sipPassword}) => {
+const validateSip = ({ sipUrl, sipUsername, sipPassword }) => {
   if (!sipUrl) {
     return true;
   }
@@ -136,31 +136,31 @@ const validateSip = ({sipUrl, sipUsername, sipPassword}) => {
   return true;
 };
 
-const normalizeSip = ({sipUrl, sipUsername, sipPassword}) => sipUrl
+const normalizeSip = ({ sipUrl, sipUsername, sipPassword }) => sipUrl
   ? sipUrl.reduce(
     (acc, url, index) => [
       ...acc,
       {
         uri: url,
-        ...(sipUsername[index] ? {username: sipUsername[index]} : {}),
-        ...(sipPassword[index] ? {password: sipPassword[index]} : {}),
+        ...(sipUsername[index] ? { username: sipUsername[index] } : {}),
+        ...(sipPassword[index] ? { password: sipPassword[index] } : {}),
       },
     ],
     [],
   )
   : undefined;
 
-const validateWss = ({websocketUrl, websocketHeaders, websocketContentType }) => {
+const validateWss = ({ websocketUrl, websocketHeaders, websocketContentType }) => {
   if (!websocketUrl) {
     return true;
   }
 
-  if (websocketContentType?.length > 0 && websocketContentType.length !==  websocketUrl.length) {
+  if (websocketContentType?.length > 0 && websocketContentType.length !== websocketUrl.length) {
     yargs.exit(2);
     return false;
   }
 
-  if(websocketHeaders?.length > 0 && websocketHeaders.length !== websocketUrl.length) {
+  if (websocketHeaders?.length > 0 && websocketHeaders.length !== websocketUrl.length) {
     yargs.exit(2);
     return false;
   }
@@ -168,43 +168,43 @@ const validateWss = ({websocketUrl, websocketHeaders, websocketContentType }) =>
   return true;
 };
 
-const normalizeWss = ({websocketUrl, websocketHeaders, websocketContentType }) => websocketUrl
+const normalizeWss = ({ websocketUrl, websocketHeaders, websocketContentType }) => websocketUrl
   ? websocketUrl.reduce(
     (acc, url, index) => [
       ...acc,
       {
         uri: url,
-        ...((websocketContentType || [])[index] ? {contentType: websocketContentType[index]} : {}),
-        ...((websocketHeaders || [])[index] ? {headers: websocketHeaders[index]} : {}),
+        ...((websocketContentType || [])[index] ? { contentType: websocketContentType[index] } : {}),
+        ...((websocketHeaders || [])[index] ? { headers: websocketHeaders[index] } : {}),
       },
     ],
     [],
   )
   : undefined;
 
-exports.validateSip = validateSip;
+export { validateSip };
 
-exports.normalizeSip = normalizeSip;
+export { normalizeSip };
 
-exports.validateWss = validateWss;
+export { validateWss };
 
-exports.normalizeWss = normalizeWss;
+export { normalizeWss };
 
-exports.userFlags = userFlags;
+export { userFlags };
 
-exports.command = 'create';
+export const command = 'create';
 
-exports.desc = 'Create a user';
+export const desc = 'Create a user';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options({
     ...userFlags,
     'app-id': appId,
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Creating user');
   const { SDK } = argv;
 
@@ -235,9 +235,9 @@ exports.handler = async (argv) => {
       pstn: argv.pstnNumber?.map((number) => ({ number: number })),
       sms: argv.smsNumber?.map((number) => ({ number: number })),
       mms: argv.mmsNumber?.map((number) => ({ number: number })),
-      whatsapp: argv.whatsAppNumber?.map((number) => ({ number: number})),
-      viber: argv.viberNumber?.map((number) => ({ number: number})),
-      messenger: argv.facebookMessengerId?.map((id) => ({ id: id})),
+      whatsapp: argv.whatsAppNumber?.map((number) => ({ number: number })),
+      viber: argv.viberNumber?.map((number) => ({ number: number })),
+      messenger: argv.facebookMessengerId?.map((id) => ({ id: id })),
     },
   }));
 

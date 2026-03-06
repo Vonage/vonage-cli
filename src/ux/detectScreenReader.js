@@ -1,4 +1,4 @@
-const parser = require('yargs-parser');
+import parser from 'yargs-parser';
 const { replayRate, accessibility, plainOutput } = parser(process.argv);
 
 
@@ -46,8 +46,4 @@ const detectPlainOutput = () => {
  */
 const getReplayRate = () => parseInt(replayRate || process.env['REPLAY_RATE'] || 6) * 1000;
 
-module.exports = {
-  detectScreenReader: detectScreenReader,
-  detectPlainOutput: detectPlainOutput,
-  getReplayRate: getReplayRate,
-};
+export { detectScreenReader, detectPlainOutput, getReplayRate };

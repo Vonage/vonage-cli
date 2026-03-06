@@ -1,18 +1,18 @@
-const YAML = require('yaml');
-const { apiKey, apiSecret } = require('../credentialFlags');
-const { json, yaml } = require('../commonFlags');
-const { makeSDKCall } = require('../utils/makeSDKCall');
-const { dumpCommand } = require('../ux/dump');
-const { dumpYesNo } = require('../ux/dumpYesNo');
-const { displayCurrency } = require('../ux/locale');
-const { descriptionList } = require('../ux/descriptionList');
-const { Client } = require('@vonage/server-client');
+import YAML from 'yaml';
+import { apiKey, apiSecret } from '../credentialFlags.js';
+import { json, yaml } from '../commonFlags.js';
+import { makeSDKCall } from '../utils/makeSDKCall.js';
+import { dumpCommand } from '../ux/dump.js';
+import { dumpYesNo } from '../ux/dumpYesNo.js';
+import { displayCurrency } from '../ux/locale.js';
+import { descriptionList } from '../ux/descriptionList.js';
+import { Client } from '@vonage/server-client';
 
-exports.command = 'balance';
+export const command = 'balance';
 
-exports.desc = 'Check your account balance';
+export const desc = 'Check your account balance';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
     'api-secret': apiSecret,
@@ -24,7 +24,7 @@ exports.builder = (yargs) => yargs
     'Show your account balance',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, yaml, json } = argv;
   console.info('Check your account balance');
 

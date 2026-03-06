@@ -1,7 +1,7 @@
-const yargs = require('yargs');
-const { dumpCommand } = require('../ux/dump');
+import yargs from 'yargs';
+import { dumpCommand } from '../ux/dump.js';
 
-exports.sdkError = async (error) => {
+export const sdkError = async (error) => {
   const statusCode = error.response?.status;
   const errorName = error.constructor.name;
   let errorData = {};

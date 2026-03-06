@@ -1,9 +1,9 @@
 process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication, addVoiceCapabilities } = require('../../app');
-const { Client } = require('@vonage/server-client');
+import { faker } from '@faker-js/faker';
+import { getBasicApplication, addVoiceCapabilities } from '../../app.js';
+import { Client } from '@vonage/server-client';
 
-exports.voiceDataSets = [
+export const voiceDataSets = [
   (() => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),

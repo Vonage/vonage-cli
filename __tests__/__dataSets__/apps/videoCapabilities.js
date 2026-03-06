@@ -1,10 +1,10 @@
 process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication, addVideoCapabilities } = require('../../app');
-const { videoWebhooks } = require('../../../src/apps/video');
-const { Client } = require('@vonage/server-client');
+import { faker } from '@faker-js/faker';
+import { getBasicApplication, addVideoCapabilities } from '../../app.js';
+import { videoWebhooks } from '../../../src/apps/video.js';
+import { Client } from '@vonage/server-client';
 
-exports.videoDataSets = [
+export const videoDataSets = [
   ...videoWebhooks.map((webhook) => [
     (() => {
       const app = Client.transformers.camelCaseObjectKeys(

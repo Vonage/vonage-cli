@@ -10,8 +10,5 @@ class InvalidKeyFileError extends Error {
   }
 }
 
-module.exports = {
-  InvalidKeyError:  InvalidKeyError,
-  InvalidKeyFileError:  InvalidKeyFileError,
-};
+export { InvalidKeyError, InvalidKeyFileError };
 

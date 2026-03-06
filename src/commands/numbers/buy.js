@@ -1,14 +1,14 @@
-const YAML = require('yaml');
-const yargs = require('yargs');
-const { confirm } = require('../../ux/confirm');
-const { descriptionList } = require('../../ux/descriptionList');
-const { countryFlag, displayCurrency } = require('../../ux/locale');
-const { displayFullNumber } = require('../../numbers/display');
-const { Client } = require('@vonage/server-client');
-const { dumpCommand } = require('../../ux/dump');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { yaml, json, force } = require('../../commonFlags');
+import YAML from 'yaml';
+import yargs from 'yargs';
+import { confirm } from '../../ux/confirm.js';
+import { descriptionList } from '../../ux/descriptionList.js';
+import { countryFlag, displayCurrency } from '../../ux/locale.js';
+import { displayFullNumber } from '../../numbers/display.js';
+import { Client } from '@vonage/server-client';
+import { dumpCommand } from '../../ux/dump.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { yaml, json, force } from '../../commonFlags.js';
 
 const flags = {
   'target-api-key': {
@@ -22,13 +22,13 @@ const flags = {
   'json': json,
 };
 
-exports.flags = flags;
+export { flags };
 
-exports.command = 'buy <country> <msisdn>';
+export const command = 'buy <country> <msisdn>';
 
-exports.desc = 'Purchase a number';
+export const desc = 'Purchase a number';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'country',
     {
@@ -48,7 +48,7 @@ exports.builder = (yargs) => yargs
   .epilogue(`To search for a number to purchase, use ${dumpCommand('vonage apps search')}.`);
 
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, country, msisdn} = argv;
   console.info('Purchase a number');
 

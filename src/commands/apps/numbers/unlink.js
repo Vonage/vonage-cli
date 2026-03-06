@@ -1,18 +1,18 @@
-const YAML = require('yaml');
-const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
-const { makeSDKCall } = require('../../../utils/makeSDKCall');
-const { confirm } = require('../../../ux/confirm');
-const { displayFullNumber } = require('../../../numbers/display');
-const { descriptionList } = require('../../../ux/descriptionList');
-const { apiKey, apiSecret } = require('../../../credentialFlags');
-const { json, yaml } = require('../../../commonFlags');
-const { dumpCommand } = require('../../../ux/dump');
+import YAML from 'yaml';
+import { loadOwnedNumbersFromSDK } from '../../../numbers/loadOwnedNumbersFromSDK.js';
+import { makeSDKCall } from '../../../utils/makeSDKCall.js';
+import { confirm } from '../../../ux/confirm.js';
+import { displayFullNumber } from '../../../numbers/display.js';
+import { descriptionList } from '../../../ux/descriptionList.js';
+import { apiKey, apiSecret } from '../../../credentialFlags.js';
+import { json, yaml } from '../../../commonFlags.js';
+import { dumpCommand } from '../../../ux/dump.js';
 
-exports.command = 'unlink <id> <msisdn>';
+export const command = 'unlink <id> <msisdn>';
 
-exports.desc = 'Unlink a number to an application';
+export const desc = 'Unlink a number to an application';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -36,7 +36,7 @@ exports.builder = (yargs) => yargs
     'Unlink number 19162255887 to application 000[...]000',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
   console.info(`Unlinking number ${msisdn} to application ${id}`);
 

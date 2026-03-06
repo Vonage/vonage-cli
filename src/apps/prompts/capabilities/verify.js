@@ -1,8 +1,8 @@
-const chalk = require('chalk');
-const { urlPrompt } = require('../../../ux/prompts');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { urlPrompt } from '../../../ux/prompts.js';
+import { EOL } from 'os';
 
-exports.promptVerifyCapabilities = async () => {
+export const promptVerifyCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring Verify API'));
   process.stderr.write(EOL);
 

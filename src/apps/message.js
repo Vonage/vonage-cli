@@ -1,5 +1,5 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceRemoveCallback } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceRemoveCallback } from '../utils/coerceRemove.js';
 
 const updateMessages = (app, flags) => {
   const newMessages = {
@@ -115,8 +115,8 @@ const messageFlags = {
   },
 };
 
-exports.messageGroup = group;
+export const messageGroup = group;
 
-exports.messageFlags = messageFlags;
+export { messageFlags };
 
-exports.updateMessages = updateMessages;
+export { updateMessages };

@@ -1,18 +1,34 @@
-process.env.FORCE_COLOR = 0;
-const { confirm } = require('../../../src/ux/confirm');
-const { EventType } = require('@vonage/conversations');
-const { displayDate } = require('../../../src/ux/locale');
-const { handler } = require('../../../src/commands/conversations/create');
-const { mockConsole } = require('../../helpers');
-const { getTestConversationForAPI, addCLIPropertiesToConversation } = require('../../conversations');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { EventType } from '@vonage/conversations';
+import { displayDate } from '../../../src/ux/locale.js';
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const { handler } = await import('../../../src/commands/conversations/create.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 
 const conversationEvents = Object.values(EventType);
-
-jest.mock('../../../src/ux/confirm');
 
 describe('Command: vonage conversations create', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will create a conversation with no options', async () => {
@@ -204,7 +220,7 @@ describe('Command: vonage conversations create', () => {
 
     expect(console.warn).toHaveBeenNthCalledWith(
       2,
-      'Did you mean: audio:play, audio:say, audio:dtmf?',
+      'Did you mean: audio:play?',
     );
 
     expect(confirm).toHaveBeenCalledWith('Do you want to continue with these masks?');

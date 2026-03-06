@@ -1,6 +1,6 @@
-const chalk = require('chalk');
-const { urlPrompt, prompt } = require('../../../ux/prompts');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { urlPrompt, prompt } from '../../../ux/prompts.js';
+import { EOL } from 'os';
 
 const promptWebhookCapability = async (
   videoCapabilities,
@@ -125,7 +125,7 @@ const promptSIP = async (videoCapabilities) => {
   );
 };
 
-exports.promptVideoCapabilities = async () => {
+export const promptVideoCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring Video API'));
   process.stderr.write(EOL);
 

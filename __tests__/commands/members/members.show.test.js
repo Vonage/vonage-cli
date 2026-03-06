@@ -1,9 +1,25 @@
-process.env.FORCE_COLOR = 0;
-const YAML = require('yaml');
-const { handler } = require('../../../src/commands/members/show');
-const { mockConsole } = require('../../helpers');
-const { displayDate } = require('../../../src/ux/locale');
-const {
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import YAML from 'yaml';
+import { Client } from '@vonage/server-client';
+
+const yargs = {
+  exit: jest.fn(),
+};
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/members/show.js');
+import { mockConsole } from '../../helpers.js';
+import { displayDate } from '../../../src/ux/locale.js';
+import {
   getTestMemberForAPI,
   addAppChannelToMember,
   addPhoneChannelToMember,
@@ -12,20 +28,16 @@ const {
   addWhatsAppChannelToMember,
   addViberChannelToMember,
   addMessengerChannelToMember,
-} = require('../../members');
-const { Client } = require('@vonage/server-client');
-
-const {
-  stateLabels,
-  memberChannelType,
-} = require('../../../src/members/display');
-
-jest.mock('yargs');
-jest.mock('../../../src/ux/confirm');
+} from '../../members.js';
+import { stateLabels, memberChannelType } from '../../../src/members/display.js';
 
 describe('Command: vonage members show', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will show a member with no channel', async () => {

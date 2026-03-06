@@ -22,8 +22,8 @@ const featureFlag = {
   coerce: coerceFeatures,
 };
 
-exports.featureFlag = featureFlag;
+export { featureFlag };
 
-exports.features = features;
+export { features };
 
-exports.coerceFeatures = coerceFeatures;
+export { coerceFeatures };

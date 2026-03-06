@@ -5,7 +5,7 @@
  * 2. process.stdout.columns (if available)
  * 3. Fallback to 80
  */
-exports.getTerminalWidth = () =>
+export const getTerminalWidth = () =>
   Math.min(...[
     // Allow to be set in the term
     parseInt(process.env.TERM_WIDTH, 10),

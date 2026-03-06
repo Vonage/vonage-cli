@@ -1,7 +1,7 @@
-const chalk = require('chalk');
-const { confirm } = require('../../../ux/confirm');
-const { urlPrompt, numberPrompt } = require('../../../ux/prompts');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { confirm } from '../../../ux/confirm.js';
+import { urlPrompt, numberPrompt } from '../../../ux/prompts.js';
+import { EOL } from 'os';
 
 
 const promptWebhook = async (
@@ -61,7 +61,7 @@ const promptWebhook = async (
   process.stderr.write(EOL);
 };
 
-exports.promptVoiceCapabilities = async () => {
+export const promptVoiceCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring Voice APIs'));
   process.stderr.write(EOL);
 

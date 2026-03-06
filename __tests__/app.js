@@ -1,4 +1,4 @@
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
 const getBasicApplication = () => ({
   id: faker.string.uuid(),
@@ -217,8 +217,8 @@ const addVBCCapabilities = (app) => Object.freeze({
   },
 });
 
-module.exports = {
-  getTestApp: getBasicApplication,
+export {
+  getBasicApplication as getTestApp,
   addVoiceCapabilities,
   addMessagesCapabilities,
   addVerifyCapabilities,
@@ -226,5 +226,5 @@ module.exports = {
   addNetworkCapabilities,
   addVBCCapabilities,
   addVideoCapabilities,
-  getBasicApplication: getBasicApplication,
+  getBasicApplication,
 };

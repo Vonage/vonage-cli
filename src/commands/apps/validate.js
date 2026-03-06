@@ -1,20 +1,20 @@
-const { validateApplicationKey } = require('../../utils/validateSDKAuth');
-const { capabilities, capabilityLabels, getAppCapabilities } = require('../../apps/capabilities');
-const { dumpEnabledDisabled, dumpBoolean, dumpValidInvalid } = require('../../ux/dumpYesNo');
-const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { apiKey, apiSecret, privateKey } = require('../../credentialFlags');
-const yargs = require('yargs');
-const { dumpCommand } = require('../../ux/dump');
+import { validateApplicationKey } from '../../utils/validateSDKAuth.js';
+import { capabilities, capabilityLabels, getAppCapabilities } from '../../apps/capabilities.js';
+import { dumpEnabledDisabled, dumpBoolean, dumpValidInvalid } from '../../ux/dumpYesNo.js';
+import { loadOwnedNumbersFromSDK } from '../../numbers/loadOwnedNumbersFromSDK.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { apiKey, apiSecret, privateKey } from '../../credentialFlags.js';
+import yargs from 'yargs';
+import { dumpCommand } from '../../ux/dump.js';
 
 const flagGroup = 'Application Validation';
 
-exports.description = 'Validate an application';
+export const description = 'Validate an application';
 
-exports.command = 'validate <id>';
+export const command = 'validate <id>';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -129,7 +129,7 @@ const dumpConfig = {
   includeText: true,
 };
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { id, SDK, linkedNumbers } = argv;
   console.info(`Validating application ${id}`);
 

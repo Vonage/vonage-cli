@@ -1,15 +1,20 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const yargs = require('yargs');
-const { handler } = require('../../../../src/commands/apps/capabilities/update');
-const { mockConsole } = require('../../../helpers');
-const { getBasicApplication } = require('../../../app');
-const { Client } = require('@vonage/server-client');
-const { dataSets } = require('../../../__dataSets__/apps/index');
+import { faker } from '@faker-js/faker';
+import { mockConsole } from '../../../helpers.js';
+import { getBasicApplication } from '../../../app.js';
+import { Client } from '@vonage/server-client';
+import { dataSets } from '../../../__dataSets__/apps/index.js';
+
+const yargs = { exit: jest.fn() };
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../../src/commands/apps/capabilities/update.js');
 
 describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}) => {
   beforeEach(() => {
     mockConsole();
+    yargs.exit.mockReset();
   });
 
   const udpateTestCases = testCases.filter(({args}) => args.action === 'update');
@@ -39,6 +44,7 @@ describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}
 describe('Command: vonage apps capabilities', () => {
   beforeEach(() => {
     mockConsole();
+    yargs.exit.mockReset();
   });
 
   test('Should exit 1 if invalid flag is passed', async () => {

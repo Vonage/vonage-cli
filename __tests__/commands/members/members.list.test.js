@@ -1,20 +1,23 @@
-process.env.FORCE_COLOR = 0;
-const { handler } = require('../../../src/commands/members/list');
-const { mockConsole } = require('../../helpers');
-const { confirm } = require('../../../src/ux/confirm');
-const {
-  getTestMemberForAPI,
-} = require('../../members');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const {
-  stateLabels,
-} = require('../../../src/members/display');
+const confirm = jest.fn();
 
-jest.mock('../../../src/ux/confirm');
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/members/list.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestMemberForAPI } from '../../members.js';
+import { stateLabels } from '../../../src/members/display.js';
 
 describe('Command: vonage members list', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will show one page of members', async () => {

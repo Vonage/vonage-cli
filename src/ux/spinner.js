@@ -1,9 +1,9 @@
-const { hideCursor, resetCursor } = require('./cursor');
-const { overwriteLine, overwriteWithNewLine } = require('./clear');
-const { EOL } = require('os');
-const { detectPlainOutput, getReplayRate } = require('./detectScreenReader');
-const { truncateToTerminal } = require('./truncateToTerminal');
-const { printEmoji } = require('./printEmoji');
+import { hideCursor, resetCursor } from './cursor.js';
+import { overwriteLine, overwriteWithNewLine } from './clear.js';
+import { EOL } from 'os';
+import { detectPlainOutput, getReplayRate } from './detectScreenReader.js';
+import { truncateToTerminal } from './truncateToTerminal.js';
+import { printEmoji } from './printEmoji.js';
 
 const isPlain = detectPlainOutput();
 const replayRate = getReplayRate();
@@ -58,7 +58,7 @@ const defaultFrames = [
  * @param { SpinnerOptions } options - Configuration for the spinner.
  * @returns { SpinnerHandle } Control functions to stop or fail the spinner.
  */
-exports.spinner = ({
+export const spinner = ({
   message,
   frames = defaultFrames,
   frameRate = 80,

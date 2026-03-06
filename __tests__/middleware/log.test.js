@@ -1,12 +1,56 @@
-const { setupLog } = require('../../src/middleware/log');
-const winston = require('winston');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+
+const mockLogger = {
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+  debug: jest.fn(),
+};
+const createLoggerMock = jest.fn(() => mockLogger);
+
+jest.unstable_mockModule('winston', () => ({
+  default: {
+    createLogger: createLoggerMock,
+    format: {
+      combine: () => undefined,
+      colorize: () => undefined,
+      padLevels: () => undefined,
+      simple: () => undefined,
+    },
+    transports: {
+      Console: jest.fn(() => ({})),
+    },
+  },
+}));
+
+const { setupLog } = await import('../../src/middleware/log.js');
+
+const origConsole = {
+  info: console.info,
+  warn: console.warn,
+  error: console.error,
+  debug: console.debug,
+};
 
 describe('Middleware: Log', () => {
+  afterEach(() => {
+    console.info = origConsole.info;
+    console.warn = origConsole.warn;
+    console.error = origConsole.error;
+    console.debug = origConsole.debug;
+    mockLogger.info.mockReset();
+    mockLogger.warn.mockReset();
+    mockLogger.error.mockReset();
+    mockLogger.debug.mockReset();
+    createLoggerMock.mockReset();
+    createLoggerMock.mockImplementation(() => mockLogger);
+  });
+
   test('Will overwrite console log', () => {
-    expect(console.info).not.toEqual(winston.__mockLogger.info);
-    expect(console.warn).not.toEqual(winston.__mockLogger.warn);
-    expect(console.error).not.toEqual(winston.__mockLogger.error);
-    expect(console.debug).not.toEqual(winston.__mockLogger.debug);
+    expect(console.info).not.toEqual(mockLogger.info);
+    expect(console.warn).not.toEqual(mockLogger.warn);
+    expect(console.error).not.toEqual(mockLogger.error);
+    expect(console.debug).not.toEqual(mockLogger.debug);
 
     setupLog({});
 
@@ -15,12 +59,12 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(winston.__mockLogger.info).toHaveBeenCalled();
-    expect(winston.__mockLogger.warn).toHaveBeenCalled();
-    expect(winston.__mockLogger.error).toHaveBeenCalled();
-    expect(winston.__mockLogger.debug).toHaveBeenCalled();
+    expect(mockLogger.info).toHaveBeenCalled();
+    expect(mockLogger.warn).toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalled();
+    expect(mockLogger.debug).toHaveBeenCalled();
 
-    expect(winston.createLogger).toHaveBeenCalledWith({
+    expect(createLoggerMock).toHaveBeenCalledWith({
       format: undefined,
       level: 'emerg',
       transports: [{}],
@@ -28,10 +72,10 @@ describe('Middleware: Log', () => {
   });
 
   test('Will overwrite console log and set the level to info', () => {
-    expect(console.info).not.toEqual(winston.__mockLogger.info);
-    expect(console.warn).not.toEqual(winston.__mockLogger.warn);
-    expect(console.error).not.toEqual(winston.__mockLogger.error);
-    expect(console.debug).not.toEqual(winston.__mockLogger.debug);
+    expect(console.info).not.toEqual(mockLogger.info);
+    expect(console.warn).not.toEqual(mockLogger.warn);
+    expect(console.error).not.toEqual(mockLogger.error);
+    expect(console.debug).not.toEqual(mockLogger.debug);
 
     setupLog({verbose: true});
 
@@ -40,12 +84,12 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(winston.__mockLogger.info).toHaveBeenCalled();
-    expect(winston.__mockLogger.warn).toHaveBeenCalled();
-    expect(winston.__mockLogger.error).toHaveBeenCalled();
-    expect(winston.__mockLogger.debug).toHaveBeenCalled();
+    expect(mockLogger.info).toHaveBeenCalled();
+    expect(mockLogger.warn).toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalled();
+    expect(mockLogger.debug).toHaveBeenCalled();
 
-    expect(winston.createLogger).toHaveBeenCalledWith({
+    expect(createLoggerMock).toHaveBeenCalledWith({
       format: undefined,
       level: 'info',
       transports: [{}],
@@ -53,10 +97,10 @@ describe('Middleware: Log', () => {
   });
 
   test('Will overwrite console log and set the level to debug', () => {
-    expect(console.info).not.toEqual(winston.__mockLogger.info);
-    expect(console.warn).not.toEqual(winston.__mockLogger.warn);
-    expect(console.error).not.toEqual(winston.__mockLogger.error);
-    expect(console.debug).not.toEqual(winston.__mockLogger.debug);
+    expect(console.info).not.toEqual(mockLogger.info);
+    expect(console.warn).not.toEqual(mockLogger.warn);
+    expect(console.error).not.toEqual(mockLogger.error);
+    expect(console.debug).not.toEqual(mockLogger.debug);
 
     setupLog({verbose: true, debug: true});
 
@@ -65,15 +109,16 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(winston.__mockLogger.info).toHaveBeenCalled();
-    expect(winston.__mockLogger.warn).toHaveBeenCalled();
-    expect(winston.__mockLogger.error).toHaveBeenCalled();
-    expect(winston.__mockLogger.debug).toHaveBeenCalled();
+    expect(mockLogger.info).toHaveBeenCalled();
+    expect(mockLogger.warn).toHaveBeenCalled();
+    expect(mockLogger.error).toHaveBeenCalled();
+    expect(mockLogger.debug).toHaveBeenCalled();
 
-    expect(winston.createLogger).toHaveBeenCalledWith({
+    expect(createLoggerMock).toHaveBeenCalledWith({
       format: undefined,
       level: 'debug',
       transports: [{}],
     });
   });
 });
+

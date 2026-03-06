@@ -1,19 +1,19 @@
-const yargs = require('yargs');
-const YAML = require('yaml');
-const { displayNumbers } = require('../../../numbers/display');
-const { Client } = require('@vonage/server-client');
-const { dumpCommand } = require('../../../ux/dump');
-const { loadOwnedNumbersFromSDK } = require('../../../numbers/loadOwnedNumbersFromSDK');
-const { getAppCapabilities } = require('../../../apps/capabilities');
-const { makeSDKCall } = require('../../../utils/makeSDKCall');
-const { apiKey, apiSecret } = require('../../../credentialFlags');
-const { yaml, json } = require('../../../commonFlags');
+import yargs from 'yargs';
+import YAML from 'yaml';
+import { displayNumbers } from '../../../numbers/display.js';
+import { Client } from '@vonage/server-client';
+import { dumpCommand } from '../../../ux/dump.js';
+import { loadOwnedNumbersFromSDK } from '../../../numbers/loadOwnedNumbersFromSDK.js';
+import { getAppCapabilities } from '../../../apps/capabilities.js';
+import { makeSDKCall } from '../../../utils/makeSDKCall.js';
+import { apiKey, apiSecret } from '../../../credentialFlags.js';
+import { yaml, json } from '../../../commonFlags.js';
 
-exports.command = 'list <id>';
+export const command = 'list <id>';
 
-exports.desc = 'Show all numbers linked to an application';
+export const desc = 'Show all numbers linked to an application';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -32,7 +32,7 @@ exports.builder = (yargs) => yargs
   })
   .epilogue(['The --fail flag will cause the command to exit with 15 code if the application does not have the voice or messages capability enabled.'].join('\n'));
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { id, SDK, fail } = argv;
   console.info(`Listing numbers linked to application ${id}`);
 

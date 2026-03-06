@@ -1,5 +1,5 @@
-const { table, getBorderCharacters }  = require('table');
-const {status } = require('../utils/aclDiff');
+import { table, getBorderCharacters } from 'table';
+import {status } from '../utils/aclDiff.js';
 
 const tableConfig = {
   singleLine: true,
@@ -84,4 +84,4 @@ const dumpAclDiff = ({paths}, infoOnly = false) => {
     : '';
 };
 
-exports.dumpAclDiff = dumpAclDiff;
+export { dumpAclDiff };

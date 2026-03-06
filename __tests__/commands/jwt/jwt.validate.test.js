@@ -1,15 +1,19 @@
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/jwt/validate');
-const { mockConsole } = require('../../helpers');
-const { getTestMiddlewareArgs, testPrivateKey } = require('../../common');
-const jwt = require('jsonwebtoken');
-const yargs = require('yargs');
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { mockConsole } from '../../helpers.js';
+import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
+import jwt from 'jsonwebtoken';
 
-jest.mock('yargs');
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../src/commands/jwt/validate.js');
 
 describe('Command: vonage jwt validate', () => {
   beforeEach(() => {
     mockConsole();
+    yargs.exit.mockReset();
   });
 
   test('should validate token', async () => {

@@ -1,4 +1,4 @@
-const { coerceNumber } = require('../../src/utils/coerceNumber');
+import { coerceNumber } from '../../src/utils/coerceNumber.js';
 
 describe('Utils: coerceNumber', () => {
   test('Will coerce a number', () => {

@@ -1,7 +1,7 @@
-const chalk = require('chalk');
-const { redact } = require('../ux/redact');
-const { indentLines } = require('../ux/indentLines');
-const { descriptionList } = require('../ux/descriptionList');
+import chalk from 'chalk';
+import { redact } from '../ux/redact.js';
+import { indentLines } from '../ux/indentLines.js';
+import { descriptionList } from '../ux/descriptionList.js';
 
 const userSummary = ({
   name,
@@ -175,6 +175,6 @@ const displayFullUser = (user) =>{
   userChannelLines(user);
 };
 
-exports.fullUser = fullUser;
-exports.displayFullUser = displayFullUser;
-exports.userSummary = userSummary;
+export { fullUser };
+export { displayFullUser };
+export { userSummary };

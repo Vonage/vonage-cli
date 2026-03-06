@@ -1,11 +1,12 @@
-const { faker } = require('@faker-js/faker');
-const { writeFileSync } = require('fs');
-const {
+import { jest } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { writeFileSync } from 'fs';
+import {
   writeFile,
   writeJSONFile,
-} = require('../../src/utils/fs');
-const { confirm } = require('../../src/ux/confirm');
-const fs = require('fs');
+} from '../../src/utils/fs.js';
+import { confirm } from '../../src/ux/confirm.js';
+import fs from 'fs';
 
 jest.mock('fs');
 jest.mock('../../src/ux/confirm');

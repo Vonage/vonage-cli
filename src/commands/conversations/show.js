@@ -1,13 +1,13 @@
-const { appId, privateKey } = require('../../credentialFlags');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { displayConversation } = require('../../conversations/display');
-const { conversationIdFlag } = require('../../conversations/conversationFlags');
+import { appId, privateKey } from '../../credentialFlags.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { displayConversation } from '../../conversations/display.js';
+import { conversationIdFlag } from '../../conversations/conversationFlags.js';
 
-exports.command = 'show <conversation-id>';
+export const command = 'show <conversation-id>';
 
-exports.desc = 'Show conversation';
+export const desc = 'Show conversation';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
     conversationIdFlag,
@@ -17,7 +17,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, conversationId } = argv;
   console.info('Showing conversation details');
 

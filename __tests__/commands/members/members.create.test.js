@@ -1,8 +1,16 @@
-process.env.FORCE_COLOR = 0;
-const YAML = require('yaml');
-const { handler } = require('../../../src/commands/members/create');
-const { mockConsole } = require('../../helpers');
-const {
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import YAML from 'yaml';
+import { Client } from '@vonage/server-client';
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/members/create.js');
+import { mockConsole } from '../../helpers.js';
+import {
   getTestMemberForAPI,
   addAppChannelToMember,
   addPhoneChannelToMember,
@@ -11,19 +19,17 @@ const {
   addWhatsAppChannelToMember,
   addViberChannelToMember,
   addMessengerChannelToMember,
-} = require('../../members');
-const { getTestConversationForAPI } = require('../../conversations');
-const { Client } = require('@vonage/server-client');
-
-const {
-  stateLabels,
-} = require('../../../src/members/display');
-
-jest.mock('../../../src/ux/confirm');
+} from '../../members.js';
+import { getTestConversationForAPI } from '../../conversations.js';
+import { stateLabels } from '../../../src/members/display.js';
 
 describe('Command: vonage members create', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will create an app member', async () => {

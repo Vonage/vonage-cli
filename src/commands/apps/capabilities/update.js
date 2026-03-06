@@ -1,16 +1,16 @@
-const yargs = require('yargs');
-const { displayApplication } = require('../../../apps/display');
-const { rtcFlags, updateRTC } = require('../../../apps/rtc');
-const { makeSDKCall } = require('../../../utils/makeSDKCall');
-const { verifyFlags, updateVerify } = require('../../../apps/verify');
-const { videoFlags, updateVideo } = require('../../../apps/video');
-const { voiceFlags, updateVoice } = require('../../../apps/voice');
-const { messageFlags, updateMessages } = require('../../../apps/message');
-const { networkFlags, updateNetwork } = require('../../../apps/network');
-const { dumpCommand } = require('../../../ux/dump');
-const { capabilities } = require('../../../apps/capabilities');
-const { apiKey, apiSecret } = require('../../../credentialFlags');
-const  camelCase  = require('camelcase');
+import yargs from 'yargs';
+import { displayApplication } from '../../../apps/display.js';
+import { rtcFlags, updateRTC } from '../../../apps/rtc.js';
+import { makeSDKCall } from '../../../utils/makeSDKCall.js';
+import { verifyFlags, updateVerify } from '../../../apps/verify.js';
+import { videoFlags, updateVideo } from '../../../apps/video.js';
+import { voiceFlags, updateVoice } from '../../../apps/voice.js';
+import { messageFlags, updateMessages } from '../../../apps/message.js';
+import { networkFlags, updateNetwork } from '../../../apps/network.js';
+import { dumpCommand } from '../../../ux/dump.js';
+import { capabilities } from '../../../apps/capabilities.js';
+import { apiKey, apiSecret } from '../../../credentialFlags.js';
+import camelCase from 'camelcase';
 
 const allFlags = {
   ...rtcFlags,
@@ -46,11 +46,11 @@ const clearRemoved = (obj) => Object.fromEntries(Object.entries(obj).reduce(
   [],
 ));
 
-exports.command = 'update <id> <which>';
+export const command = 'update <id> <which>';
 
-exports.description = 'Update application capabilities';
+export const description = 'Update application capabilities';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'which',
     {
@@ -75,7 +75,7 @@ exports.builder = (yargs) => yargs
     'Update the verify status url',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, id, which } = argv;
   console.info(`Modifying ${which} capability on application: ${id}`);
 

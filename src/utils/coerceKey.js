@@ -1,10 +1,10 @@
-const { readFileSync, existsSync } = require('fs');
-const {
+import { readFileSync, existsSync } from 'fs';
+import {
   InvalidKeyFileError,
   InvalidKeyError,
-}  = require('../errors/invalidKey');
+} from '../errors/invalidKey.js';
 
-exports.coerceKey = (which) => (arg) => {
+export const coerceKey = (which) => (arg) => {
   if (!arg) {
     return arg;
   }

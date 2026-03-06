@@ -1,6 +1,7 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yaml = require('yaml');
-const {
+import yaml from 'yaml';
+import {
   getTestApp,
   addVideoCapabilities,
   addNetworkCapabilities,
@@ -8,17 +9,20 @@ const {
   addVerifyCapabilities,
   addMessagesCapabilities,
   addVoiceCapabilities,
-} = require('../../app');
-const { Client } = require('@vonage/server-client');
-const { handler } = require('../../../src/commands/apps/show');
-const { mockConsole } = require('../../helpers');
-const { faker } = require('@faker-js/faker');
+} from '../../app.js';
+import { Client } from '@vonage/server-client';
+import { mockConsole } from '../../helpers.js';
+import { faker } from '@faker-js/faker';
 
-jest.mock('yargs');
+const yargs = { exit: jest.fn() };
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../src/commands/apps/show.js');
 
 describe('Command: vonage apps', () => {
   beforeEach(() => {
     mockConsole();
+    yargs.exit.mockReset();
   });
 
   test('Will display the basic application details', async () => {

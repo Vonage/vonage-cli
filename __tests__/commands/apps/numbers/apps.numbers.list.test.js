@@ -1,23 +1,26 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const yaml = require('yaml');
-const { handler } = require('../../../../src/commands/apps/numbers/list');
-const { typeLabels } = require('../../../../src/numbers/types');
-const { buildCountryString } = require('../../../../src/ux/locale');
-const { mockConsole } = require('../../../helpers');
-const {
+import yaml from 'yaml';
+import { typeLabels } from '../../../../src/numbers/types.js';
+import { buildCountryString } from '../../../../src/ux/locale.js';
+import { mockConsole } from '../../../helpers.js';
+import {
   getTestApp,
   addMessagesCapabilities,
   addVoiceCapabilities,
-} = require('../../../app');
-const { getTestPhoneNumber } = require('../../../numbers');
-const { Client } = require('@vonage/server-client');
+} from '../../../app.js';
+import { getTestPhoneNumber } from '../../../numbers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('yargs');
+const yargs = { exit: jest.fn() };
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../../src/commands/apps/numbers/list.js');
 
 describe('Command: vonage apps numbers list', () => {
   beforeEach(() => {
     mockConsole();
+    yargs.exit.mockReset();
   });
 
   test('Will list all numbers for application and warn about missing capability', async () => {

@@ -1,8 +1,8 @@
-const chalk = require('chalk');
-const { prompt, urlPrompt } = require('../../../ux/prompts');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { prompt, urlPrompt } from '../../../ux/prompts.js';
+import { EOL } from 'os';
 
-exports.promptNetworkCapabilities = async () => {
+export const promptNetworkCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring Network APIs'));
   process.stderr.write(EOL);
 

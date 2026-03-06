@@ -1,6 +1,6 @@
-const { progress } = require('../ux/progress');
-const { sdkError } = require('../utils/sdkError');
-const { Client } = require('@vonage/server-client');
+import { progress } from '../ux/progress.js';
+import { sdkError } from '../utils/sdkError.js';
+import { Client } from '@vonage/server-client';
 
 const searchPatterns = {
   starts: 0,
@@ -73,6 +73,6 @@ const loadOwnedNumbersFromSDK = async (
   }
 };
 
-exports.loadOwnedNumbersFromSDK = loadOwnedNumbersFromSDK;
+export { loadOwnedNumbersFromSDK };
 
-exports.searchPatterns = searchPatterns;
+export { searchPatterns };

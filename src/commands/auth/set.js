@@ -1,8 +1,8 @@
-const yargs = require('yargs');
-const { dumpAuth } = require('../../ux/dumpAuth');
-const { validateApiKeyAndSecret, validatePrivateKeyAndAppId } = require('../../utils/validateSDKAuth');
-const { writeJSONFile, createDirectory } = require('../../utils/fs');
-const { apiKey, apiSecret, appId, privateKey } = require('../../credentialFlags');
+import yargs from 'yargs';
+import { dumpAuth } from '../../ux/dumpAuth.js';
+import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils/validateSDKAuth.js';
+import { writeJSONFile, createDirectory } from '../../utils/fs.js';
+import { apiKey, apiSecret, appId, privateKey } from '../../credentialFlags.js';
 
 const setApiKeyAndSecret = async (apiKey, apiSecret) => {
   const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
@@ -24,11 +24,11 @@ const setAppIdAndPrivateKey = async (apiKey, apiSecret, appId, privateKey) => {
   return valid ? { 'app-id': appId, 'private-key': privateKey } : false;
 };
 
-exports.command = 'set';
+export const command = 'set';
 
-exports.description = 'Set authentication information';
+export const description = 'Set authentication information';
 
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   'local': {
     describe: 'Save local configuration only',
     type: 'boolean',
@@ -42,7 +42,7 @@ exports.builder = (yargs) => yargs.options({
   })
   .demandOption(['api-key', 'api-secret']);
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const apiKeySecret = await setApiKeyAndSecret(
     argv.config.cli.apiKey,
     argv.config.cli.apiSecret,

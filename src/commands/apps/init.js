@@ -1,23 +1,23 @@
-const chalk = require('chalk');
-const { Client } = require('@vonage/server-client');
-const { prompt } = require('../../ux/prompts');
-const { displayApplication } = require('../../apps/display');
-const { confirm } = require('../../ux/confirm');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { json, yaml, force } = require('../../commonFlags');
-const { promptApplicationCapabilities } = require('../../apps/prompts/capabilities');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { writeFile, writeJSONFile } = require('../../utils/fs');
-const { overwriteWithNewLine } = require('../../ux/clear');
-const { EOL } = require('os');
-const YAML = require('yaml');
+import chalk from 'chalk';
+import { Client } from '@vonage/server-client';
+import { prompt } from '../../ux/prompts.js';
+import { displayApplication } from '../../apps/display.js';
+import { confirm } from '../../ux/confirm.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { json, yaml, force } from '../../commonFlags.js';
+import { promptApplicationCapabilities } from '../../apps/prompts/capabilities.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { writeFile, writeJSONFile } from '../../utils/fs.js';
+import { overwriteWithNewLine } from '../../ux/clear.js';
+import { EOL } from 'os';
+import YAML from 'yaml';
 
-exports.command = 'init';
+export const command = 'init';
 
-exports.desc = 'Interactivly create a new application';
+export const desc = 'Interactivly create a new application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
     'api-secret': apiSecret,
@@ -26,7 +26,7 @@ exports.builder = (yargs) => yargs
     'yaml': yaml,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Interactivly creating application');
   process.stderr.write(chalk.underline('Create a new application'));
   const { SDK } = argv;

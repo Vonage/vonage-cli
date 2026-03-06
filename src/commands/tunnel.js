@@ -1,8 +1,8 @@
 /* istanbul ignore file */
-exports.command = 'tunnel <which>';
+export const command = 'tunnel <which>';
 
-exports.desc = 'Open a tunnel in order to test webhooks';
+export const desc = 'Open a tunnel in order to test webhooks';
 
-exports.builder = (yargs) => yargs.commandDir('tunnel');
+export const builder = (yargs) => yargs.commandDir('tunnel');
 
-exports.handler = () => { };
+export const handler = () => { };

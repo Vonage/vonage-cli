@@ -1,5 +1,5 @@
-const { faker } = require('@faker-js/faker');
-const { EventType } = require('@vonage/conversations');
+import { faker } from '@faker-js/faker';
+import { EventType } from '@vonage/conversations';
 const conversationEvents = Object.values(EventType);
 
 const states = ['ACTIVE', 'INACTIVE', 'DELETED'];
@@ -51,5 +51,5 @@ const addCLIPropertiesToConversation = () => Object.freeze({
 });
 
 
-exports.addCLIPropertiesToConversation = addCLIPropertiesToConversation;
-exports.getTestConversationForAPI = getTestConversationForAPI;
+export { addCLIPropertiesToConversation };
+export { getTestConversationForAPI };

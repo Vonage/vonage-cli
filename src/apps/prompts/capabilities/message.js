@@ -1,10 +1,10 @@
-const chalk = require('chalk');
-const { urlPrompt } = require('../../../ux/prompts');
-const { select } = require('../../../ux/select');
-const { confirm } = require('../../../ux/confirm');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { urlPrompt } from '../../../ux/prompts.js';
+import { select } from '../../../ux/select.js';
+import { confirm } from '../../../ux/confirm.js';
+import { EOL } from 'os';
 
-exports.promptMessageCapabilities = async () => {
+export const promptMessageCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring Messages API'));
   process.stderr.write(EOL);
 

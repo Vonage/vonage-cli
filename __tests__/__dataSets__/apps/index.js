@@ -1,11 +1,11 @@
-const { messageDataSets } = require('./messageCapabilities');
-const { networkDataSets } = require('./networkCapabilities');
-const { rtcDataSets } = require('./rtcCapabilities');
-const { verifyDataSets } = require('./verifyCapabilities');
-const { videoDataSets } = require('./videoCapabilities');
-const { voiceDataSets } = require('./voiceCapabilities');
+import { messageDataSets } from './messageCapabilities.js';
+import { networkDataSets } from './networkCapabilities.js';
+import { rtcDataSets } from './rtcCapabilities.js';
+import { verifyDataSets } from './verifyCapabilities.js';
+import { videoDataSets } from './videoCapabilities.js';
+import { voiceDataSets } from './voiceCapabilities.js';
 
-exports.dataSets = [
+export const dataSets = [
   {
     label: 'message',
     testCases: messageDataSets,

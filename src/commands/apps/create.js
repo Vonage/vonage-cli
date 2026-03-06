@@ -1,20 +1,20 @@
-const { Client } = require('@vonage/server-client');
-const chalk = require('chalk');
-const YAML = require('yaml');
-const { writeFile } = require('../../utils/fs');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { displayApplication } = require('../../apps/display');
-const { dumpCommand } = require('../../ux/dump');
-const { coerceKey } = require('../../utils/coerceKey');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { json, yaml, force } = require('../../commonFlags');
+import { Client } from '@vonage/server-client';
+import chalk from 'chalk';
+import YAML from 'yaml';
+import { writeFile } from '../../utils/fs.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { displayApplication } from '../../apps/display.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { coerceKey } from '../../utils/coerceKey.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { json, yaml, force } from '../../commonFlags.js';
 
-exports.command = 'create <name>';
+export const command = 'create <name>';
 
-exports.desc = 'Create a new application';
+export const desc = 'Create a new application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'name',
     {
@@ -58,7 +58,7 @@ exports.builder = (yargs) => yargs
     `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to use ${dumpCommand('vonage apps update')} to generate a new private key.`,
   ].join('\n'));
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Creating new application');
   let dumpPrivateKey = false;
   const { SDK } = argv;

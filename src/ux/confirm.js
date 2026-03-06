@@ -1,6 +1,6 @@
-const parser = require('yargs-parser');
-const { inputFromTTY } = require('./input.js');
-const { EOL } = require('os');
+import parser from 'yargs-parser';
+import { inputFromTTY } from './input.js';
+import { EOL } from 'os';
 
 const { argv } = parser.detailed(process.argv);
 const { force } = argv;
@@ -20,7 +20,7 @@ const { force } = argv;
  * @param { ConfirmOptions } [options] - Optional settings for user prompt behavior.
  * @returns { Promise<boolean> } - Resolves to `true` if user confirms, `false` otherwise.
  */
-exports.confirm = async (
+export const confirm = async (
   message,
   {
     noForce = false,

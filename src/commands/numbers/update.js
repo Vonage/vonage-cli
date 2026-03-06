@@ -1,13 +1,13 @@
-const { loadOwnedNumbersFromSDK } = require('../../numbers/loadOwnedNumbersFromSDK');
-const { descriptionList } = require('../../ux/descriptionList');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { displayFullNumber } = require('../../numbers/display');
-const yargs = require('yargs');
-const { coerceUrl } = require('../../utils/coerceUrl');
-const { dumpCommand } = require('../../ux/dump');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { countryFlag } = require('../../ux/locale');
+import { loadOwnedNumbersFromSDK } from '../../numbers/loadOwnedNumbersFromSDK.js';
+import { descriptionList } from '../../ux/descriptionList.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { displayFullNumber } from '../../numbers/display.js';
+import yargs from 'yargs';
+import { coerceUrl } from '../../utils/coerceUrl.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { countryFlag } from '../../ux/locale.js';
 
 const flags = {
   'voice-callback-value': {
@@ -29,13 +29,13 @@ const flags = {
   'force': force,
 };
 
-exports.flags = flags;
+export { flags };
 
-exports.command = 'update <country> <msisdn>';
+export const command = 'update <country> <msisdn>';
 
-exports.desc = 'Update a number';
+export const desc = 'Update a number';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'country',
     {
@@ -54,7 +54,7 @@ exports.builder = (yargs) => yargs
   .options(flags)
   .epilogue('It is better to use application webhooks as they offer more flexibility and control over the number\'s behavior.');
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, country, msisdn } = argv;
   console.info('Listing owned numbers');
 

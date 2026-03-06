@@ -1,8 +1,8 @@
-const { faker } = require('@faker-js/faker');
-const { handler, jwtFlags } = require('../../../src/commands/jwt/create');
-const { mockConsole } = require('../../helpers');
-const { getTestMiddlewareArgs, testPrivateKey } = require('../../common');
-const jwt = require('jsonwebtoken');
+import { faker } from '@faker-js/faker';
+import { handler, jwtFlags } from '../../../src/commands/jwt/create.js';
+import { mockConsole } from '../../helpers.js';
+import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
+import jwt from 'jsonwebtoken';
 
 describe('Command: vonage jwt create', () => {
   beforeEach(() => {

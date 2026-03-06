@@ -1,7 +1,7 @@
-const { inputFromTTY } = require('./input');
-const { hideCursor, resetCursor } = require('./cursor');
-const { clearPreviousLines, overwriteWithNewLine } = require('./clear');
-const { detectScreenReader } = require('./detectScreenReader');
+import { inputFromTTY } from './input.js';
+import { hideCursor, resetCursor } from './cursor.js';
+import { clearPreviousLines, overwriteWithNewLine } from './clear.js';
+import { detectScreenReader } from './detectScreenReader.js';
 
 const isReader = detectScreenReader();
 
@@ -68,7 +68,7 @@ class SelectError extends Error {
  * @param { SelectParams } options - Selection options
  * @returns { Promise<Array<SelectResult>> } - Selected options
  */
-exports.select = async (
+export const select = async (
   {
     message,
     items,
@@ -187,7 +187,7 @@ exports.select = async (
     .map(({ option, value }) => ({ option, value }));
 };
 
-exports.formatSelected = selectedFormatter;
-exports.formatUnselected = unselectedFormatter;
-exports.formatHighlighted = highlightedFormatter;
-exports.SelectError = SelectError;
+export const formatSelected = selectedFormatter;
+export const formatUnselected = unselectedFormatter;
+export const formatHighlighted = highlightedFormatter;
+export { SelectError };

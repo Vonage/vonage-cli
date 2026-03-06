@@ -1,14 +1,14 @@
-const { spinner } = require('../../ux/spinner');
-const { appId, privateKey } = require('../../credentialFlags');
-const { confirm } = require('../../ux/confirm');
-const { conversationSummary } = require('../../conversations/display');
-const { sdkError } = require('../../utils/sdkError');
+import { spinner } from '../../ux/spinner.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { confirm } from '../../ux/confirm.js';
+import { conversationSummary } from '../../conversations/display.js';
+import { sdkError } from '../../utils/sdkError.js';
 
-exports.command = 'list';
+export const command = 'list';
 
-exports.desc = 'List conversations';
+export const desc = 'List conversations';
 
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   'page-size': {
     describe: 'Number of conversations to return per page',
     default: 1,
@@ -20,7 +20,7 @@ exports.builder = (yargs) => yargs.options({
   'private-key': privateKey,
 });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, pageSize, cursor } = argv;
   console.info('List conversations');
   let pageCursor = cursor;

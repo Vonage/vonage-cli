@@ -1,5 +1,6 @@
-const { confirm } = require('../../src/ux/confirm');
-const { inputFromTTY } = require('../../src/ux/input');
+import { jest } from '@jest/globals';
+import { confirm } from '../../src/ux/confirm.js';
+import { inputFromTTY } from '../../src/ux/input.js';
 
 jest.mock('../../src/ux/input');
 

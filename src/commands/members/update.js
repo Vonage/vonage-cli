@@ -1,16 +1,16 @@
-const YAML = require('yaml');
-const { appId, privateKey } = require('../../credentialFlags');
-const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { yaml, json, force } = require('../../commonFlags');
-const { displayFullMember } = require('../../members/display');
-const { Client } = require('@vonage/server-client');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import YAML from 'yaml';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { conversationIdFlag } from '../../conversations/conversationFlags.js';
+import { yaml, json, force } from '../../commonFlags.js';
+import { displayFullMember } from '../../members/display.js';
+import { Client } from '@vonage/server-client';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
-exports.command = 'update <conversation-id> <member-id>';
+export const command = 'update <conversation-id> <member-id>';
 
-exports.desc = 'Update a member';
+export const desc = 'Update a member';
 
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
     conversationIdFlag,
@@ -51,7 +51,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Update member');
   const { SDK, conversationId, memberId } = argv;
 

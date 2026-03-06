@@ -1,9 +1,9 @@
-const chalk = require('chalk');
-const { confirm } = require('../../../ux/confirm');
-const { urlPrompt } = require('../../../ux/prompts');
-const { EOL } = require('os');
+import chalk from 'chalk';
+import { confirm } from '../../../ux/confirm.js';
+import { urlPrompt } from '../../../ux/prompts.js';
+import { EOL } from 'os';
 
-exports.promptRTCCapabilities = async () => {
+export const promptRTCCapabilities = async () => {
   process.stderr.write(chalk.bold.underline('Configuring RTC APIs'));
   process.stderr.write(EOL);
 

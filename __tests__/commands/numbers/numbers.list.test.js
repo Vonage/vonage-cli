@@ -1,17 +1,29 @@
-process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const yaml = require('yaml');
-const { handler } = require('../../../src/commands/numbers/list');
-const { typeLabels } = require('../../../src/numbers/types');
-const { mockConsole } = require('../../helpers');
-const { buildCountryString, countryCodes, getCountryName } = require('../../../src/ux/locale');
-const { getTestPhoneNumber } = require('../../numbers');
-const { Client } = require('@vonage/server-client');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import yaml from 'yaml';
+import { typeLabels } from '../../../src/numbers/types.js';
+import { buildCountryString, countryCodes, getCountryName } from '../../../src/ux/locale.js';
+import { getTestPhoneNumber } from '../../numbers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('yargs');
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const { handler } = await import('../../../src/commands/numbers/list.js');
+import { mockConsole } from '../../helpers.js';
+
 describe('Command: numbers list', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will list all numbers', async () => {
@@ -44,7 +56,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({ SDK: sdkMock});
+    await handler({ SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledTimes(2);
 
@@ -80,7 +92,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({ SDK: sdkMock});
+    await handler({ SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledTimes(1);
 
@@ -123,7 +135,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({json: true, SDK: sdkMock});
+    await handler({ json: true, SDK: sdkMock });
 
     expect(console.log).toHaveBeenCalledWith(
       JSON.stringify(
@@ -147,7 +159,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({json: true, SDK: sdkMock});
+    await handler({ json: true, SDK: sdkMock });
 
     expect(console.log).toHaveBeenCalledWith('[]');
   });
@@ -178,7 +190,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({yaml: true, SDK: sdkMock});
+    await handler({ yaml: true, SDK: sdkMock });
 
     expect(console.log).toHaveBeenCalledWith(
       yaml.stringify(
@@ -202,7 +214,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({yaml: true, SDK: sdkMock});
+    await handler({ yaml: true, SDK: sdkMock });
 
     expect(console.log).toHaveBeenCalledWith('[]\n');
   });
@@ -233,7 +245,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({country: country, SDK: sdkMock});
+    await handler({ country: country, SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledWith({
       country: country,
@@ -278,7 +290,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({searchPattern: 'contains', pattern: pattern, SDK: sdkMock});
+    await handler({ searchPattern: 'contains', pattern: pattern, SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledWith({
       pattern: pattern,
@@ -324,7 +336,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({searchPattern: 'starts', pattern: pattern, SDK: sdkMock});
+    await handler({ searchPattern: 'starts', pattern: pattern, SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledWith({
       pattern: pattern,
@@ -371,7 +383,7 @@ describe('Command: numbers list', () => {
       },
     };
 
-    await handler({searchPattern: 'ends', pattern: pattern, SDK: sdkMock});
+    await handler({ searchPattern: 'ends', pattern: pattern, SDK: sdkMock });
 
     expect(numbersMock).toHaveBeenCalledWith({
       pattern: pattern,

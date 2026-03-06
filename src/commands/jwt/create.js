@@ -1,8 +1,10 @@
-const { tokenGenerate } = require('@vonage/jwt');
-const { dumpCommand } = require('../../ux/dump');
-const { coerceJSON } = require('../../utils/coerceJSON');
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+import { tokenGenerate } from '@vonage/jwt';
+import { dumpCommand } from '../../ux/dump.js';
+import { coerceJSON } from '../../utils/coerceJSON.js';
 const schema = require('../../aclSchema.json');
-const { appId, privateKey } = require('../../credentialFlags');
+import { appId, privateKey } from '../../credentialFlags.js';
 
 const jwtFlags = {
   exp: {
@@ -32,13 +34,13 @@ const jwtFlags = {
   'private-key': privateKey,
 };
 
-exports.jwtFlags = jwtFlags;
+export { jwtFlags };
 
-exports.command = 'create';
+export const command = 'create';
 
-exports.description = 'Create a JWT token for authentication';
+export const description = 'Create a JWT token for authentication';
 
-exports.builder = (yargs) => yargs.options(jwtFlags)
+export const builder = (yargs) => yargs.options(jwtFlags)
   .example(
     dumpCommand('$0 jwt create'),
     'Create a token using the configured private key and application id',
@@ -59,7 +61,7 @@ exports.builder = (yargs) => yargs.options(jwtFlags)
     `If you want to create a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
   ].join('\n'));
 
-exports.handler = (argv) => {
+export const handler = (argv) => {
   console.info('Creating JWT token');
 
   console.debug(`App ID: ${argv.appId}`);

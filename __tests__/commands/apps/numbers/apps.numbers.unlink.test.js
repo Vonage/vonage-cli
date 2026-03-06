@@ -1,19 +1,25 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yaml = require('yaml');
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication } = require('../../../app');
-const { handler } = require('../../../../src/commands/apps/numbers/unlink');
-const { mockConsole } = require('../../../helpers');
-const { confirm } = require('../../../../src/ux/confirm');
-const { getTestPhoneNumber } = require('../../../numbers');
-const { Client } = require('@vonage/server-client');
+import yaml from 'yaml';
+import { faker } from '@faker-js/faker';
+import { getBasicApplication } from '../../../app.js';
+import { mockConsole } from '../../../helpers.js';
+import { getTestPhoneNumber } from '../../../numbers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('../../../../src/ux/confirm');
-jest.mock('yargs');
+const confirmMock = jest.fn();
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../../src/commands/apps/numbers/unlink.js');
 
 describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {
     mockConsole();
+    confirmMock.mockReset();
+    yargs.exit.mockReset();
   });
 
   test('Will unlink number from an app', async () => {
@@ -36,7 +42,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
       applications: {
@@ -60,7 +66,7 @@ describe('Command: vonage apps numbers link', () => {
       pattern: numberNine.msisdn,
       size: 100,
     });
-    expect(confirm).toHaveBeenCalledWith(`Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
+    expect(confirmMock).toHaveBeenCalledWith(`Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
     });
@@ -86,7 +92,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
       applications: {
@@ -134,7 +140,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
       applications: {
@@ -183,7 +189,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -203,7 +209,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalled();
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).toHaveBeenCalled();
+    expect(confirmMock).toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 
@@ -219,7 +225,7 @@ describe('Command: vonage apps numbers link', () => {
     const appMock = jest.fn().mockResolvedValue(app);
     const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -240,7 +246,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalled();
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 
@@ -262,7 +268,7 @@ describe('Command: vonage apps numbers link', () => {
       },
     ]});
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -283,7 +289,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalled();
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 
@@ -303,7 +309,7 @@ describe('Command: vonage apps numbers link', () => {
 
     const updateMock = jest.fn();
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -322,7 +328,7 @@ describe('Command: vonage apps numbers link', () => {
     });
 
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 });

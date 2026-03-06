@@ -1,17 +1,17 @@
-const merge = require('deepmerge');
-const { conversationFlags, validateEvents } = require('./create');
-const { appId, privateKey } = require('../../credentialFlags');
-const { force } = require('../../commonFlags');
-const { displayConversation } = require('../../conversations/display');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const yargs = require('yargs');
+import merge from 'deepmerge';
+import { conversationFlags, validateEvents } from './create.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { force } from '../../commonFlags.js';
+import { displayConversation } from '../../conversations/display.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import yargs from 'yargs';
 
-exports.command = 'update <id>';
+export const command = 'update <id>';
 
-exports.desc = 'Update conversation';
+export const desc = 'Update conversation';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -81,7 +81,7 @@ const updateParams = ({
   return Object.keys(params).length > 0 ? params : undefined ;
 };
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Updating conversation');
   const { SDK, callbackEventMask } = argv;
 

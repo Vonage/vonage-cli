@@ -1,16 +1,31 @@
-process.env.FORCE_COLOR = 0;
-const { displayDate } = require('../../../src/ux/locale');
-const yargs = require('yargs');
-const { handler } = require('../../../src/commands/conversations/show');
-const { mockConsole } = require('../../helpers');
-const { getTestConversationForAPI } = require('../../conversations');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { displayDate } from '../../../src/ux/locale.js';
 
-jest.mock('yargs');
-jest.mock('../../../src/ux/confirm');
+const yargs = {
+  exit: jest.fn(),
+};
+
+const confirm = jest.fn();
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+  confirm,
+}));
+
+const { handler } = await import('../../../src/commands/conversations/show.js');
+import { mockConsole } from '../../helpers.js';
+import { getTestConversationForAPI } from '../../conversations.js';
 
 describe('Command: vonage conversations show', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will show a conversation', async () => {

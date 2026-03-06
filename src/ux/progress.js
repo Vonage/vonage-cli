@@ -1,4 +1,4 @@
-exports.progress = ({
+export const progress = ({
   message,
   columns,
   showSteps = true,

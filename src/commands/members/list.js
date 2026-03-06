@@ -1,15 +1,15 @@
-const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { appId, privateKey } = require('../../credentialFlags');
-const { confirm } = require('../../ux/confirm');
-const { memberSummary } = require('../../members/display');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import { conversationIdFlag } from '../../conversations/conversationFlags.js';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { confirm } from '../../ux/confirm.js';
+import { memberSummary } from '../../members/display.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
-exports.command = 'list <conversation-id>';
+export const command = 'list <conversation-id>';
 
-exports.desc = 'List members';
+export const desc = 'List members';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
     conversationIdFlag,
@@ -30,7 +30,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('List members');
   const { SDK, pageSize, cursor, conversationId } = argv;
 

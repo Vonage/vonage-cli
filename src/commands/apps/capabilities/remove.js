@@ -1,17 +1,17 @@
-const { displayApplication } = require('../../../apps/display');
-const { getAppCapabilities, capabilities, capabilityLabels } = require('../../../apps/capabilities');
-const { makeSDKCall } = require('../../../utils/makeSDKCall');
-const { apiKey, apiSecret } = require('../../../credentialFlags');
-const { dumpCommand } = require('../../../ux/dump');
-const { confirm } = require('../../../ux/confirm');
-const { force } = require('../../../commonFlags');
+import { displayApplication } from '../../../apps/display.js';
+import { getAppCapabilities, capabilities, capabilityLabels } from '../../../apps/capabilities.js';
+import { makeSDKCall } from '../../../utils/makeSDKCall.js';
+import { apiKey, apiSecret } from '../../../credentialFlags.js';
+import { dumpCommand } from '../../../ux/dump.js';
+import { confirm } from '../../../ux/confirm.js';
+import { force } from '../../../commonFlags.js';
 
-exports.command = 'rm <id> <which>';
+export const command = 'rm <id> <which>';
 
-exports.description = 'Remove a capability from an application';
+export const description = 'Remove a capability from an application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
     'api-secret': apiSecret,
@@ -36,7 +36,7 @@ exports.builder = (yargs) => yargs
     },
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, id, which } = argv;
   console.info(`Removing ${which} capability from application ${id}`);
 

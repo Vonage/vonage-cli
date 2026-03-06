@@ -12,9 +12,9 @@ const typeFlag = {
   choices: types,
 };
 
-exports.typeFlag = typeFlag;
+export { typeFlag };
 
-exports.typeLabels = typeLabels;
+export { typeLabels };
 
-exports.types = types;
+export { types };
 

@@ -1,17 +1,17 @@
-const { appId, privateKey } = require('../../credentialFlags');
-const { conversationIdFlag } = require('../../conversations/conversationFlags');
-const { displayFullMember } = require('../../members/display');
-const { json, yaml } = require('../../commonFlags');
-const YAML = require('yaml');
-const { Client } = require('@vonage/server-client');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
+import { appId, privateKey } from '../../credentialFlags.js';
+import { conversationIdFlag } from '../../conversations/conversationFlags.js';
+import { displayFullMember } from '../../members/display.js';
+import { json, yaml } from '../../commonFlags.js';
+import YAML from 'yaml';
+import { Client } from '@vonage/server-client';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
-exports.command = 'show <conversation-id> <member-id>';
+export const command = 'show <conversation-id> <member-id>';
 
-exports.desc = 'Show a member. "me" is not supported as the CLI will automatically generate the JWT token. ';
+export const desc = 'Show a member. "me" is not supported as the CLI will automatically generate the JWT token. ';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
     conversationIdFlag,
@@ -30,7 +30,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Show member');
   const { SDK, conversationId, memberId } = argv;
 

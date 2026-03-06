@@ -1,4 +1,4 @@
-const { inputFromTTY } = require('./input');
+import { inputFromTTY } from './input.js';
 
 const prompt = (
   message,
@@ -23,9 +23,9 @@ const prompt = (
   }
 };
 
-exports.prompt = prompt;
+export { prompt };
 
-exports.numberPrompt = async (
+export const numberPrompt = async (
   message,
   {
     required = false,
@@ -69,7 +69,7 @@ exports.numberPrompt = async (
 
 };
 
-exports.urlPrompt = async (
+export const urlPrompt = async (
   message,
   {
     required = false,

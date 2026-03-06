@@ -1,15 +1,15 @@
-const { confirm } = require('../../ux/confirm');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { force } = require('../../commonFlags');
-const { apiKey, apiSecret } = require('../../credentialFlags');
-const { dumpCommand } = require('../../ux/dump');
+import { confirm } from '../../ux/confirm.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { force } from '../../commonFlags.js';
+import { apiKey, apiSecret } from '../../credentialFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
-exports.command = 'delete <id>';
+export const command = 'delete <id>';
 
-exports.desc = 'Delete application';
+export const desc = 'Delete application';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -25,7 +25,7 @@ exports.builder = (yargs) => yargs
     'Delete application with ID 000[...]000',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info(`Deleting application: ${argv.id}`);
 
   const { SDK, id } = argv;

@@ -1,5 +1,5 @@
-const { select } = require('./select');
-const { detectScreenReader } = require('./detectScreenReader');
+import { select } from './select.js';
+import { detectScreenReader } from './detectScreenReader.js';
 
 const isReader = detectScreenReader();
 
@@ -51,7 +51,7 @@ const checkboxHighlightedFormatter = (option) => isReader
  * @param { CheckboxParams } options - Checkbox options
  * @returns { Promise<Array<SelectResult>> } - Selected options
  */
-exports.checkbox = ({
+export const checkbox = ({
   message,
   items,
   formatSelected = checkboxSelectedFormatter,
@@ -66,6 +66,6 @@ exports.checkbox = ({
   formatSelected,
 });
 
-exports.checkboxSelectedFormatter = checkboxSelectedFormatter;
-exports.checkboxUnselectedFormatter = checkboxUnselectedFormatter;
-exports.checkboxHighlightedFormatter = checkboxHighlightedFormatter;
+export { checkboxSelectedFormatter };
+export { checkboxUnselectedFormatter };
+export { checkboxHighlightedFormatter };

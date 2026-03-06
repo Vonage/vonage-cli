@@ -1,6 +1,6 @@
-const { dumpValue } = require('../ux/dump');
-const { buildCountryString, displayCurrency } = require('../ux/locale');
-const { typeLabels } = require('./types');
+import { dumpValue } from '../ux/dump.js';
+import { buildCountryString, displayCurrency } from '../ux/locale.js';
+import { typeLabels } from './types.js';
 
 const displayNumber = (number = {}, fields = []) => Object.assign({
   'Number': number.msisdn,
@@ -22,7 +22,7 @@ const displayNumbers = (numbers = [], fields = []) => {
   )));
 };
 
-exports.displayFullNumber = (number) => displayNumber(
+export const displayFullNumber = (number) => displayNumber(
   number,
   [
     'country',
@@ -36,7 +36,7 @@ exports.displayFullNumber = (number) => displayNumber(
     'voice_status_callback',
   ]);
 
-exports.displayNumber = displayNumber;
+export { displayNumber };
 
-exports.displayNumbers = displayNumbers;
+export { displayNumbers };
 

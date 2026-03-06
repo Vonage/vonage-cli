@@ -1,13 +1,13 @@
-const { appId, privateKey } = require('../../credentialFlags');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { confirm } = require('../../ux/confirm');
+import { appId, privateKey } from '../../credentialFlags.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { confirm } from '../../ux/confirm.js';
 
-exports.command = 'delete <id>';
+export const command = 'delete <id>';
 
-exports.desc = 'Delete a user';
+export const desc = 'Delete a user';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -18,7 +18,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, id } = argv;
   console.info('Deleting user');
 

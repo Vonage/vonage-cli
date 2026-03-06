@@ -1,16 +1,16 @@
-const { appId, privateKey } = require('../../credentialFlags');
-const { confirm } = require('../../ux/confirm');
-const { userSummary } = require('../../users/display');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { dumpCommand } = require('../../ux/dump');
-const { Client } = require('@vonage/server-client');
+import { appId, privateKey } from '../../credentialFlags.js';
+import { confirm } from '../../ux/confirm.js';
+import { userSummary } from '../../users/display.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { dumpCommand } from '../../ux/dump.js';
+import { Client } from '@vonage/server-client';
 
-exports.command = 'list';
+export const command = 'list';
 
-exports.desc = 'List users';
+export const desc = 'List users';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs.options({
+export const builder = (yargs) => yargs.options({
   'page-size': {
     describe: 'Number of users to return per page',
     default: 100,
@@ -41,7 +41,7 @@ exports.builder = (yargs) => yargs.options({
     'List a page of users',
   );
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   const { SDK, pageSize, cursor } = argv;
   console.info('List users');
   let pageCursor = cursor;

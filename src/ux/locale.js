@@ -1,6 +1,8 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 const [localeEnv] = process.env.LC_ALL?.split('.') || [];
 const countries = require('../../data/countries.json');
-const { printEmoji } = require('./printEmoji');
+import { printEmoji } from './printEmoji.js';
 
 const resolvedLocale = localeEnv?.replace('_', '-') || 'en-US';
 const localeObj = new Intl.Locale(resolvedLocale);
@@ -89,7 +91,7 @@ const displayCurrency = (num, currencyCode = regionCurrencyCode) => {
   });
 };
 
-module.exports = {
+export {
   displayCurrency,
   displayDate,
   countryFlag,

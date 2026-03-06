@@ -1,9 +1,9 @@
 process.env.FORCE_COLOR = 0;
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication, addRTCCapabilities } = require('../../app');
-const { Client } = require('@vonage/server-client');
+import { faker } from '@faker-js/faker';
+import { getBasicApplication, addRTCCapabilities } from '../../app.js';
+import { Client } from '@vonage/server-client';
 
-exports.rtcDataSets = [
+export const rtcDataSets = [
   (() => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),

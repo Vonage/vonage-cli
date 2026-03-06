@@ -1,6 +1,6 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const {
+import {
   getTestApp,
   addVideoCapabilities,
   addNetworkCapabilities,
@@ -8,12 +8,11 @@ const {
   addVerifyCapabilities,
   addMessagesCapabilities,
   addVoiceCapabilities,
-} = require('../../app');
-const { handler } = require('../../../src/commands/apps/validate');
-const { mockConsole } = require('../../helpers');
-const { getTestPhoneNumber } = require('../../numbers');
-const { testPrivateKey, testPublicKey } = require('../../common');
-const { faker } = require('@faker-js/faker');
+} from '../../app.js';
+import { mockConsole } from '../../helpers.js';
+import { getTestPhoneNumber } from '../../numbers.js';
+import { testPrivateKey, testPublicKey } from '../../common.js';
+import { faker } from '@faker-js/faker';
 
 const testAppCapability = {
   'messages': addMessagesCapabilities,
@@ -24,14 +23,17 @@ const testAppCapability = {
   'video': addVideoCapabilities,
 };
 
-jest.mock('yargs');
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../src/commands/apps/validate.js');
 
 describe('Command: vonage apps', () => {
   // I have no idea why these tests sometimes fail
   jest.retryTimes(3);
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    yargs.exit.mockReset();
     mockConsole();
   });
 

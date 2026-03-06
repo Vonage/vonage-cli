@@ -1,4 +1,4 @@
-const { faker } = require('@faker-js/faker');
+import { faker } from '@faker-js/faker';
 
 const addSIPChannelToUser = (user) => ({
   ...user,
@@ -117,14 +117,14 @@ const getTestUserForAPI = () => Object.freeze({
   channels: {},
 });
 
-exports.getTestUserForAPI = getTestUserForAPI;
+export { getTestUserForAPI };
 
-exports.addSIPChannelToUser = addSIPChannelToUser;
-exports.addWebsocketChannelToUser = addWebsocketChannelToUser;
-exports.addPSTNChannelToUser = addPSTNChannelToUser;
-exports.addSMSChannelToUser = addSMSChannelToUser;
-exports.addMMSChannelToUser = addMMSChannelToUser;
-exports.addWhatsAppChannelToUser = addWhatsAppChannelToUser;
-exports.addViberChannelToUser = addViberChannelToUser;
-exports.addMessengerChannelToUser = addMessengerChannelToUser;
+export { addSIPChannelToUser };
+export { addWebsocketChannelToUser };
+export { addPSTNChannelToUser };
+export { addSMSChannelToUser };
+export { addMMSChannelToUser };
+export { addWhatsAppChannelToUser };
+export { addViberChannelToUser };
+export { addMessengerChannelToUser };
 

@@ -1,5 +1,5 @@
-const { EOL } = require('os');
-const readline = require('readline');
+import { EOL } from 'os';
+import readline from 'readline';
 const CLEAR_SCREEN = '\x1b[2J\x1b[0;0H';
 
 /**
@@ -39,7 +39,7 @@ const overwriteWithNewLine = (str, stream = process.stderr) => (
   stream.write(EOL)
 );
 
-exports.overwriteLine = overwriteLine;
-exports.overwriteWithNewLine = overwriteWithNewLine;
-exports.clearScreen = clearScreen;
-exports.clearPreviousLines = clearPreviousLines;
+export { overwriteLine };
+export { overwriteWithNewLine };
+export { clearScreen };
+export { clearPreviousLines };

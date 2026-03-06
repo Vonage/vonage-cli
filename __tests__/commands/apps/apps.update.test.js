@@ -1,9 +1,10 @@
-const { faker } = require('@faker-js/faker');
-const { mockConsole } = require('../../helpers');
-const { getBasicApplication } = require('../../app');
-const { Client } = require('@vonage/server-client');
-const { handler } = require('../../../src/commands/apps/update');
-const yaml = require('yaml');
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { mockConsole } from '../../helpers.js';
+import { getBasicApplication } from '../../app.js';
+import { Client } from '@vonage/server-client';
+import { handler } from '../../../src/commands/apps/update.js';
+import yaml from 'yaml';
 
 describe('Command: vonage apps update', () => {
   beforeEach(() => {
@@ -13,7 +14,7 @@ describe('Command: vonage apps update', () => {
   test('Will update application name', async () => {
     const app = getBasicApplication();
 
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -39,7 +40,7 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
     app.privacy.improveAi = false;
 
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -67,7 +68,7 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -96,7 +97,7 @@ describe('Command: vonage apps update', () => {
     app.privacy.improveAi = false;
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -129,7 +130,7 @@ describe('Command: vonage apps update', () => {
   test('Will no op when no changes detected', async () => {
     const app = getBasicApplication();
 
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -155,7 +156,7 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -201,7 +202,7 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {

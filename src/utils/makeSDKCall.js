@@ -1,7 +1,7 @@
-const { spinner } = require('../ux/spinner');
-const { sdkError } = require('../utils/sdkError');
+import { spinner } from '../ux/spinner.js';
+import { sdkError } from '../utils/sdkError.js';
 
-exports.makeSDKCall = async (sdkFn, message, ...params) => {
+export const makeSDKCall = async (sdkFn, message, ...params) => {
   console.debug(`Calling SDK function ${sdkFn.name}`);
   const { stop: loadStop, fail: loadFail } = spinner({ message: message });
   try {

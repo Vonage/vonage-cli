@@ -1,21 +1,21 @@
-const yargs = require('yargs');
-const { appId, privateKey } = require('../../credentialFlags');
-const { makeSDKCall } = require('../../utils/makeSDKCall');
-const { displayFullUser } = require('../../users/display');
-const {
+import yargs from 'yargs';
+import { appId, privateKey } from '../../credentialFlags.js';
+import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { displayFullUser } from '../../users/display.js';
+import {
   userFlags,
   validateSip,
   validateWss,
   normalizeSip,
   normalizeWss,
-} = require('./create');
+} from './create.js';
 
-exports.command = 'update <id>';
+export const command = 'update <id>';
 
-exports.desc = 'Update a user';
+export const desc = 'Update a user';
 
 /* istanbul ignore next */
-exports.builder = (yargs) => yargs
+export const builder = (yargs) => yargs
   .positional(
     'id',
     {
@@ -29,7 +29,7 @@ exports.builder = (yargs) => yargs
     'private-key': privateKey,
   });
 
-exports.handler = async (argv) => {
+export const handler = async (argv) => {
   console.info('Updating user');
 
   if (!validateSip(argv)) {

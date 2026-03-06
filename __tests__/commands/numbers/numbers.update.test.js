@@ -1,17 +1,27 @@
-process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const { faker } = require('@faker-js/faker');
-const { handler } = require('../../../src/commands/numbers/update');
-const { typeLabels } = require('../../../src/numbers/types');
-const { mockConsole } = require('../../helpers');
-const { countryCodes, displayCurrency, buildCountryString } = require('../../../src/ux/locale');
-const { getTestPhoneNumber } = require('../../numbers');
+import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { faker } from '@faker-js/faker';
+import { typeLabels } from '../../../src/numbers/types.js';
+import { countryCodes, displayCurrency, buildCountryString } from '../../../src/ux/locale.js';
+import { getTestPhoneNumber } from '../../numbers.js';
 
-jest.mock('yargs');
+const yargs = {
+  exit: jest.fn(),
+};
+
+jest.unstable_mockModule('yargs', () => ({
+  default: yargs,
+}));
+
+const { handler } = await import('../../../src/commands/numbers/update.js');
+import { mockConsole } from '../../helpers.js';
 
 describe('Command: numbers update', () => {
   beforeEach(() => {
     mockConsole();
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
   });
 
   test('Will update number', async () => {

@@ -1,5 +1,5 @@
-const { existsSync, writeFileSync, mkdirSync } = require('fs');
-const { confirm } = require('../ux/confirm');
+import { existsSync, writeFileSync, mkdirSync } from 'fs';
+import { confirm } from '../ux/confirm.js';
 
 class UserDeclinedError extends Error {
   constructor() {
@@ -19,7 +19,7 @@ const createDirectory = (directory) => {
   return true;
 };
 
-const checkOkToWrite = async (filePath, message=null) => {
+const checkOkToWrite = async (filePath, message = null) => {
   if (!existsSync(filePath)) {
     console.debug('File does not exist ok to write');
     return true;
@@ -48,14 +48,14 @@ const writeFile = async (filePath, data, message) => {
   console.debug(`Data saved to ${filePath}`);
 };
 
-const writeJSONFile = async (filePath, data, message) =>  writeFile(
+const writeJSONFile = async (filePath, data, message) => writeFile(
   filePath,
   JSON.stringify(data, null, 2),
   message,
 );
 
-exports.UserDeclinedError = UserDeclinedError;
-exports.createDirectory = createDirectory;
-exports.checkOkToWrite = checkOkToWrite;
-exports.writeFile = writeFile;
-exports.writeJSONFile = writeJSONFile;
+export { UserDeclinedError };
+export { createDirectory };
+export { checkOkToWrite };
+export { writeFile };
+export { writeJSONFile };

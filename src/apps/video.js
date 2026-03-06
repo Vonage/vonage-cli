@@ -1,5 +1,5 @@
-const { coerceUrl } = require('../utils/coerceUrl');
-const { coerceRemoveCallback, coerceRemove } = require('../utils/coerceRemove');
+import { coerceUrl } from '../utils/coerceUrl.js';
+import { coerceRemoveCallback, coerceRemove } from '../utils/coerceRemove.js';
 
 const videoWebhooks = [
   'archiveStatus',
@@ -220,10 +220,10 @@ const videoFlags = {
   },
 };
 
-exports.updateVideo = updateVideo;
+export { updateVideo };
 
-exports.videoGroup = group;
+export const videoGroup = group;
 
-exports.videoFlags = videoFlags;
+export { videoFlags };
 
-exports.videoWebhooks = videoWebhooks;
+export { videoWebhooks };

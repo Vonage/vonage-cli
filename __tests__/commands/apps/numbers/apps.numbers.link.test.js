@@ -1,20 +1,25 @@
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
-const yargs = require('yargs');
-const yaml = require('yaml');
-const { faker } = require('@faker-js/faker');
-const { getBasicApplication } = require('../../../app');
-const { handler } = require('../../../../src/commands/apps/numbers/link');
-const { mockConsole } = require('../../../helpers');
-const { confirm } = require('../../../../src/ux/confirm');
-const { getTestPhoneNumber } = require('../../../numbers');
-const { Client } = require('@vonage/server-client');
+import yaml from 'yaml';
+import { faker } from '@faker-js/faker';
+import { getBasicApplication } from '../../../app.js';
+import { mockConsole } from '../../../helpers.js';
+import { getTestPhoneNumber } from '../../../numbers.js';
+import { Client } from '@vonage/server-client';
 
-jest.mock('../../../../src/ux/confirm');
-jest.mock('yargs');
+const confirmMock = jest.fn();
+const yargs = { exit: jest.fn() };
+
+jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
+jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+
+const { handler } = await import('../../../../src/commands/apps/numbers/link.js');
 
 describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {
     mockConsole();
+    confirmMock.mockReset();
+    yargs.exit.mockReset();
   });
 
   test('Will link numbers to an app', async () => {
@@ -56,7 +61,7 @@ describe('Command: vonage apps numbers link', () => {
       index: 1,
       size: 100,
     });
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
       appId: app.id,
@@ -99,7 +104,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledWith(JSON.stringify(
       {
@@ -147,7 +152,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledWith(yaml.stringify(
       {
@@ -182,7 +187,7 @@ describe('Command: vonage apps numbers link', () => {
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
       applications: {
@@ -200,7 +205,7 @@ describe('Command: vonage apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(confirm).toHaveBeenCalledWith(`Number is already linked to application [${otherAppId}]. Do you want to continue?`);
+    expect(confirmMock).toHaveBeenCalledWith(`Number is already linked to application [${otherAppId}]. Do you want to continue?`);
     expect(updateMock).toHaveBeenCalledWith({
       ...numberNine,
       appId: app.id,
@@ -229,7 +234,7 @@ describe('Command: vonage apps numbers link', () => {
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
-    confirm.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
       applications: {
@@ -249,7 +254,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 
@@ -276,7 +281,7 @@ describe('Command: vonage apps numbers link', () => {
 
     const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -296,7 +301,7 @@ describe('Command: vonage apps numbers link', () => {
 
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalled();
-    expect(confirm).toHaveBeenCalled();
+    expect(confirmMock).toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
   });
 
@@ -317,7 +322,7 @@ describe('Command: vonage apps numbers link', () => {
 
     const updateMock = jest.fn();
 
-    confirm.mockResolvedValue(false);
+    confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
       applications: {
@@ -336,7 +341,7 @@ describe('Command: vonage apps numbers link', () => {
     });
 
     expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(confirm).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
     expect(yargs.exit).toHaveBeenCalledWith(20);
   });

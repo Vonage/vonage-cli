@@ -1,5 +1,7 @@
+import { jest, afterEach } from '@jest/globals';
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-exports.inputFromTTY = jest.fn();
+export const inputFromTTY = jest.fn();
