@@ -8,12 +8,13 @@ describe('mock command', () => {
   let createDirectory;
   let writeFile;
   let childEventEmitter;
+  let existsSync;
 
   const config = {
     config: {
-      globalConfigPath: '/tmp/.vonage'
-    }
-  }
+      globalConfigPath: '/tmp/.vonage',
+    },
+  };
 
   jest.unstable_mockModule('node-fetch', () => ({
     default: jest.fn(),
@@ -77,7 +78,7 @@ describe('mock command', () => {
     handler = (await import('../../src/commands/mock.js')).handler;
 
     childEventEmitter.mockImplementationOnce((_, callback) => {
-      callback('Prisim is listening on port 42')
+      callback('Prisim is listening on port 42');
     });
 
     fetch.mockResolvedValue({
@@ -89,10 +90,10 @@ describe('mock command', () => {
     writeFile.mockResolvedValue();
     spawn.mockReturnValue({
       stderr: {
-        on: jest.fn()
+        on: jest.fn(),
       },
       stdout: {
-        on: childEventEmitter
+        on: childEventEmitter,
       },
       on: jest.fn(),
       kill: jest.fn(),
@@ -286,16 +287,16 @@ describe('mock command', () => {
 
   test('should start Prism server with bundled CLI', async () => {
     childEventEmitter.mockImplementationOnce((_, callback) => {
-      callback('Prisim is listening on port 42')
+      callback('Prisim is listening on port 42');
     });
 
     jest.unstable_mockModule('../../src/ux/input.js', () => {
-      return {}
+      return {};
     });
 
     // Mock inputFromTTY to simulate immediate quit
     const { inputFromTTY } = await import('../../src/ux/input.js');
-    console.log(inputFromTTY)
+    console.log(inputFromTTY);
 
     inputFromTTY.mockRejectedValue('Shutdown');
 

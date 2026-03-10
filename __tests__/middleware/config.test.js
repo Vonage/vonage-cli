@@ -36,7 +36,7 @@ const oldCwd = process.cwd;
 
 describe('Middeleware: Config', () => {
   beforeEach(() => {
-    mockConsole()
+    mockConsole();
     mockFiles.clear();
     existsSyncMock.mockClear();
     readFileSyncMock.mockClear();

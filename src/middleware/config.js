@@ -185,4 +185,5 @@ export { SDKConfig };
 const apiSpecs = {
   'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
 };
+
 export const APISpecs = apiSpecs;

@@ -14,7 +14,7 @@ const coerceJSON = (argName, schema) => (json) => {
   try {
     arg = JSON.parse(json);
   } catch (error) {
-    throw new Error(`Failed to parse JSON for ${argName}: ${error}`);
+    throw new Error(`Failed to parse JSON for ${argName}: ${error}`, { cause: error });
   }
 
   if (!schema) {

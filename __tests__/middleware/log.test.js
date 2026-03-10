@@ -1,4 +1,4 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { jest, describe, test, afterEach, expect } from '@jest/globals';
 
 const mockLogger = {
   info: jest.fn(),
@@ -77,7 +77,7 @@ describe('Middleware: Log', () => {
     expect(console.error).not.toEqual(mockLogger.error);
     expect(console.debug).not.toEqual(mockLogger.debug);
 
-    setupLog({verbose: true});
+    setupLog({ verbose: true });
 
     console.info('info');
     console.warn('warn');
@@ -102,7 +102,7 @@ describe('Middleware: Log', () => {
     expect(console.error).not.toEqual(mockLogger.error);
     expect(console.debug).not.toEqual(mockLogger.debug);
 
-    setupLog({verbose: true, debug: true});
+    setupLog({ verbose: true, debug: true });
 
     console.info('info');
     console.warn('warn');

@@ -41,15 +41,5 @@ export default [
         version: '>=20.0.0',
       },
     },
-    rules: {
-      // Leave this off. This rule cannot handle monorepos
-      'n/no-missing-import': ['off'],
-      'n/no-unsupported-features/es-builtins': [
-        'error', {
-          'ignores': [],
-        },
-      ],
-    },
   },
-
 ];

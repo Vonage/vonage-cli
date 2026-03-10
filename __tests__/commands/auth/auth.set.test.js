@@ -34,7 +34,7 @@ const { Vonage } = await import('@vonage/server-sdk');
 
 describe('Command: vonage auth set', () => {
   beforeEach(() => {
-    mockConsole()
+    mockConsole();
     mockGetApplicationPage.mockReset();
     mockGetApplication.mockReset();
     createDirectoryMock.mockReset();
@@ -70,7 +70,7 @@ describe('Command: vonage auth set', () => {
 
     await set.handler(args);
 
-    expect(createDirectoryMock).toHaveBeenCalledWith(args.config.globalConfigPath)
+    expect(createDirectoryMock).toHaveBeenCalledWith(args.config.globalConfigPath);
     expect(writeJSONFileMock).toHaveBeenCalledWith(
       args.config.globalConfigFile,
       {
@@ -79,7 +79,7 @@ describe('Command: vonage auth set', () => {
         'app-id': args.config.cli.appId,
         'private-key': args.config.cli.privateKey,
       },
-      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`
+      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`,
     );
   });
 
@@ -108,7 +108,7 @@ describe('Command: vonage auth set', () => {
         'api-key': args.config.cli.apiKey,
         'api-secret': args.config.cli.apiSecret,
       },
-      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`
+      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`,
     );
   });
 
@@ -140,7 +140,7 @@ describe('Command: vonage auth set', () => {
         'app-id': args.config.cli.appId,
         'private-key': args.config.cli.privateKey,
       },
-      `Configuration file ${args.config.localConfigFile} already exists. Overwrite?`
+      `Configuration file ${args.config.localConfigFile} already exists. Overwrite?`,
     );
   });
 

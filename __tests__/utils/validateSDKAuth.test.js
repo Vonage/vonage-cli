@@ -21,16 +21,16 @@ describe('Utils: Validate SDK Auth', () => {
     return {
       applications: {
         getApplication: mockGetApplication,
-        getApplicationPage: mockGetApplicationPage
-      }
-    }
-  })
+        getApplicationPage: mockGetApplicationPage,
+      },
+    };
+  });
 
   jest.unstable_mockModule('../../src/ux/spinner.js', () => ({
     spinner: jest.fn().mockImplementation(() => ({
       stop,
       fail,
-    }))
+    })),
   }));
 
   jest.unstable_mockModule('@vonage/server-sdk', () => ({
@@ -45,7 +45,7 @@ describe('Utils: Validate SDK Auth', () => {
     spinner = (await import('../../src/ux/spinner.js')).spinner;
     const check = await import('../../src/utils/validateSDKAuth.js');
     validateApiKeyAndSecret = check.validateApiKeyAndSecret;
-    validatePrivateKeyAndAppId = check.validatePrivateKeyAndAppId
+    validatePrivateKeyAndAppId = check.validatePrivateKeyAndAppId;
     mockConsole();
   });
 

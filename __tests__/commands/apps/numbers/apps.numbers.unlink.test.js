@@ -267,7 +267,7 @@ describe('Command: vonage apps numbers link', () => {
           ...numberNine,
           appId: otherAppId,
         },
-      ]
+      ],
     });
     const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(false);

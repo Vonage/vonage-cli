@@ -10,7 +10,7 @@ import { hideCursor, resetCursor } from '../ux/cursor.js';
 import { inputFromTTY } from '../ux/input.js';
 import { EOL } from 'node:os';
 import { createDirectory, writeFile } from '../utils/fs.js';
-import { getSharedConfig, APISpecs } from '../middleware/config.js';
+import { APISpecs } from '../middleware/config.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -85,7 +85,7 @@ export const handler = async (argv) => {
     createDirectory(mockDir);
   } catch (error) {
     console.error('Failed to create mock directory:', error.message);
-    throw new Error('Failed to create mock directory');
+    throw new Error('Failed to create mock directory', { cause: error });
   }
   const specExists = existsSync(specPath);
   const shouldDownload = !specExists || latest;
@@ -123,7 +123,7 @@ export const handler = async (argv) => {
     } catch (error) {
       failDownload();
       console.error('Failed to download API specification:', error.message);
-      throw new Error('Failed to download API specification');
+      throw new Error('Failed to download API specification', { cause: error });
     }
   }
 
@@ -151,7 +151,7 @@ export const handler = async (argv) => {
     prismArgs,
     {
       detached: true,
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     },
   );
 
@@ -163,7 +163,7 @@ export const handler = async (argv) => {
     throw new Error('Failed to start Prism mock server');
   });
 
-  console.debug('Waiting for prisim')
+  console.debug('Waiting for prisim');
 
   const waitForPrisim = () => new Promise((resolve) => {
     prismProcess.stdout.on('data', (data) => {
@@ -172,7 +172,7 @@ export const handler = async (argv) => {
         resolve();
       }
     });
-  })
+  });
 
   // Give Prism a moment to start
   await waitForPrisim();

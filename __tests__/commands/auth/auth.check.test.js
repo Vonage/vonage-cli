@@ -1,4 +1,4 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../helpers';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common';
@@ -21,10 +21,10 @@ describe('Command: vonage auth check', () => {
     return {
       applications: {
         getApplication: mockGetApplication,
-        getApplicationPage: mockGetApplicationPage
-      }
-    }
-  })
+        getApplicationPage: mockGetApplicationPage,
+      },
+    };
+  });
   let handler;
 
   jest.unstable_mockModule('@vonage/server-sdk', () => ({

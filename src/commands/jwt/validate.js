@@ -38,16 +38,16 @@ const validateAppId = (decoded, argv) => {
   console.debug(`Validating application id: ${decodedApp} equals ${argvApp}`);
 
   switch (true) {
-    case (!decodedApp):
-      console.log('❌ Application Id is not present in the token');
-      throw new Error('Application Id is not present in the token');
+  case (!decodedApp):
+    console.log('❌ Application Id is not present in the token');
+    throw new Error('Application Id is not present in the token');
 
-    case (decodedApp === argvApp):
-      console.log(`✅ Application Id [${decoded.application_id}] matches [${argv.appId}]`);
-      return;
-    default:
-      console.log(`❌ Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
-      throw new InvalidClaimError(InvalidClaimError.invlidClaims.APP_ID, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
+  case (decodedApp === argvApp):
+    console.log(`✅ Application Id [${decoded.application_id}] matches [${argv.appId}]`);
+    return;
+  default:
+    console.log(`❌ Application Id [${decoded.application_id}] does not match [${argv.appId}]`);
+    throw new InvalidClaimError(InvalidClaimError.invlidClaims.APP_ID, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -57,21 +57,21 @@ const validateSubject = (decoded, argv) => {
   console.debug(`Validating subject: [${decoded.sub}] equals [${argv.sub}]`);
 
   switch (true) {
-    case (!decodedSub && !argvSub):
-      console.debug('Subject not passed as argument and not present in the token');
-      return;
+  case (!decodedSub && !argvSub):
+    console.debug('Subject not passed as argument and not present in the token');
+    return;
 
-    case (decodedSub && !argvSub):
-      console.log(`ℹ️ Subject [${decoded.sub}]`);
-      return;
+  case (decodedSub && !argvSub):
+    console.log(`ℹ️ Subject [${decoded.sub}]`);
+    return;
 
-    case (decodedSub === argvSub):
-      console.log(`✅ Subject [${decoded.sub}] matches [${argv.sub}]`);
-      return;
+  case (decodedSub === argvSub):
+    console.log(`✅ Subject [${decoded.sub}] matches [${argv.sub}]`);
+    return;
 
-    default:
-      console.log(`❌ Subject [${decoded.sub}] does not match [${argv.sub}]`);
-      throw new InvalidClaimError(InvalidClaimError.invlidClaims.SUB, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
+  default:
+    console.log(`❌ Subject [${decoded.sub}] does not match [${argv.sub}]`);
+    throw new InvalidClaimError(InvalidClaimError.invlidClaims.SUB, `Subject [${decoded.sub}] does not match [${argv.sub}]`);
   }
 };
 
@@ -202,14 +202,14 @@ export const handler = (argv) => {
     console.log('✅ All checks complete! Token is valid');
   } catch (error) {
     switch (error.constructor.name) {
-      case 'ExpiredTokenError':
-        y.exit(127);
-        break;
+    case 'ExpiredTokenError':
+      y.exit(127);
+      break;
 
-      case 'InvalidClaimError':
-      default:
-        y.exit(22);
-        break;
+    case 'InvalidClaimError':
+    default:
+      y.exit(22);
+      break;
 
     }
   }

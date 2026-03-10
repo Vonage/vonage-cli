@@ -10,7 +10,7 @@ const coerceUrl = (argName) => (url) => {
     return parsed.toString();
   } catch (error) {
     console.error(`Invalid URL for ${argName}: ${url}`, error);
-    throw new Error(`Invalid URL for ${argName}: ${url}`);
+    throw new Error(`Invalid URL for ${argName}: ${url}`, { cause: error });
   }
 };
 

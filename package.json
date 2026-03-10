@@ -18,6 +18,7 @@
       "url": "https://github.com/dragonmantank"
     }
   ],
+  "type": "module",
   "bin": {
     "vonage": "bin/vonage.js"
   },
@@ -26,7 +27,6 @@
     "bin/**",
     "data/**"
   ],
-  "type": "module",
   "scripts": {
     "eslint": "eslint",
     "jest": "jest",
@@ -71,6 +71,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@faker-js/faker": "10.3.0",
+    "@jest/globals": "30.3.0",
     "@stylistic/eslint-plugin-js": "4.4.1",
     "eslint-plugin-jest": "29.15.0",
     "eslint-plugin-n": "17.24.0",
