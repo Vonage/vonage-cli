@@ -8,9 +8,8 @@ jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
   confirm,
 }));
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,

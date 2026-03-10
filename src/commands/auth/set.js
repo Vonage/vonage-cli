@@ -4,6 +4,7 @@ import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils
 import { writeJSONFile, createDirectory } from '../../utils/fs.js';
 import { apiKey, apiSecret, appId, privateKey } from '../../credentialFlags.js';
 
+const y = yargs();
 const setApiKeyAndSecret = async (apiKey, apiSecret) => {
   const valid = await validateApiKeyAndSecret(apiKey, apiSecret);
   return valid ? { 'api-key': apiKey, 'api-secret': apiSecret } : false;
@@ -50,7 +51,7 @@ export const handler = async (argv) => {
 
   if (apiKeySecret === false) {
     console.error('Invalid API Key or Secret');
-    yargs.exit(5);
+    y.exit(5);
     return;
   }
 
@@ -63,7 +64,7 @@ export const handler = async (argv) => {
 
   if (appIdPrivateKey === false) {
     console.error('Invalid App ID or Private Key');
-    yargs.exit(5);
+    y.exit(5);
     return;
   }
 

@@ -8,8 +8,8 @@ import { getTestPhoneNumber } from '../../../numbers.js';
 import { Client } from '@vonage/server-client';
 
 const confirmMock = jest.fn();
-const yargs = { exit: jest.fn() };
-
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
@@ -19,7 +19,7 @@ describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {
     mockConsole();
     confirmMock.mockReset();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Will unlink number from an app', async () => {
@@ -41,7 +41,7 @@ describe('Command: vonage apps numbers link', () => {
         },
       ],
     });
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
@@ -91,7 +91,7 @@ describe('Command: vonage apps numbers link', () => {
         },
       ],
     });
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
@@ -139,7 +139,7 @@ describe('Command: vonage apps numbers link', () => {
         },
       ],
     });
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(true);
 
     const sdkMock = {
@@ -188,7 +188,7 @@ describe('Command: vonage apps numbers link', () => {
         },
       ],
     });
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
@@ -223,8 +223,8 @@ describe('Command: vonage apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [numberNine]});
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const numbersMock = jest.fn().mockResolvedValue({ numbers: [numberNine] });
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(false);
 
     const sdkMock = {
@@ -261,13 +261,15 @@ describe('Command: vonage apps numbers link', () => {
 
     const otherAppId = faker.string.uuid();
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({numbers: [
-      {
-        ...numberNine,
-        appId: otherAppId,
-      },
-    ]});
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const numbersMock = jest.fn().mockResolvedValue({
+      numbers: [
+        {
+          ...numberNine,
+          appId: otherAppId,
+        },
+      ]
+    });
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
     confirmMock.mockResolvedValue(false);
 
     const sdkMock = {

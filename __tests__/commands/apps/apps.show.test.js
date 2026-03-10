@@ -14,7 +14,9 @@ import { Client } from '@vonage/server-client';
 import { mockConsole } from '../../helpers.js';
 import { faker } from '@faker-js/faker';
 
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
 const { handler } = await import('../../../src/commands/apps/show.js');
@@ -22,7 +24,7 @@ const { handler } = await import('../../../src/commands/apps/show.js');
 describe('Command: vonage apps', () => {
   beforeEach(() => {
     mockConsole();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Will display the basic application details', async () => {
@@ -39,7 +41,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
     expect(console.log).toHaveBeenCalledTimes(2);
 
     expect(console.log).toHaveBeenNthCalledWith(
@@ -67,7 +69,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock, json: true});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock, json: true });
     expect(console.log).toHaveBeenCalledTimes(1);
 
     expect(console.log).toHaveBeenNthCalledWith(
@@ -94,7 +96,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock, yaml: true});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock, yaml: true });
 
     expect(console.log).toHaveBeenNthCalledWith(
       1,
@@ -120,7 +122,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -150,7 +152,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -182,7 +184,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
@@ -209,7 +211,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
@@ -236,7 +238,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
@@ -262,7 +264,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
@@ -322,7 +324,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({config: {cli: {appId: app}}, SDK: sdkMock});
+    await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
     expect(console.log).toHaveBeenNthCalledWith(
       3,
       [
@@ -383,7 +385,7 @@ describe('Command: vonage apps', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,

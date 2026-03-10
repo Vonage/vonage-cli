@@ -2,9 +2,8 @@ import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globa
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 

@@ -8,7 +8,8 @@ import { getTestPhoneNumber } from '../../../numbers.js';
 import { Client } from '@vonage/server-client';
 
 const confirmMock = jest.fn();
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
@@ -19,7 +20,7 @@ describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {
     mockConsole();
     confirmMock.mockReset();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Will link numbers to an app', async () => {
@@ -37,7 +38,7 @@ describe('Command: vonage apps numbers link', () => {
       numbers: [numberNine],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     const sdkMock = {
       applications: {
@@ -83,7 +84,7 @@ describe('Command: vonage apps numbers link', () => {
       numbers: [numberNine],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     const sdkMock = {
       applications: {
@@ -131,7 +132,7 @@ describe('Command: vonage apps numbers link', () => {
       numbers: [numberNine],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     const sdkMock = {
       applications: {
@@ -185,7 +186,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     confirmMock.mockResolvedValue(true);
 
@@ -232,7 +233,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     confirmMock.mockResolvedValue(true);
 
@@ -279,7 +280,7 @@ describe('Command: vonage apps numbers link', () => {
       ],
     });
 
-    const updateMock = jest.fn().mockResolvedValue({errorCode: '200'});
+    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
 
     confirmMock.mockResolvedValue(false);
 
@@ -343,7 +344,7 @@ describe('Command: vonage apps numbers link', () => {
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(confirmMock).not.toHaveBeenCalled();
     expect(updateMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(20);
+    expect(exitMock).toHaveBeenCalledWith(20);
   });
 });
 

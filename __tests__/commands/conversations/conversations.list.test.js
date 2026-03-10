@@ -1,8 +1,7 @@
 import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,
@@ -256,6 +255,6 @@ describe('Command: vonage conversations list', () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
     expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(yargs.exit).toHaveBeenCalledWith(99);
+    expect(exitMock).toHaveBeenCalledWith(99);
   });
 });

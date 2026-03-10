@@ -1,8 +1,7 @@
 import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 

@@ -6,21 +6,22 @@ import { getBasicApplication } from '../../../app.js';
 import { Client } from '@vonage/server-client';
 import { dataSets } from '../../../__dataSets__/apps/index.js';
 
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
 const { handler } = await import('../../../../src/commands/apps/capabilities/update.js');
 
-describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}) => {
+describe.each(dataSets)('Command: vonage apps capabilities $label', ({ testCases }) => {
   beforeEach(() => {
     mockConsole();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
-  const udpateTestCases = testCases.filter(({args}) => args.action === 'update');
+  const udpateTestCases = testCases.filter(({ args }) => args.action === 'update');
 
-  test.each(udpateTestCases)('Will $label', async ({app, args, expected}) => {
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+  test.each(udpateTestCases)('Will $label', async ({ app, args, expected }) => {
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -35,7 +36,7 @@ describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}
       ...args,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
     expect(getAppMock).toHaveBeenCalledWith(app.id);
     expect(updateAppMock).toHaveBeenCalledWith(expected);
   });
@@ -44,7 +45,7 @@ describe.each(dataSets)('Command: vonage apps capabilities $label', ({testCases}
 describe('Command: vonage apps capabilities', () => {
   beforeEach(() => {
     mockConsole();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Should exit 1 if invalid flag is passed', async () => {
@@ -54,7 +55,7 @@ describe('Command: vonage apps capabilities', () => {
       true,
     );
 
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -73,7 +74,7 @@ describe('Command: vonage apps capabilities', () => {
     });
 
     expect(updateAppMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(1);
+    expect(exitMock).toHaveBeenCalledWith(1);
     expect(console.error).toHaveBeenCalledWith('You cannot use the flag(s) [messages-status-url, network-redirect-url] when updating the rtc capability');
   });
 
@@ -84,7 +85,7 @@ describe('Command: vonage apps capabilities', () => {
       true,
     );
 
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -101,7 +102,7 @@ describe('Command: vonage apps capabilities', () => {
     });
 
     expect(updateAppMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(1);
+    expect(exitMock).toHaveBeenCalledWith(1);
     expect(console.error).toHaveBeenCalledWith('You must provide at least one rtc-* flag when updating the rtc capability');
   });
 });

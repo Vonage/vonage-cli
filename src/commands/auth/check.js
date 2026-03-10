@@ -5,6 +5,7 @@ import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils
 import { dumpAuth } from '../../ux/dumpAuth.js';
 import { errorNoConfig } from '../../middleware/config.js';
 
+const y = yargs();
 export const command = 'check';
 
 export const description = 'Checks Vonage credentials';
@@ -92,7 +93,7 @@ export const handler = async (argv) => {
 
   if (!configOk) {
     console.error('Configuration is not valid');
-    yargs.exit(validPrivateKey ? 5 : 22);
+    y.exit(validPrivateKey ? 5 : 22);
   }
 };
 

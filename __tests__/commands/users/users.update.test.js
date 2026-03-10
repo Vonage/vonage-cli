@@ -1,8 +1,7 @@
 import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,
@@ -51,7 +50,7 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
     });
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(updateUserMock).toHaveBeenCalledWith(user);
 
@@ -268,7 +267,7 @@ describe('Command: vonage users update', () => {
     });
 
     expect(updateUserMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 
   test('Will not update a user with SIP channels when password is missing', async () => {
@@ -295,7 +294,7 @@ describe('Command: vonage users update', () => {
     });
 
     expect(updateUserMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 
   test('Will not update a user with SIP channels when missing a username', async () => {
@@ -323,7 +322,7 @@ describe('Command: vonage users update', () => {
     });
 
     expect(updateUserMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 
   test('Will not update a user with SIP channels when missing a password', async () => {
@@ -351,7 +350,7 @@ describe('Command: vonage users update', () => {
     });
 
     expect(updateUserMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 
   test('Will update a user with Websocket channels', async () => {

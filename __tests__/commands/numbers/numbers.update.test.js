@@ -4,9 +4,8 @@ import { typeLabels } from '../../../src/numbers/types.js';
 import { countryCodes, displayCurrency, buildCountryString } from '../../../src/ux/locale.js';
 import { getTestPhoneNumber } from '../../numbers.js';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,
@@ -80,7 +79,7 @@ describe('Command: numbers update', () => {
       voiceStatusCallback: voiceStatusCallbackUrl,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -141,7 +140,7 @@ describe('Command: numbers update', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(updateNumberMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(44);
+    expect(exitMock).toHaveBeenCalledWith(44);
   });
 
   test('Will handle SDK error', async () => {
@@ -184,6 +183,6 @@ describe('Command: numbers update', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(updateNumberMock).toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
+    expect(exitMock).toHaveBeenCalledWith(99);
   });
 });

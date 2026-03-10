@@ -4,7 +4,8 @@ import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
 import jwt from 'jsonwebtoken';
 
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
@@ -13,7 +14,7 @@ const { handler } = await import('../../../src/commands/jwt/validate.js');
 describe('Command: vonage jwt validate', () => {
   beforeEach(() => {
     mockConsole();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('should validate token', async () => {
@@ -43,7 +44,7 @@ describe('Command: vonage jwt validate', () => {
       ['✅ All checks complete! Token is valid'],
     ]);
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test('Should validate with sub and acl flags', async () => {
@@ -101,7 +102,7 @@ describe('Command: vonage jwt validate', () => {
       '  ✅ [ANY]  /conferences/*',
       '✅ All checks complete! Token is valid',
     ].join('\n'));
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test('Should validate token that has ACL and sub but command has no flags', async () => {
@@ -153,7 +154,7 @@ describe('Command: vonage jwt validate', () => {
       '  ℹ️ [ANY]  /conferences/*',
       '✅ All checks complete! Token is valid',
     ].join('\n'));
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test('Should fail to validate token when application id mismatches', async () => {
@@ -177,7 +178,7 @@ describe('Command: vonage jwt validate', () => {
     });
 
     expect(console.log.mock.calls[1]).toEqual([`❌ Application Id [${wrongAppId}] does not match [${args.appId}]`]);
-    expect(yargs.exit).toHaveBeenCalledWith(22);
+    expect(exitMock).toHaveBeenCalledWith(22);
   });
 
   test('Should fail to validate token when subject mismatches', async () => {
@@ -208,7 +209,7 @@ describe('Command: vonage jwt validate', () => {
       `❌ Subject [${wrongSub}] does not match [${correctSub}]`,
     );
 
-    expect(yargs.exit).toHaveBeenCalledWith(22);
+    expect(exitMock).toHaveBeenCalledWith(22);
   });
 
   test('should fail to validate token when token is expired', async () => {
@@ -235,7 +236,7 @@ describe('Command: vonage jwt validate', () => {
       2,
       '❌ Token has expired',
     );
-    expect(yargs.exit).toHaveBeenCalledWith(127);
+    expect(exitMock).toHaveBeenCalledWith(127);
   });
 
   test('should fail to validate token when token is nbf is before current date', async () => {
@@ -261,7 +262,7 @@ describe('Command: vonage jwt validate', () => {
       2,
       '❌ Token is not yet valid',
     );
-    expect(yargs.exit).toHaveBeenCalledWith(127);
+    expect(exitMock).toHaveBeenCalledWith(127);
   });
 
   test('should fail to validate token when token is missing application id', async () => {
@@ -287,6 +288,6 @@ describe('Command: vonage jwt validate', () => {
       '❌ Application Id is not present in the token',
     );
 
-    expect(yargs.exit).toHaveBeenCalledWith(22);
+    expect(exitMock).toHaveBeenCalledWith(22);
   });
 });

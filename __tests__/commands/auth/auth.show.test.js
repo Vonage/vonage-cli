@@ -4,9 +4,8 @@ import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
 import { getBasicApplication } from '../../app.js';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,

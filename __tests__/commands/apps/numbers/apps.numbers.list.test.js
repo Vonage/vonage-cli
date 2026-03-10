@@ -12,7 +12,9 @@ import {
 import { getTestPhoneNumber } from '../../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
 const { handler } = await import('../../../../src/commands/apps/numbers/list.js');
@@ -20,7 +22,7 @@ const { handler } = await import('../../../../src/commands/apps/numbers/list.js'
 describe('Command: vonage apps numbers list', () => {
   beforeEach(() => {
     mockConsole();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Will list all numbers for application and warn about missing capability', async () => {
@@ -33,7 +35,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -44,7 +46,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
 
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalledWith({
@@ -96,7 +98,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
     expect(appMock).toHaveBeenCalledWith(app.id);
     expect(numbersMock).toHaveBeenCalledWith({
       index: 1,
@@ -130,7 +132,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -141,7 +143,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
     expect(console.log).toHaveBeenCalledTimes(4);
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(0);
@@ -158,7 +160,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -169,7 +171,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock});
+    await handler({ id: app.id, SDK: sdkMock });
     expect(console.log).toHaveBeenCalledTimes(4);
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(0);
@@ -186,7 +188,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -197,7 +199,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock, fail: true});
+    await handler({ id: app.id, SDK: sdkMock, fail: true });
 
     expect(console.log).toHaveBeenCalledTimes(4);
     expect(console.table).toHaveBeenCalledTimes(1);
@@ -207,7 +209,7 @@ describe('Command: vonage apps numbers list', () => {
       'This application does not have the voice or messages capability enabled',
     );
 
-    expect(yargs.exit).toHaveBeenCalledWith(1);
+    expect(exitMock).toHaveBeenCalledWith(1);
   });
 
   test('Will output JSON', async () => {
@@ -220,7 +222,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -231,7 +233,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock, json: true});
+    await handler({ id: app.id, SDK: sdkMock, json: true });
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(
       JSON.stringify(
@@ -265,7 +267,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock, json: true});
+    await handler({ id: app.id, SDK: sdkMock, json: true });
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(
       JSON.stringify(
@@ -290,7 +292,7 @@ describe('Command: vonage apps numbers list', () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -301,7 +303,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock, yaml: true});
+    await handler({ id: app.id, SDK: sdkMock, yaml: true });
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(
       yaml.stringify(
@@ -336,7 +338,7 @@ describe('Command: vonage apps numbers list', () => {
       },
     };
 
-    await handler({id: app.id, SDK: sdkMock, yaml: true});
+    await handler({ id: app.id, SDK: sdkMock, yaml: true });
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log).toHaveBeenCalledWith(
       yaml.stringify(

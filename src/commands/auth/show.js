@@ -7,6 +7,8 @@ import { json, yaml as yamlFlag } from '../../commonFlags.js';
 import { configLoadingHelp } from '../../middleware/config.js';
 import yaml from 'yaml';
 
+const y = yargs();
+
 const dumpOptions = {
   noEmoji: true,
   includeText: true,
@@ -90,28 +92,28 @@ export const handler = async (argv) => {
 
   const hasLocalApiKey = localConfigExists
     && config.local.apiKey
-      && config.local.apiSecret;
+    && config.local.apiSecret;
 
-  const hasLocalAppId= localConfigExists
+  const hasLocalAppId = localConfigExists
     && config.local.apiKey
-      && config.local.apiSecret
-      && config.local.privateKey
-      && config.local.appId;
+    && config.local.apiSecret
+    && config.local.privateKey
+    && config.local.appId;
 
   const hasGlobalApiKey = globalConfigExists
     && config.global.apiKey
-      && config.global.apiSecret;
+    && config.global.apiSecret;
 
   const hasGlobalAppId = globalConfigExists
     && config.global.apiKey
-      && config.global.apiSecret
-      && config.global.privateKey
-      && config.global.appId;
+    && config.global.apiSecret
+    && config.global.privateKey
+    && config.global.appId;
 
   let configOk = true;
 
   if (hasLocalApiKey) {
-    console.log(`${dumpBoolean({value: localConfigExists, ...dumpOptions})}Local credentials found at: ${config.localConfigFile}`);
+    console.log(`${dumpBoolean({ value: localConfigExists, ...dumpOptions })}Local credentials found at: ${config.localConfigFile}`);
     console.log('');
     dumpAuth(config.local, argv.showAll);
     console.log('');
@@ -132,7 +134,7 @@ export const handler = async (argv) => {
   }
 
   if (hasGlobalApiKey) {
-    console.log(`${dumpBoolean({value: globalConfigExists, ...dumpOptions})}Global credentials found at: ${config.globalConfigFile}`);
+    console.log(`${dumpBoolean({ value: globalConfigExists, ...dumpOptions })}Global credentials found at: ${config.globalConfigFile}`);
     console.log('');
     dumpAuth(config.global, argv.showAll);
     console.log('');
@@ -155,7 +157,7 @@ export const handler = async (argv) => {
 
   if (!configOk) {
     console.error('Configuration is not valid');
-    yargs.exit(5);
+    y.exit(5);
     return;
   }
 };

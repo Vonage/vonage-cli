@@ -9,6 +9,8 @@ import { apiKey, apiSecret } from '../../credentialFlags.js';
 import { force } from '../../commonFlags.js';
 import { countryFlag } from '../../ux/locale.js';
 
+const y = yargs();
+
 const flags = {
   'voice-callback-value': {
     describe: 'A SIP URI or telephone number',
@@ -77,7 +79,7 @@ export const handler = async (argv) => {
   if (!numberToUpdate) {
     console.error('Number not found. Are you sure you own this number?');
     console.log(`You can run ${dumpCommand('vonage numbers list')} to see your owned numbers`);
-    yargs.exit(44);
+    y.exit(44);
     return;
   }
 

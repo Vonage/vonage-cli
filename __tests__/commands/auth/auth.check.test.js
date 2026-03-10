@@ -4,9 +4,8 @@ import { mockConsole } from '../../helpers';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common';
 import { getBasicApplication } from '../../app';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,
@@ -223,7 +222,7 @@ describe('Command: vonage auth check', () => {
 
     expect(mockGetApplicationPage).not.toHaveBeenCalled();
     expect(mockGetApplication).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 
   test('Should fail to validate the config settings', async () => {
@@ -264,7 +263,7 @@ describe('Command: vonage auth check', () => {
     expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
     expect(mockGetApplication).toHaveBeenCalledTimes(1);
     expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
-    expect(yargs.exit).toHaveBeenCalledWith(5);
+    expect(exitMock).toHaveBeenCalledWith(5);
   });
 
   test('Should fail to validate the config settings with invalid private key', async () => {
@@ -297,7 +296,7 @@ describe('Command: vonage auth check', () => {
 
     expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
     expect(mockGetApplication).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(22);
+    expect(exitMock).toHaveBeenCalledWith(22);
   });
 });
 

@@ -1,9 +1,8 @@
 import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 
@@ -135,6 +134,6 @@ describe('Command: vonage numbers cancel', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(cancelNumberMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(44);
+    expect(exitMock).toHaveBeenCalledWith(44);
   });
 });

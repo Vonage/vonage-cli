@@ -78,7 +78,7 @@ export const handler = async (argv) => {
   console.info(`Setting up mock server for ${api.toUpperCase()} API`);
 
   // Create mock directory in the same location as CLI config (~/.vonage/mock)
-  const mockDir = path.join(getSharedConfig().globalConfigPath, 'mock');
+  const mockDir = path.join(argv.config.globalConfigPath, 'mock');
   const specPath = path.join(mockDir, `${api}-spec.json`);
 
   try {
@@ -146,11 +146,16 @@ export const handler = async (argv) => {
   console.log('');
 
   const prismArgs = ['mock', specPath, '--port', port.toString(), '--host', host];
-  const prismProcess = spawn(prismPath, prismArgs, {
-    stdio: ['pipe', 'inherit', 'inherit'],
-  });
+  const prismProcess = spawn(
+    prismPath,
+    prismArgs,
+    {
+      detached: true,
+      stdio: ['pipe', 'pipe', 'pipe']
+    },
+  );
 
-  prismProcess.on('error', (error) => {
+  prismProcess.stderr.on('error', (error) => {
     console.error('Failed to start Prism:', error.message);
     console.log('');
     console.log('If you encounter issues, you can also run Prism manually:');
@@ -158,8 +163,19 @@ export const handler = async (argv) => {
     throw new Error('Failed to start Prism mock server');
   });
 
+  console.debug('Waiting for prisim')
+
+  const waitForPrisim = () => new Promise((resolve) => {
+    prismProcess.stdout.on('data', (data) => {
+      process.stderr.write(data);
+      if (`${data}`.match(/listening/)) {
+        resolve();
+      }
+    });
+  })
+
   // Give Prism a moment to start
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await waitForPrisim();
 
   console.log(`✅ Mock server is running at http://${host}:${port}`);
   console.log('');
@@ -193,13 +209,8 @@ export const handler = async (argv) => {
     console.log('🛑 Shutting down mock server...');
 
     prismProcess.kill('SIGTERM');
-
-    // Give the process time to shut down gracefully
-    setTimeout(() => {
-      if (!prismProcess.killed) {
-        prismProcess.kill('SIGKILL');
-      }
-    }, 5000);
+    prismProcess.unref();
+    prismProcess.ref();
 
     resetCursor();
     console.log('Mock server stopped.');

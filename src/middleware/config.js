@@ -11,6 +11,8 @@ import yargs from 'yargs';
 const { version } = require('../../package.json');
 import os from 'os';
 
+const y = yargs();
+
 const getSharedConfig = () => {
   const homedir = os.homedir();
   const globalConfigPath = path.join(homedir, '.vonage');
@@ -68,7 +70,7 @@ const errorNoConfig = (local = false) => {
   console.log('');
   console.log(`${chalk.yellow('NOTE: ')}You can also provide the configuration via the command line for other commands.`);
   console.log('      use the --help option for more information');
-  yargs.exit(2);
+  y.exit(2);
 };
 
 const SDKConfig = {

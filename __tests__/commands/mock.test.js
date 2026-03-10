@@ -2,6 +2,19 @@ import { jest } from '@jest/globals';
 import { mockConsole } from '../helpers.js';
 
 describe('mock command', () => {
+  let handler;
+  let fetch;
+  let spawn;
+  let createDirectory;
+  let writeFile;
+  let childEventEmitter;
+
+  const config = {
+    config: {
+      globalConfigPath: '/tmp/.vonage'
+    }
+  }
+
   jest.unstable_mockModule('node-fetch', () => ({
     default: jest.fn(),
   }));
@@ -45,11 +58,6 @@ describe('mock command', () => {
     inputFromTTY: jest.fn(),
   }));
 
-  let handler;
-  let fetch;
-  let spawn;
-  let createDirectory;
-  let writeFile;
 
   const mockSpec = {
     openapi: '3.0.0',
@@ -58,17 +66,19 @@ describe('mock command', () => {
   };
 
   beforeEach(async () => {
-    jest.useFakeTimers();
-    jest.spyOn(global, 'setTimeout');
-
     mockConsole();
     const utils = await import('../../src/utils/fs.js');
     createDirectory = utils.createDirectory;
     writeFile = utils.writeFile;
+    childEventEmitter = jest.fn();
     existsSync = (await import('fs')).existsSync;
     fetch = (await import('node-fetch')).default;
     spawn = (await import('child_process')).spawn;
     handler = (await import('../../src/commands/mock.js')).handler;
+
+    childEventEmitter.mockImplementationOnce((_, callback) => {
+      callback('Prisim is listening on port 42')
+    });
 
     fetch.mockResolvedValue({
       ok: true,
@@ -78,14 +88,24 @@ describe('mock command', () => {
     createDirectory.mockReturnValue(true);
     writeFile.mockResolvedValue();
     spawn.mockReturnValue({
+      stderr: {
+        on: jest.fn()
+      },
+      stdout: {
+        on: childEventEmitter
+      },
       on: jest.fn(),
       kill: jest.fn(),
       killed: false,
+      unref: jest.fn(),
+      ref: jest.fn(),
     });
   });
 
   afterEach(() => {
-    jest.useRealTimers();
+    fetch.mockClear();
+    writeFile.mockClear();
+    childEventEmitter.mockClear();
     jest.restoreAllMocks();
   });
 
@@ -103,6 +123,7 @@ describe('mock command', () => {
       port: 4010,
       host: 'localhost',
       downloadOnly: true,
+      ...config,
     };
 
     await handler(argv);
@@ -134,6 +155,7 @@ describe('mock command', () => {
       port: 4010,
       host: 'localhost',
       downloadOnly: true,
+      ...config,
     };
 
     await expect(handler(argv)).rejects.toThrow('Failed to download API specification');
@@ -152,6 +174,7 @@ describe('mock command', () => {
       port: 4010,
       host: 'localhost',
       downloadOnly: true,
+      ...config,
     };
 
     await expect(handler(argv)).rejects.toThrow('Failed to download API specification');
@@ -161,6 +184,7 @@ describe('mock command', () => {
       'Network error',
     );
   });
+
   test('should handle directory creation failure', async () => {
     createDirectory.mockImplementation(() => {
       throw new Error('Permission denied');
@@ -171,6 +195,7 @@ describe('mock command', () => {
       port: 4010,
       host: 'localhost',
       downloadOnly: true,
+      ...config,
     };
 
     await expect(handler(argv)).rejects.toThrow('Failed to create mock directory');
@@ -181,8 +206,6 @@ describe('mock command', () => {
     );
   });
 
-
-
   test('should use cached spec when file exists and --latest is not used', async () => {
     existsSync.mockReturnValue(true); // File exists
 
@@ -192,6 +215,7 @@ describe('mock command', () => {
       host: 'localhost',
       downloadOnly: true,
       latest: false,
+      ...config,
     };
 
     await handler(argv);
@@ -201,7 +225,9 @@ describe('mock command', () => {
     expect(console.log).toHaveBeenCalledWith(
       expect.stringContaining('Using cached SMS API specification'),
     );
-    expect(console.log).toHaveBeenCalledWith(
+
+    expect(console.log).toHaveBeenNthCalledWith(
+      2,
       'Spec already exists. Use --latest to re-download the latest version.',
     );
   });
@@ -215,6 +241,7 @@ describe('mock command', () => {
       host: 'localhost',
       downloadOnly: true,
       latest: true,
+      ...config,
     };
 
     await handler(argv);
@@ -240,6 +267,7 @@ describe('mock command', () => {
       host: 'localhost',
       downloadOnly: true,
       latest: false,
+      ...config,
     };
 
     await handler(argv);
@@ -256,17 +284,19 @@ describe('mock command', () => {
     );
   });
 
-  test.only('should start Prism server with bundled CLI', async () => {
-    const mockProcess = {
-      on: jest.fn(),
-      kill: jest.fn(),
-      killed: false,
-    };
+  test('should start Prism server with bundled CLI', async () => {
+    childEventEmitter.mockImplementationOnce((_, callback) => {
+      callback('Prisim is listening on port 42')
+    });
 
-    spawn.mockReturnValue(mockProcess);
+    jest.unstable_mockModule('../../src/ux/input.js', () => {
+      return {}
+    });
 
     // Mock inputFromTTY to simulate immediate quit
     const { inputFromTTY } = await import('../../src/ux/input.js');
+    console.log(inputFromTTY)
+
     inputFromTTY.mockRejectedValue('Shutdown');
 
     const argv = {
@@ -274,6 +304,7 @@ describe('mock command', () => {
       port: 4010,
       host: 'localhost',
       downloadOnly: false,
+      ...config,
     };
 
     await handler(argv);

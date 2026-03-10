@@ -15,7 +15,8 @@ import { mockConsole } from '../../helpers.js';
 import { Client } from '@vonage/server-client';
 
 const spinnerMock = jest.fn();
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 jest.unstable_mockModule('../../../src/ux/spinner.js', () => ({ spinner: spinnerMock }));
@@ -29,13 +30,12 @@ const makeSDK = (listAllApplications) => ({
 describe('Command: vonage apps', () => {
   beforeEach(() => {
     spinnerMock.mockReset();
-    yargs.exit.mockReset();
     spinnerMock.mockReturnValue({ stop: jest.fn(), fail: jest.fn() });
     mockConsole();
   });
 
   test('Will list applications when there are none', async () => {
-    const sdk = makeSDK(async function* () { yield* []; });
+    const sdk = makeSDK(async function*() { yield* []; });
 
     await handler({ SDK: sdk });
 
@@ -45,7 +45,7 @@ describe('Command: vonage apps', () => {
 
   test('Will list one application that does not have any capabilities', async () => {
     const app = getTestApp();
-    const listAllApplications = jest.fn(async function* () { yield app; });
+    const listAllApplications = jest.fn(async function*() { yield app; });
     const sdk = makeSDK(listAllApplications);
 
     await handler({ SDK: sdk });
@@ -77,7 +77,7 @@ describe('Command: vonage apps', () => {
       ),
     );
     const appTwo = getTestApp();
-    const sdk = makeSDK(async function* () { yield appOne; yield appTwo; });
+    const sdk = makeSDK(async function*() { yield appOne; yield appTwo; });
 
     await handler({ SDK: sdk });
 
@@ -99,7 +99,7 @@ describe('Command: vonage apps', () => {
     const appOne = getTestApp();
     const appTwo = getTestApp();
     const appThree = getTestApp();
-    const sdk = makeSDK(async function* () { yield appOne; yield appTwo; yield appThree; });
+    const sdk = makeSDK(async function*() { yield appOne; yield appTwo; yield appThree; });
 
     await handler({ SDK: sdk, appName: appTwo.name });
 
@@ -119,7 +119,7 @@ describe('Command: vonage apps', () => {
     const appOne = addVoiceCapabilities(getTestApp());
     const appTwo = getTestApp();
     const appThree = addVoiceCapabilities(addMessagesCapabilities(getTestApp()));
-    const sdk = makeSDK(async function* () { yield appOne; yield appTwo; yield appThree; });
+    const sdk = makeSDK(async function*() { yield appOne; yield appTwo; yield appThree; });
 
     await handler({ SDK: sdk, capability: coerceCapability('voice') });
 
@@ -141,7 +141,7 @@ describe('Command: vonage apps', () => {
     const appOne = addVoiceCapabilities(getTestApp());
     const appTwo = getTestApp();
     const appThree = addMessagesCapabilities(getTestApp());
-    const sdk = makeSDK(async function* () { yield appOne; yield appTwo; yield appThree; });
+    const sdk = makeSDK(async function*() { yield appOne; yield appTwo; yield appThree; });
 
     await handler({ SDK: sdk, capability: coerceCapability('voice,messages') });
 
@@ -163,7 +163,7 @@ describe('Command: vonage apps', () => {
     const appOne = addVoiceCapabilities(getTestApp());
     const appTwo = addVoiceCapabilities(addMessagesCapabilities(getTestApp()));
     const appThree = addMessagesCapabilities(getTestApp());
-    const sdk = makeSDK(async function* () { yield appOne; yield appTwo; yield appThree; });
+    const sdk = makeSDK(async function*() { yield appOne; yield appTwo; yield appThree; });
 
     await handler({ SDK: sdk, capability: coerceCapability('voice+messages') });
 
@@ -178,7 +178,7 @@ describe('Command: vonage apps', () => {
 
   test('Will output JSON', async () => {
     const app = getTestApp();
-    const sdk = makeSDK(async function* () { yield app; });
+    const sdk = makeSDK(async function*() { yield app; });
 
     await handler({ SDK: sdk, json: true });
 
@@ -188,7 +188,7 @@ describe('Command: vonage apps', () => {
 
   test('Will output YAML', async () => {
     const app = getTestApp();
-    const sdk = makeSDK(async function* () { yield app; });
+    const sdk = makeSDK(async function*() { yield app; });
 
     await handler({ SDK: sdk, yaml: true });
 
@@ -208,7 +208,7 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will exit 99 when API calls fails', async () => {
-    const sdk = makeSDK(async function* () {
+    const sdk = makeSDK(async function*() {
       yield* [];
       throw new Error('API Error');
     });
@@ -216,7 +216,7 @@ describe('Command: vonage apps', () => {
     await handler({ SDK: sdk });
 
     expect(console.table).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
+    expect(exitMock).toHaveBeenCalledWith(99);
   });
 });
 

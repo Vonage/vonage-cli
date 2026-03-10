@@ -9,6 +9,8 @@ import { coerceJSON } from '../../utils/coerceJSON.js';
 import yargs from 'yargs';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
+const y = yargs();
+
 const conversationEvents = Object.values(EventType);
 
 const conversationFlags = {
@@ -121,7 +123,7 @@ export const handler = async (argv) => {
 
   if (!await validateEvents(callbackEventMask)) {
     console.log('Aborting');
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
 

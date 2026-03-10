@@ -4,7 +4,7 @@ import { dumpCommand } from '../ux/dump.js';
 
 export const command = 'auth [command]';
 
-export const description = 'Manage authentication information',
+export const description = 'Manage authentication information';
 
 export const builder = (yargs) => yargs
   .commandDir('auth')

@@ -6,9 +6,8 @@ import { buildCountryString, countryCodes, getCountryName } from '../../../src/u
 import { getTestPhoneNumber } from '../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,

@@ -1,9 +1,8 @@
 import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { displayDate } from '../../../src/ux/locale.js';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,

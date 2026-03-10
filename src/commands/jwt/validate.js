@@ -9,6 +9,7 @@ import { jwtFlags } from './create.js';
 import { appId, privateKey } from '../../credentialFlags.js';
 import yargs from 'yargs';
 
+const y = yargs();
 class ExpiredTokenError extends Error {
   constructor() {
     super('Token has expired or is not yet active');
@@ -202,12 +203,12 @@ export const handler = (argv) => {
   } catch (error) {
     switch (error.constructor.name) {
       case 'ExpiredTokenError':
-        yargs.exit(127);
+        y.exit(127);
         break;
 
       case 'InvalidClaimError':
       default:
-        yargs.exit(22);
+        y.exit(22);
         break;
 
     }

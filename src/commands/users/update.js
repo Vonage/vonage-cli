@@ -10,6 +10,8 @@ import {
   normalizeWss,
 } from './create.js';
 
+const y = yargs();
+
 export const command = 'update <id>';
 
 export const desc = 'Update a user';
@@ -34,13 +36,13 @@ export const handler = async (argv) => {
 
   if (!validateSip(argv)) {
     console.error('Invalid SIP configuration');
-    yargs.exit(2);
+    y.exit(2);
     return;
   }
 
   if (!validateWss(argv)) {
     console.error('Invalid Websocket configuration');
-    yargs.exit(2);
+    y.exit(2);
     return;
   }
 
@@ -66,9 +68,9 @@ export const handler = async (argv) => {
       pstn: argv.pstnNumber ? argv.pstnNumber?.map((number) => ({ number: number })) : user.channels?.pstn,
       sms: argv.smsNumber ? argv.smsNumber?.map((number) => ({ number: number })) : user.channels?.sms,
       mms: argv.mmsNumber ? argv.mmsNumber?.map((number) => ({ number: number })) : user.channels?.mms,
-      whatsapp: argv.whatsAppNumber ? argv.whatsAppNumber?.map((number) => ({ number: number})) : user.channels?.whatsapp,
-      viber: argv.viberNumber ? argv.viberNumber?.map((number) => ({ number: number})) : user.channels?.viber,
-      messenger: argv.facebookMessengerId ? argv.facebookMessengerId?.map((id) => ({ id: id})) : user.channels?.messenger,
+      whatsapp: argv.whatsAppNumber ? argv.whatsAppNumber?.map((number) => ({ number: number })) : user.channels?.whatsapp,
+      viber: argv.viberNumber ? argv.viberNumber?.map((number) => ({ number: number })) : user.channels?.viber,
+      messenger: argv.facebookMessengerId ? argv.facebookMessengerId?.map((id) => ({ id: id })) : user.channels?.messenger,
     },
   }));
 

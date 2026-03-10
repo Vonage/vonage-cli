@@ -9,6 +9,8 @@ import { apiKey, apiSecret } from '../../../credentialFlags.js';
 import { json, yaml } from '../../../commonFlags.js';
 import { dumpCommand } from '../../../ux/dump.js';
 
+const y = yargs();
+
 export const command = 'link <id> <msisdn>';
 
 export const desc = 'Link a number to an application';
@@ -58,7 +60,7 @@ export const handler = async (argv) => {
 
   if (!number) {
     console.error('Number not found');
-    yargs.exit(20);
+    y.exit(20);
     return;
   }
 

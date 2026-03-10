@@ -9,6 +9,7 @@ import { makeSDKCall } from '../../../utils/makeSDKCall.js';
 import { apiKey, apiSecret } from '../../../credentialFlags.js';
 import { yaml, json } from '../../../commonFlags.js';
 
+const y = yargs();
 export const command = 'list <id>';
 
 export const desc = 'Show all numbers linked to an application';
@@ -106,7 +107,7 @@ export const handler = async (argv) => {
       'This application does not have the voice or messages capability enabled',
     );
 
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
 };

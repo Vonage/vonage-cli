@@ -8,7 +8,8 @@ import { Client } from '@vonage/server-client';
 
 const confirmMock = jest.fn();
 const writeFileMock = jest.fn();
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
@@ -21,7 +22,7 @@ describe('Command: vonage apps create', () => {
     mockConsole();
     confirmMock.mockReset();
     writeFileMock.mockReset();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   test('Should create app and save private key', async () => {

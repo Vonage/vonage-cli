@@ -19,7 +19,8 @@ const readFileSyncMock = jest.fn((path) => {
   return mockFiles.get(path);
 });
 const homedirMock = jest.fn();
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('fs', () => ({
   existsSync: existsSyncMock,
@@ -41,7 +42,7 @@ describe('Middeleware: Config', () => {
     readFileSyncMock.mockClear();
     homedirMock.mockReset();
     homedirMock.mockReturnValue('/dev/null');
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
   afterEach(() => {
@@ -253,7 +254,7 @@ describe('Middeleware: Config', () => {
 
   test('Will exit when no config is found', () => {
     setConfig({});
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
   });
 });
 

@@ -6,6 +6,8 @@ import { displayConversation } from '../../conversations/display.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import yargs from 'yargs';
 
+const y = yargs();
+
 export const command = 'update <id>';
 
 export const desc = 'Update conversation';
@@ -66,7 +68,7 @@ const updateCallback = ({
     params: updateParams(rest),
   }));
 
-  return Object.keys(callback).length > 0 ? callback : undefined ;
+  return Object.keys(callback).length > 0 ? callback : undefined;
 };
 
 const updateParams = ({
@@ -78,7 +80,7 @@ const updateParams = ({
     nccoUrl: callbackNccoUrl,
   }));
 
-  return Object.keys(params).length > 0 ? params : undefined ;
+  return Object.keys(params).length > 0 ? params : undefined;
 };
 
 export const handler = async (argv) => {
@@ -87,7 +89,7 @@ export const handler = async (argv) => {
 
   if (!await validateEvents(callbackEventMask)) {
     console.log('Aborting');
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
   const conversation = await makeSDKCall(

@@ -8,6 +8,8 @@ import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 
+const y = yargs();
+
 export const command = 'create <conversation-id>';
 
 export const desc = 'Create a member in a conversation';
@@ -346,7 +348,7 @@ export const handler = async (argv) => {
 
   if (!argv.userId && !argv.userName) {
     console.error(`You must provide either the ${dumpCommand('--user-id')} or ${dumpCommand('--user-name')} flag`);
-    yargs.exit(1);
+    y.exit(1);
   }
 
   await makeSDKCall(

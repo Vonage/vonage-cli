@@ -5,6 +5,7 @@ import { displayFullUser } from '../../users/display.js';
 import { coerceUrl } from '../../utils/coerceUrl.js';
 import { coerceJSON } from '../../utils/coerceJSON.js';
 
+const y = yargs();
 const userFlags = {
   'name': {
     type: 'string',
@@ -129,7 +130,7 @@ const validateSip = ({ sipUrl, sipUsername, sipPassword }) => {
     || !sipPassword
     || sipUsername.length > 0 && sipUsername.length !== sipPassword.length
   ) {
-    yargs.exit(2);
+    y.exit(2);
     return false;
   }
 
@@ -156,12 +157,12 @@ const validateWss = ({ websocketUrl, websocketHeaders, websocketContentType }) =
   }
 
   if (websocketContentType?.length > 0 && websocketContentType.length !== websocketUrl.length) {
-    yargs.exit(2);
+    y.exit(2);
     return false;
   }
 
   if (websocketHeaders?.length > 0 && websocketHeaders.length !== websocketUrl.length) {
-    yargs.exit(2);
+    y.exit(2);
     return false;
   }
 
@@ -210,13 +211,13 @@ export const handler = async (argv) => {
 
   if (!validateSip(argv)) {
     console.error('Invalid SIP configuration');
-    yargs.exit(2);
+    y.exit(2);
     return;
   }
 
   if (!validateWss(argv)) {
     console.error('Invalid Websocket configuration');
-    yargs.exit(2);
+    y.exit(2);
     return;
   }
 

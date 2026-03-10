@@ -10,9 +10,8 @@ const checkOkToWriteMock = jest.fn();
 const writeFileMock = jest.fn();
 const writeJSONFileMock = jest.fn();
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({
   default: yargs,
@@ -42,7 +41,7 @@ describe('Command: vonage auth set', () => {
     checkOkToWriteMock.mockReset();
     writeFileMock.mockReset();
     writeJSONFileMock.mockReset();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
     Vonage.mockReset();
     Vonage.mockImplementation(() => ({
       applications: {
@@ -166,7 +165,7 @@ describe('Command: vonage auth set', () => {
     await set.handler(args);
 
     expect(writeJSONFileMock).toHaveBeenCalled();
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test('Should not write when API Key and Secret validation fails', async () => {
@@ -185,7 +184,7 @@ describe('Command: vonage auth set', () => {
     await set.handler(args);
 
     expect(writeJSONFileMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(5);
+    expect(exitMock).toHaveBeenCalledWith(5);
   });
 
   test('Should not write when App Id and Private Key fails', async () => {
@@ -207,7 +206,7 @@ describe('Command: vonage auth set', () => {
     await set.handler(args);
 
     expect(writeJSONFileMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(5);
+    expect(exitMock).toHaveBeenCalledWith(5);
   });
 
   test('Should not write when createDirectory fails', async () => {

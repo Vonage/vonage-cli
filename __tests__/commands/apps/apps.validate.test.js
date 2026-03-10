@@ -23,7 +23,8 @@ const testAppCapability = {
   'video': addVideoCapabilities,
 };
 
-const yargs = { exit: jest.fn() };
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
@@ -33,15 +34,15 @@ describe('Command: vonage apps', () => {
   // I have no idea why these tests sometimes fail
   jest.retryTimes(3);
   beforeEach(() => {
-    yargs.exit.mockReset();
+    exitMock.mockReset();
     mockConsole();
   });
 
   test('Will validate application', async () => {
-    const app = {...getTestApp()};
+    const app = { ...getTestApp() };
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
 
     const sdkMock = {
       applications: {
@@ -57,7 +58,7 @@ describe('Command: vonage apps', () => {
       SDK: sdkMock,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
@@ -66,11 +67,11 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate applications key', async () => {
-    const app = {...getTestApp()};
+    const app = { ...getTestApp() };
     app.keys.publicKey = testPublicKey;
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
 
     const sdkMock = {
       applications: {
@@ -87,7 +88,7 @@ describe('Command: vonage apps', () => {
       privateKeyFile: testPrivateKey,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -96,11 +97,11 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will fail to validate applications key', async () => {
-    const app = {...getTestApp()};
+    const app = { ...getTestApp() };
     app.keys.publicKey = testPublicKey;
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
 
     const sdkMock = {
       applications: {
@@ -117,14 +118,14 @@ describe('Command: vonage apps', () => {
       privateKeyFile: faker.string.alpha(32),
     });
 
-    expect(yargs.exit).toHaveBeenCalledWith(10);
+    expect(exitMock).toHaveBeenCalledWith(10);
   });
 
   test.each(Object.keys(testAppCapability))('Will validate application has %s capability', async (capability) => {
-    const app = testAppCapability[capability]({...getTestApp()});
+    const app = testAppCapability[capability]({ ...getTestApp() });
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
 
     const sdkMock = {
       applications: {
@@ -141,14 +142,14 @@ describe('Command: vonage apps', () => {
       [capability]: true,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test.each(Object.keys(testAppCapability))('Will not validate application missing %s capability', async (capability) => {
-    const app = {...getTestApp()};
+    const app = { ...getTestApp() };
 
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: []});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
 
     const sdkMock = {
       applications: {
@@ -165,15 +166,15 @@ describe('Command: vonage apps', () => {
       [capability]: true,
     });
 
-    expect(yargs.exit).toHaveBeenCalledWith(5);
+    expect(exitMock).toHaveBeenCalledWith(5);
   });
 
   test('Will validate voice application has linked number', async () => {
-    const app = addVoiceCapabilities({...getTestApp()});
+    const app = addVoiceCapabilities({ ...getTestApp() });
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -190,7 +191,7 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -199,11 +200,11 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate messages application has linked number', async () => {
-    const app = addMessagesCapabilities({...getTestApp()});
+    const app = addMessagesCapabilities({ ...getTestApp() });
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -220,7 +221,7 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       3,
@@ -229,12 +230,12 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will validate application has linked multiple numbers', async () => {
-    const app = addMessagesCapabilities({...getTestApp()});
+    const app = addMessagesCapabilities({ ...getTestApp() });
 
     const numberNine = getTestPhoneNumber();
     const numberEight = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 2, numbers: [numberEight, numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 2, numbers: [numberEight, numberNine] });
 
     const sdkMock = {
       applications: {
@@ -251,7 +252,7 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn, numberEight.msisdn],
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       4,
@@ -260,12 +261,12 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will not validate application that is missing linked number', async () => {
-    const app = addVideoCapabilities(addMessagesCapabilities({...getTestApp()}));
+    const app = addVideoCapabilities(addMessagesCapabilities({ ...getTestApp() }));
 
     const numberNine = getTestPhoneNumber();
-    const linkedNumber= getTestPhoneNumber().msisdn;
+    const linkedNumber = getTestPhoneNumber().msisdn;
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -282,7 +283,7 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [linkedNumber],
     });
 
-    expect(yargs.exit).toHaveBeenCalledWith(2);
+    expect(exitMock).toHaveBeenCalledWith(2);
     expect(console.error).toHaveBeenNthCalledWith(
       1,
       'Application is missing linked numbers',
@@ -290,11 +291,11 @@ describe('Command: vonage apps', () => {
   });
 
   test('Will not validate application that has linked number but missing capability', async () => {
-    const app = {...getTestApp()};
+    const app = { ...getTestApp() };
 
     const numberNine = getTestPhoneNumber();
     const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({count: 1, numbers: [numberNine]});
+    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
 
     const sdkMock = {
       applications: {
@@ -311,7 +312,7 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(yargs.exit).toHaveBeenCalledWith(15);
+    expect(exitMock).toHaveBeenCalledWith(15);
     expect(console.error).toHaveBeenNthCalledWith(
       1,
       'Application has numbers linked but is missing messages or voice capabilities',

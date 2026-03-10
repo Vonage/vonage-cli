@@ -6,9 +6,8 @@ import { countryCodes, displayCurrency, buildCountryString } from '../../../src/
 import { getTestPhoneNumber } from '../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const yargs = {
-  exit: jest.fn(),
-};
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 
@@ -81,7 +80,7 @@ describe('Command: numbers buy', () => {
       msisdn: testNumber.msisdn,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
@@ -196,7 +195,7 @@ describe('Command: numbers buy', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(buyNumberMock).toHaveBeenCalled();
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
 
     expect(console.log).toHaveBeenNthCalledWith(
       2,
@@ -244,7 +243,7 @@ describe('Command: numbers buy', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(buyNumberMock).not.toHaveBeenCalled();
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
   });
 
   test('Will handel SDK error', async () => {
@@ -283,7 +282,7 @@ describe('Command: numbers buy', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(buyNumberMock).toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(99);
+    expect(exitMock).toHaveBeenCalledWith(99);
   });
 
   test('Will not purchase number when not found', async () => {
@@ -321,6 +320,6 @@ describe('Command: numbers buy', () => {
 
     expect(numbersMock).toHaveBeenCalled();
     expect(buyNumberMock).not.toHaveBeenCalled();
-    expect(yargs.exit).toHaveBeenCalledWith(44);
+    expect(exitMock).toHaveBeenCalledWith(44);
   });
 });

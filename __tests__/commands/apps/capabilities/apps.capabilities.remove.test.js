@@ -5,24 +5,24 @@ import { dataSets } from '../../../__dataSets__/apps/index.js';
 import { getBasicApplication } from '../../../app.js';
 
 const confirmMock = jest.fn();
-const yargs = { exit: jest.fn() };
-
+const exitMock = jest.fn();
+const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
 jest.unstable_mockModule('yargs', () => ({ default: yargs }));
 
 const { handler } = await import('../../../../src/commands/apps/capabilities/remove.js');
 
-describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, testCases}) => {
+describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({ label, testCases }) => {
   beforeEach(() => {
     mockConsole();
     confirmMock.mockReset();
-    yargs.exit.mockReset();
+    exitMock.mockReset();
   });
 
-  const removeTestCases = testCases.filter(({args}) => args.action === 'rm');
+  const removeTestCases = testCases.filter(({ args }) => args.action === 'rm');
 
-  test.each(removeTestCases)('Will $label', async ({app, args, expected}) => {
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+  test.each(removeTestCases)('Will $label', async ({ app, args, expected }) => {
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -39,13 +39,13 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
       ...args,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
     expect(getAppMock).toHaveBeenCalledWith(app.id);
     expect(updateAppMock).toHaveBeenCalledWith(expected);
   });
 
-  test.each(removeTestCases)('Will not $label when user declines', async ({app, args}) => {
-    const getAppMock = jest.fn().mockResolvedValue({...app});
+  test.each(removeTestCases)('Will not $label when user declines', async ({ app, args }) => {
+    const getAppMock = jest.fn().mockResolvedValue({ ...app });
     const updateAppMock = jest.fn().mockResolvedValue();
     const sdkMock = {
       applications: {
@@ -62,7 +62,7 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
       ...args,
     });
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
     expect(getAppMock).toHaveBeenCalledWith(app.id);
     expect(updateAppMock).not.toHaveBeenCalled();
   });
@@ -80,7 +80,7 @@ describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({label, 
 
     confirmMock.mockResolvedValue(false);
 
-    expect(yargs.exit).not.toHaveBeenCalled();
+    expect(exitMock).not.toHaveBeenCalled();
     await handler({
       SDK: sdkMock,
       id: app.id,

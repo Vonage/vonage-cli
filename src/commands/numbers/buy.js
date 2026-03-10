@@ -10,6 +10,7 @@ import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import { apiKey, apiSecret } from '../../credentialFlags.js';
 import { yaml, json, force } from '../../commonFlags.js';
 
+const y = yargs();
 const flags = {
   'target-api-key': {
     describe: 'Purchase this number for a sub account',
@@ -49,7 +50,7 @@ export const builder = (yargs) => yargs
 
 
 export const handler = async (argv) => {
-  const { SDK, country, msisdn} = argv;
+  const { SDK, country, msisdn } = argv;
   console.info('Purchase a number');
 
   const { numbers } = await makeSDKCall(
@@ -68,7 +69,7 @@ export const handler = async (argv) => {
 
   if (!numberToPurchase) {
     console.log(`The number ${msisdn} is no longer available for purchase`);
-    yargs.exit(44);
+    y.exit(44);
     return;
   }
 

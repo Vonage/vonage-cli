@@ -9,6 +9,7 @@ import { hideCursor, resetCursor } from '../../ux/cursor.js';
 import ngrok from 'ngrok';
 import { EOL } from 'os';
 
+const y = yargs();
 export const command = 'ngrok <id>';
 
 export const desc = 'Open an ngrok tunnel for application';
@@ -83,7 +84,7 @@ export const handler = async (argv) => {
 
   if (!okToProceed) {
     console.debug('User does not like to take risks');
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
 
@@ -119,7 +120,7 @@ export const handler = async (argv) => {
     console.error('Unable to open ngrok tunnel');
     const reason = error?.body?.details?.err;
     console.log(reason || error);
-    yargs.exit(69);
+    y.exit(69);
     return;
   }
 

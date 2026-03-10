@@ -12,6 +12,8 @@ import { capabilities } from '../../../apps/capabilities.js';
 import { apiKey, apiSecret } from '../../../credentialFlags.js';
 import camelCase from 'camelcase';
 
+const y = yargs();
+
 const allFlags = {
   ...rtcFlags,
   ...videoFlags,
@@ -106,14 +108,14 @@ export const handler = async (argv) => {
   // Check for any invalid flags
   if (invalidFlags.length > 0) {
     console.error(`You cannot use the flag(s) [${invalidFlags.join(', ')}] when updating the ${which} capability`);
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
 
   // Check for required flags (yargs cant nativly do this)
   if (Object.keys(capabilityFlags).length < 1) {
     console.error(`You must provide at least one ${dumpCommand(which + '-*')} flag when updating the ${which} capability`);
-    yargs.exit(1);
+    y.exit(1);
     return;
   }
 

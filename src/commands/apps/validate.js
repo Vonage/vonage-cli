@@ -7,6 +7,7 @@ import { apiKey, apiSecret, privateKey } from '../../credentialFlags.js';
 import yargs from 'yargs';
 import { dumpCommand } from '../../ux/dump.js';
 
+const y = yargs();
 const flagGroup = 'Application Validation';
 
 export const description = 'Validate an application';
@@ -141,7 +142,7 @@ export const handler = async (argv) => {
 
   console.debug(`Application ${application.name} loaded`);
   let allCapabilitiesValid = true;
-  let numbersOk =  true;
+  let numbersOk = true;
 
   const { numbers } = await loadOwnedNumbersFromSDK(
     SDK,
@@ -152,14 +153,14 @@ export const handler = async (argv) => {
     },
   );
 
-  const appNumbers = numbers?.map(({msisdn}) => msisdn);
+  const appNumbers = numbers?.map(({ msisdn }) => msisdn);
   if (linkedNumbers) {
     console.info('Fetching numbers linked to application');
 
     console.debug('Application numbers', appNumbers);
     numbersOk = linkedNumbers.every((number) => {
       const numberIncluded = appNumbers.includes(number);
-      console.log(`Checking if application has number ${number}: ${dumpBoolean({value: numberIncluded, ...dumpConfig})}`);
+      console.log(`Checking if application has number ${number}: ${dumpBoolean({ value: numberIncluded, ...dumpConfig })}`);
       return numberIncluded;
     });
   }
@@ -184,25 +185,25 @@ export const handler = async (argv) => {
 
   console.debug(`Validating capabilities [${capabilitiesToValidate}]`);
 
-  for(const capability of capabilitiesToValidate) {
+  for (const capability of capabilitiesToValidate) {
     allCapabilitiesValid = checkCapability(capability, application) && allCapabilitiesValid;
   }
 
   if (!correctPublicKey) {
     console.error('Application has incorrect public key');
-    yargs.exit(10);
+    y.exit(10);
     return;
   }
 
   if (!allCapabilitiesValid) {
     console.error('Application is missing capabilities');
-    yargs.exit(5);
+    y.exit(5);
     return;
   }
 
   if (!numbersOk) {
     console.error('Application is missing linked numbers');
-    yargs.exit(2);
+    y.exit(2);
     return;
   }
 
@@ -211,7 +212,7 @@ export const handler = async (argv) => {
       || appHasCapability('voice', application))
   ) {
     console.error('Application has numbers linked but is missing messages or voice capabilities');
-    yargs.exit(15);
+    y.exit(15);
     return;
   }
 

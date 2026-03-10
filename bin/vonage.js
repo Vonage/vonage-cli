@@ -1,6 +1,7 @@
 #!/usr/bin/env -S node
+
 import { hideBin } from 'yargs/helpers';
-import yargs from 'yargs/yargs';
+import yargs from 'yargs';
 import { setConfig } from '../src/middleware/config.js';
 import { setupLog } from '../src/middleware/log.js';
 import { checkForUpdate } from '../src/middleware/update.js';
@@ -16,18 +17,18 @@ if (needsUpdate) {
   console.log(`An update is available for the CLI. Please update to version ${latestVersion}`);
   console.log(`Run ${dumpCommand(`npm install -g @vonage/cli@${latestVersion}`)} to update`);
 }
+const yargsInstance = yargs(hideBin(process.argv));
 
-const vonageCLI = yargs(hideBin(process.argv))
-  .fail((_, err) => {
-    yargs.showHelp();
-    if (err) {
-      console.log('');
-      console.error(err.message);
-      console.log('');
-      console.log('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
-    }
-    yargs.exit(99);
-  })
+const vonageCLI = yargsInstance.fail((_, err) => {
+  yargsInstance.showHelp();
+  if (err) {
+    console.log('');
+    console.error(err.message);
+    console.log('');
+    console.log('Please report this error to GitHub: https://github.com/vonage/vonage-cli');
+  }
+  yargsInstance.exit(99);
+})
   .options({
     'verbose': {
       alias: 'v',
@@ -53,7 +54,7 @@ const vonageCLI = yargs(hideBin(process.argv))
   .showHelpOnFail(false)
   .help()
   .alias('help', 'h')
-  .wrap(yargs.terminalWidth());
+  .wrap(yargsInstance.terminalWidth());
 
 const run = async () => {
   if (forceUpdate) {
