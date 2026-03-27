@@ -18,7 +18,7 @@ const regionCurrencyCode = countries[region].currency || 'EUR';
  * @param { string } countryCode - The ISO 3166-1 alpha-2 country code.
  * @returns { string } - A string combining flag and country name.
  */
-const buildCountryString = (countryCode) =>`${getCountryFlag(countryCode)}${getCountryName(countryCode)}`;
+const buildCountryString = (countryCode) => `${getCountryFlag(countryCode)}${getCountryName(countryCode)}`;
 
 /**
  * Returns the emoji flag for the given country.
@@ -43,7 +43,7 @@ const getCountryName = (countryCode) => countries[countryCode].name;
  * @returns { string } - The uppercased and validated country code.
  * @throws { Error } - If the country code is invalid.
  */
-const coerceCountry =  (arg) => {
+const coerceCountry = (arg) => {
   if (!countryCodes.includes(arg.toUpperCase())) {
     throw new Error(`Invalid country code: ${arg}`);
   }
@@ -58,7 +58,7 @@ const coerceCountry =  (arg) => {
  */
 
 /** @type { CountryFlagOption } */
-const countryFlag =  {
+const countryFlag = {
   describe: 'The country using the two character country code in ISO 3166-1 alpha-2 format',
   coerce: coerceCountry,
 };
@@ -67,7 +67,7 @@ const countryFlag =  {
  * Formats a date based on the user's locale.
  *
  * @param { string|Date } date - The date to format.
- * @returns { string|null } - The formatted date string or undefined if input is falsy.
+ * @returns { string|null } - The formatted date string or null if input is falsy.
  */
 const displayDate = (date) => !date ? null : new Date(date).toLocaleString(locale);
 

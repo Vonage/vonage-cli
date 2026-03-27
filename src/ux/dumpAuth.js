@@ -1,7 +1,13 @@
 import { Client } from '@vonage/server-client';
-import { dumpValue } from '../ux/dump.js';
-import { descriptionList } from '../ux/descriptionList.js';
-import { redact } from '../ux/redact.js';
+import { dumpValue } from './dump.js';
+import { descriptionList } from './descriptionList.js';
+import { redact } from './redact.js';
+
+const getPrivateKeyDisplay = (key, noRedact) => {
+  if (!key) return null;
+  if (noRedact) return key;
+  return key.startsWith('-----BEGIN PRIVATE KEY-----') ? 'Is Set' : 'INVALID KEY';
+};
 
 /**
   * Prints out the auth information
@@ -11,25 +17,9 @@ import { redact } from '../ux/redact.js';
   */
 export const dumpAuth = (config, noRedact=false) => {
   const dumpConfig = Client.transformers.camelCaseObjectKeys(config);
-  let privateKey = dumpConfig.privateKey ? 'Is Set' : null;
+  const privateKey = getPrivateKeyDisplay(dumpConfig.privateKey, noRedact);
 
   console.debug('privateKey', privateKey);
-
-  switch(true) {
-  case noRedact === true:
-    privateKey = dumpConfig.privateKey;
-    break;
-
-  case privateKey === null:
-    privateKey = null;
-    break;
-
-  default:
-    privateKey = dumpConfig.privateKey.startsWith('-----BEGIN PRIVATE KEY-----')
-      ? 'Is Set'
-      : 'INVALID KEY';
-    break;
-  }
 
   const output = {};
 

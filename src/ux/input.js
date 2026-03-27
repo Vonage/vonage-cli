@@ -106,13 +106,13 @@ const inputFromTTY = (
   let handlePress;
   let keysPressed = value ? String(value).split('') : [];
 
-  reminderMessage = reminderMessage ?? message;
+  const effectiveReminderMessage = reminderMessage ?? message;
 
-  const printMessageAndKeys = () => reminderMessage
-    && overwriteLine(`${reminderMessage} ${hint && keysPressed.join('').length < 1 ? hint + ' ' : ''}${echo ? keysPressed.join('') : ''}`);
+  const printMessageAndKeys = () => effectiveReminderMessage
+    && overwriteLine(`${effectiveReminderMessage} ${hint && keysPressed.join('').length < 1 ? hint + ' ' : ''}${echo ? keysPressed.join('') : ''}`);
 
   const restartReminder = () => {
-    if (!reminderMessage) {
+    if (!effectiveReminderMessage) {
       return;
     }
 

@@ -14,11 +14,11 @@ export const formatValue = (val) => {
   const type = Array.isArray(val) ? 'array' : typeof val;
 
   switch (type) {
-  case 'number':
-  case 'bigint':
-    return chalk.dim(String(val));
-  case 'string':
-  default:
-    return chalk.blue(val);
+    case 'number':
+    case 'bigint':
+      return chalk.dim(String(val));
+    case 'string':
+    default:
+      return chalk.blue(val);
   }
 };

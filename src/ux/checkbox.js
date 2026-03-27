@@ -3,36 +3,17 @@ import { detectScreenReader } from './detectScreenReader.js';
 
 const isReader = detectScreenReader();
 
-/**
- * Formats a selected checkbox option.
- *
- * @param { string } option - The option text to format
- * @returns { string } - The formatted option string
- */
 const checkboxSelectedFormatter = (option) => isReader
   ? `Option ${option}, checked`
   : `☑ ${option}`;
 
-/**
- * Formats an unselected checkbox option.
- *
- * @param { string } option - The option text to format
- * @returns { string } - The formatted option string
- */
 const checkboxUnselectedFormatter = (option) => isReader
   ? `Option ${option}, unchecked`
   : `☐ ${option}`;
 
-/**
- * Formats a highlighted checkbox option.
- *
- * @param { string } option - The option text to format
- * @returns { string } - The formatted option string
- */
 const checkboxHighlightedFormatter = (option) => isReader
   ? `Option ${option}, selected`
   : `${option} ←`;
-
 
 /**
  * @typedef { import('./select').SelectItem } SelectItem
@@ -66,6 +47,4 @@ export const checkbox = ({
   formatSelected,
 });
 
-export { checkboxSelectedFormatter };
-export { checkboxUnselectedFormatter };
-export { checkboxHighlightedFormatter };
+export { checkboxSelectedFormatter, checkboxUnselectedFormatter, checkboxHighlightedFormatter };

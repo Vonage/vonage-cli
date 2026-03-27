@@ -1,4 +1,5 @@
 import { printEmoji } from './printEmoji.js';
+
 /**
  * @typedef { Object } DumpBooleanOptions
  * @property { boolean } value - The boolean value to format
@@ -14,11 +15,24 @@ import { printEmoji } from './printEmoji.js';
  * @param { DumpBooleanOptions } options
  * @returns { string } - The formatted string
  */
-const dumpBoolean = ({value, trueWord = 'Yes', falseWord = 'No', includeText=false, noEmoji=false}) => value
+const dumpBoolean = ({ value, trueWord = 'Yes', falseWord = 'No', includeText = false, noEmoji = false }) => value
   ? `${!noEmoji ? printEmoji('✅') : ''}${includeText ? trueWord : ''}`
   : `${!noEmoji ? printEmoji('❌') : ''}${includeText ? falseWord : ''}`;
 
 export { dumpBoolean };
+
+/**
+ * Creates a boolean formatter function with preset words and display options.
+ *
+ * @param { string } trueWord - Text when true
+ * @param { string } falseWord - Text when false
+ * @param { boolean } [includeText=false] - Whether to show the label
+ * @param { boolean } [noEmoji=false] - Whether to omit emoji
+ * @returns { Function } - A (value, includeText?) => string formatter
+ */
+const createBooleanFormatter = (trueWord, falseWord, includeText = false, noEmoji = false) =>
+  (value, overrideIncludeText = includeText) =>
+    dumpBoolean({ value, trueWord, falseWord, includeText: overrideIncludeText, noEmoji });
 
 /**
  * Formats a boolean value as "Yes" or "No", with optional emoji.
@@ -27,12 +41,7 @@ export { dumpBoolean };
  * @param { boolean } [includeText=true] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-export const dumpYesNo = (value, includeText=true) => dumpBoolean({
-  value: value,
-  trueWord: 'Yes',
-  falseWord: 'No',
-  includeText: includeText,
-});
+export const dumpYesNo = createBooleanFormatter('Yes', 'No', true);
 
 /**
  * Formats a boolean value as "On" or "Off", without emoji.
@@ -40,13 +49,7 @@ export const dumpYesNo = (value, includeText=true) => dumpBoolean({
  * @param { boolean } value - The value to display
  * @returns { string } - The formatted string
  */
-export const dumpOnOff = (value) => dumpBoolean({
-  value: value,
-  trueWord: 'On',
-  falseWord: 'Off',
-  includeText: true,
-  noEmoji: true,
-});
+export const dumpOnOff = createBooleanFormatter('On', 'Off', true, true);
 
 /**
  * Formats a boolean value as "Enabled" or "Disabled", with optional emoji and optional label.
@@ -55,12 +58,7 @@ export const dumpOnOff = (value) => dumpBoolean({
  * @param { boolean } [includeText=false] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-export const dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
-  value: value,
-  trueWord: 'Enabled',
-  falseWord: 'Disabled',
-  includeText: includeText,
-});
+export const dumpEnabledDisabled = createBooleanFormatter('Enabled', 'Disabled');
 
 /**
  * Formats a boolean value as "Valid" or "Invalid", with optional emoji and optional label.
@@ -69,12 +67,7 @@ export const dumpEnabledDisabled = (value, includeText=false) => dumpBoolean({
  * @param { boolean } [includeText=false] - Whether to show the text label
  * @returns { string } - The formatted string
  */
-export const dumpValidInvalid = (value, includeText=false) => dumpBoolean({
-  value: value,
-  trueWord: 'Valid',
-  falseWord: 'Invalid',
-  includeText: includeText,
-});
+export const dumpValidInvalid = createBooleanFormatter('Valid', 'Invalid');
 
 /**
  * If value is truthy, displays the value string; otherwise, displays "Off".
@@ -83,7 +76,7 @@ export const dumpValidInvalid = (value, includeText=false) => dumpBoolean({
  * @returns { string } - The formatted string
  */
 export const dumpOffOrValue = (value) => dumpBoolean({
-  value: value,
+  value,
   trueWord: value,
   falseWord: 'Off',
   includeText: true,

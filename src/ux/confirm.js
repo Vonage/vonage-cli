@@ -40,7 +40,7 @@ export const confirm = async (
     const answer = await inputFromTTY(
       {
         ...options,
-        message: message,
+        message,
         length: 1,
       },
     );
@@ -57,5 +57,5 @@ export const confirm = async (
     }
 
     process.stderr.write(`${EOL}${invalidMessage}${EOL}`);
-  };
+  }
 };

@@ -1,6 +1,8 @@
 import { EOL } from 'os';
 import readline from 'readline';
+
 const CLEAR_SCREEN = '\x1b[2J\x1b[0;0H';
+const CLEAR_LINE = '\r\x1b[2K';
 
 /**
  * Clear the entire screen and reset the cursor.
@@ -26,7 +28,7 @@ const clearPreviousLines = (howMany, stream = process.stderr) => {
  * @param { string } str - The string to print
  * @param { stream.Writable } [stream=process.stderr] - Stream to write to
  */
-const overwriteLine = (str, stream = process.stderr) => stream.write(`\r\x1b[2K${str}`);
+const overwriteLine = (str, stream = process.stderr) => stream.write(`${CLEAR_LINE}${str}`);
 
 /**
  * Clears the current line, writes a string, and moves to a new line.
@@ -39,7 +41,4 @@ const overwriteWithNewLine = (str, stream = process.stderr) => (
   stream.write(EOL)
 );
 
-export { overwriteLine };
-export { overwriteWithNewLine };
-export { clearScreen };
-export { clearPreviousLines };
+export { overwriteLine, overwriteWithNewLine, clearScreen, clearPreviousLines };

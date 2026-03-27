@@ -82,8 +82,7 @@ const table = (
   }
 
   if (isScreenReader) {
-    [...data.map(descriptionList), EOL].join(EOL);
-    return;
+    return [...data.map(descriptionList), EOL].join(EOL);
   }
 
   const headers = Object.keys(data[0]);

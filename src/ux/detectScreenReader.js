@@ -14,16 +14,7 @@ const detectScreenReader = () => {
   const screenReaderEnvVars = ['SCREENREADER', 'ACCESSIBILITY', 'NVDA', 'JAWS', 'VOICEOVER', 'ORCA'];
   const isEnvVarEnabled = screenReaderEnvVars.some((envVar) => envVars[envVar]?.toLowerCase() === 'true' || envVars[envVar]?.toLowerCase() === 'enabled');
 
-  if (isEnvVarEnabled) {
-    return true;
-  }
-
-  if (accessibility === true) {
-    return true;
-  }
-
-  // Default to false if no conditions met
-  return false;
+  return isEnvVarEnabled || accessibility === true;
 };
 
 /**
@@ -31,13 +22,7 @@ const detectScreenReader = () => {
  *
  * @returns { boolean } - True if the user passed in the plain text flag
  */
-const detectPlainOutput = () => {
-  if (plainOutput) {
-    return true;
-  }
-
-  return detectScreenReader();
-};
+const detectPlainOutput = () => plainOutput || detectScreenReader();
 
 /**
  * Returns a rate at which to refresh dynamic content

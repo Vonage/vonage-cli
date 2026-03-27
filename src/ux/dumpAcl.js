@@ -1,5 +1,5 @@
 import { table, getBorderCharacters } from 'table';
-import {status } from '../utils/aclDiff.js';
+import { status } from '../utils/aclDiff.js';
 
 const tableConfig = {
   singleLine: true,
@@ -51,7 +51,7 @@ const dumpAclDiff = ({paths}, infoOnly = false) => {
     const messageParts = [];
 
     if ([status.MISSING, status.PRESENT].includes(state)) {
-      messageParts.push('present in token');
+      messageParts.push(dumpStatus(state));
     }
 
     if (methodsStatus !== status.OK) {

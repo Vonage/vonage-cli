@@ -1,6 +1,6 @@
 import { inputFromTTY } from './input.js';
 
-const prompt = (
+const prompt = async (
   message,
   {
     required = false,
@@ -9,9 +9,9 @@ const prompt = (
   } = {},
 ) => {
   while (true) {
-    const result = inputFromTTY({
+    const result = await inputFromTTY({
       ...options,
-      message: message,
+      message,
     });
 
     if (required && !result) {
@@ -64,9 +64,7 @@ export const numberPrompt = async (
     }
 
     return number;
-  };
-
-
+  }
 };
 
 export const urlPrompt = async (
@@ -118,7 +116,7 @@ export const urlPrompt = async (
 
     if (allowedProtocols.includes(url.protocol)) {
       return {
-        method: method,
+        method,
         url: url.toString(),
       };
     }

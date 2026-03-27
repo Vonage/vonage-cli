@@ -1,25 +1,21 @@
+const CURSOR_SHOW = '\u001B[?25h';
+const CURSOR_HIDE = '\u001B[?25l';
+
 const resetCursor = () => {
-  process.stderr.write('\u001B[?25h');
-  process.stdout.write('\u001B[?25h');
+  process.stderr.write(CURSOR_SHOW);
+  process.stdout.write(CURSOR_SHOW);
 };
 
 const hideCursor = () => {
-  process.stderr.write('\u001B[?25l');
-  process.stdout.write('\u001B[?25l');
+  process.stderr.write(CURSOR_HIDE);
+  process.stdout.write(CURSOR_HIDE);
 };
-
-const exitAndShowCursor = () => {
-  resetCursor();
-};
-
 
 process.on('exit', resetCursor);
-process.on('SIGINT', exitAndShowCursor);
-process.on('SIGTERM', exitAndShowCursor);
-process.on('SIGQUIT', exitAndShowCursor);
-process.on('SIGHUP', exitAndShowCursor);
+process.on('SIGINT', resetCursor);
+process.on('SIGTERM', resetCursor);
+process.on('SIGQUIT', resetCursor);
+process.on('SIGHUP', resetCursor);
 
-export { hideCursor };
-export { resetCursor };
-export { exitAndShowCursor };
+export { hideCursor, resetCursor };
 

@@ -1,5 +1,8 @@
 import chalk from 'chalk';
 import { EOL } from 'os';
+import { formatValue } from './formatValue.js';
+
+const INDENT_STEP = 2;
 
 /**
  * Recursively formats detail values for description list.
@@ -44,12 +47,12 @@ const descriptionDetail = (value, term, options) => {
  */
 const increaseIndent = ({ indent, ...rest }) => ({
   ...rest,
-  indent: Math.max(indent + 2, 0),
+  indent: Math.max(indent + INDENT_STEP, 0),
 });
 
-const decreseIndent = ({ indent, ...rest }) => ({
+const decreaseIndent = ({ indent, ...rest }) => ({
   ...rest,
-  indent: Math.max(indent - 2, 0),
+  indent: Math.max(indent - INDENT_STEP, 0),
 });
 
 const indentTerm = (term, options) => `${' '.repeat(options.indent)}${term}`;
@@ -89,7 +92,7 @@ const describeObject = (data, options) => [
       }
     }).join(EOL),
   EOL,
-  indentTerm('}', decreseIndent(options)),
+  indentTerm('}', decreaseIndent(options)),
 ].join('');
 
 /**
@@ -127,28 +130,13 @@ const describeArray = (data, options) => [
       }
     }).join(EOL),
   EOL,
-  indentTerm(']', decreseIndent(options)),
+  indentTerm(']', decreaseIndent(options)),
 ].join('');
 
 const defaults = {
   indent: 0,
   termFormatter: chalk.bold,
-  detailFormatter: (val) => {
-    if (val === undefined || val === null) {
-      return chalk.dim.yellow('Not Set');
-    }
-
-    const type = Array.isArray(val) ? 'array' : typeof val;
-
-    switch (type) {
-    case 'number':
-    case 'bigint':
-      return chalk.dim(String(val));
-    case 'string':
-    default:
-      return chalk.blue(val);
-    }
-  },
+  detailFormatter: formatValue,
   padding: 2,
   numKeys: 3,
 };
@@ -158,11 +146,8 @@ const defaults = {
  *
  * @param Array|Object items - A list of items.
  */
-const descriptionList = (
-  items,
-  options = defaults,
-) => {
-  options = {
+const descriptionList = (items, options = defaults) => {
+  const resolvedOptions = {
     ...defaults,
     ...options,
   };
@@ -170,7 +155,7 @@ const descriptionList = (
   return (!Array.isArray(items)
     ? Object.entries(items)
     : items).map(
-    ([term, detail]) => `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`,
+    ([term, detail]) => `${indentTerm(term, resolvedOptions)}: ${descriptionDetail(detail, term, resolvedOptions)}`,
   ).join(EOL);
 };
 

@@ -94,7 +94,7 @@ export const progress = ({
         message,
         ' ',
         openChar,
-        completedChar.repeat(completedLength > -1 ? completedLength : 0),
+        completedChar.repeat(Math.max(0, completedLength)),
         arrow,
         remainingChar.repeat(remainingLength),
         closeChar,
