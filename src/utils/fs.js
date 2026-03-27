@@ -28,7 +28,7 @@ const checkOkToWrite = async (filePath, message = null) => {
   console.debug('File exists, checking if ok to write');
   const okToWrite = await confirm(
     message ||
-    `Overwirte file ${filePath}?`,
+    `Overwrite file ${filePath}?`,
   );
 
   console.debug('Ok to write:', okToWrite);
@@ -54,8 +54,4 @@ const writeJSONFile = async (filePath, data, message) => writeFile(
   message,
 );
 
-export { UserDeclinedError };
-export { createDirectory };
-export { checkOkToWrite };
-export { writeFile };
-export { writeJSONFile };
+export { UserDeclinedError, createDirectory, checkOkToWrite, writeFile, writeJSONFile };

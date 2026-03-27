@@ -31,7 +31,7 @@ const saveSettingsFile = () => {
 
   if (!existsSync(globalConfigPath)) {
     console.debug(`Creating global config folder: ${globalConfigPath}`);
-    mkdirSync(globalConfigPath, {recursive: true});
+    mkdirSync(globalConfigPath, { recursive: true });
   }
 
   console.debug(`Saving settings file to: ${settingsFile}`);

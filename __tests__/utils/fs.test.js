@@ -42,7 +42,7 @@ describe('Utils: File system', () => {
     confirm.mockResolvedValueOnce(true);
 
     await writeFile(testFile, 'new data');
-    expect(confirm).toHaveBeenCalledWith(`Overwirte file ${testFile}?`);
+    expect(confirm).toHaveBeenCalledWith(`Overwrite file ${testFile}?`);
     expect(existsSync).toHaveBeenCalledWith(testFile);
     expect(writeFileSync).toHaveBeenCalledWith(testFile, 'new data');
   });
@@ -61,7 +61,7 @@ describe('Utils: File system', () => {
     confirm.mockResolvedValueOnce(false);
 
     await expect(() => writeFile(testFile, 'new data')).rejects.toThrow('User declined to overwrite file');
-    expect(confirm).toHaveBeenCalledWith(`Overwirte file ${testFile}?`);
+    expect(confirm).toHaveBeenCalledWith(`Overwrite file ${testFile}?`);
     expect(writeFileSync).not.toHaveBeenCalled();
   });
 

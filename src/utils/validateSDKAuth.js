@@ -37,10 +37,10 @@ const validatePrivateKeyAndAppId = async (apiKey, apiSecret, appId, privateKey) 
   try {
     const vonage = new Vonage(
       {
-        apiKey: apiKey,
-        apiSecret: apiSecret,
+        apiKey,
+        apiSecret,
         applicationId: appId,
-        privateKey: privateKey,
+        privateKey,
       },
       SDKConfig,
     );
@@ -79,8 +79,8 @@ const validateApiKeyAndSecret = async (apiKey, apiSecret) => {
   try {
     const vonage = new Vonage(
       {
-        apiKey: apiKey,
-        apiSecret: apiSecret,
+        apiKey,
+        apiSecret,
       },
       SDKConfig,
     );

@@ -1,4 +1,4 @@
-const unsetRemove = (obj, setAsNull=false) => {
+const unsetRemove = (obj, setAsNull = false) => {
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
       if (value === '__REMOVE__' && !setAsNull) {
@@ -21,9 +21,7 @@ const unsetRemove = (obj, setAsNull=false) => {
   );
 };
 
-export { unsetRemove };
-
-export const coerceRemove = (arg) => {
+const coerceRemove = (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }
@@ -31,7 +29,7 @@ export const coerceRemove = (arg) => {
   return arg;
 };
 
-export const coerceRemoveCallback = (cb) => (arg) => {
+const coerceRemoveCallback = (cb) => (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }
@@ -39,7 +37,7 @@ export const coerceRemoveCallback = (cb) => (arg) => {
   return cb(arg);
 };
 
-export const coerceRemoveList = (flagName, list) => (arg) => {
+const coerceRemoveList = (flagName, list) => (arg) => {
   if (arg === '') {
     return '__REMOVE__';
   }
@@ -50,3 +48,5 @@ export const coerceRemoveList = (flagName, list) => (arg) => {
 
   throw new Error(`Invalid value [${arg}] for ${flagName}, only ${list.join(', ')} are supported.`);
 };
+
+export { unsetRemove, coerceRemove, coerceRemoveCallback, coerceRemoveList };

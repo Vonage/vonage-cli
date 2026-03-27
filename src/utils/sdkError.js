@@ -1,5 +1,5 @@
-import yargs from 'yargs';
 import { dumpCommand } from '../ux/dump.js';
+import yargs from 'yargs';
 
 const y = yargs();
 
@@ -61,7 +61,6 @@ export const sdkError = async (error) => {
     console.log(`3. Configure the CLI locally using the ${dumpCommand('vonage auth set')} command with the ${dumpCommand('--local')} flag`);
     y.exit(2);
     return;
-
 
   default:
     console.error(`Error with SDK call: ${error.message}`);

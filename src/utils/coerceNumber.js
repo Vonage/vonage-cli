@@ -1,5 +1,5 @@
 // Allows for adding min/max constraints to number arguments
-const coerceNumber = (argName, {min, max} = {}) => (value) => {
+const coerceNumber = (argName, { min, max } = {}) => (value) => {
   if (value === undefined) {
     return value;
   }
