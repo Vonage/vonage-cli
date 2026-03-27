@@ -256,5 +256,124 @@ describe('Middeleware: Config', () => {
     setConfig({});
     expect(exitMock).toHaveBeenCalledWith(2);
   });
+
+  test('Falls through to global config when local config JSON is malformed', () => {
+    const globalConfig = getGlobalConfig();
+    const globalFile = getGlobalFile();
+
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
+
+    mockFiles.set(
+      derivedGlobalConfigFile,
+      JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
+    );
+
+    const localFile = getLocalFile();
+    process.cwd = jest.fn(() => localFile.localConfigPath);
+    const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
+
+    mockFiles.set(derivedLocalConfigFile, 'not valid json {{{');
+
+    const args = setConfig({});
+
+    expect(console.error).toHaveBeenCalled();
+    expect(args.source).toBe('Global Config File');
+    expect(args.apiKey).toBe(globalConfig.apiKey);
+  });
+
+  test('Logs error and exits when global config JSON is malformed and no other config exists', () => {
+    const globalFile = getGlobalFile();
+
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
+
+    mockFiles.set(derivedGlobalConfigFile, '{ bad json');
+
+    setConfig({});
+
+    expect(console.error).toHaveBeenCalled();
+    expect(exitMock).toHaveBeenCalledWith(2);
+  });
+
+  test('Normalizes kebab-case keys from local config file', () => {
+    const localFile = getLocalFile();
+    process.cwd = jest.fn(() => localFile.localConfigPath);
+    const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
+
+    const kebabConfig = {
+      'api-key': 'test-api-key',
+      'api-secret': 'test-api-secret',
+      'private-key': 'test-private-key',
+      'app-id': 'test-app-id',
+    };
+
+    mockFiles.set(derivedLocalConfigFile, JSON.stringify(kebabConfig));
+
+    const args = setConfig({});
+
+    expect(args.apiKey).toBe('test-api-key');
+    expect(args.apiSecret).toBe('test-api-secret');
+    expect(args.privateKey).toBe('test-private-key');
+    expect(args.appId).toBe('test-app-id');
+  });
+
+  test('Normalizes kebab-case keys from global config file', () => {
+    const globalFile = getGlobalFile();
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+    const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
+
+    const kebabConfig = {
+      'api-key': 'global-api-key',
+      'api-secret': 'global-api-secret',
+      'private-key': 'global-private-key',
+      'app-id': 'global-app-id',
+    };
+
+    mockFiles.set(derivedGlobalConfigFile, JSON.stringify(kebabConfig));
+
+    const args = setConfig({});
+
+    expect(args.apiKey).toBe('global-api-key');
+    expect(args.apiSecret).toBe('global-api-secret');
+    expect(args.privateKey).toBe('global-private-key');
+    expect(args.appId).toBe('global-app-id');
+  });
+
+  test('Only includes provided keys in CLI config', () => {
+    homedirMock.mockReturnValue(`${sep}dev${sep}null`);
+    process.cwd = jest.fn(() => `${sep}dev${sep}null`);
+
+    const args = setConfig({ apiKey: 'my-key', apiSecret: 'my-secret' });
+
+    expect(args.config.cli).toEqual({
+      apiKey: 'my-key',
+      apiSecret: 'my-secret',
+      source: 'CLI Arguments',
+    });
+    expect(args.config.cli.privateKey).toBeUndefined();
+    expect(args.config.cli.appId).toBeUndefined();
+  });
+
+  test('CLI config is empty object when no auth args are passed', () => {
+    const globalConfig = getGlobalConfig();
+    const globalFile = getGlobalFile();
+
+    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
+
+    mockFiles.set(
+      `${derivedGlobalConfigPath}${sep}config.json`,
+      JSON.stringify(Client.transformers.kebabCaseObjectKeys(globalConfig)),
+    );
+
+    const args = setConfig({ someOtherFlag: true });
+
+    expect(args.config.cli).toEqual({});
+  });
 });
 
