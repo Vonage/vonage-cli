@@ -9,14 +9,7 @@ import { dumpCommand } from '../src/ux/dump.js';
 import { getSettings } from '../src/utils/settings.js';
 const settings = getSettings();
 
-const { needsUpdate, forceUpdate, forceMinVersion } = settings;
-
-if (needsUpdate) {
-  const settings = getSettings();
-  const { latestVersion } = settings;
-  console.log(`An update is available for the CLI. Please update to version ${latestVersion}`);
-  console.log(`Run ${dumpCommand(`npm install -g @vonage/cli@${latestVersion}`)} to update`);
-}
+const { forceUpdate, forceMinVersion } = settings;
 const yargsInstance = yargs(hideBin(process.argv));
 
 const vonageCLI = yargsInstance.fail((_, err) => {
