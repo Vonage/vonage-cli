@@ -219,7 +219,7 @@ The Vonage CLI includes a built-in mock server feature that allows you to quickl
 
 ### Prerequisites
 
-**No additional installation required!** The CLI ships with a bundled version of [Prism](https://stoplight.io/prism) to ensure compatibility and avoid version conflicts with any globally installed versions.
+**No additional installation required!** The CLI ships with a bundled version of [Prism](https://stoplight.io/open-source/prism) to ensure compatibility and avoid version conflicts with any globally installed versions.
 
 ### Usage
 
