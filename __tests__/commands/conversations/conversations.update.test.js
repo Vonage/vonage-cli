@@ -1,40 +1,47 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import { displayDate } from '../../../src/ux/locale.js';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const confirm = mock.fn();
 
-const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
 
-const { handler } = await import('../../../src/commands/conversations/update.js');
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/update.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 
-describe('Command: vonage conversations update', () => {
+suite('Command: vonage conversations update', { concurrency: 1 }, () => {
   beforeEach(() => {
     mockConsole();
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will update a conversation with no options', async () => {
     const conversation = getTestConversationForAPI();
 
-    const getConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const getConversationMock = mock.fn(() => Promise.resolve(conversation));
 
-    const updateConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const updateConversationMock = mock.fn(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -48,7 +55,7 @@ describe('Command: vonage conversations update', () => {
       id: conversation.id,
     });
 
-    expect(updateConversationMock).toHaveBeenCalledWith({
+    assertCalledWith(updateConversationMock, {
       id: conversation.id,
       displayName: conversation.displayName,
       name: conversation.name,
@@ -59,7 +66,8 @@ describe('Command: vonage conversations update', () => {
       },
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Name: ${conversation.name}`,
@@ -80,11 +88,9 @@ describe('Command: vonage conversations update', () => {
     const conversation = getTestConversationForAPI();
     const cliConversation = addCLIPropertiesToConversation(conversation);
 
-    const getConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const getConversationMock = mock.fn(() => Promise.resolve(conversation));
 
-    const updateConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const updateConversationMock = mock.fn(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -108,7 +114,7 @@ describe('Command: vonage conversations update', () => {
       callbackNccoUrl: cliConversation.callback.params.nccoUrl,
     });
 
-    expect(updateConversationMock).toHaveBeenCalledWith({
+    assertCalledWith(updateConversationMock, {
       id: conversation.id,
       displayName: cliConversation.displayName,
       imageUrl: cliConversation.imageUrl,
@@ -130,14 +136,12 @@ describe('Command: vonage conversations update', () => {
   });
 
   test('Will validate event mask and update', async () => {
-    confirm.mockResolvedValue(true);
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
-    const getConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const getConversationMock = mock.fn(() => Promise.resolve(conversation));
 
-    const updateConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const updateConversationMock = mock.fn(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -151,19 +155,17 @@ describe('Command: vonage conversations update', () => {
       callbackEventMask: ['foo:bar'],
     });
 
-    expect(updateConversationMock).toHaveBeenCalled();
-    expect(confirm).toHaveBeenCalledWith('Do you want to continue with this mask?');
+    assert.ok(updateConversationMock.mock.callCount() > 0);
+    assertCalledWith(confirm, 'Do you want to continue with this mask?');
   });
 
   test('Will validate event mask and not update', async () => {
-    confirm.mockResolvedValue(false);
+    confirm.mock.mockImplementation(() => Promise.resolve(false));
     const conversation = getTestConversationForAPI();
 
-    const getConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const getConversationMock = mock.fn(() => Promise.resolve(conversation));
 
-    const updateConversationMock = jest.fn()
-      .mockResolvedValue(conversation);
+    const updateConversationMock = mock.fn(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -177,7 +179,6 @@ describe('Command: vonage conversations update', () => {
       callbackEventMask: ['foo:bar'],
     });
 
-    expect(updateConversationMock).not.toHaveBeenCalledWith();
+    assertNotCalledWith(updateConversationMock);
   });
 });
-

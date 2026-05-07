@@ -1,93 +1,104 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import { mockConsole } from '../../../helpers.js';
 import { dataSets } from '../../../__dataSets__/apps/index.js';
 import { getBasicApplication } from '../../../app.js';
 
-const confirmMock = jest.fn();
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
-jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const confirmMock = mock.fn();
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
+const __moduleMocks = {
+  '../../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../../src/commands/apps/capabilities/remove.js');
 
-describe.each(dataSets)('Command: vonage apps capabilities rm $label', ({ label, testCases }) => {
-  beforeEach(() => {
-    mockConsole();
-    confirmMock.mockReset();
-    exitMock.mockReset();
-  });
 
-  const removeTestCases = testCases.filter(({ args }) => args.action === 'rm');
 
-  test.each(removeTestCases)('Will $label', async ({ app, args, expected }) => {
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
-    const sdkMock = {
-      applications: {
-        getApplication: getAppMock,
-        updateApplication: updateAppMock,
-      },
-    };
 
-    confirmMock.mockResolvedValue(true);
+const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/capabilities/remove.js', __moduleMocks);
 
-    await handler({
-      SDK: sdkMock,
-      id: app.id,
-      ...args,
+for (const { label, testCases } of dataSets) {
+  suite(`Command: vonage apps capabilities rm ${label}`, { concurrency: 1 }, () => {
+    beforeEach(() => {
+      mockConsole();
+      confirmMock.mock.resetCalls();
+      exitMock.mock.resetCalls();
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith(expected);
-  });
+    const removeTestCases = testCases.filter(({ args }) => args.action === 'rm');
 
-  test.each(removeTestCases)('Will not $label when user declines', async ({ app, args }) => {
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
-    const sdkMock = {
-      applications: {
-        getApplication: getAppMock,
-        updateApplication: updateAppMock,
-      },
-    };
+    for (const { label: caseLabel, app, args, expected } of removeTestCases) {
+      test(`Will ${caseLabel}`, async () => {
+        const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+        const updateAppMock = mock.fn(() => Promise.resolve());
+        const sdkMock = {
+          applications: {
+            getApplication: getAppMock,
+            updateApplication: updateAppMock,
+          },
+        };
 
-    confirmMock.mockResolvedValue(false);
+        confirmMock.mock.mockImplementation(() => Promise.resolve(true));
 
-    await handler({
-      SDK: sdkMock,
-      id: app.id,
-      ...args,
+        await handler({
+          SDK: sdkMock,
+          id: app.id,
+          ...args,
+        });
+
+        assert.strictEqual(exitMock.mock.callCount(), 0);
+        assertCalledWith(getAppMock, app.id);
+        assertCalledWith(updateAppMock, expected);
+      });
+
+      test(`Will not ${caseLabel} when user declines`, async () => {
+        const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+        const updateAppMock = mock.fn(() => Promise.resolve());
+        const sdkMock = {
+          applications: {
+            getApplication: getAppMock,
+            updateApplication: updateAppMock,
+          },
+        };
+
+        confirmMock.mock.mockImplementation(() => Promise.resolve(false));
+
+        await handler({
+          SDK: sdkMock,
+          id: app.id,
+          ...args,
+        });
+
+        assert.strictEqual(exitMock.mock.callCount(), 0);
+        assertCalledWith(getAppMock, app.id);
+        assert.strictEqual(updateAppMock.mock.callCount(), 0);
+      });
+    }
+
+    test('Will not call when there are no capabilities', async () => {
+      const app = getBasicApplication();
+      const getAppMock = mock.fn(() => Promise.resolve(app));
+      const updateAppMock = mock.fn(() => Promise.resolve());
+      const sdkMock = {
+        applications: {
+          getApplication: getAppMock,
+          updateApplication: updateAppMock,
+        },
+      };
+
+      confirmMock.mock.mockImplementation(() => Promise.resolve(false));
+
+      assert.strictEqual(exitMock.mock.callCount(), 0);
+      await handler({
+        SDK: sdkMock,
+        id: app.id,
+        which: label,
+      });
+
+      assertCalledWith(getAppMock, app.id);
+      assert.strictEqual(updateAppMock.mock.callCount(), 0);
     });
-
-    expect(exitMock).not.toHaveBeenCalled();
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).not.toHaveBeenCalled();
   });
-
-  test('Will not call when there are no capabilities', async () => {
-    const app = getBasicApplication();
-    const getAppMock = jest.fn().mockResolvedValue(app);
-    const updateAppMock = jest.fn().mockResolvedValue();
-    const sdkMock = {
-      applications: {
-        getApplication: getAppMock,
-        updateApplication: updateAppMock,
-      },
-    };
-
-    confirmMock.mockResolvedValue(false);
-
-    expect(exitMock).not.toHaveBeenCalled();
-    await handler({
-      SDK: sdkMock,
-      id: app.id,
-      which: label,
-    });
-
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).not.toHaveBeenCalled();
-  });
-});
+}

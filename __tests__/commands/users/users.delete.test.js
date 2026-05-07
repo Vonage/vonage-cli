@@ -1,32 +1,38 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-const { handler } = await import('../../../src/commands/users/delete.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/delete.js', __moduleMocks);
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import { getTestUserForAPI } from '../../users.js';
 
-describe('Command: vonage users delete', () => {
+suite('Command: vonage users delete', { concurrency: 1 }, () => {
   beforeEach(() => {
     mockConsole();
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    confirm.mock.resetCalls();
   });
 
   test('Will delete a user', async () => {
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
     const user = getTestUserForAPI();
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
-    const deleteUserMock = jest.fn();
+    const deleteUserMock = mock.fn();
 
     const sdkMock = {
       users: {
@@ -37,23 +43,24 @@ describe('Command: vonage users delete', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
-    expect(deleteUserMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
+    assertCalledWith(deleteUserMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       'User deleted',
     );
   });
 
   test('Will not delete a user when user declines', async () => {
-    confirm.mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
     const user = getTestUserForAPI();
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
-    const deleteUserMock = jest.fn();
+    const deleteUserMock = mock.fn();
 
     const sdkMock = {
       users: {
@@ -64,10 +71,11 @@ describe('Command: vonage users delete', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
-    expect(deleteUserMock).not.toHaveBeenCalled();
+    assertCalledWith(userMock, user.id);
+    assert.strictEqual(deleteUserMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       1,
       'User not deleted',
     );

@@ -3,8 +3,6 @@ name: Vonage
 
 on:
   push:
-    branches:
-      - 3.x
   pull_request:
 
 jobs:
@@ -17,10 +15,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 22.x
 
       - name: Install packages
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Lint
         run: npm run lint
@@ -29,11 +27,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test and build
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node: [18.x, 20.x, 22.x]
+      strategy:
+        fail-fast: false
+        matrix:
+          os: [ubuntu-latest, windows-latest]
+          node: [22.x, 24.x, 26.x]
     steps:
       - uses: actions/checkout@v3
 
@@ -43,20 +41,25 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install packages
-        run: npm install
+        run: npm i --ignore-scripts
 
       - name: Test
-        env:
-          JEST_JUNIT_CLASSNAME: "{filepath}"
-        run: npm run test -- --coverage --reporters=jest-junit --reporters=default
+        if: matrix.node != '22.x'
+        run: NO_COLOR=1 node --test --test-reporter=spec --test-reporter-destination=stdout --import ./__tests__/setup.js
+
+      - name: Test
+        if: matrix.node == '22.x'
+        run: NO_COLOR=1 node --test --experimental-test-coverage --test-reporter=junit --test-reporter-destination=./test-results/junit.xml --test-reporter=spec --test-reporter-destination=stdout --import ./__tests__/setup.js
 
       - name: Run codecov
+        if: matrix.node == '22.x'
         uses: codecov/codecov-action@v3
         with:
           directory: ./coverage
 
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: matrix.node == '22.x' && ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
+          files: ./test-results/junit.xml
           token: ${{ secrets.CODECOV_TOKEN }}

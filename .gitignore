@@ -1,11 +1,6 @@
 node_modules
-examples/.env
-examples/private.key
 npm-debug.log
-coverage
 private.key
-.nyc
-.nyc_output
 .env
-.nexmo-app
 .vonagerc
+junit.xml

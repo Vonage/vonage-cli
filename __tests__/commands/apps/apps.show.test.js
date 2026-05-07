@@ -1,5 +1,6 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import yaml from 'yaml';
 import {
   getTestApp,
@@ -14,17 +15,22 @@ import { Client } from '@vonage/server-client';
 import { mockConsole } from '../../helpers.js';
 import { faker } from '@faker-js/faker';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/show.js');
 
-describe('Command: vonage apps', () => {
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/show.js', __moduleMocks);
+
+suite('Command: vonage apps', { concurrency: 1 }, () => {
   beforeEach(() => {
     mockConsole();
-    exitMock.mockReset();
+    exitMock.mock.resetCalls();
   });
 
   test('Will display the basic application details', async () => {
@@ -34,7 +40,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -42,9 +48,9 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ id: app.id, SDK: sdkMock });
-    expect(console.log).toHaveBeenCalledTimes(2);
+    assert.strictEqual(console.log.mock.callCount(), 2);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       1,
       [
         `Name: ${app.name}`,
@@ -62,7 +68,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -70,9 +76,9 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock, json: true });
-    expect(console.log).toHaveBeenCalledTimes(1);
+    assert.strictEqual(console.log.mock.callCount(), 1);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true, false),
@@ -89,7 +95,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -98,7 +104,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock, yaml: true });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       1,
       yaml.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true, false),
@@ -115,7 +121,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -124,7 +130,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -145,7 +151,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -154,7 +160,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -177,7 +183,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -185,7 +191,7 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -204,7 +210,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -212,7 +218,7 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -231,7 +237,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -239,7 +245,7 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -257,7 +263,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -265,7 +271,7 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -317,7 +323,7 @@ describe('Command: vonage apps', () => {
       cloudStorage: true,
     };
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -325,7 +331,7 @@ describe('Command: vonage apps', () => {
     };
 
     await handler({ config: { cli: { appId: app } }, SDK: sdkMock });
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',
@@ -378,7 +384,7 @@ describe('Command: vonage apps', () => {
       true,
     );
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -387,7 +393,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ id: app.id, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       [
         'Capabilities:',

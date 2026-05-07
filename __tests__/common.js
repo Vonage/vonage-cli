@@ -1,8 +1,8 @@
-import { jest } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { Auth } from '@vonage/auth';
 import winston from 'winston';
 import Transport from 'winston-transport';
+import { mock } from 'node:test';
 const { format } = winston;
 import { sep } from 'path';
 
@@ -68,11 +68,11 @@ const testLogger = winston.createLogger({
 
 const getLoggerMideleware = () => Object.freeze({
   ...testLogger,
-  info: jest.fn(),
-  debug: jest.fn(),
-  error: jest.fn(),
-  log: jest.fn(),
-  warn: jest.fn(),
+  info: mock.fn(),
+  debug: mock.fn(),
+  error: mock.fn(),
+  log: mock.fn(),
+  warn: mock.fn(),
 });
 
 const getLocalConfig = () => Object.freeze({

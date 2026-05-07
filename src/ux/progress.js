@@ -96,7 +96,7 @@ export const progress = ({
         openChar,
         completedChar.repeat(completedLength > -1 ? completedLength : 0),
         arrow,
-        remainingChar.repeat(remainingLength),
+        remainingChar.repeat(remainingLength > -1 ? remainingLength : 0),
         closeChar,
         ' ',
         getProgress(),
