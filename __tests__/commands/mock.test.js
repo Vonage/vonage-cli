@@ -16,45 +16,42 @@ describe('mock command', () => {
   };
 
   const __moduleMocks = {
-  'node-fetch': (() => ({
-    default: jest.fn(),
-  }))(),
-  'fs': (() => ({
-    existsSync: jest.fn(),
-    readFileSync: jest.fn(),
-  }))(),
-  '../../src/utils/fs': (() => ({
-    createDirectory: jest.fn(),
-    writeFile: jest.fn(),
-  }))(),
-  '../../src/middleware/config': (() => ({
-    getSharedConfig: jest.fn(() => ({
-      globalConfigPath: '/tmp/.vonage',
-    })),
-    APISpecs: {
-      'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
-    },
-  }))(),
-  'child_process': (() => ({
-    spawn: jest.fn(),
-  }))(),
-  '../../src/ux/spinner': (() => ({
-    spinner: jest.fn(() => ({
-      stop: jest.fn(),
-      fail: jest.fn(),
-    })),
-  }))(),
-  '../../src/ux/cursor': (() => ({
-    hideCursor: jest.fn(),
-    resetCursor: jest.fn(),
-  }))(),
-  '../../src/ux/input': (() => ({
-    inputFromTTY: jest.fn(),
-  }))(),
-  '../../src/ux/input.js': (() => {
-      return {};
-    })(),
-};
+    'node-fetch': (() => ({
+      default: jest.fn(),
+    }))(),
+    'node:fs': (() => ({
+      existsSync: jest.fn(),
+      readFileSync: jest.fn(),
+    }))(),
+    '../../src/utils/fs.js': (() => ({
+      createDirectory: jest.fn(),
+      writeFile: jest.fn(),
+    }))(),
+    '../../src/middleware/config.js': (() => ({
+      getSharedConfig: jest.fn(() => ({
+        globalConfigPath: '/tmp/.vonage',
+      })),
+      APISpecs: {
+        'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
+      },
+    }))(),
+    'child_process': (() => ({
+      spawn: jest.fn(),
+    }))(),
+    '../../src/ux/spinner.js': (() => ({
+      spinner: jest.fn(() => ({
+        stop: jest.fn(),
+        fail: jest.fn(),
+      })),
+    }))(),
+    '../../src/ux/cursor.js': (() => ({
+      hideCursor: jest.fn(),
+      resetCursor: jest.fn(),
+    }))(),
+    '../../src/ux/input.js': (() => ({
+      inputFromTTY: jest.fn(),
+    }))(),
+  };
 
 
 
@@ -81,11 +78,10 @@ describe('mock command', () => {
 
   beforeEach(async () => {
     mockConsole();
-    const utils = await loadModule(import.meta.url, '../../src/utils/fs.js', __moduleMocks);
-    createDirectory = utils.createDirectory;
-    writeFile = utils.writeFile;
+    createDirectory = __moduleMocks['../../src/utils/fs.js'].createDirectory;
+    writeFile = __moduleMocks['../../src/utils/fs.js'].writeFile;
     childEventEmitter = jest.fn();
-    existsSync = (__moduleMocks['fs']).existsSync;
+    existsSync = (__moduleMocks['node:fs']).existsSync;
     fetch = (__moduleMocks['node-fetch']).default;
     spawn = (__moduleMocks['child_process']).spawn;
     handler = (await loadModule(import.meta.url, '../../src/commands/mock.js', __moduleMocks)).handler;

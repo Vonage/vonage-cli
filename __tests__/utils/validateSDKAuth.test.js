@@ -26,16 +26,16 @@ describe('Utils: Validate SDK Auth', () => {
   });
 
   const __moduleMocks = {
-  '../../src/ux/spinner.js': (() => ({
-    spinner: jest.fn().mockImplementation(() => ({
-      stop,
-      fail,
-    })),
-  }))(),
-  '@vonage/server-sdk': (() => ({
-    Vonage: VonageClass,
-  }))(),
-};
+    '../../src/ux/spinner.js': (() => ({
+      spinner: jest.fn().mockImplementation(() => ({
+        stop,
+        fail,
+      })),
+    }))(),
+    '@vonage/server-sdk': (() => ({
+      Vonage: VonageClass,
+    }))(),
+  };
 
 
 

@@ -4,8 +4,8 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'yargs': (() => ({
-  default: yargs,
-}))(),
+    default: yargs,
+  }))(),
 };
 
 

@@ -5,7 +5,6 @@ import {
   before,
   beforeEach,
   describe as nodeDescribe,
-  mock,
   test as nodeTest,
 } from 'node:test';
 import esmock from 'esmock';
@@ -131,6 +130,13 @@ const clearAllMocks = () => {
   }
 };
 
+const resetAllMocks = () => {
+  for (const mockFn of globalMocks) {
+    mockFn.mockReset();
+  }
+  restoreAllMocks();
+};
+
 const restoreAllMocks = () => {
   for (const spy of [...globalSpies]) {
     spy.mockRestore();
@@ -153,18 +159,10 @@ const jest = {
   createMockFromModule,
   fn: createMockFunction,
   mock: () => undefined,
+  resetAllMocks,
   restoreAllMocks,
   retryTimes: () => undefined,
   spyOn,
-  useFakeTimers: () => {
-    mock.timers.enable({ apis: ['setTimeout', 'setInterval', 'Date'] });
-  },
-  useRealTimers: () => {
-    mock.timers.reset();
-  },
-  advanceTimersByTime: (time) => {
-    mock.timers.tick(time);
-  },
 };
 
 const getPathValue = (value, path) => String(path)
@@ -363,11 +361,17 @@ const normalizeMocks = (baseUrl, mocks) => Object.fromEntries(
   )),
 );
 
-const loadModule = async (baseUrl, relativeModuleId, childmocks = {}, globalmocks = {}) => importWithMocks(
-  modulePath(baseUrl, relativeModuleId),
-  normalizeMocks(baseUrl, childmocks),
-  normalizeMocks(baseUrl, globalmocks),
-);
+const loadModule = async (baseUrl, relativeModuleId, childmocks = {}, globalmocks = {}) => {
+  const normalizedChildMocks = normalizeMocks(baseUrl, childmocks);
+  return importWithMocks(
+    modulePath(baseUrl, relativeModuleId),
+    normalizedChildMocks,
+    {
+      ...normalizedChildMocks,
+      ...normalizeMocks(baseUrl, globalmocks),
+    },
+  );
+};
 
 export {
   after,

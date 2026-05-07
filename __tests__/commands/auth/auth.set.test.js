@@ -14,18 +14,18 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'yargs': (() => ({
-  default: yargs,
-}))(),
+    default: yargs,
+  }))(),
   '@vonage/server-sdk': (() => {
-  const Vonage = jest.fn();
-  return { Vonage };
-})(),
+    const Vonage = jest.fn();
+    return { Vonage };
+  })(),
   '../../../src/utils/fs.js': (() => ({
-  createDirectory: createDirectoryMock,
-  checkOkToWrite: checkOkToWriteMock,
-  writeFile: writeFileMock,
-  writeJSONFile: writeJSONFileMock,
-}))(),
+    createDirectory: createDirectoryMock,
+    checkOkToWrite: checkOkToWriteMock,
+    writeFile: writeFileMock,
+    writeJSONFile: writeJSONFileMock,
+  }))(),
 };
 
 

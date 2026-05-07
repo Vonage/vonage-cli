@@ -17,10 +17,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.x
+          node-version: 20.x
 
       - name: Install packages
-        run: npm install
+        run: npm ci --ignore-scripts
 
       - name: Lint
         run: npm run lint
@@ -29,11 +29,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test and build
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        node: [18.x, 20.x, 22.x]
+      strategy:
+        fail-fast: false
+        matrix:
+          os: [ubuntu-latest, windows-latest]
+          node: [20.x, 22.x, 24.x]
     steps:
       - uses: actions/checkout@v3
 
@@ -43,12 +43,13 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install packages
-        run: npm install
+        run: npm ci --ignore-scripts
+
+      - name: Create test results directory
+        run: mkdir -p test-results
 
       - name: Test
-        env:
-          JEST_JUNIT_CLASSNAME: "{filepath}"
-        run: npm run test -- --coverage --reporters=jest-junit --reporters=default
+        run: npm run test -- --test-reporter=junit --test-reporter-destination=./test-results/junit.xml
 
       - name: Run codecov
         uses: codecov/codecov-action@v3
@@ -59,4 +60,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
+          files: ./test-results/junit.xml
           token: ${{ secrets.CODECOV_TOKEN }}

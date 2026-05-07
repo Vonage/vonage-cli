@@ -23,9 +23,9 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'fs': (() => ({
-  existsSync: existsSyncMock,
-  readFileSync: readFileSyncMock,
-}))(),
+    existsSync: existsSyncMock,
+    readFileSync: readFileSyncMock,
+  }))(),
   'os': (() => ({ default: { homedir: homedirMock }, EOL: '\n' }))(),
   'yargs': (() => ({ default: yargs }))(),
 };

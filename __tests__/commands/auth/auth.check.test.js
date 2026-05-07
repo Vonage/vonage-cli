@@ -31,14 +31,14 @@ describe('Command: vonage auth check', () => {
     mockGetApplicationPage = jest.fn();
     mockGetApplication = jest.fn();
 
-const __moduleMocks = {
-  'yargs': (() => ({
-  default: yargs,
-}))(),
-  '@vonage/server-sdk': (() => ({
-    Vonage: VonageClass,
-  }))(),
-};
+    const __moduleMocks = {
+      'yargs': (() => ({
+        default: yargs,
+      }))(),
+      '@vonage/server-sdk': (() => ({
+        Vonage: VonageClass,
+      }))(),
+    };
 
 
 

@@ -147,7 +147,7 @@ export const handler = async (argv) => {
   const { numbers } = await loadOwnedNumbersFromSDK(
     SDK,
     {
-      id: application.id,
+      appId: application.id,
       message: `Fetching numbers linked to application: ${application.name}`,
       all: true,
     },

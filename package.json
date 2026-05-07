@@ -29,12 +29,11 @@
   ],
   "scripts": {
     "eslint": "eslint",
-    "jest": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest --silent --verbose",
-    "test:watch": "node --experimental-vm-modules node_modules/.bin/jest --verbose --silent --watchAll"
+    "test": "c8 --reporter=text --reporter=lcov node --test --test-concurrency=1 --import ./__tests__/setup.js",
+    "test:watch": "node --test --test-concurrency=1 --watch --import ./__tests__/setup.js"
   },
   "lint-staged": {
     "package.json": [
@@ -71,15 +70,12 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@faker-js/faker": "10.3.0",
-    "@jest/globals": "30.3.0",
     "@stylistic/eslint-plugin-js": "4.4.1",
     "c8": "11.0.0",
-    "eslint-plugin-jest": "29.15.0",
     "eslint-plugin-n": "17.24.0",
     "esmock": "2.7.4",
     "globals": "17.4.0",
     "husky": "9.1.7",
-    "jest": "30.2.0",
     "lint-staged": "16.3.2",
     "winston-transport": "4.9.0"
   },

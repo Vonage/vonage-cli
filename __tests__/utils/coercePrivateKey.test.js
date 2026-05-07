@@ -9,9 +9,9 @@ const readFileSyncMock = jest.fn((path) => {
 
 const __moduleMocks = {
   'fs': (() => ({
-  existsSync: existsSyncMock,
-  readFileSync: readFileSyncMock,
-}))(),
+    existsSync: existsSyncMock,
+    readFileSync: readFileSyncMock,
+  }))(),
 };
 
 

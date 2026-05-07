@@ -1,15 +1,33 @@
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  info: console.info,
+  debug: console.debug,
+  error: console.error,
+  table: console.table,
+};
 
-afterEach(jest.restoreAllMocks);
-process.stdout.clearLine = jest.fn();
-process.stderr.clearLine = jest.fn();
+const originalStdoutWrite = process.stdout.write;
+const originalStderrWrite = process.stderr.write;
+
+afterEach(() => {
+  console.log = originalConsole.log;
+  console.warn = originalConsole.warn;
+  console.info = originalConsole.info;
+  console.debug = originalConsole.debug;
+  console.error = originalConsole.error;
+  console.table = originalConsole.table;
+  process.stdout.write = originalStdoutWrite;
+  process.stderr.write = originalStderrWrite;
+});
 
 export const mockConsole = () => {
-  console.log = jest.spyOn(console, 'log');
-  console.warn = jest.spyOn(console, 'warn');
-  console.info = jest.spyOn(console, 'info');
-  console.debug = jest.spyOn(console, 'debug');
-  console.error = jest.spyOn(console, 'error');
-  console.table = jest.spyOn(console, 'table');
+  console.log = jest.fn();
+  console.warn = jest.fn();
+  console.info = jest.fn();
+  console.debug = jest.fn();
+  console.error = jest.fn();
+  console.table = jest.fn();
   process.stdout.clearLine = jest.fn();
   process.stderr.clearLine = jest.fn();
   process.stdout.write = jest.fn();

@@ -10,11 +10,11 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   '../../../src/ux/confirm.js': (() => ({
-  confirm,
-}))(),
+    confirm,
+  }))(),
   'yargs': (() => ({
-  default: yargs,
-}))(),
+    default: yargs,
+  }))(),
 };
 
 

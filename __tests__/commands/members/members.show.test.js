@@ -8,11 +8,11 @@ const confirm = jest.fn();
 
 const __moduleMocks = {
   'yargs': (() => ({
-  default: yargs,
-}))(),
+    default: yargs,
+  }))(),
   '../../../src/ux/confirm.js': (() => ({
-  confirm,
-}))(),
+    confirm,
+  }))(),
 };
 
 

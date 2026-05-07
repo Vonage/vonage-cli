@@ -1,8 +1,6 @@
 import EventEmitter from 'node:events';
 import { mockConsole } from '../helpers.js';
 
-jest.useFakeTimers();
-
 describe('UX: input tests', () => {
   const questionMock = jest.fn();
   const emitKeypressEventsMock = jest.fn();
@@ -33,8 +31,6 @@ describe('UX: input tests', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    jest.useRealTimers();
-    jest.useFakeTimers();
   });
 
   test('Will capture printable keys', async () => {
@@ -52,10 +48,7 @@ describe('UX: input tests', () => {
 
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
-
-
-    const result = await Promise.resolve(input);
+    const result = await input;
 
     expect(result).toBe('foo');
   });
@@ -76,9 +69,7 @@ describe('UX: input tests', () => {
     );
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
-
-    const result = await Promise.resolve(input);
+    const result = await input;
 
     expect(result).toBe('fo');
   });
@@ -97,9 +88,7 @@ describe('UX: input tests', () => {
     );
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
-
-    const result = await Promise.resolve(input);
+    const result = await input;
     expect(result).toBe('fo');
   });
 });

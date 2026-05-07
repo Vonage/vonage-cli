@@ -5,8 +5,8 @@ const confirm = jest.fn();
 
 const __moduleMocks = {
   '../../../src/ux/confirm.js': (() => ({
-  confirm,
-}))(),
+    confirm,
+  }))(),
 };
 
 

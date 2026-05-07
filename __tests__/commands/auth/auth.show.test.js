@@ -11,21 +11,18 @@ const mockGetApplication = jest.fn();
 
 
 
-const { Vonage } = __moduleMocks['@vonage/server-sdk'];
 const __moduleMocks = {
   'yargs': (() => ({
-  default: yargs,
-}))(),
+    default: yargs,
+  }))(),
   '@vonage/server-sdk': (() => {
-  const Vonage = jest.fn();
-  return { Vonage };
-})(),
+    const Vonage = jest.fn();
+    return { Vonage };
+  })(),
 };
 
-
-
-
 const { handler } = await loadModule(import.meta.url, '../../../src/commands/auth/show.js', __moduleMocks);
+const { Vonage } = __moduleMocks['@vonage/server-sdk'];
 
 const oldProcessStdoutWrite = process.stdout.write;
 
