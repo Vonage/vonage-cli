@@ -1,4 +1,5 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import YAML from 'yaml';
 import { faker } from '@faker-js/faker';
 import { handler } from '../../../src/commands/members/update.js';
@@ -7,7 +8,7 @@ import { getTestMemberForAPI } from '../../members.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 import { Client } from '@vonage/server-client';
 
-describe('Command: vonage members create', () => {
+suite('Command: vonage members create', { concurrency: 1 }, () => {
   beforeEach(() => {
     mockConsole();
   });
@@ -16,11 +17,11 @@ describe('Command: vonage members create', () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const updateMemberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const updateMemberMock = mock.fn();
+    updateMemberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -36,9 +37,10 @@ describe('Command: vonage members create', () => {
       state: 'joined',
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(updateMemberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      updateMemberMock,
       conversation.id,
       member.id,
       {
@@ -52,11 +54,11 @@ describe('Command: vonage members create', () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const updateMemberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const updateMemberMock = mock.fn();
+    updateMemberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -77,9 +79,10 @@ describe('Command: vonage members create', () => {
       reasonText: reasonText,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(updateMemberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      updateMemberMock,
       conversation.id,
       member.id,
       {
@@ -97,11 +100,11 @@ describe('Command: vonage members create', () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const updateMemberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const updateMemberMock = mock.fn();
+    updateMemberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -123,9 +126,10 @@ describe('Command: vonage members create', () => {
       json: true,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(updateMemberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      updateMemberMock,
       conversation.id,
       member.id,
       {
@@ -138,22 +142,25 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenCalledWith(JSON.stringify(
-      Client.transformers.snakeCaseObjectKeys(member, true),
-      null,
-      2,
-    ));
+    assertCalledWith(
+      console.log,
+      JSON.stringify(
+        Client.transformers.snakeCaseObjectKeys(member, true),
+        null,
+        2,
+      ),
+    );
   });
 
   test('Will update a member and return yaml', async () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const updateMemberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const updateMemberMock = mock.fn();
+    updateMemberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -175,9 +182,10 @@ describe('Command: vonage members create', () => {
       yaml: true,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(updateMemberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      updateMemberMock,
       conversation.id,
       member.id,
       {
@@ -190,10 +198,13 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenCalledWith(YAML.stringify(
-      Client.transformers.snakeCaseObjectKeys(member, true),
-      null,
-      2,
-    ));
+    assertCalledWith(
+      console.log,
+      YAML.stringify(
+        Client.transformers.snakeCaseObjectKeys(member, true),
+        null,
+        2,
+      ),
+    );
   });
 });

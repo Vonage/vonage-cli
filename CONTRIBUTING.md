@@ -23,3 +23,9 @@ Run the tests with the following command:
 ```sh
 npm run test
 ```
+
+Run the tests in watch mode with:
+
+```sh
+npm run test:watch
+```

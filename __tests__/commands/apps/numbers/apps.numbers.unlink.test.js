@@ -1,5 +1,6 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
 import { getBasicApplication } from '../../../app.js';
@@ -7,19 +8,25 @@ import { mockConsole } from '../../../helpers.js';
 import { getTestPhoneNumber } from '../../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const confirmMock = jest.fn();
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
-jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const confirmMock = mock.fn();
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
+const __moduleMocks = {
+  '../../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../../src/commands/apps/numbers/unlink.js');
 
-describe('Command: vonage apps numbers link', () => {
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/numbers/unlink.js', __moduleMocks);
+
+suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
   beforeEach(() => {
     mockConsole();
-    confirmMock.mockReset();
-    exitMock.mockReset();
+    confirmMock.mock.resetCalls();
+    exitMock.mock.resetCalls();
   });
 
   test('Will unlink number from an app', async () => {
@@ -31,8 +38,8 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       count: 1,
       numbers: [
         {
@@ -40,9 +47,9 @@ describe('Command: vonage apps numbers link', () => {
           appId: app.id,
         },
       ],
-    });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(true);
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(true));
 
     const sdkMock = {
       applications: {
@@ -60,14 +67,14 @@ describe('Command: vonage apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(appMock, app.id);
+    assertCalledWith(numbersMock, {
       index: 1,
       pattern: numberNine.msisdn,
       size: 100,
     });
-    expect(confirmMock).toHaveBeenCalledWith(`Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
-    expect(updateMock).toHaveBeenCalledWith({
+    assertCalledWith(confirmMock, `Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
+    assertCalledWith(updateMock, {
       ...numberNine,
     });
   });
@@ -81,8 +88,8 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       count: 1,
       numbers: [
         {
@@ -90,9 +97,9 @@ describe('Command: vonage apps numbers link', () => {
           appId: app.id,
         },
       ],
-    });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(true);
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(true));
 
     const sdkMock = {
       applications: {
@@ -111,11 +118,11 @@ describe('Command: vonage apps numbers link', () => {
       json: true,
     });
 
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(updateMock).toHaveBeenCalledWith({
+    assertCalledWith(appMock, app.id);
+    assertCalledWith(updateMock, {
       ...numberNine,
     });
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(console.log, 
       JSON.stringify(numberNine, null, 2),
     );
   });
@@ -129,8 +136,8 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       count: 1,
       numbers: [
         {
@@ -138,9 +145,9 @@ describe('Command: vonage apps numbers link', () => {
           appId: app.id,
         },
       ],
-    });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(true);
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(true));
 
     const sdkMock = {
       applications: {
@@ -159,11 +166,11 @@ describe('Command: vonage apps numbers link', () => {
       yaml: true,
     });
 
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(updateMock).toHaveBeenCalledWith({
+    assertCalledWith(appMock, app.id);
+    assertCalledWith(updateMock, {
       ...numberNine,
     });
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(console.log, 
       yaml.stringify(numberNine, null, 2),
     );
   });
@@ -178,8 +185,8 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       count: 1,
       numbers: [
         {
@@ -187,9 +194,9 @@ describe('Command: vonage apps numbers link', () => {
           appId: app.id,
         },
       ],
-    });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(false);
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(false));
 
     const sdkMock = {
       applications: {
@@ -207,10 +214,10 @@ describe('Command: vonage apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(appMock).toHaveBeenCalled();
-    expect(numbersMock).toHaveBeenCalled();
-    expect(confirmMock).toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
+    assert.ok(appMock.mock.callCount() > 0);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.ok(confirmMock.mock.callCount() > 0);
+    assert.strictEqual(updateMock.mock.callCount(), 0);
   });
 
   test('Will exit when number is not linked to an application', async () => {
@@ -222,10 +229,10 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ numbers: [numberNine] });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(false);
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ numbers: [numberNine] }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(false));
 
     const sdkMock = {
       applications: {
@@ -244,10 +251,10 @@ describe('Command: vonage apps numbers link', () => {
     });
 
 
-    expect(appMock).toHaveBeenCalled();
-    expect(numbersMock).toHaveBeenCalled();
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
+    assert.ok(appMock.mock.callCount() > 0);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assert.strictEqual(updateMock.mock.callCount(), 0);
   });
 
   test('Will exit when number is linked to another application', async () => {
@@ -260,17 +267,17 @@ describe('Command: vonage apps numbers link', () => {
     const numberNine = getTestPhoneNumber();
 
     const otherAppId = faker.string.uuid();
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       numbers: [
         {
           ...numberNine,
           appId: otherAppId,
         },
       ],
-    });
-    const updateMock = jest.fn().mockResolvedValue({ errorCode: '200' });
-    confirmMock.mockResolvedValue(false);
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+    confirmMock.mock.mockImplementation(() => Promise.resolve(false));
 
     const sdkMock = {
       applications: {
@@ -289,10 +296,10 @@ describe('Command: vonage apps numbers link', () => {
     });
 
 
-    expect(appMock).toHaveBeenCalled();
-    expect(numbersMock).toHaveBeenCalled();
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
+    assert.ok(appMock.mock.callCount() > 0);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assert.strictEqual(updateMock.mock.callCount(), 0);
   });
 
   test('Will exit when no numbers are found', async () => {
@@ -304,14 +311,14 @@ describe('Command: vonage apps numbers link', () => {
 
     const numberNine = getTestPhoneNumber();
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
       numbers: [],
-    });
+    }));
 
-    const updateMock = jest.fn();
+    const updateMock = mock.fn();
 
-    confirmMock.mockResolvedValue(false);
+    confirmMock.mock.mockImplementation(() => Promise.resolve(false));
 
     const sdkMock = {
       applications: {
@@ -329,9 +336,9 @@ describe('Command: vonage apps numbers link', () => {
       SDK: sdkMock,
     });
 
-    expect(appMock).toHaveBeenCalledWith(app.id);
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(updateMock).not.toHaveBeenCalled();
+    assertCalledWith(appMock, app.id);
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assert.strictEqual(updateMock.mock.callCount(), 0);
   });
 });
 

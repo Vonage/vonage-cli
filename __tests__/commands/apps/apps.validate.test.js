@@ -1,5 +1,6 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
+import { suite, mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import {
   getTestApp,
   addVideoCapabilities,
@@ -23,26 +24,29 @@ const testAppCapability = {
   'video': addVideoCapabilities,
 };
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/validate.js');
 
-describe('Command: vonage apps', () => {
-  // I have no idea why these tests sometimes fail
-  jest.retryTimes(3);
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/validate.js', __moduleMocks);
+
+suite('Command: vonage apps', { concurrency: 1 }, () => {
   beforeEach(() => {
-    exitMock.mockReset();
+    exitMock.mock.resetCalls();
     mockConsole();
   });
 
   test('Will validate application', async () => {
     const app = { ...getTestApp() };
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [] }));
 
     const sdkMock = {
       applications: {
@@ -58,9 +62,9 @@ describe('Command: vonage apps', () => {
       SDK: sdkMock,
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       2,
       'Application validation passed ✅',
     );
@@ -70,8 +74,8 @@ describe('Command: vonage apps', () => {
     const app = { ...getTestApp() };
     app.keys.publicKey = testPublicKey;
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [] }));
 
     const sdkMock = {
       applications: {
@@ -88,9 +92,9 @@ describe('Command: vonage apps', () => {
       privateKeyFile: testPrivateKey,
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       'Application validation passed ✅',
     );
@@ -100,8 +104,8 @@ describe('Command: vonage apps', () => {
     const app = { ...getTestApp() };
     app.keys.publicKey = testPublicKey;
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [] }));
 
     const sdkMock = {
       applications: {
@@ -118,63 +122,67 @@ describe('Command: vonage apps', () => {
       privateKeyFile: faker.string.alpha(32),
     });
 
-    expect(exitMock).toHaveBeenCalledWith(10);
+    assertCalledWith(exitMock, 10);
   });
 
-  test.each(Object.keys(testAppCapability))('Will validate application has %s capability', async (capability) => {
-    const app = testAppCapability[capability]({ ...getTestApp() });
+  for (const capability of Object.keys(testAppCapability)) {
+    test(`Will validate application has ${capability} capability`, async () => {
+      const app = testAppCapability[capability]({ ...getTestApp() });
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
+      const appMock = mock.fn(() => Promise.resolve(app));
+      const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [] }));
 
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-      },
-    };
+      const sdkMock = {
+        applications: {
+          getApplication: appMock,
+        },
+        numbers: {
+          getOwnedNumbers: numbersMock,
+        },
+      };
 
-    await handler({
-      id: app.id,
-      SDK: sdkMock,
-      [capability]: true,
+      await handler({
+        id: app.id,
+        SDK: sdkMock,
+        [capability]: true,
+      });
+
+      assert.strictEqual(exitMock.mock.callCount(), 0);
     });
+  }
 
-    expect(exitMock).not.toHaveBeenCalled();
-  });
+  for (const capability of Object.keys(testAppCapability)) {
+    test(`Will not validate application missing ${capability} capability`, async () => {
+      const app = { ...getTestApp() };
 
-  test.each(Object.keys(testAppCapability))('Will not validate application missing %s capability', async (capability) => {
-    const app = { ...getTestApp() };
+      const appMock = mock.fn(() => Promise.resolve(app));
+      const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [] }));
 
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [] });
+      const sdkMock = {
+        applications: {
+          getApplication: appMock,
+        },
+        numbers: {
+          getOwnedNumbers: numbersMock,
+        },
+      };
 
-    const sdkMock = {
-      applications: {
-        getApplication: appMock,
-      },
-      numbers: {
-        getOwnedNumbers: numbersMock,
-      },
-    };
+      await handler({
+        id: app.id,
+        SDK: sdkMock,
+        [capability]: true,
+      });
 
-    await handler({
-      id: app.id,
-      SDK: sdkMock,
-      [capability]: true,
+      assertCalledWith(exitMock, 5);
     });
-
-    expect(exitMock).toHaveBeenCalledWith(5);
-  });
+  }
 
   test('Will validate voice application has linked number', async () => {
     const app = addVoiceCapabilities({ ...getTestApp() });
 
     const numberNine = getTestPhoneNumber();
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [numberNine] }));
 
     const sdkMock = {
       applications: {
@@ -191,9 +199,9 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       'Application validation passed ✅',
     );
@@ -203,8 +211,8 @@ describe('Command: vonage apps', () => {
     const app = addMessagesCapabilities({ ...getTestApp() });
 
     const numberNine = getTestPhoneNumber();
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [numberNine] }));
 
     const sdkMock = {
       applications: {
@@ -221,9 +229,9 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       3,
       'Application validation passed ✅',
     );
@@ -234,8 +242,8 @@ describe('Command: vonage apps', () => {
 
     const numberNine = getTestPhoneNumber();
     const numberEight = getTestPhoneNumber();
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 2, numbers: [numberEight, numberNine] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 2, numbers: [numberEight, numberNine] }));
 
     const sdkMock = {
       applications: {
@@ -252,9 +260,9 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn, numberEight.msisdn],
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       4,
       'Application validation passed ✅',
     );
@@ -265,8 +273,8 @@ describe('Command: vonage apps', () => {
 
     const numberNine = getTestPhoneNumber();
     const linkedNumber = getTestPhoneNumber().msisdn;
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [numberNine] }));
 
     const sdkMock = {
       applications: {
@@ -283,8 +291,8 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [linkedNumber],
     });
 
-    expect(exitMock).toHaveBeenCalledWith(2);
-    expect(console.error).toHaveBeenNthCalledWith(
+    assertCalledWith(exitMock, 2);
+    assertNthCalledWith(console.error, 
       1,
       'Application is missing linked numbers',
     );
@@ -294,8 +302,8 @@ describe('Command: vonage apps', () => {
     const app = { ...getTestApp() };
 
     const numberNine = getTestPhoneNumber();
-    const appMock = jest.fn().mockResolvedValue(app);
-    const numbersMock = jest.fn().mockResolvedValue({ count: 1, numbers: [numberNine] });
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [numberNine] }));
 
     const sdkMock = {
       applications: {
@@ -312,8 +320,8 @@ describe('Command: vonage apps', () => {
       linkedNumbers: [numberNine.msisdn],
     });
 
-    expect(exitMock).toHaveBeenCalledWith(15);
-    expect(console.error).toHaveBeenNthCalledWith(
+    assertCalledWith(exitMock, 15);
+    assertNthCalledWith(console.error, 
       1,
       'Application has numbers linked but is missing messages or voice capabilities',
     );
