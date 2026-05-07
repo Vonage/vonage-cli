@@ -148,7 +148,9 @@ describe('Command: vonage apps numbers list', () => {
     };
 
     await handler({ id: app.id, SDK: sdkMock });
-    expect(console.log).toHaveBeenCalledTimes(3);
+    expect(console.log).toHaveBeenNthCalledWith(1, '');
+    expect(console.log).toHaveBeenNthCalledWith(2, 'There is 1 number linked:');
+    expect(console.log).toHaveBeenNthCalledWith(3, '');
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(0);
@@ -176,7 +178,9 @@ describe('Command: vonage apps numbers list', () => {
     };
 
     await handler({ id: app.id, SDK: sdkMock });
-    expect(console.log).toHaveBeenCalledTimes(3);
+    expect(console.log).toHaveBeenNthCalledWith(1, '');
+    expect(console.log).toHaveBeenNthCalledWith(2, 'There is 1 number linked:');
+    expect(console.log).toHaveBeenNthCalledWith(3, '');
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(0);
@@ -205,7 +209,9 @@ describe('Command: vonage apps numbers list', () => {
 
     await handler({ id: app.id, SDK: sdkMock, fail: true });
 
-    expect(console.log).toHaveBeenCalledTimes(3);
+    expect(console.log).toHaveBeenNthCalledWith(1, '');
+    expect(console.log).toHaveBeenNthCalledWith(2, 'There is 1 number linked:');
+    expect(console.log).toHaveBeenNthCalledWith(3, '');
     expect(console.table).toHaveBeenCalledTimes(1);
     expect(console.warn).toHaveBeenCalledTimes(0);
     expect(console.error).toHaveBeenCalledTimes(1);

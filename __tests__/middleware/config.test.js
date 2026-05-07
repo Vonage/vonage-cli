@@ -30,11 +30,6 @@ const __moduleMocks = {
   'yargs': (() => ({ default: yargs }))(),
 };
 
-
-
-
-
-
 const { setConfig } = await loadModule(import.meta.url, '../../src/middleware/config.js', __moduleMocks);
 
 const oldEnv = process.env;

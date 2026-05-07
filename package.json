@@ -32,8 +32,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepare": "husky",
-    "test": "c8 --reporter=text --reporter=lcov node --test --test-concurrency=1 --import ./__tests__/setup.js",
-    "test:watch": "node --test --test-concurrency=1 --watch --import ./__tests__/setup.js"
+    "test": "c8 --reporter=text --reporter=lcov node --test --test-concurrency=1 --test-isolation=process --import ./__tests__/setup.js",
+    "test:watch": "node --test --test-concurrency=1 --test-isolation=process --watch --import ./__tests__/setup.js"
   },
   "lint-staged": {
     "package.json": [

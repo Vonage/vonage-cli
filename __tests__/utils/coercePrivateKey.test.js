@@ -14,9 +14,6 @@ const __moduleMocks = {
   }))(),
 };
 
-
-
-
 const { coerceKey } = await loadModule(import.meta.url, '../../src/utils/coerceKey.js', __moduleMocks);
 
 describe('Utils: coerce private key', () => {

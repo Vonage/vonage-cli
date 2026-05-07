@@ -37,10 +37,6 @@ describe('Utils: Validate SDK Auth', () => {
     }))(),
   };
 
-
-
-  
-
   beforeEach(async () => {
     mockGetApplicationPage = jest.fn();
     mockGetApplication = jest.fn();

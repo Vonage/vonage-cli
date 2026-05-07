@@ -22,9 +22,6 @@ describe('Command: vonage auth check', () => {
   });
   let handler;
 
-  
-
-
   beforeEach(async () => {
     process.stdout.write = jest.fn();
     mockConsole();
@@ -304,4 +301,3 @@ describe('Command: vonage auth check', () => {
     expect(exitMock).toHaveBeenCalledWith(22);
   });
 });
-

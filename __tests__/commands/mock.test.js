@@ -53,23 +53,6 @@ describe('mock command', () => {
     }))(),
   };
 
-
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
   const mockSpec = {
     openapi: '3.0.0',
     info: { title: 'SMS API', version: '1.0.0' },
@@ -298,8 +281,6 @@ describe('mock command', () => {
     childEventEmitter.mockImplementationOnce((_, callback) => {
       callback('Prisim is listening on port 42');
     });
-
-    
 
     // Mock inputFromTTY to simulate immediate quit
     const { inputFromTTY } = __moduleMocks['../../src/ux/input.js'];
