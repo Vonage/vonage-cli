@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
@@ -7,9 +6,14 @@ import jwt from 'jsonwebtoken';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../src/commands/jwt/validate.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/jwt/validate.js', __moduleMocks);
 
 describe('Command: vonage jwt validate', () => {
   beforeEach(() => {

@@ -1,15 +1,10 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
-import { mockConsole } from '../../helpers';
-import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common';
-import { getBasicApplication } from '../../app';
+import { mockConsole } from '../../helpers.js';
+import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
+import { getBasicApplication } from '../../app.js';
 
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
-
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
 
 const oldProcessStdoutWrite = process.stdout.write;
 
@@ -27,9 +22,7 @@ describe('Command: vonage auth check', () => {
   });
   let handler;
 
-  jest.unstable_mockModule('@vonage/server-sdk', () => ({
-    Vonage: VonageClass,
-  }));
+  
 
 
   beforeEach(async () => {
@@ -38,7 +31,19 @@ describe('Command: vonage auth check', () => {
     mockGetApplicationPage = jest.fn();
     mockGetApplication = jest.fn();
 
-    handler = (await import('../../../src/commands/auth/check.js')).handler;
+const __moduleMocks = {
+  'yargs': (() => ({
+  default: yargs,
+}))(),
+  '@vonage/server-sdk': (() => ({
+    Vonage: VonageClass,
+  }))(),
+};
+
+
+
+
+    handler = (await loadModule(import.meta.url, '../../../src/commands/auth/check.js', __moduleMocks)).handler;
   });
 
   afterAll(() => {

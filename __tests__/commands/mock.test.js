@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { mockConsole } from '../helpers.js';
 
 describe('mock command', () => {
@@ -16,48 +15,62 @@ describe('mock command', () => {
     },
   };
 
-  jest.unstable_mockModule('node-fetch', () => ({
+  const __moduleMocks = {
+  'node-fetch': (() => ({
     default: jest.fn(),
-  }));
-
-  jest.unstable_mockModule('fs', () => ({
+  }))(),
+  'fs': (() => ({
     existsSync: jest.fn(),
     readFileSync: jest.fn(),
-  }));
-
-  jest.unstable_mockModule('../../src/utils/fs', () => ({
+  }))(),
+  '../../src/utils/fs': (() => ({
     createDirectory: jest.fn(),
     writeFile: jest.fn(),
-  }));
-
-  jest.unstable_mockModule('../../src/middleware/config', () => ({
+  }))(),
+  '../../src/middleware/config': (() => ({
     getSharedConfig: jest.fn(() => ({
       globalConfigPath: '/tmp/.vonage',
     })),
     APISpecs: {
       'sms': 'https://developer.vonage.com/api/v1/developer/api/file/sms?format=json&vendorId=vonage',
     },
-  }));
-
-  jest.unstable_mockModule('child_process', () => ({
+  }))(),
+  'child_process': (() => ({
     spawn: jest.fn(),
-  }));
-
-  jest.unstable_mockModule('../../src/ux/spinner', () => ({
+  }))(),
+  '../../src/ux/spinner': (() => ({
     spinner: jest.fn(() => ({
       stop: jest.fn(),
       fail: jest.fn(),
     })),
-  }));
-
-  jest.unstable_mockModule('../../src/ux/cursor', () => ({
+  }))(),
+  '../../src/ux/cursor': (() => ({
     hideCursor: jest.fn(),
     resetCursor: jest.fn(),
-  }));
-
-  jest.unstable_mockModule('../../src/ux/input', () => ({
+  }))(),
+  '../../src/ux/input': (() => ({
     inputFromTTY: jest.fn(),
-  }));
+  }))(),
+  '../../src/ux/input.js': (() => {
+      return {};
+    })(),
+};
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
 
 
   const mockSpec = {
@@ -68,14 +81,14 @@ describe('mock command', () => {
 
   beforeEach(async () => {
     mockConsole();
-    const utils = await import('../../src/utils/fs.js');
+    const utils = await loadModule(import.meta.url, '../../src/utils/fs.js', __moduleMocks);
     createDirectory = utils.createDirectory;
     writeFile = utils.writeFile;
     childEventEmitter = jest.fn();
-    existsSync = (await import('fs')).existsSync;
-    fetch = (await import('node-fetch')).default;
-    spawn = (await import('child_process')).spawn;
-    handler = (await import('../../src/commands/mock.js')).handler;
+    existsSync = (__moduleMocks['fs']).existsSync;
+    fetch = (__moduleMocks['node-fetch']).default;
+    spawn = (__moduleMocks['child_process']).spawn;
+    handler = (await loadModule(import.meta.url, '../../src/commands/mock.js', __moduleMocks)).handler;
 
     childEventEmitter.mockImplementationOnce((_, callback) => {
       callback('Prisim is listening on port 42');
@@ -290,12 +303,10 @@ describe('mock command', () => {
       callback('Prisim is listening on port 42');
     });
 
-    jest.unstable_mockModule('../../src/ux/input.js', () => {
-      return {};
-    });
+    
 
     // Mock inputFromTTY to simulate immediate quit
-    const { inputFromTTY } = await import('../../src/ux/input.js');
+    const { inputFromTTY } = __moduleMocks['../../src/ux/input.js'];
     console.log(inputFromTTY);
 
     inputFromTTY.mockRejectedValue('Shutdown');

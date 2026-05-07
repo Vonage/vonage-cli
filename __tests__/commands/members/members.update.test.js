@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import YAML from 'yaml';
 import { faker } from '@faker-js/faker';
 import { handler } from '../../../src/commands/members/update.js';

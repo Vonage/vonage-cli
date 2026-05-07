@@ -1,13 +1,14 @@
-import { jest } from '@jest/globals';
 
 describe('UX: confirm', () => {
-  jest.unstable_mockModule('../../src/ux/input', () => ({ inputFromTTY: jest.fn() }));
+  const inputFromTTY = jest.fn();
 
   test('Will confrim the message with y', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
-
     inputFromTTY.mockResolvedValue('y');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
 
     const result = await confirm('Are you sure?');
     expect(result).toBe(true);
@@ -16,20 +17,29 @@ describe('UX: confirm', () => {
   });
 
   test('Will confrim the message with n', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
+    inputFromTTY.mockReset();
     inputFromTTY.mockResolvedValue('n');
 
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
     const result = await confirm('Are you sure?');
     expect(result).toBe(false);
   });
 
   test('Will keep asking with invalid input message', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
-    inputFromTTY.mockResolvedValue('x').mockResolvedValue('y');
+    inputFromTTY.mockReset();
+    inputFromTTY.mockResolvedValueOnce('x').mockResolvedValue('y');
 
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
     const result = await confirm('Are you sure?');
     expect(result).toBe(true);
+    expect(inputFromTTY).toHaveBeenCalledTimes(2);
   });
 });

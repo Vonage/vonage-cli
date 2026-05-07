@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterAll, expect } from '@jest/globals';
 import yaml from 'yaml';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
@@ -7,20 +6,26 @@ import { getBasicApplication } from '../../app.js';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
-
 const mockGetApplicationPage = jest.fn();
 const mockGetApplication = jest.fn();
 
-jest.unstable_mockModule('@vonage/server-sdk', () => {
+
+
+const { Vonage } = __moduleMocks['@vonage/server-sdk'];
+const __moduleMocks = {
+  'yargs': (() => ({
+  default: yargs,
+}))(),
+  '@vonage/server-sdk': (() => {
   const Vonage = jest.fn();
   return { Vonage };
-});
+})(),
+};
 
-const { Vonage } = await import('@vonage/server-sdk');
-const { handler } = await import('../../../src/commands/auth/show.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/auth/show.js', __moduleMocks);
 
 const oldProcessStdoutWrite = process.stdout.write;
 

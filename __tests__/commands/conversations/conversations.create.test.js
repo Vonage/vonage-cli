@@ -1,21 +1,26 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { EventType } from '@vonage/conversations';
 import { displayDate } from '../../../src/ux/locale.js';
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
-
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
 
-const { handler } = await import('../../../src/commands/conversations/create.js');
+
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
+  confirm,
+}))(),
+  'yargs': (() => ({
+  default: yargs,
+}))(),
+};
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 

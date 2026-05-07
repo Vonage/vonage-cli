@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -11,11 +10,18 @@ const writeFileMock = jest.fn();
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('../../../src/utils/fs.js', () => ({ writeFile: writeFileMock }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  '../../../src/utils/fs.js': (() => ({ writeFile: writeFileMock }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/create.js');
+
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/create.js', __moduleMocks);
 
 describe('Command: vonage apps create', () => {
   beforeEach(() => {

@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { getCLIConfig, testPrivateKey, testPublicKey } from '../common.js';
@@ -26,24 +25,29 @@ describe('Utils: Validate SDK Auth', () => {
     };
   });
 
-  jest.unstable_mockModule('../../src/ux/spinner.js', () => ({
+  const __moduleMocks = {
+  '../../src/ux/spinner.js': (() => ({
     spinner: jest.fn().mockImplementation(() => ({
       stop,
       fail,
     })),
-  }));
-
-  jest.unstable_mockModule('@vonage/server-sdk', () => ({
+  }))(),
+  '@vonage/server-sdk': (() => ({
     Vonage: VonageClass,
-  }));
+  }))(),
+};
+
+
+
+  
 
   beforeEach(async () => {
     mockGetApplicationPage = jest.fn();
     mockGetApplication = jest.fn();
 
-    Vonage = (await import('@vonage/server-sdk')).Vonage;
-    spinner = (await import('../../src/ux/spinner.js')).spinner;
-    const check = await import('../../src/utils/validateSDKAuth.js');
+    Vonage = (__moduleMocks['@vonage/server-sdk']).Vonage;
+    spinner = (__moduleMocks['../../src/ux/spinner.js']).spinner;
+    const check = await loadModule(import.meta.url, '../../src/utils/validateSDKAuth.js', __moduleMocks);
     validateApiKeyAndSecret = check.validateApiKeyAndSecret;
     validatePrivateKeyAndAppId = check.validatePrivateKeyAndAppId;
     mockConsole();

@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import {
   getTestApp,
@@ -26,9 +25,14 @@ const testAppCapability = {
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/validate.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/validate.js', __moduleMocks);
 
 describe('Command: vonage apps', () => {
   // I have no idea why these tests sometimes fail

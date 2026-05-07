@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import {
@@ -18,10 +17,16 @@ const spinnerMock = jest.fn();
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
-jest.unstable_mockModule('../../../src/ux/spinner.js', () => ({ spinner: spinnerMock }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+  '../../../src/ux/spinner.js': (() => ({ spinner: spinnerMock }))(),
+};
 
-const { handler, coerceCapability } = await import('../../../src/commands/apps/list.js');
+
+
+
+
+const { handler, coerceCapability } = await loadModule(import.meta.url, '../../../src/commands/apps/list.js', __moduleMocks);
 
 const makeSDK = (listAllApplications) => ({
   applications: { listAllApplications },

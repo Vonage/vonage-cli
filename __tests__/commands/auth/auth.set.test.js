@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { getTestMiddlewareArgs, testPublicKey, testPrivateKey } from '../../common.js';
 import { getBasicApplication } from '../../app.js';
 import { mockConsole } from '../../helpers.js';
@@ -13,24 +12,31 @@ const writeJSONFileMock = jest.fn();
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
-
-jest.unstable_mockModule('@vonage/server-sdk', () => {
+}))(),
+  '@vonage/server-sdk': (() => {
   const Vonage = jest.fn();
   return { Vonage };
-});
-
-jest.unstable_mockModule('../../../src/utils/fs.js', () => ({
+})(),
+  '../../../src/utils/fs.js': (() => ({
   createDirectory: createDirectoryMock,
   checkOkToWrite: checkOkToWriteMock,
   writeFile: writeFileMock,
   writeJSONFile: writeJSONFileMock,
-}));
+}))(),
+};
 
-const set = await import('../../../src/commands/auth/set.js');
-const { Vonage } = await import('@vonage/server-sdk');
+
+
+
+
+
+
+
+const set = await loadModule(import.meta.url, '../../../src/commands/auth/set.js', __moduleMocks);
+const { Vonage } = __moduleMocks['@vonage/server-sdk'];
 
 describe('Command: vonage auth set', () => {
   beforeEach(() => {

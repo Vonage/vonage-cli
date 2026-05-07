@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { displayDate } from '../../../src/ux/locale.js';
 
 const exitMock = jest.fn();
@@ -6,15 +5,21 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
-
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+}))(),
+  '../../../src/ux/confirm.js': (() => ({
   confirm,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/conversations/show.js');
+
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/show.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 

@@ -1,20 +1,25 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { displayDate } from '../../../src/ux/locale.js';
 
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
-
 const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
 
-const { handler } = await import('../../../src/commands/conversations/update.js');
+
+const __moduleMocks = {
+  'yargs': (() => ({
+  default: yargs,
+}))(),
+  '../../../src/ux/confirm.js': (() => ({
+  confirm,
+}))(),
+};
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/update.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 

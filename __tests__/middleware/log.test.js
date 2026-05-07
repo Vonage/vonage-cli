@@ -1,4 +1,3 @@
-import { jest, describe, test, afterEach, expect } from '@jest/globals';
 
 const mockLogger = {
   info: jest.fn(),
@@ -8,7 +7,14 @@ const mockLogger = {
 };
 const createLoggerMock = jest.fn(() => mockLogger);
 
-jest.unstable_mockModule('winston', () => ({
+const origConsole = {
+  info: console.info,
+  warn: console.warn,
+  error: console.error,
+  debug: console.debug,
+};
+
+const getWinstonMock = () => ({
   default: {
     createLogger: createLoggerMock,
     format: {
@@ -21,16 +27,7 @@ jest.unstable_mockModule('winston', () => ({
       Console: jest.fn(() => ({})),
     },
   },
-}));
-
-const { setupLog } = await import('../../src/middleware/log.js');
-
-const origConsole = {
-  info: console.info,
-  warn: console.warn,
-  error: console.error,
-  debug: console.debug,
-};
+});
 
 describe('Middleware: Log', () => {
   afterEach(() => {
@@ -46,11 +43,17 @@ describe('Middleware: Log', () => {
     createLoggerMock.mockImplementation(() => mockLogger);
   });
 
-  test('Will overwrite console log', () => {
+  test('Will overwrite console log', async () => {
     expect(console.info).not.toEqual(mockLogger.info);
     expect(console.warn).not.toEqual(mockLogger.warn);
     expect(console.error).not.toEqual(mockLogger.error);
     expect(console.debug).not.toEqual(mockLogger.debug);
+
+    const { setupLog } = await loadModule(
+      import.meta.url,
+      '../../src/middleware/log.js',
+      { 'winston': getWinstonMock() },
+    );
 
     setupLog({});
 
@@ -71,11 +74,17 @@ describe('Middleware: Log', () => {
     });
   });
 
-  test('Will overwrite console log and set the level to info', () => {
+  test('Will overwrite console log and set the level to info', async () => {
     expect(console.info).not.toEqual(mockLogger.info);
     expect(console.warn).not.toEqual(mockLogger.warn);
     expect(console.error).not.toEqual(mockLogger.error);
     expect(console.debug).not.toEqual(mockLogger.debug);
+
+    const { setupLog } = await loadModule(
+      import.meta.url,
+      '../../src/middleware/log.js',
+      { 'winston': getWinstonMock() },
+    );
 
     setupLog({ verbose: true });
 
@@ -96,11 +105,17 @@ describe('Middleware: Log', () => {
     });
   });
 
-  test('Will overwrite console log and set the level to debug', () => {
+  test('Will overwrite console log and set the level to debug', async () => {
     expect(console.info).not.toEqual(mockLogger.info);
     expect(console.warn).not.toEqual(mockLogger.warn);
     expect(console.error).not.toEqual(mockLogger.error);
     expect(console.debug).not.toEqual(mockLogger.debug);
+
+    const { setupLog } = await loadModule(
+      import.meta.url,
+      '../../src/middleware/log.js',
+      { 'winston': getWinstonMock() },
+    );
 
     setupLog({ verbose: true, debug: true });
 
@@ -121,4 +136,3 @@ describe('Middleware: Log', () => {
     });
   });
 });
-

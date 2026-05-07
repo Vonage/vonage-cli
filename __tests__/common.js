@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { Auth } from '@vonage/auth';
 import winston from 'winston';

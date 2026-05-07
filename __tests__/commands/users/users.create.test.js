@@ -1,13 +1,17 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/users/create.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import {
   getTestUserForAPI,

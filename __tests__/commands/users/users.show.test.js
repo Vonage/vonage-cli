@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { redact } from '../../../src/ux/redact.js';
 import { handler } from '../../../src/commands/users/show.js';
 import { mockConsole } from '../../helpers.js';

@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import {
@@ -17,9 +16,14 @@ import { faker } from '@faker-js/faker';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/show.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/show.js', __moduleMocks);
 
 describe('Command: vonage apps', () => {
   beforeEach(() => {

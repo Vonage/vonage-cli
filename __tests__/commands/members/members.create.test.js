@@ -1,14 +1,18 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
   confirm,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/members/create.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import {
   getTestMemberForAPI,

@@ -1,4 +1,3 @@
-import { jest, describe, test, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 
 const mockFiles = new Map();
@@ -8,12 +7,17 @@ const readFileSyncMock = jest.fn((path) => {
   return mockFiles.get(path);
 });
 
-jest.unstable_mockModule('fs', () => ({
+const __moduleMocks = {
+  'fs': (() => ({
   existsSync: existsSyncMock,
   readFileSync: readFileSyncMock,
-}));
+}))(),
+};
 
-const { coerceKey } = await import('../../src/utils/coerceKey.js');
+
+
+
+const { coerceKey } = await loadModule(import.meta.url, '../../src/utils/coerceKey.js', __moduleMocks);
 
 describe('Utils: coerce private key', () => {
   beforeEach(() => {

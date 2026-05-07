@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 
 const exitMock = jest.fn();
@@ -6,15 +5,21 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
-
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+}))(),
+  '../../../src/ux/confirm.js': (() => ({
   confirm,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/numbers/cancel.js');
+
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/cancel.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestPhoneNumber } from '../../numbers.js';
 

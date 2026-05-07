@@ -1,12 +1,16 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
   confirm,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/users/delete.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/delete.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestUserForAPI } from '../../users.js';
 

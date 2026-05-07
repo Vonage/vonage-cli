@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import yaml from 'yaml';
 import { typeLabels } from '../../../src/numbers/types.js';
@@ -9,11 +8,16 @@ import { Client } from '@vonage/server-client';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/numbers/search.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/search.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 
 describe('Command: vonage numbers search', () => {

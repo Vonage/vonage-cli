@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import { typeLabels } from '../../../../src/numbers/types.js';
@@ -15,9 +14,14 @@ import { Client } from '@vonage/server-client';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../../src/commands/apps/numbers/list.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/numbers/list.js', __moduleMocks);
 
 describe('Command: vonage apps numbers list', () => {
   beforeEach(() => {

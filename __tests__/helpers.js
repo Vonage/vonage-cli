@@ -1,4 +1,3 @@
-import { jest, afterEach } from '@jest/globals';
 
 afterEach(jest.restoreAllMocks);
 process.stdout.clearLine = jest.fn();

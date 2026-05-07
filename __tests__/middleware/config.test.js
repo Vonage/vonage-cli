@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import { Client } from '@vonage/server-client';
 import { mockConsole } from '../helpers.js';
@@ -22,14 +21,21 @@ const homedirMock = jest.fn();
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('fs', () => ({
+const __moduleMocks = {
+  'fs': (() => ({
   existsSync: existsSyncMock,
   readFileSync: readFileSyncMock,
-}));
-jest.unstable_mockModule('os', () => ({ default: { homedir: homedirMock }, EOL: '\n' }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+}))(),
+  'os': (() => ({ default: { homedir: homedirMock }, EOL: '\n' }))(),
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { setConfig } = await import('../../src/middleware/config.js');
+
+
+
+
+
+const { setConfig } = await loadModule(import.meta.url, '../../src/middleware/config.js', __moduleMocks);
 
 const oldEnv = process.env;
 const oldCwd = process.cwd;

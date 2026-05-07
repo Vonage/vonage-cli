@@ -1,4 +1,3 @@
-import { jest } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import { mockConsole } from '../helpers.js';
 import YAML from 'yaml';

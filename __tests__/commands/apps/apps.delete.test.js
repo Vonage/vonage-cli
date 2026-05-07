@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { getBasicApplication } from '../../app.js';
 import { mockConsole } from '../../helpers.js';
@@ -7,10 +6,16 @@ import { Client } from '@vonage/server-client';
 const confirmMock = jest.fn();
 const sdkErrorMock = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('../../../src/utils/sdkError.js', () => ({ sdkError: sdkErrorMock }));
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  '../../../src/utils/sdkError.js': (() => ({ sdkError: sdkErrorMock }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/delete.js');
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/delete.js', __moduleMocks);
 
 describe('Command: vonage apps delete', () => {
   beforeEach(() => {

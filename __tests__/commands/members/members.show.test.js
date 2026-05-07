@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
@@ -7,15 +6,21 @@ const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
 const confirm = jest.fn();
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
-
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
+}))(),
+  '../../../src/ux/confirm.js': (() => ({
   confirm,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/members/show.js');
+
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/show.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { displayDate } from '../../../src/ux/locale.js';
 import {

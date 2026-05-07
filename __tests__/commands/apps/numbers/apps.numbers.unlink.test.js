@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -10,10 +9,16 @@ import { Client } from '@vonage/server-client';
 const confirmMock = jest.fn();
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
-jest.unstable_mockModule('../../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  '../../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../../src/commands/apps/numbers/unlink.js');
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/numbers/unlink.js', __moduleMocks);
 
 describe('Command: vonage apps numbers link', () => {
   beforeEach(() => {

@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { typeLabels } from '../../../src/numbers/types.js';
 import { countryCodes, displayCurrency, buildCountryString } from '../../../src/ux/locale.js';
@@ -7,11 +6,16 @@ import { getTestPhoneNumber } from '../../numbers.js';
 const exitMock = jest.fn();
 const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
+const __moduleMocks = {
+  'yargs': (() => ({
   default: yargs,
-}));
+}))(),
+};
 
-const { handler } = await import('../../../src/commands/numbers/update.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/update.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 
 describe('Command: numbers update', () => {
