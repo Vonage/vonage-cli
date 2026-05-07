@@ -7,11 +7,11 @@ import { voiceDataSets } from './voiceCapabilities.js';
 
 export const dataSets = [
   {
-    label: 'message',
+    label: 'messages',
     testCases: messageDataSets,
   },
   {
-    label: 'network',
+    label: 'networkApis',
     testCases: networkDataSets,
   },
   {

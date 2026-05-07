@@ -17,7 +17,11 @@ const videoWebhooks = [
 ];
 
 const updateVideo = (app, flags) => {
-  console.log('Updating Video capabilities', app.capabilities.video);
+  if (!app.capabilities) {
+    app.capabilities = {};
+  }
+
+  console.log('Updating Video capabilities', app.capabilities?.video);
   console.log('Flags', flags);
   const newVideo = {
     webhooks: {
@@ -66,7 +70,9 @@ const updateWebhookUrl = (capability, which, flags) => {
     newStatus.active = true;
   }
 
-  if (flags[secretFlag]) {
+  if (flags[secretFlag] === '__REMOVE__') {
+    newStatus.secret = undefined;
+  } else if (flags[secretFlag]) {
     newStatus.secret = flags[secretFlag];
   }
 

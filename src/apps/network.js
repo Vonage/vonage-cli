@@ -2,6 +2,10 @@ import { coerceUrl } from '../utils/coerceUrl.js';
 import { coerceRemoveCallback, coerceRemove } from '../utils/coerceRemove.js';
 
 const updateNetwork = (app, flags) => {
+  if (!app.capabilities) {
+    app.capabilities = {};
+  }
+
   const newNetwork = {
     networkApplicationId: app.capabilities?.networkApis?.networkApplicationId,
     redirectUrl: app.capabilities?.networkApis?.redirectUrl,
@@ -29,7 +33,7 @@ const networkFlags = {
     group: group,
     coerce: coerceRemove,
   },
-  'network-redirect-url':{
+  'network-redirect-url': {
     description: 'URL to redirect to exchange code for token',
     coerce: coerceRemoveCallback(coerceUrl('network-redirect-url')),
     type: 'boolean',

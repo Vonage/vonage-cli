@@ -10,6 +10,7 @@ import {
 } from 'node:test';
 import esmock from 'esmock';
 import { fileURLToPath } from 'node:url';
+import jsonDiff from 'json-diff';
 
 process.env.FORCE_COLOR = 0;
 process.env.LC_ALL = 'en_UK.UTF-8';
@@ -64,9 +65,10 @@ const assertCalledWith = (fn, ...expected) => {
       return false;
     }
   });
+  const diff = jsonDiff.diffString(expected, calls);
   assert.ok(
     matched,
-    `Expected mock to have been called with ${JSON.stringify(expected)}, actual calls: ${JSON.stringify(calls)}`,
+    `Expected mock incorrectly called:\n ${diff}`,
   );
 };
 

@@ -1,7 +1,11 @@
 import { coerceUrl } from '../utils/coerceUrl.js';
-import { coerceRemoveCallback, coerceRemoveList } from '../utils/coerceRemove.js';
+import { coerceRemoveCallback, coerceRemoveList, clearRemoved } from '../utils/coerceRemove.js';
 
 const updateRTC = (app, flags) => {
+  if (!app.capabilities) {
+    app.capabilities = {};
+  }
+
   const newRTC = {
     webhooks: {
       eventUrl: {
@@ -13,7 +17,7 @@ const updateRTC = (app, flags) => {
   };
 
   console.debug(`eventurl: ${flags.rtcEventUrl}`);
-  if (flags.rtcEventUrl)  {
+  if (flags.rtcEventUrl) {
     newRTC.webhooks.eventUrl.address = flags.rtcEventUrl;
   }
 
@@ -31,7 +35,7 @@ const updateRTC = (app, flags) => {
   }
 
   // Remove undefined values
-  app.capabilities.rtc = JSON.parse(JSON.stringify(newRTC));
+  app.capabilities.rtc = JSON.parse(JSON.stringify(clearRemoved(newRTC)));
 
   if (Object.keys(app.capabilities.rtc).length < 1) {
     app.capabilities.rtc = undefined;
@@ -43,17 +47,17 @@ const updateRTC = (app, flags) => {
 const group = 'RTC Capabilities';
 
 const rtcFlags = {
-  'rtc-event-url':{
+  'rtc-event-url': {
     description: 'URL to receive RTC events',
     coerce: coerceRemoveCallback(coerceUrl('rct-event-url')),
     group: group,
   },
-  'rtc-event-method':{
+  'rtc-event-method': {
     description: 'HTTP method for RTC events',
     coerce: coerceRemoveList('rtc-event-method', ['GET', 'POST']),
     group: group,
   },
-  'rtc-signed-event':{
+  'rtc-signed-event': {
     description: 'Used signed webhook for RTC events',
     type: 'boolean',
     group: group,

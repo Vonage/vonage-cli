@@ -1,9 +1,13 @@
 import { coerceUrl } from '../utils/coerceUrl.js';
 import { coerceNumber } from '../utils/coerceNumber.js';
-import { coerceRemoveCallback, coerceRemoveList } from '../utils/coerceRemove.js';
+import { coerceRemoveCallback, coerceRemoveList, clearRemoved } from '../utils/coerceRemove.js';
 
 const updateVoice = async (app, flags) => {
-  const newVoice = {
+  if (!app.capabilities) {
+    app.capabilities = {};
+  }
+
+  let newVoice = {
     webhooks: {
       eventUrl: {
         address: app.capabilities?.voice?.webhooks?.eventUrl?.address,
@@ -24,40 +28,26 @@ const updateVoice = async (app, flags) => {
         connectTimeout: app.capabilities?.voice?.webhooks?.fallbackAnswerUrl?.connectTimeout,
       },
     },
-    signedCallbacks: app.capabilities?.voice?.signedCallbacks,
-    conversationsTtl: app.capabilities?.voice?.conversationsTtl,
-    legPersistenceTime: app.capabilities?.voice?.legPersistenceTime,
-    region: app.capabilities?.voice?.region,
+    signedCallbacks: flags.voiceSignedCallbacks ?? app.capabilities?.voice?.signedCallbacks,
+    conversationsTtl: flags.voiceConversationsTtl ?? app.capabilities?.voice?.conversationsTtl,
+    legPersistenceTime: flags.voiceLegPersistenceTime ?? app.capabilities?.voice?.legPersistenceTime,
+    region: flags.voiceRegion ?? app.capabilities?.voice?.region,
   };
 
   addEventUrl(newVoice, flags);
   addAnswerUrl(newVoice, flags);
   addFallbackAnswerUrl(newVoice, flags);
 
-  if (flags.voiceSignedCallbacks !== undefined) {
-    newVoice.signedCallbacks = flags.voiceSignedCallbacks;
-  }
-
-  if (flags.voiceConversationsTtl !== undefined) {
-    newVoice.conversationsTtl = flags.voiceConversationsTtl;
-  }
-
-  if (flags.voiceLegPersistenceTime !== undefined) {
-    newVoice.legPersistenceTime = flags.voiceLegPersistenceTime;
-  }
-
-  if (flags.voiceRegion) {
-    newVoice.region = flags.voiceRegion;
-  }
-
   // Remove undefined values
-  app.capabilities.voice = JSON.parse(JSON.stringify(newVoice));
+  console.log('Updating voice');
+  app.capabilities.voice = JSON.parse(JSON.stringify(clearRemoved(newVoice)));
 
-  console.debug('Updated voice capabilities', app.capabilities.voice);
+  console.log('Updated voice capabilities', app.capabilities.voice);
+  return app;
 };
 
 const addAnswerUrl = (capability, flags) => {
-  const newAnswerUrl = capability.webhooks?.answerUrl;
+  const newAnswerUrl = { ...capability.webhooks?.answerUrl };
 
   if (flags.voiceAnswerUrl) {
     newAnswerUrl.address = flags.voiceAnswerUrl;
@@ -76,15 +66,14 @@ const addAnswerUrl = (capability, flags) => {
     newAnswerUrl.socketTimeout = flags.voiceAnswerSocketTimeout;
   }
 
-  capability.webhooks.answerUrl = JSON.parse(JSON.stringify(newAnswerUrl));
+  const answerUrl = JSON.parse(JSON.stringify(clearRemoved(newAnswerUrl)));
+  capability.webhooks.answerUrl = Object.keys(answerUrl).length < 1 ? undefined : answerUrl;
 
-  if (Object.keys(capability.webhooks.answerUrl).length < 1) {
-    capability.webhooks.answerUrl = undefined;
-  }
+  return capability;
 };
 
 const addEventUrl = (capability, flags) => {
-  const newEventUrl = capability.webhooks?.eventUrl;
+  const newEventUrl = { ...capability.webhooks?.eventUrl };
 
   if (flags.voiceEventUrl) {
     newEventUrl.address = flags.voiceEventUrl;
@@ -103,15 +92,14 @@ const addEventUrl = (capability, flags) => {
     newEventUrl.socketTimeout = flags.voiceEventSocketTimeout;
   }
 
-  capability.webhooks.eventUrl = JSON.parse(JSON.stringify(newEventUrl));
+  const eventUrl = JSON.parse(JSON.stringify(clearRemoved(newEventUrl)));
+  capability.webhooks.eventUrl = Object.keys(eventUrl).length < 1 ? undefined : eventUrl;
 
-  if (Object.keys(capability.webhooks.eventUrl).length < 1) {
-    capability.webhooks.eventUrl = undefined;
-  }
+  return capability;
 };
 
 const addFallbackAnswerUrl = (capability, flags) => {
-  const newFallbackAnswerUrl = capability.webhooks?.fallbackAnswerUrl;
+  const newFallbackAnswerUrl = { ...capability.webhooks?.fallbackAnswerUrl };
 
   if (flags.voiceFallbackUrl) {
     newFallbackAnswerUrl.address = flags.voiceFallbackUrl;
@@ -130,11 +118,10 @@ const addFallbackAnswerUrl = (capability, flags) => {
     newFallbackAnswerUrl.socketTimeout = flags.voiceFallbackSocketTimeout;
   }
 
-  capability.webhooks.fallbackAnswerUrl = JSON.parse(JSON.stringify(newFallbackAnswerUrl));
+  const fallbackAnswerUrl = JSON.parse(JSON.stringify(clearRemoved(newFallbackAnswerUrl)));
+  capability.webhooks.fallbackAnswerUrl = Object.keys(fallbackAnswerUrl).length < 1 ? undefined : fallbackAnswerUrl;
 
-  if (Object.keys(capability.webhooks.fallbackAnswerUrl).length < 1) {
-    capability.webhooks.fallbackAnswerUrl = undefined;
-  }
+  return capability;
 };
 
 const helpGroup = 'Voice Capabilities';
@@ -162,7 +149,7 @@ const voiceFlags = {
     ),
     group: helpGroup,
   },
-  'voice-region':{
+  'voice-region': {
     description: 'All inbound, programmable SIP and SIP connect calls will be sent to the selected region. If the call is using a regional endpoint this will override the application setting',
     // TODO pull in region from SDK
     implies: ['voice-fallback-url', 'voice-event-url', 'voice-answer-url'],
@@ -181,19 +168,19 @@ const voiceFlags = {
   },
 
   // answer
-  'voice-answer-url':{
+  'voice-answer-url': {
     description: 'Answer Webhook URL Address',
     implies: ['voice-fallback-url', 'voice-event-url'],
     group: helpGroup,
     coerce: coerceRemoveCallback(coerceUrl('voice-answer-url')),
   },
-  'voice-answer-http':{
+  'voice-answer-http': {
     description: 'Answer Webhook HTTP Method',
     implies: ['voice-answer-url'],
     coerce: coerceRemoveList('voice-answer-http', ['GET', 'POST']),
     group: helpGroup,
   },
-  'voice-answer-connection-timeout':{
+  'voice-answer-connection-timeout': {
     description: 'Answer connection timeout',
     implies: ['voice-answer-url'],
     group: helpGroup,
@@ -201,7 +188,7 @@ const voiceFlags = {
       coerceNumber('voice-answer-connection-timeout', { min: 300, max: 5000 }),
     ),
   },
-  'voice-answer-socket-timeout':{
+  'voice-answer-socket-timeout': {
     description: 'Answer socket timeout',
     implies: ['voice-answer-url'],
     group: helpGroup,
@@ -211,19 +198,19 @@ const voiceFlags = {
   },
 
   // events
-  'voice-event-url':{
+  'voice-event-url': {
     description: 'Event Webhook URL Address',
     implies: ['voice-fallback-url', 'voice-answer-url'],
     group: helpGroup,
     coerce: coerceRemoveCallback(coerceUrl('voice-event-url')),
   },
-  'voice-event-http':{
+  'voice-event-http': {
     description: 'Event Webhook HTTP Method',
     coerce: coerceRemoveList('voice-answer-http', ['GET', 'POST']),
     implies: ['voice-fallback-url', 'voice-answer-url'],
     group: helpGroup,
   },
-  'voice-event-connection-timeout':{
+  'voice-event-connection-timeout': {
     description: 'Event connection timeout',
     implies: ['voice-event-url'],
     group: helpGroup,
@@ -231,7 +218,7 @@ const voiceFlags = {
       coerceNumber('voice-event-connection-timeout', { min: 300, max: 5000 }),
     ),
   },
-  'voice-event-socket-timeout':{
+  'voice-event-socket-timeout': {
     description: 'Event socket timeout',
     implies: ['voice-event-url'],
     group: helpGroup,
@@ -241,20 +228,20 @@ const voiceFlags = {
   },
 
   // fallbacks
-  'voice-fallback-url':{
+  'voice-fallback-url': {
     description: 'Fallback Webhook URL Address',
     implies: ['voice-event-url', 'voice-answer-url'],
     coerce: coerceRemoveCallback(coerceUrl('voice-fallback-url')),
     group: helpGroup,
   },
-  'voice-fallback-http':{
+  'voice-fallback-http': {
     aliases: ['voice_fallback_http'],
     description: 'Fallback Webhook HTTP Method',
     coerce: coerceRemoveList('voice-answer-http', ['GET', 'POST']),
     implies: ['voice-event-url', 'voice-answer-url'],
     group: helpGroup,
   },
-  'voice-fallback-connection-timeout':{
+  'voice-fallback-connection-timeout': {
     description: 'Fallback connection timeout',
     implies: ['voice-fallback-url'],
     group: helpGroup,
@@ -262,7 +249,7 @@ const voiceFlags = {
       coerceNumber('voice-fallback-connection-timeout', { min: 300, max: 5000 }),
     ),
   },
-  'voice-fallback-socket-timeout':{
+  'voice-fallback-socket-timeout': {
     description: 'Fallback socket timeout',
     implies: ['voice-fallback-url'],
     group: helpGroup,

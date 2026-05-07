@@ -2,6 +2,10 @@ import { coerceUrl } from '../utils/coerceUrl.js';
 import { coerceRemoveCallback } from '../utils/coerceRemove.js';
 
 const updateVerify = (app, flags) => {
+  if (!app.capabilities) {
+    app.capabilities = {};
+  }
+
   if (flags.verifyStatusUrl !== undefined) {
     app.capabilities.verify = {
       version: 'v2',
@@ -22,7 +26,7 @@ const updateVerify = (app, flags) => {
 const group = 'Verify Capabilities';
 
 const verifyFlags = {
-  'verify-status-url':{
+  'verify-status-url': {
     description: 'URL for verify status messages',
     coerce: coerceRemoveCallback(coerceUrl('verify-status-url')),
     group,

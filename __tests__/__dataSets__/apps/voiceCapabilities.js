@@ -45,8 +45,8 @@ export const voiceDataSets = [
 
     const eventUrl = faker.internet.url();
     const httpMethod = faker.helpers.shuffle(['GET', 'POST'])[0];
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'add voice event url, method, socket and connection timeout',
@@ -86,8 +86,8 @@ export const voiceDataSets = [
 
     app.capabilities.voice.webhooks.eventUrl.httpMethod = 'GET';
     const eventUrl = faker.internet.url();
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'replace voice event url, method, socket and connection timeout',
@@ -162,8 +162,8 @@ export const voiceDataSets = [
 
     const answerUrl = faker.internet.url();
     const httpMethod = faker.helpers.shuffle(['GET', 'POST'])[0];
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'add voice answer url, method, socket and connection timeout',
@@ -203,8 +203,8 @@ export const voiceDataSets = [
 
     app.capabilities.voice.webhooks.answerUrl.httpMethod = 'GET';
     const answerUrl = faker.internet.url();
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'replace voice answer url, method, socket and connection timeout',
@@ -279,8 +279,8 @@ export const voiceDataSets = [
 
     const fallbackUrl = faker.internet.url();
     const httpMethod = faker.helpers.shuffle(['GET', 'POST'])[0];
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'add voice fallbackAnswer url, method, socket and connection timeout',
@@ -320,8 +320,8 @@ export const voiceDataSets = [
 
     app.capabilities.voice.webhooks.fallbackAnswerUrl.httpMethod = 'GET';
     const fallbackUrl = faker.internet.url();
-    const socketTimeout = faker.number.int({max: 5000, min: 1000});
-    const connectTimeout = faker.number.int({max: 1000, min: 300});
+    const socketTimeout = faker.number.int({ max: 5000, min: 1000 });
+    const connectTimeout = faker.number.int({ max: 1000, min: 300 });
 
     return {
       label: 'replace voice fallbackAnswer url, method, socket and connection timeout',
@@ -364,8 +364,8 @@ export const voiceDataSets = [
     app.capabilities.voice.webhooks.fallbackAnswerUrl.httpMethod = 'GET';
 
     const signedCallbacks = true;
-    const conversationsTtl = faker.number.int({max: 744, min: 1});
-    const legPersistenceTime = faker.number.int({max: 31, min: 1});
+    const conversationsTtl = faker.number.int({ max: 744, min: 1 });
+    const legPersistenceTime = faker.number.int({ max: 31, min: 1 });
     const region = faker.helpers.shuffle([
       'na-east',
       'na-west',

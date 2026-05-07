@@ -1,4 +1,4 @@
-const unsetRemove = (obj, setAsNull=false) => {
+const unsetRemove = (obj, setAsNull = false) => {
   return Object.entries(obj).reduce(
     (acc, [key, value]) => {
       if (value === '__REMOVE__' && !setAsNull) {
@@ -50,3 +50,20 @@ export const coerceRemoveList = (flagName, list) => (arg) => {
 
   throw new Error(`Invalid value [${arg}] for ${flagName}, only ${list.join(', ')} are supported.`);
 };
+
+export const clearRemoved = (obj) => Object.fromEntries(Object.entries(obj).reduce(
+  (acc, [key, value]) => {
+    if (value?.constructor.name === 'Object') {
+      acc.push([key, clearRemoved(value)]);
+      return acc;
+    };
+
+    if (value !== '__REMOVE__') {
+      acc.push([key, value]);
+    }
+
+    return acc;
+  },
+  [],
+));
+
