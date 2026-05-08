@@ -3,11 +3,11 @@ import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
 import { getBasicApplication } from '../../app.js';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const mockGetApplicationPage = jest.fn();
-const mockGetApplication = jest.fn();
+const mockGetApplicationPage = mock.fn();
+const mockGetApplication = mock.fn();
 
 
 
@@ -16,7 +16,7 @@ const __moduleMocks = {
     default: yargs,
   }))(),
   '@vonage/server-sdk': (() => {
-    const Vonage = jest.fn();
+    const Vonage = mock.fn();
     return { Vonage };
   })(),
 };
@@ -28,12 +28,12 @@ const oldProcessStdoutWrite = process.stdout.write;
 
 describe('Command: vonage auth show and vonage auth', () => {
   beforeEach(() => {
-    process.stdout.write = jest.fn();
+    process.stdout.write = mock.fn();
     mockConsole();
-    mockGetApplicationPage.mockReset();
-    mockGetApplication.mockReset();
-    Vonage.mockReset();
-    Vonage.mockImplementation(() => ({
+    mockGetApplicationPage.mock.resetCalls();
+    mockGetApplication.mock.resetCalls();
+    Vonage.mock.resetCalls();
+    Vonage.mock.mockImplementation(() => ({
       applications: {
         getApplication: mockGetApplication,
         getApplicationPage: mockGetApplicationPage,
@@ -49,8 +49,8 @@ describe('Command: vonage auth show and vonage auth', () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const args = { ...getTestMiddlewareArgs() };
 
@@ -69,11 +69,12 @@ describe('Command: vonage auth show and vonage auth', () => {
     await handler(args);
 
     const { config } = args;
-    expect(console.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(console.log).toHaveBeenNthCalledWith(1, `Local credentials found at: ${config.localConfigFile}`);
+    assertCalledWith(console.info, 'Displaying auth information');
+    assertNthCalledWith(console.log, 1, `Local credentials found at: ${config.localConfigFile}`);
 
     const redactedLocal = `${config.local.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.local.apiSecret}`.length - 2);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.local.apiKey}`,
@@ -83,10 +84,11 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(5, `Global credentials found at: ${config.globalConfigFile}`);
+    assertNthCalledWith(console.log, 5, `Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       7,
       [
         `API Key: ${config.global.apiKey}`,
@@ -97,18 +99,18 @@ describe('Command: vonage auth show and vonage auth', () => {
     );
 
     // twice once for local and once for global
-    expect(mockGetApplicationPage).toHaveBeenCalledTimes(2);
-    expect(mockGetApplication).toHaveBeenCalledTimes(2);
-    expect(mockGetApplication).toHaveBeenNthCalledWith(1, config.local.appId);
-    expect(mockGetApplication).toHaveBeenNthCalledWith(2, config.global.appId);
+    assert.strictEqual(mockGetApplicationPage.mock.callCount(), 2);
+    assert.strictEqual(mockGetApplication.mock.callCount(), 2);
+    assertNthCalledWith(mockGetApplication, 1, config.local.appId);
+    assertNthCalledWith(mockGetApplication, 2, config.global.appId);
   });
 
   test('Should show only the local config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const args = { ...getTestMiddlewareArgs() };
 
@@ -124,11 +126,12 @@ describe('Command: vonage auth show and vonage auth', () => {
     await handler(args);
 
     const { config } = args;
-    expect(console.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(console.log).toHaveBeenNthCalledWith(1, `Local credentials found at: ${config.localConfigFile}`);
+    assertCalledWith(console.info, 'Displaying auth information');
+    assertNthCalledWith(console.log, 1, `Local credentials found at: ${config.localConfigFile}`);
 
     const redactedLocal = `${config.local.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.local.apiSecret}`.length - 2);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.local.apiKey}`,
@@ -138,17 +141,17 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).toHaveBeenCalledWith(config.local.appId);
+    assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
+    assert.strictEqual(mockGetApplication.mock.callCount(), 1);
+    assertCalledWith(mockGetApplication, config.local.appId);
   });
 
   test('Should show only the global config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const args = { ...getTestMiddlewareArgs() };
 
@@ -164,11 +167,12 @@ describe('Command: vonage auth show and vonage auth', () => {
     await handler(args);
 
     const { config } = args;
-    expect(console.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(console.log).toHaveBeenNthCalledWith(1, `Global credentials found at: ${config.globalConfigFile}`);
+    assertCalledWith(console.info, 'Displaying auth information');
+    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.global.apiKey}`,
@@ -178,16 +182,16 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
+    assert.strictEqual(mockGetApplication.mock.callCount(), 1);
+    assertCalledWith(mockGetApplication, config.global.appId);
   });
 
   test('Should show only the API Key and Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplicationPage.mockResolvedValue({ response: { status: 200 } });
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
 
     const args = { ...getTestMiddlewareArgs() };
 
@@ -203,11 +207,12 @@ describe('Command: vonage auth show and vonage auth', () => {
     await handler(args);
 
     const { config } = args;
-    expect(console.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(console.log).toHaveBeenNthCalledWith(1, `Global credentials found at: ${config.globalConfigFile}`);
+    assertCalledWith(console.info, 'Displaying auth information');
+    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.global.apiKey}`,
@@ -215,15 +220,15 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(mockGetApplicationPage).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).not.toHaveBeenCalled();
+    assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
+    assert.strictEqual(mockGetApplication.mock.callCount(), 0);
   });
 
   test('Should show only the App Id and Private Key', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const args = { ...getTestMiddlewareArgs() };
     args.config = {
@@ -242,10 +247,11 @@ describe('Command: vonage auth show and vonage auth', () => {
     const { config } = args;
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    expect(console.info).toHaveBeenCalledWith('Displaying auth information');
-    expect(console.log).toHaveBeenNthCalledWith(1, `Global credentials found at: ${config.globalConfigFile}`);
+    assertCalledWith(console.info, 'Displaying auth information');
+    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.global.apiKey}`,
@@ -255,16 +261,16 @@ describe('Command: vonage auth show and vonage auth', () => {
       ].join('\n'),
     );
 
-    expect(mockGetApplicationPage).toHaveBeenCalled();
-    expect(mockGetApplication).toHaveBeenCalledTimes(1);
-    expect(mockGetApplication).toHaveBeenCalledWith(config.global.appId);
+    assert.ok(mockGetApplicationPage.mock.callCount() > 0);
+    assert.strictEqual(mockGetApplication.mock.callCount(), 1);
+    assertCalledWith(mockGetApplication, config.global.appId);
   });
 
   test('Should show the full Private Key and API Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const args = { ...getTestMiddlewareArgs() };
 
@@ -284,7 +290,8 @@ describe('Command: vonage auth show and vonage auth', () => {
 
     const { config } = args;
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       [
         `API Key: ${config.global.apiKey}`,
@@ -303,8 +310,8 @@ describe('Command: vonage auth show and vonage auth', () => {
     });
 
     const { config } = args;
-    expect(console.table).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenNthCalledWith(1, JSON.stringify([config.local, config.global], null, 2));
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertNthCalledWith(console.log, 1, JSON.stringify([config.local, config.global], null, 2));
   });
 
   test('should output YAML', async () => {
@@ -315,7 +322,7 @@ describe('Command: vonage auth show and vonage auth', () => {
     });
 
     const { config } = args;
-    expect(console.table).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenNthCalledWith(1, yaml.stringify([config.local, config.global], null, 2));
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertNthCalledWith(console.log, 1, yaml.stringify([config.local, config.global], null, 2));
   });
 });

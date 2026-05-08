@@ -18,7 +18,7 @@ describe('Command: vonage balance', () => {
       autoReload: faker.datatype.boolean(),
     };
 
-    const balanceMock = jest.fn().mockResolvedValue(balance);
+    const balanceMock = mock.fn(() => Promise.resolve(balance));
 
     const sdkMock = {
       accounts: {
@@ -28,8 +28,9 @@ describe('Command: vonage balance', () => {
 
     await handler({SDK: sdkMock});
 
-    expect(balanceMock).toHaveBeenCalled();
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.ok(balanceMock.mock.callCount() > 0);
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Account balance: ${displayCurrency(balance.value)}`,
@@ -44,7 +45,7 @@ describe('Command: vonage balance', () => {
       autoReload: faker.datatype.boolean(),
     };
 
-    const balanceMock = jest.fn().mockResolvedValue(balance);
+    const balanceMock = mock.fn(() => Promise.resolve(balance));
 
     const sdkMock = {
       accounts: {
@@ -54,8 +55,9 @@ describe('Command: vonage balance', () => {
 
     await handler({SDK: sdkMock, json: true});
 
-    expect(balanceMock).toHaveBeenCalled();
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.ok(balanceMock.mock.callCount() > 0);
+    assertNthCalledWith(
+      console.log,
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(balance, true, false),
@@ -71,7 +73,7 @@ describe('Command: vonage balance', () => {
       autoReload: faker.datatype.boolean(),
     };
 
-    const balanceMock = jest.fn().mockResolvedValue(balance);
+    const balanceMock = mock.fn(() => Promise.resolve(balance));
 
     const sdkMock = {
       accounts: {
@@ -81,8 +83,9 @@ describe('Command: vonage balance', () => {
 
     await handler({SDK: sdkMock, yaml: true});
 
-    expect(balanceMock).toHaveBeenCalled();
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.ok(balanceMock.mock.callCount() > 0);
+    assertNthCalledWith(
+      console.log,
       1,
       YAML.stringify(
         Client.transformers.snakeCaseObjectKeys(balance, true, false),

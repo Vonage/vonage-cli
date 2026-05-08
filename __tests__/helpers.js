@@ -1,3 +1,5 @@
+import { mock } from 'node:test';
+
 const originalConsole = {
   log: console.log,
   warn: console.warn,
@@ -22,15 +24,15 @@ afterEach(() => {
 });
 
 export const mockConsole = () => {
-  console.log = jest.fn();
-  console.warn = jest.fn();
-  console.info = jest.fn();
-  console.debug = jest.fn();
-  console.error = jest.fn();
-  console.table = jest.fn();
-  process.stdout.clearLine = jest.fn();
-  process.stderr.clearLine = jest.fn();
-  process.stdout.write = jest.fn();
-  process.stderr.write = jest.fn();
+  console.log = mock.fn();
+  console.warn = mock.fn();
+  console.info = mock.fn();
+  console.debug = mock.fn();
+  console.error = mock.fn();
+  console.table = mock.fn();
+  process.stdout.clearLine = mock.fn();
+  process.stderr.clearLine = mock.fn();
+  process.stdout.write = mock.fn();
+  process.stderr.write = mock.fn();
   return console;
 };

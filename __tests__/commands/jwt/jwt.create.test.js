@@ -15,17 +15,17 @@ describe('Command: vonage jwt create', () => {
       ...args,
       privateKey: testPrivateKey,
     });
-    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(console.log).toHaveBeenCalled();
-    const generatedToken = console.log.mock.calls[0][0];
+    assertCalledWith(console.info, 'Creating JWT token');
+    assert.ok(console.log.mock.callCount() > 0);
+    const generatedToken = console.log.mock.calls[0].arguments[0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
-    expect(decoded).toHaveProperty('iat');
-    expect(decoded).toHaveProperty('jti');
-    expect(decoded).toHaveProperty('exp');
-    expect(decoded).not.toHaveProperty('acl');
-    expect(decoded).not.toHaveProperty('sub');
-    expect(decoded.application_id).toBe(args.appId);
+    assert.notStrictEqual(decoded['iat'], undefined);
+    assert.notStrictEqual(decoded['jti'], undefined);
+    assert.notStrictEqual(decoded['exp'], undefined);
+    assert.strictEqual(decoded['acl'], undefined);
+    assert.strictEqual(decoded['sub'], undefined);
+    assert.strictEqual(decoded.application_id, args.appId);
   });
 
   test('should generate a JWT with a subject', async () => {
@@ -36,12 +36,12 @@ describe('Command: vonage jwt create', () => {
       privateKey: testPrivateKey,
       sub: sub,
     });
-    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(console.log).toHaveBeenCalled();
-    const generatedToken = console.log.mock.calls[0][0];
+    assertCalledWith(console.info, 'Creating JWT token');
+    assert.ok(console.log.mock.callCount() > 0);
+    const generatedToken = console.log.mock.calls[0].arguments[0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
-    expect(decoded.sub).toBe(sub);
+    assert.strictEqual(decoded.sub, sub);
   });
 
   test('should generate a JWT with an acl', async () => {
@@ -68,20 +68,19 @@ describe('Command: vonage jwt create', () => {
       acl: JSON.stringify(acl),
     });
 
-    expect(jwtFlags.acl.coerce(JSON.stringify(acl)))
-      .toEqual(acl);
+    assert.deepStrictEqual(jwtFlags.acl.coerce(JSON.stringify(acl)), acl);
 
-    expect(console.info).toHaveBeenCalledWith('Creating JWT token');
-    expect(console.log).toHaveBeenCalled();
-    const generatedToken = console.log.mock.calls[0][0];
+    assertCalledWith(console.info, 'Creating JWT token');
+    assert.ok(console.log.mock.callCount() > 0);
+    const generatedToken = console.log.mock.calls[0].arguments[0];
 
     const decoded = jwt.verify(generatedToken, testPrivateKey, { algorithms: ['RS256'] });
-    expect(decoded.acl).toBe(JSON.stringify(acl));
+    assert.strictEqual(decoded.acl, JSON.stringify(acl));
   });
 
   test('should error when ACL is invalid', async () => {
-    expect(jwtFlags.acl.coerce).toBeDefined();
-    expect(() => jwtFlags.acl.coerce('invalid')).toThrow('Failed to parse JSON for ACL');
-    expect(() => jwtFlags.acl.coerce('{"foo": "bar"}')).toThrow('ACL Failed to validate against schema');
+    assert.notStrictEqual(jwtFlags.acl.coerce, undefined);
+    assert.throws(() => jwtFlags.acl.coerce('invalid'), /Failed to parse JSON for ACL/);
+    assert.throws(() => jwtFlags.acl.coerce('{"foo": "bar"}'), /ACL Failed to validate against schema/);
   });
 });
