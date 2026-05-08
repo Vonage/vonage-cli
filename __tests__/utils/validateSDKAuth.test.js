@@ -16,14 +16,24 @@ describe('Utils: Validate SDK Auth', () => {
   let spinner;
   let Vonage;
 
-  let VonageClass = mock.fn(() => {
+  // VonageClass needs to be a real constructor (new-able) that also tracks calls.
+  // mock.fn() from node:test is an arrow function and cannot be used with `new`,
+  // so we build a lightweight trackable constructor manually.
+  const vonageCalls = [];
+  let VonageClass = function(...args) {
+    vonageCalls.push({ arguments: args });
     return {
       applications: {
         getApplication: mockGetApplication,
         getApplicationPage: mockGetApplicationPage,
       },
     };
-  });
+  };
+  VonageClass.mock = {
+    get calls() { return vonageCalls; },
+    callCount() { return vonageCalls.length; },
+    resetCalls() { vonageCalls.length = 0; },
+  };
 
   const __moduleMocks = {
     '../../src/ux/spinner.js': (() => ({

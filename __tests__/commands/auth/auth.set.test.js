@@ -17,7 +17,20 @@ const __moduleMocks = {
     default: yargs,
   }))(),
   '@vonage/server-sdk': (() => {
-    const Vonage = mock.fn();
+    // mock.fn() from node:test cannot be used with `new`.
+    // Build a trackable constructor manually.
+    const vonageCalls = [];
+    let vonageImpl = () => undefined;
+    const Vonage = function(...args) {
+      vonageCalls.push({ arguments: args });
+      return vonageImpl.call(this, ...args);
+    };
+    Vonage.mock = {
+      get calls() { return vonageCalls; },
+      callCount() { return vonageCalls.length; },
+      resetCalls() { vonageCalls.length = 0; },
+      mockImplementation(fn) { vonageImpl = fn; },
+    };
     return { Vonage };
   })(),
   '../../../src/utils/fs.js': (() => ({

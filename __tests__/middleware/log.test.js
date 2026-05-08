@@ -23,7 +23,7 @@ const getWinstonMock = () => ({
       simple: () => undefined,
     },
     transports: {
-      Console: mock.fn(() => ({})),
+      Console: function() { return {}; },
     },
   },
 });

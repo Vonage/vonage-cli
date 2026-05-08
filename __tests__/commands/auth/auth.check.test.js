@@ -12,14 +12,22 @@ describe('Command: vonage auth check', () => {
   let mockGetApplicationPage = mock.fn();
   let mockGetApplication = mock.fn();
 
-  let VonageClass = mock.fn(() => {
+  // mock.fn() from node:test cannot be used with `new`, so use a trackable constructor.
+  const vonageClassCalls = [];
+  let VonageClass = function(...args) {
+    vonageClassCalls.push({ arguments: args });
     return {
       applications: {
         getApplication: mockGetApplication,
         getApplicationPage: mockGetApplicationPage,
       },
     };
-  });
+  };
+  VonageClass.mock = {
+    get calls() { return vonageClassCalls; },
+    callCount() { return vonageClassCalls.length; },
+    resetCalls() { vonageClassCalls.length = 0; },
+  };
   let handler;
 
   beforeEach(async () => {
