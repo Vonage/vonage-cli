@@ -13,9 +13,9 @@ import {
 import { mockConsole } from '../../helpers.js';
 import { Client } from '@vonage/server-client';
 
-const spinnerMock = jest.fn();
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const spinnerMock = mock.fn();
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'yargs': (() => ({ default: yargs }))(),
@@ -34,8 +34,8 @@ const makeSDK = (listAllApplications) => ({
 
 describe('Command: vonage apps', () => {
   beforeEach(() => {
-    spinnerMock.mockReset();
-    spinnerMock.mockReturnValue({ stop: jest.fn(), fail: jest.fn() });
+    spinnerMock.mock.resetCalls();
+    spinnerMock.mock.mockImplementation(() => ({ stop: mock.fn(), fail: mock.fn() }));
     mockConsole();
   });
 
@@ -44,19 +44,19 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk });
 
-    expect(console.table).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('No applications found');
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertCalledWith(console.log, 'No applications found');
   });
 
   test('Will list one application that does not have any capabilities', async () => {
     const app = getTestApp();
-    const listAllApplications = jest.fn(async function*() { yield app; });
+    const listAllApplications = mock.fn(async function*() { yield app; });
     const sdk = makeSDK(listAllApplications);
 
     await handler({ SDK: sdk });
 
-    expect(listAllApplications).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith([
+    assert.strictEqual(listAllApplications.mock.callCount(), 1);
+    assertCalledWith(console.table, [
       {
         'App ID': app.id,
         'Capabilities': 'None',
@@ -86,7 +86,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk });
 
-    expect(console.table).toHaveBeenCalledWith([
+    assertCalledWith(console.table, [
       {
         'App ID': appOne.id,
         'Capabilities': 'Messages, Network APIs, RTC, VBC, Verify, Video, Voice',
@@ -108,7 +108,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, appName: appTwo.name });
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.table, 
       1,
       [
         {
@@ -128,7 +128,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, capability: coerceCapability('voice') });
 
-    expect(console.table).toHaveBeenCalledWith([
+    assertCalledWith(console.table, [
       {
         'App ID': appOne.id,
         'Capabilities': 'Voice',
@@ -150,7 +150,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, capability: coerceCapability('voice,messages') });
 
-    expect(console.table).toHaveBeenCalledWith([
+    assertCalledWith(console.table, [
       {
         'App ID': appOne.id,
         'Capabilities': 'Voice',
@@ -172,7 +172,7 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, capability: coerceCapability('voice+messages') });
 
-    expect(console.table).toHaveBeenCalledWith([
+    assertCalledWith(console.table, [
       {
         'App ID': appTwo.id,
         'Capabilities': 'Messages, Voice',
@@ -187,8 +187,8 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, json: true });
 
-    expect(console.table).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith(JSON.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertCalledWith(console.log, JSON.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Will output YAML', async () => {
@@ -197,19 +197,16 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk, yaml: true });
 
-    expect(console.table).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith(yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertCalledWith(console.log, yaml.stringify([Client.transformers.snakeCaseObjectKeys(app, true)], null, 2));
   });
 
   test('Will error when capability is not valid', async () => {
-    expect(() => coerceCapability('invalid'))
-      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+    assert.throws(() => coerceCapability('invalid'), /Invalid capability\. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed/);
 
-    expect(() => coerceCapability('invalid,foo'))
-      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+    assert.throws(() => coerceCapability('invalid,foo'), /Invalid capability\. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed/);
 
-    expect(() => coerceCapability('invalid+foo'))
-      .toThrow('Invalid capability. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed');
+    assert.throws(() => coerceCapability('invalid+foo'), /Invalid capability\. Only: messages, network_apis, rtc, vbc, verify, video, voice are allowed/);
   });
 
   test('Will exit 99 when API calls fails', async () => {
@@ -220,8 +217,8 @@ describe('Command: vonage apps', () => {
 
     await handler({ SDK: sdk });
 
-    expect(console.table).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(99);
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assertCalledWith(exitMock, 99);
   });
 });
 

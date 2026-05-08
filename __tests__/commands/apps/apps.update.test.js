@@ -13,8 +13,8 @@ describe('Command: vonage apps update', () => {
   test('Will update application name', async () => {
     const app = getBasicApplication();
 
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -28,8 +28,8 @@ describe('Command: vonage apps update', () => {
       name: `${app.name} new`,
     });
 
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith({
+    assertCalledWith(getAppMock, app.id);
+    assertCalledWith(updateAppMock, {
       ...app,
       name: `${app.name} new`,
     });
@@ -39,8 +39,8 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
     app.privacy.improveAi = false;
 
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -54,8 +54,8 @@ describe('Command: vonage apps update', () => {
       improveAi: true,
     });
 
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith({
+    assertCalledWith(getAppMock, app.id);
+    assertCalledWith(updateAppMock, {
       ...app,
       privacy: {
         improveAi: true,
@@ -67,8 +67,8 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -82,8 +82,8 @@ describe('Command: vonage apps update', () => {
       publicKeyFile: newPublicKey,
     });
 
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith({
+    assertCalledWith(getAppMock, app.id);
+    assertCalledWith(updateAppMock, {
       ...app,
       keys: {
         publicKey: newPublicKey,
@@ -96,8 +96,8 @@ describe('Command: vonage apps update', () => {
     app.privacy.improveAi = false;
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -113,8 +113,8 @@ describe('Command: vonage apps update', () => {
       publicKeyFile: newPublicKey,
     });
 
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith({
+    assertCalledWith(getAppMock, app.id);
+    assertCalledWith(updateAppMock, {
       id: app.id,
       name: `${app.name} new`,
       privacy: {
@@ -129,8 +129,8 @@ describe('Command: vonage apps update', () => {
   test('Will no op when no changes detected', async () => {
     const app = getBasicApplication();
 
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -146,17 +146,17 @@ describe('Command: vonage apps update', () => {
       publicKeyFile: app.keys.publicKey,
     });
 
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).not.toHaveBeenCalled();
-    expect(console.log).toHaveBeenCalledWith('No changes detected');
+    assertCalledWith(getAppMock, app.id);
+    assert.strictEqual(updateAppMock.mock.callCount(), 0);
+    assertCalledWith(console.log, 'No changes detected');
   });
 
   test('Will output JSON when requested', async () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -172,9 +172,9 @@ describe('Command: vonage apps update', () => {
       json: true,
     });
 
-    expect(console.log).toHaveBeenCalledTimes(1);
+    assert.strictEqual(console.log.mock.callCount(), 1);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(
@@ -201,8 +201,8 @@ describe('Command: vonage apps update', () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -218,8 +218,8 @@ describe('Command: vonage apps update', () => {
       yaml: true,
     });
 
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.log.mock.callCount(), 1);
+    assertNthCalledWith(console.log, 
       1, yaml.stringify(
         Client.transformers.snakeCaseObjectKeys(
           {
