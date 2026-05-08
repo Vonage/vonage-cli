@@ -1,22 +1,18 @@
 import globals from 'globals';
 import eslint from '@eslint/js';
 import stylisticJs from '@stylistic/eslint-plugin-js';
-import jest from 'eslint-plugin-jest';
 import nodePlugin from 'eslint-plugin-n';
 
 export default [
   eslint.configs.recommended,
   stylisticJs.configs['disable-legacy'],
   nodePlugin.configs['flat/recommended'],
-  jest.configs['flat/recommended'],
-  jest.configs['flat/style'],
   {
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
     },
     plugins: {
@@ -34,6 +30,29 @@ export default [
   },
   {
     files: ['packages/*/src/**/*.{js}'],
+  },
+  {
+    files: ['__tests__/**/*.js'],
+    languageOptions: {
+      globals: {
+        afterAll: 'readonly',
+        afterEach: 'readonly',
+        assert: 'readonly',
+        assertCalledWith: 'readonly',
+        assertNotCalledWith: 'readonly',
+        assertNthCalledWith: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        describe: 'readonly',
+        loadModule: 'readonly',
+        mock: 'readonly',
+        modulePath: 'readonly',
+        test: 'readonly',
+      },
+    },
+    rules: {
+      'n/no-unsupported-features/node-builtins': 'off',
+    },
   },
   {
     settings: {

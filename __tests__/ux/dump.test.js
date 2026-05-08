@@ -7,30 +7,30 @@ import uxTests from '../__dataSets__/ux.js';
 
 describe('UX: dump', () => {
   test.each(uxTests)('Will $label', ({ value, expected }) => {
-    expect(dumpValue(value)).toEqual(expected);
+    assert.deepStrictEqual(dumpValue(value), expected);
   });
 });
 
 describe('UX: boolean dump', () => {
   test('Will return Yes or No', () => {
-    expect(dumpYesNo(true)).toBe('✅ Yes');
-    expect(dumpYesNo(false)).toBe('❌ No');
+    assert.strictEqual(dumpYesNo(true), '✅ Yes');
+    assert.strictEqual(dumpYesNo(false), '❌ No');
 
-    expect(dumpYesNo(true, false)).toBe('✅ ');
-    expect(dumpYesNo(false, false)).toBe('❌ ');
+    assert.strictEqual(dumpYesNo(true, false), '✅ ');
+    assert.strictEqual(dumpYesNo(false, false), '❌ ');
   });
 
   test('Will return On or Off', () => {
-    expect(dumpOnOff(true)).toBe('On');
-    expect(dumpOnOff(false)).toBe('Off');
+    assert.strictEqual(dumpOnOff(true), 'On');
+    assert.strictEqual(dumpOnOff(false), 'Off');
   });
 
   test('Will return Enabled or Disabled', () => {
-    expect(dumpEnabledDisabled(true)).toBe('✅ ');
-    expect(dumpEnabledDisabled(false)).toBe('❌ ');
+    assert.strictEqual(dumpEnabledDisabled(true), '✅ ');
+    assert.strictEqual(dumpEnabledDisabled(false), '❌ ');
 
-    expect(dumpEnabledDisabled(true, true)).toBe('✅ Enabled');
-    expect(dumpEnabledDisabled(false, true)).toBe('❌ Disabled');
+    assert.strictEqual(dumpEnabledDisabled(true, true), '✅ Enabled');
+    assert.strictEqual(dumpEnabledDisabled(false, true), '❌ Disabled');
   });
 });
 
@@ -47,7 +47,7 @@ describe('UX: table', () => {
       },
     ];
     const results = table(data);
-    expect(results).toBe([
+    assert.strictEqual(results, [
       ' id          desc       ',
       `${defaultBorders.horizontal}`.repeat(24),
       ` ${data[0].id}  ${data[0].desc} `,

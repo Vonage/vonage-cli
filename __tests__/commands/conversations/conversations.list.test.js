@@ -1,19 +1,23 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const confirm = mock.fn();
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
 
-const confirm = jest.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-const { handler } = await import('../../../src/commands/conversations/list.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/list.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 
@@ -23,21 +27,23 @@ describe('Command: vonage conversations list', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will list with no conversations', async () => {
-    confirm.mockResolvedValue(true);
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce({
-        conversations: [],
-        links: {
-          self: {
-            href: 'https://api.nexmo.com/conversations',
-          },
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: [],
+      links: {
+        self: {
+          href: 'https://api.nexmo.com/conversations',
         },
-      });
+      },
+    }));
 
     const sdkMock = {
       conversations: {
@@ -47,8 +53,9 @@ describe('Command: vonage conversations list', () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assertNthCalledWith(
+      conversationMock,
       1,
       {
         pageSize: 10,
@@ -56,41 +63,38 @@ describe('Command: vonage conversations list', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      1,
-      'No conversations found',
-    );
-    expect(console.table).toHaveBeenCalledTimes(0);
+    assertNthCalledWith(console.log, 1, 'No conversations found');
+    assert.strictEqual(console.table.mock.callCount(), 0);
   });
 
   test('Will list all conversations', async () => {
-    confirm.mockResolvedValue(true);
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
 
     const conversations = Array.from(
       { length: 30 },
       getTestConversationForAPI,
     );
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce({
-        conversations: conversations.slice(0, 10),
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations?cursor=1',
-          },
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: conversations.slice(0, 10),
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations?cursor=1',
         },
-      })
-      .mockResolvedValueOnce({
-        conversations: conversations.slice(10, 20),
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations?cursor=2',
-          },
+      },
+    }));
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: conversations.slice(10, 20),
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations?cursor=2',
         },
-      })
-      .mockResolvedValueOnce({
-        conversations: conversations.slice(20),
-      });
+      },
+    }));
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: conversations.slice(20),
+    }));
 
     const sdkMock = {
       conversations: {
@@ -105,32 +109,37 @@ describe('Command: vonage conversations list', () => {
     console.log(conversations.slice(10, 20).length);
     console.log(conversations.slice(20).length);
 
-    expect(confirm).toHaveBeenCalledTimes(2);
-    expect(confirm).toHaveBeenNthCalledWith(
+    assert.strictEqual(confirm.mock.callCount(), 2);
+    assertNthCalledWith(
+      confirm,
       1,
       'There are more conversations. Do you want to continue?',
     );
-    expect(confirm).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      confirm,
       2,
       'There are more conversations. Do you want to continue?',
     );
 
-    expect(conversationMock).toHaveBeenCalledTimes(3);
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assert.strictEqual(conversationMock.mock.callCount(), 3);
+    assertNthCalledWith(
+      conversationMock,
       1,
       {
         pageSize: 10,
         cursor: undefined,
       },
     );
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      conversationMock,
       2,
       {
         pageSize: 10,
         cursor: '1',
       },
     );
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      conversationMock,
       3,
       {
         pageSize: 10,
@@ -138,8 +147,9 @@ describe('Command: vonage conversations list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenCalledTimes(3);
-    expect(console.table).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 3);
+    assertNthCalledWith(
+      console.table,
       1,
       conversations.slice(0, 10).map((conversation) => ({
         'Name': conversation.name,
@@ -149,7 +159,8 @@ describe('Command: vonage conversations list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       2,
       conversations.slice(10, 20).map((conversation) => ({
         'Name': conversation.name,
@@ -159,7 +170,8 @@ describe('Command: vonage conversations list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       3,
       conversations.slice(20).map((conversation) => ({
         'Name': conversation.name,
@@ -171,30 +183,31 @@ describe('Command: vonage conversations list', () => {
   });
 
   test('Will stop paging when user declines', async () => {
-    confirm.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
     const conversations = Array.from(
       { length: 30 },
       getTestConversationForAPI,
     );
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce({
-        conversations: conversations.slice(0, 10),
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations?cursor=1',
-          },
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: conversations.slice(0, 10),
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations?cursor=1',
         },
-      })
-      .mockResolvedValueOnce({
-        conversations: conversations.slice(10, 20),
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations?cursor=2',
-          },
+      },
+    }));
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve({
+      conversations: conversations.slice(10, 20),
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations?cursor=2',
         },
-      });
+      },
+    }));
 
     const sdkMock = {
       conversations: {
@@ -204,16 +217,18 @@ describe('Command: vonage conversations list', () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
 
-    expect(confirm).toHaveBeenCalledTimes(2);
-    expect(conversationMock).toHaveBeenCalledTimes(2);
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assert.strictEqual(confirm.mock.callCount(), 2);
+    assert.strictEqual(conversationMock.mock.callCount(), 2);
+    assertNthCalledWith(
+      conversationMock,
       1,
       {
         pageSize: 10,
         cursor: undefined,
       },
     );
-    expect(conversationMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      conversationMock,
       2,
       {
         pageSize: 10,
@@ -221,8 +236,9 @@ describe('Command: vonage conversations list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenCalledTimes(2);
-    expect(console.table).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 2);
+    assertNthCalledWith(
+      console.table,
       1,
       conversations.slice(0, 10).map((conversation) => ({
         'Name': conversation.name,
@@ -232,7 +248,8 @@ describe('Command: vonage conversations list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       2,
       conversations.slice(10, 20).map((conversation) => ({
         'Name': conversation.name,
@@ -244,8 +261,7 @@ describe('Command: vonage conversations list', () => {
   });
 
   test('Will handle SDK Error', async () => {
-    const conversationMock = jest.fn()
-      .mockRejectedValue(new Error('SDK Error'));
+    const conversationMock = mock.fn(() => Promise.reject(new Error('SDK Error')));
 
     const sdkMock = {
       conversations: {
@@ -254,7 +270,7 @@ describe('Command: vonage conversations list', () => {
     };
 
     await handler({ SDK: sdkMock, pageSize: 10 });
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(exitMock).toHaveBeenCalledWith(99);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assertCalledWith(exitMock, 99);
   });
 });

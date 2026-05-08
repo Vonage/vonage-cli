@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import { Client } from '@vonage/server-client';
 import { mockConsole } from '../helpers.js';
@@ -13,23 +12,25 @@ import { sep } from 'path';
 
 // Virtual filesystem for tests
 const mockFiles = new Map();
-const existsSyncMock = jest.fn((path) => mockFiles.has(path));
-const readFileSyncMock = jest.fn((path) => {
+const existsSyncMock = mock.fn((path) => mockFiles.has(path));
+const readFileSyncMock = mock.fn((path) => {
   if (!mockFiles.has(path)) throw new Error(`ENOENT: no such file: ${path}`);
   return mockFiles.get(path);
 });
-const homedirMock = jest.fn();
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const homedirMock = mock.fn();
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('fs', () => ({
-  existsSync: existsSyncMock,
-  readFileSync: readFileSyncMock,
-}));
-jest.unstable_mockModule('os', () => ({ default: { homedir: homedirMock }, EOL: '\n' }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const __moduleMocks = {
+  'fs': (() => ({
+    existsSync: existsSyncMock,
+    readFileSync: readFileSyncMock,
+  }))(),
+  'os': (() => ({ default: { homedir: homedirMock }, EOL: '\n' }))(),
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { setConfig } = await import('../../src/middleware/config.js');
+const { setConfig } = await loadModule(import.meta.url, '../../src/middleware/config.js', __moduleMocks);
 
 const oldEnv = process.env;
 const oldCwd = process.cwd;
@@ -38,11 +39,11 @@ describe('Middeleware: Config', () => {
   beforeEach(() => {
     mockConsole();
     mockFiles.clear();
-    existsSyncMock.mockClear();
-    readFileSyncMock.mockClear();
-    homedirMock.mockReset();
-    homedirMock.mockReturnValue('/dev/null');
-    exitMock.mockReset();
+    existsSyncMock.mock.resetCalls();
+    readFileSyncMock.mock.resetCalls();
+    homedirMock.mock.resetCalls();
+    homedirMock.mock.mockImplementation(() => '/dev/null');
+    exitMock.mock.resetCalls();
   });
 
   afterEach(() => {
@@ -54,7 +55,7 @@ describe('Middeleware: Config', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    homedirMock.mock.mockImplementation(() => globalFile.globalConfigPath);
 
     const derivedConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedConfigFile = `${derivedConfigPath}${sep}config.json`;
@@ -66,38 +67,38 @@ describe('Middeleware: Config', () => {
 
     const args = setConfig({});
 
-    expect(args.apiKey).toBe(globalConfig.apiKey);
-    expect(args.apiSecret).toBe(globalConfig.apiSecret);
-    expect(args.appId).toBe(globalConfig.appId);
-    expect(args.privateKey).toBe(globalConfig.privateKey);
-    expect(args.config.global).toEqual({
+    assert.strictEqual(args.apiKey, globalConfig.apiKey);
+    assert.strictEqual(args.apiSecret, globalConfig.apiSecret);
+    assert.strictEqual(args.appId, globalConfig.appId);
+    assert.strictEqual(args.privateKey, globalConfig.privateKey);
+    assert.deepStrictEqual(args.config.global, {
       ...globalConfig,
       source: 'Global Config File',
     });
 
-    expect(args.config.globalConfigPath).toBe(derivedConfigPath);
-    expect(args.config.globalConfigFile).toBe(derivedConfigFile);
-    expect(args.config.globalConfigExists).toBe(true);
-    expect(args.config.localConfigExists).toBe(false);
+    assert.strictEqual(args.config.globalConfigPath, derivedConfigPath);
+    assert.strictEqual(args.config.globalConfigFile, derivedConfigFile);
+    assert.strictEqual(args.config.globalConfigExists, true);
+    assert.strictEqual(args.config.localConfigExists, false);
 
-    expect(args.config.local).toEqual({});
-    expect(args.config.cli).toEqual({});
-    expect(args.source).toBe('Global Config File');
+    assert.deepStrictEqual(args.config.local, {});
+    assert.deepStrictEqual(args.config.cli, {});
+    assert.strictEqual(args.source, 'Global Config File');
 
-    expect(args.SDK).toBeDefined();
-    expect(args.AUTH).toBeDefined();
+    assert.notStrictEqual(args.SDK, undefined);
+    assert.notStrictEqual(args.AUTH, undefined);
 
-    expect(args.AUTH.apiKey).toBe(globalConfig.apiKey);
-    expect(args.AUTH.apiSecret).toBe(globalConfig.apiSecret);
-    expect(args.AUTH.privateKey).toBe(globalConfig.privateKey);
-    expect(args.AUTH.applicationId).toBe(globalConfig.appId);
+    assert.strictEqual(args.AUTH.apiKey, globalConfig.apiKey);
+    assert.strictEqual(args.AUTH.apiSecret, globalConfig.apiSecret);
+    assert.strictEqual(args.AUTH.privateKey, globalConfig.privateKey);
+    assert.strictEqual(args.AUTH.applicationId, globalConfig.appId);
   });
 
   test('Will decide to use the local config when local or cli is not set', () => {
     const localConfig = getLocalConfig();
     const localFile = getLocalFile();
 
-    process.cwd = jest.fn(() => localFile.localConfigPath);
+    process.cwd = mock.fn(() => localFile.localConfigPath);
     const derivedConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     mockFiles.set(
@@ -107,55 +108,55 @@ describe('Middeleware: Config', () => {
 
     const args = setConfig({});
 
-    expect(args.apiKey).toBe(localConfig.apiKey);
-    expect(args.apiSecret).toBe(localConfig.apiSecret);
-    expect(args.appId).toBe(localConfig.appId);
-    expect(args.privateKey).toBe(localConfig.privateKey);
-    expect(args.config.local).toEqual({
+    assert.strictEqual(args.apiKey, localConfig.apiKey);
+    assert.strictEqual(args.apiSecret, localConfig.apiSecret);
+    assert.strictEqual(args.appId, localConfig.appId);
+    assert.strictEqual(args.privateKey, localConfig.privateKey);
+    assert.deepStrictEqual(args.config.local, {
       ...localConfig,
       source: 'Local Config File',
     });
 
-    expect(args.config.localConfigPath).toBe(localFile.localConfigPath);
-    expect(args.config.localConfigFile).toBe(derivedConfigFile);
-    expect(args.config.globalConfigExists).toBe(false);
-    expect(args.config.localConfigExists).toBe(true);
+    assert.strictEqual(args.config.localConfigPath, localFile.localConfigPath);
+    assert.strictEqual(args.config.localConfigFile, derivedConfigFile);
+    assert.strictEqual(args.config.globalConfigExists, false);
+    assert.strictEqual(args.config.localConfigExists, true);
 
-    expect(args.config.global).toEqual({});
-    expect(args.config.cli).toEqual({});
-    expect(args.source).toBe('Local Config File');
+    assert.deepStrictEqual(args.config.global, {});
+    assert.deepStrictEqual(args.config.cli, {});
+    assert.strictEqual(args.source, 'Local Config File');
   });
 
   test('Will decide to use the cli arguments when local or global is not set', () => {
-    homedirMock.mockReturnValue(`${sep}dev${sep}null`);
-    process.cwd = jest.fn(() => `${sep}dev${sep}null`);
+    homedirMock.mock.mockImplementation(() => `${sep}dev${sep}null`);
+    process.cwd = mock.fn(() => `${sep}dev${sep}null`);
 
     const cliConfig = getCLIConfig();
     const args = setConfig(cliConfig, {});
 
-    expect(args.apiKey).toBe(cliConfig.apiKey);
-    expect(args.apiSecret).toBe(cliConfig.apiSecret);
-    expect(args.appId).toBe(cliConfig.appId);
-    expect(args.privateKey).toBe(cliConfig.privateKey);
+    assert.strictEqual(args.apiKey, cliConfig.apiKey);
+    assert.strictEqual(args.apiSecret, cliConfig.apiSecret);
+    assert.strictEqual(args.appId, cliConfig.appId);
+    assert.strictEqual(args.privateKey, cliConfig.privateKey);
 
-    expect(args.config.cli).toEqual({
+    assert.deepStrictEqual(args.config.cli, {
       ...cliConfig,
       source: 'CLI Arguments',
     });
 
-    expect(args.config.globalConfigExists).toBe(false);
-    expect(args.config.localConfigExists).toBe(false);
+    assert.strictEqual(args.config.globalConfigExists, false);
+    assert.strictEqual(args.config.localConfigExists, false);
 
-    expect(args.config.global).toEqual({});
-    expect(args.config.local).toEqual({});
-    expect(args.source).toBe('CLI Arguments');
+    assert.deepStrictEqual(args.config.global, {});
+    assert.deepStrictEqual(args.config.local, {});
+    assert.strictEqual(args.source, 'CLI Arguments');
   });
 
   test('Will decide to use the cli arguments over local and global', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    homedirMock.mock.mockImplementation(() => globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
@@ -167,7 +168,7 @@ describe('Middeleware: Config', () => {
     const localConfig = getLocalConfig();
     const localFile = getLocalFile();
 
-    process.cwd = jest.fn(() => localFile.localConfigPath);
+    process.cwd = mock.fn(() => localFile.localConfigPath);
     const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     mockFiles.set(
@@ -178,35 +179,35 @@ describe('Middeleware: Config', () => {
     const cliConfig = getCLIConfig();
     const args = setConfig(cliConfig, {});
 
-    expect(args.apiKey).toBe(cliConfig.apiKey);
-    expect(args.apiSecret).toBe(cliConfig.apiSecret);
-    expect(args.appId).toBe(cliConfig.appId);
-    expect(args.privateKey).toBe(cliConfig.privateKey);
+    assert.strictEqual(args.apiKey, cliConfig.apiKey);
+    assert.strictEqual(args.apiSecret, cliConfig.apiSecret);
+    assert.strictEqual(args.appId, cliConfig.appId);
+    assert.strictEqual(args.privateKey, cliConfig.privateKey);
 
-    expect(args.config.cli).toEqual({
+    assert.deepStrictEqual(args.config.cli, {
       ...cliConfig,
       source: 'CLI Arguments',
     });
 
-    expect(args.config.globalConfigExists).toBe(true);
-    expect(args.config.localConfigExists).toBe(true);
+    assert.strictEqual(args.config.globalConfigExists, true);
+    assert.strictEqual(args.config.localConfigExists, true);
 
-    expect(args.config.global).toEqual({
+    assert.deepStrictEqual(args.config.global, {
       ...globalConfig,
       source: 'Global Config File',
     });
-    expect(args.config.local).toEqual({
+    assert.deepStrictEqual(args.config.local, {
       ...localConfig,
       source: 'Local Config File',
     });
-    expect(args.source).toBe('CLI Arguments');
+    assert.strictEqual(args.source, 'CLI Arguments');
   });
 
   test('Will decide to use the local file over global file', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
-    homedirMock.mockReturnValue(globalFile.globalConfigPath);
+    homedirMock.mock.mockImplementation(() => globalFile.globalConfigPath);
     const derivedGlobalConfigPath = `${globalFile.globalConfigPath}${sep}.vonage`;
     const derivedGlobalConfigFile = `${derivedGlobalConfigPath}${sep}config.json`;
 
@@ -218,7 +219,7 @@ describe('Middeleware: Config', () => {
     const localConfig = getLocalConfig();
     const localFile = getLocalFile();
 
-    process.cwd = jest.fn(() => localFile.localConfigPath);
+    process.cwd = mock.fn(() => localFile.localConfigPath);
     const derivedLocalConfigFile = `${localFile.localConfigPath}${sep}.vonagerc`;
 
     mockFiles.set(
@@ -228,33 +229,32 @@ describe('Middeleware: Config', () => {
 
     const args = setConfig({});
 
-    expect(args.apiKey).toBe(localConfig.apiKey);
-    expect(args.apiSecret).toBe(localConfig.apiSecret);
-    expect(args.appId).toBe(localConfig.appId);
-    expect(args.privateKey).toBe(localConfig.privateKey);
+    assert.strictEqual(args.apiKey, localConfig.apiKey);
+    assert.strictEqual(args.apiSecret, localConfig.apiSecret);
+    assert.strictEqual(args.appId, localConfig.appId);
+    assert.strictEqual(args.privateKey, localConfig.privateKey);
 
-    expect(args.config.local).toEqual({
+    assert.deepStrictEqual(args.config.local, {
       ...localConfig,
       source: 'Local Config File',
     });
 
-    expect(args.config.globalConfigExists).toBe(true);
-    expect(args.config.localConfigExists).toBe(true);
+    assert.strictEqual(args.config.globalConfigExists, true);
+    assert.strictEqual(args.config.localConfigExists, true);
 
-    expect(args.config.global).toEqual({
+    assert.deepStrictEqual(args.config.global, {
       ...globalConfig,
       source: 'Global Config File',
     });
-    expect(args.config.local).toEqual({
+    assert.deepStrictEqual(args.config.local, {
       ...localConfig,
       source: 'Local Config File',
     });
-    expect(args.source).toBe('Local Config File');
+    assert.strictEqual(args.source, 'Local Config File');
   });
 
   test('Will exit when no config is found', () => {
     setConfig({});
-    expect(exitMock).toHaveBeenCalledWith(2);
+    assertCalledWith(exitMock, 2);
   });
 });
-

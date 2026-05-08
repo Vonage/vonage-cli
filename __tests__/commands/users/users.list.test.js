@@ -1,19 +1,22 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
 
-const { handler } = await import('../../../src/commands/users/list.js');
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/list.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestUserForAPI } from '../../users.js';
 
@@ -23,43 +26,45 @@ describe('Command: vonage users list', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will list all users', async () => {
-    confirm.mockResolvedValue(true);
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
 
     const users = Array.from(
       { length: 30 },
       getTestUserForAPI,
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce({
-        embedded: {
-          users: users.slice(0, 10),
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve({
+      embedded: {
+        users: users.slice(0, 10),
+      },
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/users?cursor=1',
         },
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/users?cursor=1',
-          },
+      },
+    }));
+    userMock.mock.mockImplementationOnce(() => Promise.resolve({
+      embedded: {
+        users: users.slice(10, 10),
+      },
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/users?cursor=2',
         },
-      })
-      .mockResolvedValueOnce({
-        embedded: {
-          users: users.slice(10, 10),
-        },
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/users?cursor=2',
-          },
-        },
-      })
-      .mockResolvedValueOnce({
-        embedded: {
-          users: users.slice(20),
-        },
-      });
+      },
+    }));
+    userMock.mock.mockImplementationOnce(() => Promise.resolve({
+      embedded: {
+        users: users.slice(20),
+      },
+    }));
 
     const sdkMock = {
       users: {
@@ -69,32 +74,37 @@ describe('Command: vonage users list', () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
 
-    expect(confirm).toHaveBeenCalledTimes(2);
-    expect(confirm).toHaveBeenNthCalledWith(
+    assert.strictEqual(confirm.mock.callCount(), 2);
+    assertNthCalledWith(
+      confirm,
       1,
       'There are more users. Do you want to continue?',
     );
-    expect(confirm).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      confirm,
       2,
       'There are more users. Do you want to continue?',
     );
 
-    expect(userMock).toHaveBeenCalledTimes(3);
-    expect(userMock).toHaveBeenNthCalledWith(
+    assert.strictEqual(userMock.mock.callCount(), 3);
+    assertNthCalledWith(
+      userMock,
       1,
       {
         pageSize: 10,
         cursor: undefined,
       },
     );
-    expect(userMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      userMock,
       2,
       {
         pageSize: 10,
         cursor: '1',
       },
     );
-    expect(userMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      userMock,
       3,
       {
         pageSize: 10,
@@ -102,8 +112,9 @@ describe('Command: vonage users list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenCalledTimes(3);
-    expect(console.table).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 3);
+    assertNthCalledWith(
+      console.table,
       1,
       users.slice(0, 10).map((user) => ({
         'Name': user.name,
@@ -112,7 +123,8 @@ describe('Command: vonage users list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       2,
       users.slice(10, 10).map((user) => ({
         'Name': user.name,
@@ -121,7 +133,8 @@ describe('Command: vonage users list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       3,
       users.slice(20).map((user) => ({
         'Name': user.name,
@@ -132,34 +145,35 @@ describe('Command: vonage users list', () => {
   });
 
   test('Will stop paging when user declines', async () => {
-    confirm.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
     const users = Array.from(
       { length: 30 },
       getTestUserForAPI,
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce({
-        embedded: {
-          users: users.slice(0, 10),
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve({
+      embedded: {
+        users: users.slice(0, 10),
+      },
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/users?cursor=1',
         },
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/users?cursor=1',
-          },
+      },
+    }));
+    userMock.mock.mockImplementationOnce(() => Promise.resolve({
+      embedded: {
+        users: users.slice(10, 10),
+      },
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/users?cursor=2',
         },
-      })
-      .mockResolvedValueOnce({
-        embedded: {
-          users: users.slice(10, 10),
-        },
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/users?cursor=2',
-          },
-        },
-      });
+      },
+    }));
 
     const sdkMock = {
       users: {
@@ -169,16 +183,18 @@ describe('Command: vonage users list', () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
 
-    expect(confirm).toHaveBeenCalledTimes(2);
-    expect(userMock).toHaveBeenCalledTimes(2);
-    expect(userMock).toHaveBeenNthCalledWith(
+    assert.strictEqual(confirm.mock.callCount(), 2);
+    assert.strictEqual(userMock.mock.callCount(), 2);
+    assertNthCalledWith(
+      userMock,
       1,
       {
         pageSize: 10,
         cursor: undefined,
       },
     );
-    expect(userMock).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      userMock,
       2,
       {
         pageSize: 10,
@@ -186,8 +202,9 @@ describe('Command: vonage users list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenCalledTimes(2);
-    expect(console.table).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 2);
+    assertNthCalledWith(
+      console.table,
       1,
       users.slice(0, 10).map((user) => ({
         'Name': user.name,
@@ -196,7 +213,8 @@ describe('Command: vonage users list', () => {
       })),
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       2,
       users.slice(10, 10).map((user) => ({
         'Name': user.name,

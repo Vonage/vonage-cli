@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import yaml from 'yaml';
 import { typeLabels } from '../../../src/numbers/types.js';
@@ -6,14 +5,19 @@ import { buildCountryString, countryCodes, getCountryName } from '../../../src/u
 import { getTestPhoneNumber } from '../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+};
 
-const { handler } = await import('../../../src/commands/numbers/list.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/list.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 
 describe('Command: numbers list', () => {
@@ -22,7 +26,8 @@ describe('Command: numbers list', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
   });
 
   test('Will list all numbers', async () => {
@@ -40,14 +45,15 @@ describe('Command: numbers list', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers.slice(0, 100),
-    })
-      .mockResolvedValueOnce({
-        count: numbers.length,
-        numbers: numbers.slice(100),
-      });
+    }));
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
+      count: numbers.length,
+      numbers: numbers.slice(100),
+    }));
 
     const sdkMock = {
       numbers: {
@@ -57,20 +63,18 @@ describe('Command: numbers list', () => {
 
     await handler({ SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledTimes(2);
+    assert.strictEqual(numbersMock.mock.callCount(), 2);
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      'There are 102 numbers',
-    );
+    assertNthCalledWith(console.log, 2, 'There are 102 numbers');
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,
@@ -83,7 +87,8 @@ describe('Command: numbers list', () => {
   });
 
   test('Will not list numbers when there are none', async () => {
-    const numbersMock = jest.fn().mockResolvedValueOnce({});
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({}));
 
     const sdkMock = {
       numbers: {
@@ -93,19 +98,16 @@ describe('Command: numbers list', () => {
 
     await handler({ SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(numbersMock.mock.callCount(), 1);
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      'You do not have any numbers',
-    );
+    assertNthCalledWith(console.log, 2, 'You do not have any numbers');
 
-    expect(console.table).not.toHaveBeenCalled();
+    assert.strictEqual(console.table.mock.callCount(), 0);
   });
 
   test('Will output json', async () => {
@@ -123,10 +125,11 @@ describe('Command: numbers list', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -136,7 +139,8 @@ describe('Command: numbers list', () => {
 
     await handler({ json: true, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(
+      console.log,
       JSON.stringify(
         numbers.map(
           (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
@@ -149,8 +153,9 @@ describe('Command: numbers list', () => {
   });
 
   test('Will output empty json', async () => {
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-    });
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
+    }));
 
     const sdkMock = {
       numbers: {
@@ -160,7 +165,7 @@ describe('Command: numbers list', () => {
 
     await handler({ json: true, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenCalledWith('[]');
+    assertCalledWith(console.log, '[]');
   });
 
   test('Will output yaml', async () => {
@@ -178,10 +183,11 @@ describe('Command: numbers list', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -191,7 +197,8 @@ describe('Command: numbers list', () => {
 
     await handler({ yaml: true, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(
+      console.log,
       yaml.stringify(
         numbers.map(
           (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
@@ -204,8 +211,9 @@ describe('Command: numbers list', () => {
   });
 
   test('Will output empty yaml', async () => {
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-    });
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
+    }));
 
     const sdkMock = {
       numbers: {
@@ -215,7 +223,7 @@ describe('Command: numbers list', () => {
 
     await handler({ yaml: true, SDK: sdkMock });
 
-    expect(console.log).toHaveBeenCalledWith('[]\n');
+    assertCalledWith(console.log, '[]\n');
   });
 
   test('Will list all numbers for country', async () => {
@@ -233,10 +241,11 @@ describe('Command: numbers list', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -246,19 +255,21 @@ describe('Command: numbers list', () => {
 
     await handler({ country: country, SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers in ${getCountryName(country)}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,
@@ -278,10 +289,11 @@ describe('Command: numbers list', () => {
       getTestPhoneNumber,
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -291,20 +303,22 @@ describe('Command: numbers list', () => {
 
     await handler({ searchPattern: 'contains', pattern: pattern, SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       pattern: pattern,
       searchPattern: 1,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers containing ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,
@@ -324,10 +338,11 @@ describe('Command: numbers list', () => {
       getTestPhoneNumber,
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -337,20 +352,22 @@ describe('Command: numbers list', () => {
 
     await handler({ searchPattern: 'starts', pattern: pattern, SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       pattern: pattern,
       searchPattern: 0,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers starting with ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,
@@ -371,10 +388,11 @@ describe('Command: numbers list', () => {
       getTestPhoneNumber,
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -384,20 +402,22 @@ describe('Command: numbers list', () => {
 
     await handler({ searchPattern: 'ends', pattern: pattern, SDK: sdkMock });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       pattern: pattern,
       searchPattern: 2,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers ending with ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,
@@ -418,10 +438,11 @@ describe('Command: numbers list', () => {
       getTestPhoneNumber,
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -436,7 +457,7 @@ describe('Command: numbers list', () => {
       SDK: sdkMock,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       pattern: pattern,
       searchPattern: 1,
@@ -444,13 +465,15 @@ describe('Command: numbers list', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There is 1 number in ${getCountryName(country)} containing ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Country': buildCountryString(number.country),
         'Number': number.msisdn,

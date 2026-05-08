@@ -1,19 +1,38 @@
-import { jest, afterEach } from '@jest/globals';
+import { mock } from 'node:test';
 
-afterEach(jest.restoreAllMocks);
-process.stdout.clearLine = jest.fn();
-process.stderr.clearLine = jest.fn();
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  info: console.info,
+  debug: console.debug,
+  error: console.error,
+  table: console.table,
+};
+
+const originalStdoutWrite = process.stdout.write;
+const originalStderrWrite = process.stderr.write;
+
+afterEach(() => {
+  console.log = originalConsole.log;
+  console.warn = originalConsole.warn;
+  console.info = originalConsole.info;
+  console.debug = originalConsole.debug;
+  console.error = originalConsole.error;
+  console.table = originalConsole.table;
+  process.stdout.write = originalStdoutWrite;
+  process.stderr.write = originalStderrWrite;
+});
 
 export const mockConsole = () => {
-  console.log = jest.spyOn(console, 'log');
-  console.warn = jest.spyOn(console, 'warn');
-  console.info = jest.spyOn(console, 'info');
-  console.debug = jest.spyOn(console, 'debug');
-  console.error = jest.spyOn(console, 'error');
-  console.table = jest.spyOn(console, 'table');
-  process.stdout.clearLine = jest.fn();
-  process.stderr.clearLine = jest.fn();
-  process.stdout.write = jest.fn();
-  process.stderr.write = jest.fn();
+  console.log = mock.fn();
+  console.warn = mock.fn();
+  console.info = mock.fn();
+  console.debug = mock.fn();
+  console.error = mock.fn();
+  console.table = mock.fn();
+  process.stdout.clearLine = mock.fn();
+  process.stderr.clearLine = mock.fn();
+  process.stdout.write = mock.fn();
+  process.stderr.write = mock.fn();
   return console;
 };

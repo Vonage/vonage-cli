@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../../helpers.js';
@@ -6,23 +5,28 @@ import { getBasicApplication } from '../../../app.js';
 import { Client } from '@vonage/server-client';
 import { dataSets } from '../../../__dataSets__/apps/index.js';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+};
 
-const { handler } = await import('../../../../src/commands/apps/capabilities/update.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/capabilities/update.js', __moduleMocks);
 
 describe.each(dataSets)('Command: vonage apps capabilities $label', ({ testCases }) => {
   beforeEach(() => {
     mockConsole();
-    exitMock.mockReset();
+    exitMock.mock.resetCalls();
   });
 
   const udpateTestCases = testCases.filter(({ args }) => args.action === 'update');
 
   test.each(udpateTestCases)('Will $label', async ({ app, args, expected }) => {
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -36,16 +40,16 @@ describe.each(dataSets)('Command: vonage apps capabilities $label', ({ testCases
       ...args,
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
-    expect(getAppMock).toHaveBeenCalledWith(app.id);
-    expect(updateAppMock).toHaveBeenCalledWith(expected);
+    assert.strictEqual(exitMock.mock.callCount(), 0);
+    assertCalledWith(getAppMock, app.id);
+    assertCalledWith(updateAppMock, expected);
   });
 });
 
 describe('Command: vonage apps capabilities', () => {
   beforeEach(() => {
     mockConsole();
-    exitMock.mockReset();
+    exitMock.mock.resetCalls();
   });
 
   test('Should exit 1 if invalid flag is passed', async () => {
@@ -55,8 +59,8 @@ describe('Command: vonage apps capabilities', () => {
       true,
     );
 
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -73,9 +77,9 @@ describe('Command: vonage apps capabilities', () => {
       messagesStatusUrl: faker.internet.url(),
     });
 
-    expect(updateAppMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(1);
-    expect(console.error).toHaveBeenCalledWith('You cannot use the flag(s) [messages-status-url, network-redirect-url] when updating the rtc capability');
+    assert.strictEqual(updateAppMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 1);
+    assertCalledWith(console.error, 'You cannot use the flag(s) [messages-status-url, network-redirect-url] when updating the rtc capability');
   });
 
   test('Should exit 1 if one flag is missing', async () => {
@@ -85,8 +89,8 @@ describe('Command: vonage apps capabilities', () => {
       true,
     );
 
-    const getAppMock = jest.fn().mockResolvedValue({ ...app });
-    const updateAppMock = jest.fn().mockResolvedValue();
+    const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
+    const updateAppMock = mock.fn(() => Promise.resolve());
     const sdkMock = {
       applications: {
         getApplication: getAppMock,
@@ -101,8 +105,8 @@ describe('Command: vonage apps capabilities', () => {
       which: 'rtc',
     });
 
-    expect(updateAppMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(1);
-    expect(console.error).toHaveBeenCalledWith('You must provide at least one rtc-* flag when updating the rtc capability');
+    assert.strictEqual(updateAppMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 1);
+    assertCalledWith(console.error, 'You must provide at least one rtc-* flag when updating the rtc capability');
   });
 });

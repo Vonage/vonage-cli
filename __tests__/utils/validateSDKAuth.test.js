@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { getCLIConfig, testPrivateKey, testPublicKey } from '../common.js';
@@ -8,56 +7,72 @@ import { mockConsole } from '../helpers.js';
 const { version } = require('../../package.json');
 
 describe('Utils: Validate SDK Auth', () => {
-  let mockGetApplicationPage = jest.fn();
-  let mockGetApplication = jest.fn();
-  let stop = jest.fn();
-  let fail = jest.fn();
+  let mockGetApplicationPage = mock.fn();
+  let mockGetApplication = mock.fn();
+  let stop = mock.fn();
+  let fail = mock.fn();
   let validatePrivateKeyAndAppId;
   let validateApiKeyAndSecret;
   let spinner;
   let Vonage;
 
-  let VonageClass = jest.fn().mockImplementation(() => {
+  // VonageClass needs to be a real constructor (new-able) that also tracks calls.
+  // mock.fn() from node:test is an arrow function and cannot be used with `new`,
+  // so we build a lightweight trackable constructor manually.
+  const vonageCalls = [];
+  let VonageClass = function(...args) {
+    vonageCalls.push({ arguments: args });
     return {
       applications: {
         getApplication: mockGetApplication,
         getApplicationPage: mockGetApplicationPage,
       },
     };
-  });
+  };
+  VonageClass.mock = {
+    get calls() { return vonageCalls; },
+    callCount() { return vonageCalls.length; },
+    resetCalls() { vonageCalls.length = 0; },
+  };
 
-  jest.unstable_mockModule('../../src/ux/spinner.js', () => ({
-    spinner: jest.fn().mockImplementation(() => ({
-      stop,
-      fail,
-    })),
-  }));
-
-  jest.unstable_mockModule('@vonage/server-sdk', () => ({
-    Vonage: VonageClass,
-  }));
+  const __moduleMocks = {
+    '../../src/ux/spinner.js': (() => ({
+      spinner: mock.fn(() => ({
+        stop,
+        fail,
+      })),
+    }))(),
+    '@vonage/server-sdk': (() => ({
+      Vonage: VonageClass,
+    }))(),
+  };
 
   beforeEach(async () => {
-    mockGetApplicationPage = jest.fn();
-    mockGetApplication = jest.fn();
+    mockGetApplicationPage = mock.fn();
+    mockGetApplication = mock.fn();
 
-    Vonage = (await import('@vonage/server-sdk')).Vonage;
-    spinner = (await import('../../src/ux/spinner.js')).spinner;
-    const check = await import('../../src/utils/validateSDKAuth.js');
+    Vonage = (__moduleMocks['@vonage/server-sdk']).Vonage;
+    spinner = (__moduleMocks['../../src/ux/spinner.js']).spinner;
+    const check = await loadModule(import.meta.url, '../../src/utils/validateSDKAuth.js', __moduleMocks);
     validateApiKeyAndSecret = check.validateApiKeyAndSecret;
     validatePrivateKeyAndAppId = check.validatePrivateKeyAndAppId;
     mockConsole();
   });
 
   afterAll(() => {
-    jest.resetAllMocks();
+    mockGetApplicationPage.mock.resetCalls();
+    mockGetApplication.mock.resetCalls();
+    stop.mock.resetCalls();
+    fail.mock.resetCalls();
+    VonageClass.mock.resetCalls();
+    if (spinner) spinner.mock.resetCalls();
   });
 
   test('Will validate private key and app id', async () => {
 
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const { apiKey, apiSecret } = getCLIConfig();
     const result = await validatePrivateKeyAndAppId(
@@ -67,9 +82,10 @@ describe('Utils: Validate SDK Auth', () => {
       testPrivateKey,
     );
 
-    expect(mockGetApplication).toHaveBeenCalledWith(application.id);
-    expect(result).toBe(true);
-    expect(Vonage).toHaveBeenCalledWith(
+    assertCalledWith(mockGetApplication, application.id);
+    assert.strictEqual(result, true);
+    assertCalledWith(
+      Vonage,
       {
         apiKey: apiKey,
         apiSecret: apiSecret,
@@ -81,18 +97,18 @@ describe('Utils: Validate SDK Auth', () => {
       },
     );
 
-    expect(spinner).toHaveBeenCalledWith({ message: 'Checking App ID and Private Key: ...' });
-    expect(fail).not.toHaveBeenCalled();
-    expect(stop).toHaveBeenCalled();
+    assertCalledWith(spinner, { message: 'Checking App ID and Private Key: ...' });
+    assert.strictEqual(fail.mock.callCount(), 0);
+    assert.ok(stop.mock.callCount() > 0);
   });
 
   test('Will not validate when private key does not match public', async () => {
-    const stop = jest.fn();
-    const fail = jest.fn();
-    spinner.mockReturnValue({ stop, fail });
+    const stop = mock.fn();
+    const fail = mock.fn();
+    spinner.mock.mockImplementation(() => ({ stop, fail }));
 
     const application = getBasicApplication();
-    mockGetApplication.mockResolvedValue(application);
+    mockGetApplication.mock.mockImplementation(() => Promise.resolve(application));
 
     const { apiKey, apiSecret } = getCLIConfig();
     const result = await validatePrivateKeyAndAppId(
@@ -102,9 +118,10 @@ describe('Utils: Validate SDK Auth', () => {
       testPrivateKey,
     );
 
-    expect(mockGetApplication).toHaveBeenCalledWith(application.id);
-    expect(result).toBe(false);
-    expect(Vonage).toHaveBeenCalledWith(
+    assertCalledWith(mockGetApplication, application.id);
+    assert.strictEqual(result, false);
+    assertCalledWith(
+      Vonage,
       {
         apiKey: apiKey,
         apiSecret: apiSecret,
@@ -116,17 +133,17 @@ describe('Utils: Validate SDK Auth', () => {
       },
     );
 
-    expect(spinner).toHaveBeenCalled();
-    expect(fail).not.toHaveBeenCalled();
-    expect(stop).toHaveBeenCalled();
+    assert.ok(spinner.mock.callCount() > 0);
+    assert.strictEqual(fail.mock.callCount(), 0);
+    assert.ok(stop.mock.callCount() > 0);
   });
 
   test('Will not validate when application not found', async () => {
-    const stop = jest.fn();
-    const fail = jest.fn();
-    spinner.mockReturnValue({ stop, fail });
+    const stop = mock.fn();
+    const fail = mock.fn();
+    spinner.mock.mockImplementation(() => ({ stop, fail }));
     const application = getBasicApplication();
-    mockGetApplication.mockRejectedValue({ response: { status: 404 } });
+    mockGetApplication.mock.mockImplementation(() => Promise.reject({ response: { status: 404 } }));
     const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validatePrivateKeyAndAppId(
@@ -136,9 +153,10 @@ describe('Utils: Validate SDK Auth', () => {
       testPrivateKey,
     );
 
-    expect(mockGetApplication).toHaveBeenCalledWith(application.id);
-    expect(result).toBe(false);
-    expect(Vonage).toHaveBeenCalledWith(
+    assertCalledWith(mockGetApplication, application.id);
+    assert.strictEqual(result, false);
+    assertCalledWith(
+      Vonage,
       {
         apiKey: apiKey,
         apiSecret: apiSecret,
@@ -150,33 +168,34 @@ describe('Utils: Validate SDK Auth', () => {
       },
     );
 
-    expect(spinner).toHaveBeenCalled();
-    expect(fail).toHaveBeenCalled();
-    expect(stop).not.toHaveBeenCalled();
+    assert.ok(spinner.mock.callCount() > 0);
+    assert.ok(fail.mock.callCount() > 0);
+    assert.strictEqual(stop.mock.callCount(), 0);
   });
 
   test('Will validate api key and secret', async () => {
-    const stop = jest.fn();
-    const fail = jest.fn();
-    spinner.mockReturnValue({ stop, fail });
+    const stop = mock.fn();
+    const fail = mock.fn();
+    spinner.mock.mockImplementation(() => ({ stop, fail }));
 
     const application = getBasicApplication();
-    mockGetApplicationPage.mockResolvedValue({
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({
       total_items: 1,
       page_size: 1,
       total_pages: 1,
       _embedded: {
         applications: [application],
       },
-    });
+    }));
 
     const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validateApiKeyAndSecret(apiKey, apiSecret);
 
-    expect(result).toBe(true);
-    expect(mockGetApplicationPage).toHaveBeenCalledWith({ size: 1 });
-    expect(Vonage).toHaveBeenCalledWith(
+    assert.strictEqual(result, true);
+    assertCalledWith(mockGetApplicationPage, { size: 1 });
+    assertCalledWith(
+      Vonage,
       {
         apiKey: apiKey,
         apiSecret: apiSecret,
@@ -186,25 +205,26 @@ describe('Utils: Validate SDK Auth', () => {
       },
     );
 
-    expect(spinner).toHaveBeenCalledWith({ message: 'Checking API Key Secret: ...' });
-    expect(fail).not.toHaveBeenCalled();
-    expect(stop).toHaveBeenCalled();
+    assertCalledWith(spinner, { message: 'Checking API Key Secret: ...' });
+    assert.strictEqual(fail.mock.callCount(), 0);
+    assert.ok(stop.mock.callCount() > 0);
   });
 
   test('Will not validate api key and secret when call fails', async () => {
-    const stop = jest.fn();
-    const fail = jest.fn();
-    spinner.mockReturnValue({ stop, fail });
+    const stop = mock.fn();
+    const fail = mock.fn();
+    spinner.mock.mockImplementation(() => ({ stop, fail }));
 
-    mockGetApplicationPage.mockRejectedValue({ response: { status: 401 } });
+    mockGetApplicationPage.mock.mockImplementation(() => Promise.reject({ response: { status: 401 } }));
 
     const { apiKey, apiSecret } = getCLIConfig();
 
     const result = await validateApiKeyAndSecret(apiKey, apiSecret);
 
-    expect(result).toBe(false);
-    expect(mockGetApplicationPage).toHaveBeenCalledWith({ size: 1 });
-    expect(Vonage).toHaveBeenCalledWith(
+    assert.strictEqual(result, false);
+    assertCalledWith(mockGetApplicationPage, { size: 1 });
+    assertCalledWith(
+      Vonage,
       {
         apiKey: apiKey,
         apiSecret: apiSecret,
@@ -214,8 +234,8 @@ describe('Utils: Validate SDK Auth', () => {
       },
     );
 
-    expect(spinner).toHaveBeenCalled();
-    expect(fail).toHaveBeenCalled();
-    expect(stop).not.toHaveBeenCalled();
+    assert.ok(spinner.mock.callCount() > 0);
+    assert.ok(fail.mock.callCount() > 0);
+    assert.strictEqual(stop.mock.callCount(), 0);
   });
 });

@@ -1,34 +1,35 @@
-import { jest, describe, test, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 
 const mockFiles = new Map();
-const existsSyncMock = jest.fn((path) => mockFiles.has(path));
-const readFileSyncMock = jest.fn((path) => {
+const existsSyncMock = mock.fn((path) => mockFiles.has(path));
+const readFileSyncMock = mock.fn((path) => {
   if (!mockFiles.has(path)) throw new Error(`ENOENT: ${path}`);
   return mockFiles.get(path);
 });
 
-jest.unstable_mockModule('fs', () => ({
-  existsSync: existsSyncMock,
-  readFileSync: readFileSyncMock,
-}));
+const __moduleMocks = {
+  'fs': (() => ({
+    existsSync: existsSyncMock,
+    readFileSync: readFileSyncMock,
+  }))(),
+};
 
-const { coerceKey } = await import('../../src/utils/coerceKey.js');
+const { coerceKey } = await loadModule(import.meta.url, '../../src/utils/coerceKey.js', __moduleMocks);
 
 describe('Utils: coerce private key', () => {
   beforeEach(() => {
     mockFiles.clear();
-    existsSyncMock.mockClear();
-    readFileSyncMock.mockClear();
+    existsSyncMock.mock.resetCalls();
+    readFileSyncMock.mock.resetCalls();
   });
 
   test('Will return null if no private key is provided', () => {
-    expect(coerceKey('private')(null)).toBeNull();
+    assert.strictEqual(coerceKey('private')(null), null);
   });
 
   test('Will return the private key if it is valid', () => {
     const privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PRIVATE KEY-----`;
-    expect(coerceKey('private')(privateKey)).toBe(privateKey);
+    assert.strictEqual(coerceKey('private')(privateKey), privateKey);
   });
 
   test('Will load the private key from a file if it is valid', () => {
@@ -36,12 +37,12 @@ describe('Utils: coerce private key', () => {
     const privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PRIVATE KEY-----`;
     console.log(testPrivateKeyFile);
     mockFiles.set(testPrivateKeyFile, privateKey);
-    expect(coerceKey('private')(testPrivateKeyFile)).toBe(privateKey);
+    assert.strictEqual(coerceKey('private')(testPrivateKeyFile), privateKey);
   });
 
   test('Will return the public key if it is valid', () => {
     const publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PUBLIC KEY-----`;
-    expect(coerceKey('public')(publicKey)).toBe(publicKey);
+    assert.strictEqual(coerceKey('public')(publicKey), publicKey);
   });
 
   test('Will load the public key from a file if it is valid', () => {
@@ -49,18 +50,18 @@ describe('Utils: coerce private key', () => {
     const publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(128)}\n-----BEGIN PUBLIC KEY-----`;
     console.log(testpublicKeyFile);
     mockFiles.set(testpublicKeyFile, publicKey);
-    expect(coerceKey('public')(testpublicKeyFile)).toBe(publicKey);
+    assert.strictEqual(coerceKey('public')(testpublicKeyFile), publicKey);
   });
 
   test('Will throw an error if the private key file does not exist', () => {
     const testPrivateKeyFile = faker.system.filePath();
-    expect(() => coerceKey('private')(testPrivateKeyFile)).toThrow('Key must be a valid key string or a path to a file containing a key');
+    assert.throws(() => coerceKey('private')(testPrivateKeyFile), /Key must be a valid key string or a path to a file containing a key/);
   });
 
   test('Will throw an error if the private key file is invalid', () => {
     const testPrivateKeyFile = faker.system.filePath();
     const privateKey = faker.string.alpha(128);
     mockFiles.set(testPrivateKeyFile, privateKey);
-    expect(() => coerceKey('private')(testPrivateKeyFile)).toThrow('The key file does not contain a valid key string');
+    assert.throws(() => coerceKey('private')(testPrivateKeyFile), /The key file does not contain a valid key string/);
   });
 });

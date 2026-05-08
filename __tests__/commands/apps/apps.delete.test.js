@@ -1,22 +1,27 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { getBasicApplication } from '../../app.js';
 import { mockConsole } from '../../helpers.js';
 import { Client } from '@vonage/server-client';
 
-const confirmMock = jest.fn();
-const sdkErrorMock = jest.fn();
+const confirmMock = mock.fn();
+const sdkErrorMock = mock.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('../../../src/utils/sdkError.js', () => ({ sdkError: sdkErrorMock }));
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  '../../../src/utils/sdkError.js': (() => ({ sdkError: sdkErrorMock }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/delete.js');
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/delete.js', __moduleMocks);
 
 describe('Command: vonage apps delete', () => {
   beforeEach(() => {
     mockConsole();
-    confirmMock.mockReset();
-    sdkErrorMock.mockReset();
+    confirmMock.mock.resetCalls();
+    sdkErrorMock.mock.resetCalls();
   });
 
   test('Should delete app', async () => {
@@ -25,8 +30,8 @@ describe('Command: vonage apps delete', () => {
       true,
       true,
     );
-    const appMock = jest.fn().mockResolvedValue(app);
-    const deleteMock = jest.fn().mockResolvedValue(undefined);
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const deleteMock = mock.fn(() => Promise.resolve(undefined));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -34,14 +39,14 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirmMock.mockResolvedValue(true);
+    confirmMock.mock.mockImplementation(() => Promise.resolve(true));
     const appId = faker.string.uuid();
     await handler({
       id: appId,
       SDK: sdkMock,
     });
 
-    expect(deleteMock).toHaveBeenCalledWith(appId);
+    assertCalledWith(deleteMock, appId);
   });
 
   test('Should not delete app when user declines', async () => {
@@ -50,8 +55,8 @@ describe('Command: vonage apps delete', () => {
       true,
       true,
     );
-    const appMock = jest.fn().mockResolvedValue(app);
-    const deleteMock = jest.fn().mockResolvedValue(undefined);
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const deleteMock = mock.fn(() => Promise.resolve(undefined));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -59,14 +64,14 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirmMock.mockResolvedValue(false);
+    confirmMock.mock.mockImplementation(() => Promise.resolve(false));
     const appId = faker.string.uuid();
     await handler({
       id: appId,
       SDK: sdkMock,
     });
 
-    expect(deleteMock).not.toHaveBeenCalled();
+    assert.strictEqual(deleteMock.mock.callCount(), 0);
   });
 
   test('Should handle error from delete', async () => {
@@ -76,8 +81,8 @@ describe('Command: vonage apps delete', () => {
       true,
     );
     const testError = new Error('Test error');
-    const appMock = jest.fn().mockResolvedValue(app);
-    const deleteMock = jest.fn().mockRejectedValue(testError);
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const deleteMock = mock.fn(() => Promise.reject(testError));
     const sdkMock = {
       applications: {
         getApplication: appMock,
@@ -85,15 +90,15 @@ describe('Command: vonage apps delete', () => {
       },
     };
 
-    confirmMock.mockResolvedValue(true);
+    confirmMock.mock.mockImplementation(() => Promise.resolve(true));
     const appId = faker.string.uuid();
     await handler({
       id: appId,
       SDK: sdkMock,
     });
 
-    expect(deleteMock).toHaveBeenCalled();
-    expect(sdkErrorMock).toHaveBeenCalledWith(testError);
+    assert.ok(deleteMock.mock.callCount() > 0);
+    assertCalledWith(sdkErrorMock, testError);
   });
 });
 

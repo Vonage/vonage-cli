@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 process.env.FORCE_COLOR = 0;
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -6,23 +5,30 @@ import { getBasicApplication } from '../../app.js';
 import { mockConsole } from '../../helpers.js';
 import { Client } from '@vonage/server-client';
 
-const confirmMock = jest.fn();
-const writeFileMock = jest.fn();
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const confirmMock = mock.fn();
+const writeFileMock = mock.fn();
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({ default: yargs }));
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({ confirm: confirmMock }));
-jest.unstable_mockModule('../../../src/utils/fs.js', () => ({ writeFile: writeFileMock }));
+const __moduleMocks = {
+  'yargs': (() => ({ default: yargs }))(),
+  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
+  '../../../src/utils/fs.js': (() => ({ writeFile: writeFileMock }))(),
+};
 
-const { handler } = await import('../../../src/commands/apps/create.js');
+
+
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/create.js', __moduleMocks);
 
 describe('Command: vonage apps create', () => {
   beforeEach(() => {
     mockConsole();
-    confirmMock.mockReset();
-    writeFileMock.mockReset();
-    exitMock.mockReset();
+    confirmMock.mock.resetCalls();
+    writeFileMock.mock.resetCalls();
+    exitMock.mock.resetCalls();
   });
 
   test('Should create app and save private key', async () => {
@@ -31,14 +37,14 @@ describe('Command: vonage apps create', () => {
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         createApplication: appMock,
       },
     };
 
-    writeFileMock.mockResolvedValue();
+    writeFileMock.mock.mockImplementation(() => Promise.resolve());
 
     await handler({
       name: app.name,
@@ -46,8 +52,8 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(appMock).toHaveBeenCalledWith({
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assertCalledWith(appMock, {
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -57,14 +63,14 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(writeFileMock).toHaveBeenCalledWith(
+    assertCalledWith(writeFileMock, 
       privateKeyFile,
       app.keys.privateKey,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(1, 'Application created');
+    assertNthCalledWith(console.log, 1, 'Application created');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(console.log, 
       2,
       [
         `Name: ${app.name}`,
@@ -81,7 +87,7 @@ describe('Command: vonage apps create', () => {
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         createApplication: appMock,
@@ -90,7 +96,7 @@ describe('Command: vonage apps create', () => {
 
     const error = new Error('User declined');
     error.name = 'UserDeclinedError';
-    writeFileMock.mockRejectedValue(error);
+    writeFileMock.mock.mockImplementation(() => Promise.reject(error));
 
     await handler({
       name: app.name,
@@ -100,7 +106,7 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(appMock).toHaveBeenCalledWith({
+    assertCalledWith(appMock, {
       name: app.name,
       privacy: {
         improveAI: true,
@@ -110,10 +116,10 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(writeFileMock).toHaveBeenCalled();
+    assert.ok(writeFileMock.mock.callCount() > 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(5, 'Private key:');
-    expect(console.log).toHaveBeenNthCalledWith(6, app.keys.privateKey);
+    assertNthCalledWith(console.log, 5, 'Private key:');
+    assertNthCalledWith(console.log, 6, app.keys.privateKey);
   });
 
   test('Should create app and output json', async () => {
@@ -121,7 +127,7 @@ describe('Command: vonage apps create', () => {
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         createApplication: appMock,
@@ -134,8 +140,8 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(appMock).toHaveBeenCalledWith({
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assertCalledWith(appMock, {
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -145,8 +151,8 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.log.mock.callCount(), 1);
+    assertNthCalledWith(console.log, 
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true),
@@ -161,7 +167,7 @@ describe('Command: vonage apps create', () => {
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
 
-    const appMock = jest.fn().mockResolvedValue(app);
+    const appMock = mock.fn(() => Promise.resolve(app));
     const sdkMock = {
       applications: {
         createApplication: appMock,
@@ -174,8 +180,8 @@ describe('Command: vonage apps create', () => {
       SDK: sdkMock,
     });
 
-    expect(confirmMock).not.toHaveBeenCalled();
-    expect(appMock).toHaveBeenCalledWith({
+    assert.strictEqual(confirmMock.mock.callCount(), 0);
+    assertCalledWith(appMock, {
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -185,8 +191,8 @@ describe('Command: vonage apps create', () => {
       },
     });
 
-    expect(console.log).toHaveBeenCalledTimes(1);
-    expect(console.log).toHaveBeenNthCalledWith(
+    assert.strictEqual(console.log.mock.callCount(), 1);
+    assertNthCalledWith(console.log, 
       1,
       yaml.stringify(
         Client.transformers.snakeCaseObjectKeys(app, true),

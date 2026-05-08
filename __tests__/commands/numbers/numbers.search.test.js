@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import yaml from 'yaml';
 import { typeLabels } from '../../../src/numbers/types.js';
@@ -6,14 +5,19 @@ import { countryCodes, getCountryName, displayCurrency } from '../../../src/ux/l
 import { getTestPhoneNumber } from '../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+};
 
-const { handler } = await import('../../../src/commands/numbers/search.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/search.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 
 describe('Command: vonage numbers search', () => {
@@ -22,7 +26,8 @@ describe('Command: vonage numbers search', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
   });
 
   test('Will search for numbers', async () => {
@@ -38,10 +43,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -56,19 +62,21 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 100 numbers available for purchase in ${getCountryName(country)}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
@@ -82,7 +90,8 @@ describe('Command: vonage numbers search', () => {
 
   test('Will not list numbers when there are none', async () => {
     const country = faker.helpers.shuffle(countryCodes)[0];
-    const numbersMock = jest.fn().mockResolvedValueOnce({});
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({}));
 
     const sdkMock = {
       numbers: {
@@ -97,25 +106,27 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(numbersMock.mock.callCount(), 1);
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       index: 1,
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are no matching numbers available for purchase in ${getCountryName(country)}`,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       3,
       'Try to broaden your search criteria',
     );
 
-    expect(console.table).not.toHaveBeenCalled();
+    assert.strictEqual(console.table.mock.callCount(), 0);
   });
 
   test('Will output json', async () => {
@@ -131,10 +142,11 @@ describe('Command: vonage numbers search', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -150,7 +162,8 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(
+      console.log,
       JSON.stringify(
         numbers.map(
           (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
@@ -164,8 +177,9 @@ describe('Command: vonage numbers search', () => {
 
   test('Will output empty json', async () => {
     const country = faker.helpers.shuffle(countryCodes)[0];
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-    });
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
+    }));
 
     const sdkMock = {
       numbers: {
@@ -181,7 +195,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(console.log).toHaveBeenCalledWith('[]');
+    assertCalledWith(console.log, '[]');
   });
 
   test('Will output yaml', async () => {
@@ -197,10 +211,11 @@ describe('Command: vonage numbers search', () => {
       },
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -216,7 +231,8 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(
+      console.log,
       yaml.stringify(
         numbers.map(
           (number) => Client.transformers.snakeCaseObjectKeys(number, true, false),
@@ -230,8 +246,9 @@ describe('Command: vonage numbers search', () => {
 
   test('Will output empty yaml', async () => {
     const country = faker.helpers.shuffle(countryCodes)[0];
-    const numbersMock = jest.fn().mockResolvedValueOnce({
-    });
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
+    }));
 
     const sdkMock = {
       numbers: {
@@ -247,7 +264,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(console.log).toHaveBeenCalledWith('[]\n');
+    assertCalledWith(console.log, '[]\n');
   });
 
   test('Will search for numbers containing pattern', async () => {
@@ -264,10 +281,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -284,7 +302,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       pattern: pattern,
       searchPattern: 1,
@@ -292,13 +310,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers available for purchase in ${getCountryName(country)} containing ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
@@ -324,10 +344,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -344,7 +365,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       pattern: pattern,
       searchPattern: 0,
@@ -352,13 +373,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There are 10 numbers available for purchase in ${getCountryName(country)} starting with ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
@@ -385,10 +408,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -405,7 +429,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       pattern: pattern,
       searchPattern: 2,
@@ -413,13 +437,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
@@ -445,10 +471,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -466,7 +493,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       type: 'mobile-lvn',
       country: country,
       pattern: pattern,
@@ -475,13 +502,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There is 1 Mobile number available for purchase in ${getCountryName(country)} ending with ${pattern}`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Features': number.features.sort().join(', '),
@@ -506,10 +535,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -528,7 +558,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       features: 'MMS',
       country: country,
       pattern: pattern,
@@ -537,13 +567,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern} having the MMS feature`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],
@@ -569,10 +601,11 @@ describe('Command: vonage numbers search', () => {
       }),
     );
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -590,7 +623,7 @@ describe('Command: vonage numbers search', () => {
       limit: 100,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       features: 'MMS,SMS,VOICE',
       country: country,
       pattern: pattern,
@@ -599,13 +632,15 @@ describe('Command: vonage numbers search', () => {
       size: 100,
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       `There is 1 number available for purchase in ${getCountryName(country)} ending with ${pattern} having the MMS, SMS, VOICE features`,
     );
 
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledWith(
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assertCalledWith(
+      console.table,
       numbers.map((number) => ({
         'Number': number.msisdn,
         'Type': typeLabels[number.type],

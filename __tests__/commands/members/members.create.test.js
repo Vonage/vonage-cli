@@ -1,14 +1,18 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-const { handler } = await import('../../../src/commands/members/create.js');
+
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import {
   getTestMemberForAPI,
@@ -29,18 +33,18 @@ describe('Command: vonage members create', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    confirm.mock.resetCalls();
   });
 
   test('Will create an app member', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -65,10 +69,11 @@ describe('Command: vonage members create', () => {
       fromMemberId: member.from,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -83,7 +88,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -98,11 +104,11 @@ describe('Command: vonage members create', () => {
     const member = addPhoneChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -124,10 +130,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -146,7 +153,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -161,11 +169,11 @@ describe('Command: vonage members create', () => {
     const member = addSMSChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -187,10 +195,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -209,7 +218,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -224,11 +234,11 @@ describe('Command: vonage members create', () => {
     const member = addMMSChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -250,10 +260,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -272,7 +283,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -287,11 +299,11 @@ describe('Command: vonage members create', () => {
     const member = addWhatsAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -313,10 +325,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -335,7 +348,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -350,11 +364,11 @@ describe('Command: vonage members create', () => {
     const member = addViberChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -376,10 +390,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -398,7 +413,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -413,11 +429,11 @@ describe('Command: vonage members create', () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -439,10 +455,11 @@ describe('Command: vonage members create', () => {
       audio: false,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       conversation.id,
       {
         state: member.state,
@@ -461,7 +478,8 @@ describe('Command: vonage members create', () => {
       },
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Member ID: ${member.id}`,
@@ -476,11 +494,11 @@ describe('Command: vonage members create', () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -506,10 +524,10 @@ describe('Command: vonage members create', () => {
       json: true,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(console.log).toHaveBeenCalledWith(JSON.stringify(
+    assertCalledWith(console.log, JSON.stringify(
       Client.transformers.snakeCaseObjectKeys(member, true),
       null,
       2,
@@ -520,11 +538,11 @@ describe('Command: vonage members create', () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -550,10 +568,10 @@ describe('Command: vonage members create', () => {
       yaml: true,
     });
 
-    expect(conversationMock).toHaveBeenCalledTimes(1);
-    expect(memberMock).toHaveBeenCalledTimes(1);
+    assert.strictEqual(conversationMock.mock.callCount(), 1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    expect(console.log).toHaveBeenCalledWith(YAML.stringify(
+    assertCalledWith(console.log, YAML.stringify(
       Client.transformers.snakeCaseObjectKeys(member, true),
       null,
       2,

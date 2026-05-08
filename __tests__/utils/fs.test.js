@@ -1,82 +1,96 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../helpers.js';
 
 describe('Utils: File system', () => {
+  const confirm = mock.fn();
 
   beforeEach(() => {
     mockConsole();
+    confirm.mock.resetCalls();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    confirm.mock.resetCalls();
   });
 
   test('Will write file', async () => {
-    jest.unstable_mockModule('node:fs', () => jest.createMockFromModule('node:fs'));
-    jest.unstable_mockModule('../../src/ux/confirm.js', () => ({ confirm: jest.fn() }));
-
-    const { writeFileSync } = await import('node:fs');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const fsMock = { writeFileSync: mock.fn(), existsSync: mock.fn(), readFileSync: mock.fn() };
+    const { writeFile } = await loadModule(
+      import.meta.url,
+      '../../src/utils/fs.js',
+      {
+        'fs': fsMock,
+        '../../src/ux/confirm.js': { confirm },
+      },
+    );
 
     const testFile = faker.system.filePath();
-    const { writeFile } = await import('../../src/utils/fs.js');
 
     await writeFile(testFile, 'new data');
 
-    expect(confirm).not.toHaveBeenCalled();
-    expect(writeFileSync).toHaveBeenCalledWith(testFile, 'new data');
+    assert.strictEqual(confirm.mock.callCount(), 0);
+    assertCalledWith(fsMock.writeFileSync, testFile, 'new data');
   });
 
   test('Will confirm before writing file', async () => {
-    jest.unstable_mockModule('node:fs', () => jest.createMockFromModule('node:fs'));
-    jest.unstable_mockModule('../../src/ux/confirm.js', () => ({ confirm: jest.fn() }));
-
-    const { writeFileSync, existsSync } = await import('node:fs');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const fsMock = { writeFileSync: mock.fn(), existsSync: mock.fn(), readFileSync: mock.fn() };
+    const { writeFile } = await loadModule(
+      import.meta.url,
+      '../../src/utils/fs.js',
+      {
+        'fs': fsMock,
+        '../../src/ux/confirm.js': { confirm },
+      },
+    );
 
     const testFile = faker.system.filePath();
-    const { writeFile } = await import('../../src/utils/fs.js');
 
-    existsSync.mockResolvedValueOnce(true);
-    confirm.mockResolvedValueOnce(true);
+    fsMock.existsSync.mock.mockImplementationOnce(() => true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     await writeFile(testFile, 'new data');
-    expect(confirm).toHaveBeenCalledWith(`Overwirte file ${testFile}?`);
-    expect(existsSync).toHaveBeenCalledWith(testFile);
-    expect(writeFileSync).toHaveBeenCalledWith(testFile, 'new data');
+    assertCalledWith(confirm, `Overwirte file ${testFile}?`);
+    assertCalledWith(fsMock.existsSync, testFile);
+    assertCalledWith(fsMock.writeFileSync, testFile, 'new data');
   });
 
   test('Will confirm before writing file but not write when user declines', async () => {
-    jest.unstable_mockModule('node:fs', () => jest.createMockFromModule('node:fs'));
-    jest.unstable_mockModule('../../src/ux/confirm.js', () => ({ confirm: jest.fn() }));
-
-    const { writeFileSync, existsSync } = await import('node:fs');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const fsMock = { writeFileSync: mock.fn(), existsSync: mock.fn(), readFileSync: mock.fn() };
+    const { writeFile } = await loadModule(
+      import.meta.url,
+      '../../src/utils/fs.js',
+      {
+        'fs': fsMock,
+        '../../src/ux/confirm.js': { confirm },
+      },
+    );
 
     const testFile = faker.system.filePath();
-    const { writeFile } = await import('../../src/utils/fs.js');
 
-    existsSync.mockResolvedValueOnce(true);
-    confirm.mockResolvedValueOnce(false);
+    fsMock.existsSync.mock.mockImplementationOnce(() => true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
-    await expect(() => writeFile(testFile, 'new data')).rejects.toThrow('User declined to overwrite file');
-    expect(confirm).toHaveBeenCalledWith(`Overwirte file ${testFile}?`);
-    expect(writeFileSync).not.toHaveBeenCalled();
+    await assert.rejects(() => writeFile(testFile, 'new data'), /User declined to overwrite file/);
+    assertCalledWith(confirm, `Overwirte file ${testFile}?`);
+    assert.strictEqual(fsMock.writeFileSync.mock.callCount(), 0);
   });
 
   test('Will write JSON file', async () => {
-    jest.unstable_mockModule('node:fs', () => jest.createMockFromModule('node:fs'));
-    jest.unstable_mockModule('../../src/ux/confirm.js', () => ({ confirm: jest.fn() }));
-
-    const { writeFileSync } = await import('node:fs');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const fsMock = { writeFileSync: mock.fn(), existsSync: mock.fn(), readFileSync: mock.fn() };
+    const { writeJSONFile } = await loadModule(
+      import.meta.url,
+      '../../src/utils/fs.js',
+      {
+        'fs': fsMock,
+        '../../src/ux/confirm.js': { confirm },
+      },
+    );
 
     const testFile = faker.system.filePath();
-    const { writeJSONFile } = await import('../../src/utils/fs.js');
     await writeJSONFile(testFile, { foo: 'bar' });
-    expect(confirm).not.toHaveBeenCalled();
-    expect(writeFileSync).toHaveBeenCalledWith(
+    assert.strictEqual(confirm.mock.callCount(), 0);
+    assertCalledWith(
+      fsMock.writeFileSync,
       testFile,
       JSON.stringify(
         { foo: 'bar' },
@@ -86,4 +100,3 @@ describe('Utils: File system', () => {
     );
   });
 });
-

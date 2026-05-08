@@ -1,20 +1,20 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
-
-const { handler } = await import('../../../src/commands/numbers/cancel.js');
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/cancel.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestPhoneNumber } from '../../numbers.js';
 
@@ -24,7 +24,9 @@ describe('Command: vonage numbers cancel', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will cancel a number', async () => {
@@ -35,14 +37,15 @@ describe('Command: vonage numbers cancel', () => {
         : undefined,
     };
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: 1,
       numbers: [testNumber],
-    });
+    }));
 
-    const cancelNumberMock = jest.fn();
+    const cancelNumberMock = mock.fn();
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     const sdkMock = {
       numbers: {
@@ -57,7 +60,7 @@ describe('Command: vonage numbers cancel', () => {
       msisdn: testNumber.msisdn,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       index: 1,
       size: 1,
       country: testNumber.country,
@@ -65,7 +68,7 @@ describe('Command: vonage numbers cancel', () => {
       searchPattern: 1,
     });
 
-    expect(cancelNumberMock).toHaveBeenCalledWith({
+    assertCalledWith(cancelNumberMock, {
       country: testNumber.country,
       msisdn: testNumber.msisdn,
     });
@@ -79,14 +82,15 @@ describe('Command: vonage numbers cancel', () => {
         : undefined,
     };
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: 1,
       numbers: [testNumber],
-    });
+    }));
 
-    const cancelNumberMock = jest.fn();
+    const cancelNumberMock = mock.fn();
 
-    confirm.mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
     const sdkMock = {
       numbers: {
@@ -101,8 +105,8 @@ describe('Command: vonage numbers cancel', () => {
       msisdn: testNumber.msisdn,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(cancelNumberMock).not.toHaveBeenCalled();
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(cancelNumberMock.mock.callCount(), 0);
   });
 
   test('Will not call cancel number when number not found', async () => {
@@ -113,11 +117,12 @@ describe('Command: vonage numbers cancel', () => {
         : undefined,
     };
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({});
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({}));
 
-    const cancelNumberMock = jest.fn();
+    const cancelNumberMock = mock.fn();
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     const sdkMock = {
       numbers: {
@@ -132,8 +137,8 @@ describe('Command: vonage numbers cancel', () => {
       msisdn: testNumber.msisdn,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(cancelNumberMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(44);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(cancelNumberMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 44);
   });
 });

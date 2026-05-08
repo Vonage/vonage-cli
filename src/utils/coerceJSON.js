@@ -1,4 +1,4 @@
-import Ajv from 'ajv/dist/2020';
+import Ajv from 'ajv/dist/2020.js';
 const ajv = new Ajv();
 
 const coerceJSON = (argName, schema) => (json) => {

@@ -1,21 +1,24 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
-jest.unstable_mockModule('yargs', () => ({
-  default: yargs,
-}));
+const __moduleMocks = {
+  'yargs': (() => ({
+    default: yargs,
+  }))(),
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
 
-const { handler } = await import('../../../src/commands/members/show.js');
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/show.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { displayDate } from '../../../src/ux/locale.js';
 import {
@@ -36,14 +39,16 @@ describe('Command: vonage members show', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will show a member with no channel', async () => {
     const member = getTestMemberForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -57,12 +62,14 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       1,
       [
         `Member ID: ${member.id}`,
@@ -72,12 +79,10 @@ describe('Command: vonage members show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      3,
-      'User',
-    );
+    assertNthCalledWith(console.log, 3, 'User');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         `  User ID: ${member.user.id}`,
@@ -86,12 +91,10 @@ describe('Command: vonage members show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      6,
-      'Timestamps',
-    );
+    assertNthCalledWith(console.log, 6, 'Timestamps');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       7,
       [
         `  Invited: ${displayDate(member.timestamp.invited)}`,
@@ -100,12 +103,10 @@ describe('Command: vonage members show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: Not Set',
@@ -117,8 +118,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with app channel', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -132,17 +133,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: Application',
@@ -155,8 +155,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with phone channel', async () => {
     const member = addPhoneChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -170,17 +170,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: Phone',
@@ -193,8 +192,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with sms channel', async () => {
     const member = addSMSChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -208,17 +207,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: SMS',
@@ -231,8 +229,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with MMS channel', async () => {
     const member = addMMSChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -246,17 +244,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: MMS',
@@ -269,8 +266,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with WhatsApp channel', async () => {
     const member = addWhatsAppChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -284,17 +281,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: WhatsApp',
@@ -307,8 +303,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with Viber channel', async () => {
     const member = addViberChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -322,17 +318,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: Viber',
@@ -345,8 +340,8 @@ describe('Command: vonage members show', () => {
   test('Will show a member with Messenger channel', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -360,17 +355,16 @@ describe('Command: vonage members show', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      9,
-      'Channel',
-    );
+    assertNthCalledWith(console.log, 9, 'Channel');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       10,
       [
         '  Channel Type: Messenger',
@@ -383,8 +377,8 @@ describe('Command: vonage members show', () => {
   test('Will output JSON', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -399,12 +393,14 @@ describe('Command: vonage members show', () => {
       json: true,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       1,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(member, true),
@@ -417,8 +413,8 @@ describe('Command: vonage members show', () => {
   test('Will output YAML', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce(member);
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve(member));
 
     const sdkMock = {
       conversations: {
@@ -433,12 +429,14 @@ describe('Command: vonage members show', () => {
       yaml: true,
     });
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       member.id,
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       1,
       YAML.stringify(
         Client.transformers.snakeCaseObjectKeys(member, true),
@@ -448,4 +446,3 @@ describe('Command: vonage members show', () => {
     );
   });
 });
-

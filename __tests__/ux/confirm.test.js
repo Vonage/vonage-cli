@@ -1,35 +1,45 @@
-import { jest } from '@jest/globals';
-
 describe('UX: confirm', () => {
-  jest.unstable_mockModule('../../src/ux/input', () => ({ inputFromTTY: jest.fn() }));
+  const inputFromTTY = mock.fn();
 
   test('Will confrim the message with y', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
-
-    inputFromTTY.mockResolvedValue('y');
-    const { confirm } = await import('../../src/ux/confirm.js');
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('y'));
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
 
     const result = await confirm('Are you sure?');
-    expect(result).toBe(true);
-    expect(inputFromTTY).toHaveBeenCalledWith({ message: 'Are you sure?', length: 1 });
-    expect(inputFromTTY).toHaveBeenCalledTimes(1);
+    assert.strictEqual(result, true);
+    assertCalledWith(inputFromTTY, { message: 'Are you sure?', length: 1 });
+    assert.strictEqual(inputFromTTY.mock.callCount(), 1);
   });
 
   test('Will confrim the message with n', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
-    inputFromTTY.mockResolvedValue('n');
+    inputFromTTY.mock.resetCalls();
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('n'));
 
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
     const result = await confirm('Are you sure?');
-    expect(result).toBe(false);
+    assert.strictEqual(result, false);
   });
 
   test('Will keep asking with invalid input message', async () => {
-    const { inputFromTTY } = await import('../../src/ux/input.js');
-    inputFromTTY.mockResolvedValue('x').mockResolvedValue('y');
+    inputFromTTY.mock.resetCalls();
+    inputFromTTY.mock.mockImplementationOnce(() => Promise.resolve('x'));
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('y'));
 
-    const { confirm } = await import('../../src/ux/confirm.js');
+    const { confirm } = await loadModule(
+      import.meta.url,
+      '../../src/ux/confirm.js',
+      { '../../src/ux/input.js': { inputFromTTY } },
+    );
     const result = await confirm('Are you sure?');
-    expect(result).toBe(true);
+    assert.strictEqual(result, true);
+    assert.strictEqual(inputFromTTY.mock.callCount(), 2);
   });
 });

@@ -1,12 +1,15 @@
-import { jest, describe, test, beforeEach, afterEach, expect } from '@jest/globals';
+const confirm = mock.fn();
 
-const confirm = jest.fn();
+const __moduleMocks = {
+  '../../../src/ux/confirm.js': (() => ({
+    confirm,
+  }))(),
+};
 
-jest.unstable_mockModule('../../../src/ux/confirm.js', () => ({
-  confirm,
-}));
 
-const { handler } = await import('../../../src/commands/members/list.js');
+
+
+const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/list.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestMemberForAPI } from '../../members.js';
 import { stateLabels } from '../../../src/members/display.js';
@@ -17,16 +20,16 @@ describe('Command: vonage members list', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    confirm.mock.resetCalls();
   });
 
   test('Will show one page of members', async () => {
     const member = getTestMemberForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce({
-        members: [member],
-      });
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve({
+      members: [member],
+    }));
 
     const sdkMock = {
       conversations: {
@@ -39,11 +42,12 @@ describe('Command: vonage members list', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(confirm).not.toHaveBeenCalled();
+    assert.strictEqual(memberMock.mock.callCount(), 1);
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assert.strictEqual(confirm.mock.callCount(), 0);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       {
         cursor: undefined,
@@ -51,7 +55,8 @@ describe('Command: vonage members list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       1,
       [
         {
@@ -65,10 +70,10 @@ describe('Command: vonage members list', () => {
   test('Will handle no members', async () => {
     const member = getTestMemberForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce({
-        members: [],
-      });
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve({
+      members: [],
+    }));
 
     const sdkMock = {
       conversations: {
@@ -81,11 +86,12 @@ describe('Command: vonage members list', () => {
       conversationId: member.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(console.table).not.toHaveBeenCalled();
-    expect(confirm).not.toHaveBeenCalled();
+    assert.strictEqual(memberMock.mock.callCount(), 1);
+    assert.strictEqual(console.table.mock.callCount(), 0);
+    assert.strictEqual(confirm.mock.callCount(), 0);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       member.conversationId,
       {
         cursor: undefined,
@@ -93,7 +99,8 @@ describe('Command: vonage members list', () => {
       },
     );
 
-    expect(console.log).toHaveBeenCalledWith(
+    assertCalledWith(
+      console.log,
       'No members found for this conversation.',
     );
   });
@@ -102,18 +109,18 @@ describe('Command: vonage members list', () => {
     const memberOne = getTestMemberForAPI();
     const memberTwo = getTestMemberForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce({
-        members: [memberOne],
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations/CON-123/members?cursor=CUR-123',
-          },
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve({
+      members: [memberOne],
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations/CON-123/members?cursor=CUR-123',
         },
-      })
-      .mockResolvedValueOnce({
-        members: [memberTwo],
-      });
+      },
+    }));
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve({
+      members: [memberTwo],
+    }));
 
     const sdkMock = {
       conversations: {
@@ -121,18 +128,19 @@ describe('Command: vonage members list', () => {
       },
     };
 
-    confirm.mockResolvedValue(true);
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
 
     await handler({
       SDK: sdkMock,
       conversationId: memberOne.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(2);
-    expect(console.table).toHaveBeenCalledTimes(2);
-    expect(confirm).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 2);
+    assert.strictEqual(console.table.mock.callCount(), 2);
+    assert.strictEqual(confirm.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       memberOne.conversationId,
       {
         cursor: undefined,
@@ -140,11 +148,13 @@ describe('Command: vonage members list', () => {
       },
     );
 
-    expect(confirm).toHaveBeenCalledWith(
+    assertCalledWith(
+      confirm,
       'There are more members. Do you want to continue?',
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       1,
       [
         {
@@ -154,7 +164,8 @@ describe('Command: vonage members list', () => {
       ],
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       2,
       [
         {
@@ -168,15 +179,15 @@ describe('Command: vonage members list', () => {
   test('Will show one page of members when user declines next page', async () => {
     const memberOne = getTestMemberForAPI();
 
-    const memberMock = jest.fn()
-      .mockResolvedValueOnce({
-        members: [memberOne],
-        links: {
-          next: {
-            href: 'https://api.nexmo.com/conversations/CON-123/members?cursor=CUR-123',
-          },
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementationOnce(() => Promise.resolve({
+      members: [memberOne],
+      links: {
+        next: {
+          href: 'https://api.nexmo.com/conversations/CON-123/members?cursor=CUR-123',
         },
-      });
+      },
+    }));
 
     const sdkMock = {
       conversations: {
@@ -184,18 +195,19 @@ describe('Command: vonage members list', () => {
       },
     };
 
-    confirm.mockResolvedValue(false);
+    confirm.mock.mockImplementation(() => Promise.resolve(false));
 
     await handler({
       SDK: sdkMock,
       conversationId: memberOne.conversationId,
     });
 
-    expect(memberMock).toHaveBeenCalledTimes(1);
-    expect(console.table).toHaveBeenCalledTimes(1);
-    expect(confirm).toHaveBeenCalledTimes(1);
+    assert.strictEqual(memberMock.mock.callCount(), 1);
+    assert.strictEqual(console.table.mock.callCount(), 1);
+    assert.strictEqual(confirm.mock.callCount(), 1);
 
-    expect(memberMock).toHaveBeenCalledWith(
+    assertCalledWith(
+      memberMock,
       memberOne.conversationId,
       {
         cursor: undefined,
@@ -203,7 +215,8 @@ describe('Command: vonage members list', () => {
       },
     );
 
-    expect(console.table).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.table,
       1,
       [
         {
@@ -214,4 +227,3 @@ describe('Command: vonage members list', () => {
     );
   });
 });
-

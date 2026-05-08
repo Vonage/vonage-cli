@@ -1,4 +1,3 @@
-import { jest, describe, test, beforeEach, expect } from '@jest/globals';
 import { redact } from '../../../src/ux/redact.js';
 import { handler } from '../../../src/commands/users/show.js';
 import { mockConsole } from '../../helpers.js';
@@ -21,8 +20,8 @@ describe('Command: vonage users show', () => {
   test('Will show a user', async () => {
     const user = getTestUserForAPI();
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -32,9 +31,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -44,7 +44,8 @@ describe('Command: vonage users show', () => {
         `Time to Live: ${user.properties.ttl}`,
       ].join('\n'),
     );
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -58,8 +59,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -69,9 +70,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -82,7 +84,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -99,8 +102,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -110,9 +113,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -123,7 +127,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -139,8 +144,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -150,9 +155,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -163,7 +169,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -179,8 +186,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -190,9 +197,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -203,7 +211,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -219,8 +228,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -230,9 +239,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -243,7 +253,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -259,8 +270,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -270,9 +281,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -283,7 +295,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',
@@ -301,8 +314,8 @@ describe('Command: vonage users show', () => {
       getTestUserForAPI(),
     );
 
-    const userMock = jest.fn()
-      .mockResolvedValueOnce(user);
+    const userMock = mock.fn();
+    userMock.mock.mockImplementationOnce(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -312,9 +325,10 @@ describe('Command: vonage users show', () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    expect(userMock).toHaveBeenCalledWith(user.id);
+    assertCalledWith(userMock, user.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -325,7 +339,8 @@ describe('Command: vonage users show', () => {
       ].join('\n'),
     );
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         'Channels:',

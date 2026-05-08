@@ -1,30 +1,25 @@
-import { jest } from '@jest/globals';
 import EventEmitter from 'node:events';
 import { mockConsole } from '../helpers.js';
 
-jest.mock('node:readline');
-jest.useFakeTimers();
-
 describe('UX: input tests', () => {
-  const questionMock = jest.fn();
-  const emitKeypressEventsMock = jest.fn();
-  const rlOn = jest.fn();
-  const rlOff = jest.fn();
-  const readline = jest.createMockFromModule('readline');
-  jest.unstable_mockModule('readline', () => ({ default: readline }));
+  const questionMock = mock.fn();
+  const emitKeypressEventsMock = mock.fn();
+  const rlOn = mock.fn();
+  const rlOff = mock.fn();
+  const readline = {};
 
   const inputMock = new EventEmitter();
 
-  const closeMock = jest.fn().mockImplementation(() => undefined);
+  const closeMock = mock.fn(() => undefined);
 
-  const createInterface = jest.fn().mockReturnValue({
+  const createInterface = mock.fn(() => ({
     question: questionMock,
     close: closeMock,
     emitKeypressEvents: emitKeypressEventsMock,
     input: inputMock,
     on: rlOn,
     off: rlOff,
-  });
+  }));
 
   readline.createInterface = createInterface;
   readline.emitKeypressEvents = emitKeypressEventsMock;
@@ -35,7 +30,12 @@ describe('UX: input tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    questionMock.mock.resetCalls();
+    emitKeypressEventsMock.mock.resetCalls();
+    rlOn.mock.resetCalls();
+    rlOff.mock.resetCalls();
+    closeMock.mock.resetCalls();
+    createInterface.mock.resetCalls();
   });
 
   test('Will capture printable keys', async () => {
@@ -45,16 +45,17 @@ describe('UX: input tests', () => {
     setTimeout(() => inputMock.emit('keypress', 'o', { name: 'o' }), 12);
     setTimeout(() => inputMock.emit('keypress', '\r', { name: 'return' }), 20);
 
-    const { inputFromTTY } = await import('../../src/ux/input.js');
+    const { inputFromTTY } = await loadModule(
+      import.meta.url,
+      '../../src/ux/input.js',
+      { 'readline': { default: readline } },
+    );
 
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
+    const result = await input;
 
-
-    const result = await Promise.resolve(input);
-
-    expect(result).toBe('foo');
+    assert.strictEqual(result, 'foo');
   });
 
   test('Will delete characters with delete key', async () => {
@@ -66,14 +67,16 @@ describe('UX: input tests', () => {
 
     setTimeout(() => inputMock.emit('keypress', '\r', { name: 'return' }), 20);
 
-    const { inputFromTTY } = await import('../../src/ux/input.js');
+    const { inputFromTTY } = await loadModule(
+      import.meta.url,
+      '../../src/ux/input.js',
+      { 'readline': { default: readline } },
+    );
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
+    const result = await input;
 
-    const result = await Promise.resolve(input);
-
-    expect(result).toBe('fo');
+    assert.strictEqual(result, 'fo');
   });
 
   test('Will delete characters with backspace key', async () => {
@@ -83,12 +86,14 @@ describe('UX: input tests', () => {
     setTimeout(() => inputMock.emit('keypress', '', { name: 'backspace' }), 13);
     setTimeout(() => inputMock.emit('keypress', '\r', { name: 'return' }), 20);
 
-    const { inputFromTTY } = await import('../../src/ux/input.js');
+    const { inputFromTTY } = await loadModule(
+      import.meta.url,
+      '../../src/ux/input.js',
+      { 'readline': { default: readline } },
+    );
     const input = inputFromTTY({});
 
-    jest.advanceTimersByTime(100);
-
-    const result = await Promise.resolve(input);
-    expect(result).toBe('fo');
+    const result = await input;
+    assert.strictEqual(result, 'fo');
   });
 });
