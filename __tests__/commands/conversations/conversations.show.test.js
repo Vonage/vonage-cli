@@ -1,9 +1,9 @@
 import { displayDate } from '../../../src/ux/locale.js';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
 const __moduleMocks = {
   'yargs': (() => ({
@@ -13,8 +13,6 @@ const __moduleMocks = {
     confirm,
   }))(),
 };
-
-
 
 
 
@@ -29,14 +27,16 @@ describe('Command: vonage conversations show', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will show a conversation', async () => {
     const conversation = getTestConversationForAPI();
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
     const sdkMock = {
       conversations: {
@@ -46,9 +46,10 @@ describe('Command: vonage conversations show', () => {
 
     await handler({ SDK: sdkMock, conversationId: conversation.id });
 
-    expect(conversationMock).toHaveBeenCalledWith(conversation.id);
+    assertCalledWith(conversationMock, conversation.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `Name: ${conversation.name}`,
@@ -68,8 +69,8 @@ describe('Command: vonage conversations show', () => {
   test('Will handle an error', async () => {
     const conversation = getTestConversationForAPI();
 
-    const conversationMock = jest.fn()
-      .mockRejectedValueOnce(new Error('An error occurred'));
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.reject(new Error('An error occurred')));
 
     const sdkMock = {
       conversations: {
@@ -78,7 +79,7 @@ describe('Command: vonage conversations show', () => {
     };
 
     await handler({ SDK: sdkMock, id: conversation.id });
-    expect(console.log).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(99);
+    assert.strictEqual(console.log.mock.callCount(), 0);
+    assertCalledWith(exitMock, 99);
   });
 });

@@ -1,5 +1,4 @@
-
-const confirm = jest.fn();
+const confirm = mock.fn();
 
 const __moduleMocks = {
   '../../../src/ux/confirm.js': (() => ({
@@ -20,17 +19,17 @@ describe('Command: vonage conversations delete', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    confirm.mock.resetCalls();
   });
 
   test('Will delete a conversation', async () => {
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
-    const deleteConversationMock = jest.fn();
+    const deleteConversationMock = mock.fn();
 
     const sdkMock = {
       conversations: {
@@ -41,23 +40,20 @@ describe('Command: vonage conversations delete', () => {
 
     await handler({ SDK: sdkMock, id: conversation.id });
 
-    expect(conversationMock).toHaveBeenCalledWith(conversation.id);
-    expect(deleteConversationMock).toHaveBeenCalledWith(conversation.id);
+    assertCalledWith(conversationMock, conversation.id);
+    assertCalledWith(deleteConversationMock, conversation.id);
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      'Conversation deleted',
-    );
+    assertNthCalledWith(console.log, 2, 'Conversation deleted');
   });
 
   test('Will not delete a conversation when user declines', async () => {
-    confirm.mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
     const conversation = getTestConversationForAPI();
 
-    const conversationMock = jest.fn()
-      .mockResolvedValueOnce(conversation);
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementationOnce(() => Promise.resolve(conversation));
 
-    const deleteConversationMock = jest.fn();
+    const deleteConversationMock = mock.fn();
 
     const sdkMock = {
       conversations: {
@@ -68,12 +64,9 @@ describe('Command: vonage conversations delete', () => {
 
     await handler({ SDK: sdkMock, id: conversation.id });
 
-    expect(conversationMock).toHaveBeenCalledWith(conversation.id);
-    expect(deleteConversationMock).not.toHaveBeenCalled();
+    assertCalledWith(conversationMock, conversation.id);
+    assert.strictEqual(deleteConversationMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      1,
-      'Conversation not deleted',
-    );
+    assertNthCalledWith(console.log, 1, 'Conversation not deleted');
   });
 });

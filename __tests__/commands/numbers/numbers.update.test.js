@@ -3,8 +3,8 @@ import { typeLabels } from '../../../src/numbers/types.js';
 import { countryCodes, displayCurrency, buildCountryString } from '../../../src/ux/locale.js';
 import { getTestPhoneNumber } from '../../numbers.js';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'yargs': (() => ({
@@ -24,7 +24,8 @@ describe('Command: numbers update', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
   });
 
   test('Will update number', async () => {
@@ -38,15 +39,17 @@ describe('Command: numbers update', () => {
     };
 
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: 1,
       numbers: [testNumber],
-    });
+    }));
 
-    const updateNumberMock = jest.fn().mockResolvedValueOnce({
+    const updateNumberMock = mock.fn();
+    updateNumberMock.mock.mockImplementationOnce(() => Promise.resolve({
       errorCode: '200',
       errorStatus: 'success',
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -68,7 +71,7 @@ describe('Command: numbers update', () => {
       voiceStatusCallback: voiceStatusCallbackUrl,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       index: 1,
       size: 1,
@@ -76,21 +79,19 @@ describe('Command: numbers update', () => {
       pattern: testNumber.msisdn,
     });
 
-    expect(updateNumberMock).toHaveBeenCalledWith({
+    assertCalledWith(updateNumberMock, {
       ...testNumber,
       voiceCallbackValue,
       voiceCallbackType,
       voiceStatusCallback: voiceStatusCallbackUrl,
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      3,
-      'Number updated successfully',
-    );
+    assertNthCalledWith(console.log, 3, 'Number updated successfully');
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       5,
       [
         `Number: ${testNumber.msisdn}`,
@@ -118,9 +119,10 @@ describe('Command: numbers update', () => {
     };
 
 
-    const numbersMock = jest.fn().mockResolvedValueOnce();
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve(undefined));
 
-    const updateNumberMock = jest.fn();
+    const updateNumberMock = mock.fn();
 
     const sdkMock = {
       numbers: {
@@ -142,9 +144,9 @@ describe('Command: numbers update', () => {
       voiceStatusCallback: voiceStatusCallbackUrl,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(updateNumberMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(44);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(updateNumberMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 44);
   });
 
   test('Will handle SDK error', async () => {
@@ -158,12 +160,14 @@ describe('Command: numbers update', () => {
     };
 
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: 1,
       numbers: [testNumber],
-    });
+    }));
 
-    const updateNumberMock = jest.fn().mockRejectedValueOnce(new Error('SDK error'));
+    const updateNumberMock = mock.fn();
+    updateNumberMock.mock.mockImplementationOnce(() => Promise.reject(new Error('SDK error')));
 
     const sdkMock = {
       numbers: {
@@ -185,8 +189,8 @@ describe('Command: numbers update', () => {
       voiceStatusCallback: voiceStatusCallbackUrl,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(updateNumberMock).toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(99);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.ok(updateNumberMock.mock.callCount() > 0);
+    assertCalledWith(exitMock, 99);
   });
 });

@@ -1,6 +1,6 @@
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
 const __moduleMocks = {
   'yargs': (() => ({
@@ -31,17 +31,15 @@ describe('Command: vonage users update', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
   });
 
   test('Will update a user with no options', async () => {
     const user = getTestUserForAPI();
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -54,11 +52,12 @@ describe('Command: vonage users update', () => {
       SDK: sdkMock,
       id: user.id,
     });
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -73,11 +72,8 @@ describe('Command: vonage users update', () => {
   test('Will update a user', async () => {
     const user = getTestUserForAPI();
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -96,7 +92,7 @@ describe('Command: vonage users update', () => {
       customData: user.properties.customData,
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith({
+    assertCalledWith(updateUserMock, {
       id: user.id,
       displayName: user.displayName,
       imageUrl: user.imageUrl,
@@ -108,7 +104,8 @@ describe('Command: vonage users update', () => {
       channels: {},
     });
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       [
         `User ID: ${user.id}`,
@@ -123,11 +120,8 @@ describe('Command: vonage users update', () => {
   test('Will update a user with PSTN channels', async () => {
     const user = addPSTNChannelToUser(addPSTNChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -142,17 +136,14 @@ describe('Command: vonage users update', () => {
       pstnNumber: user.channels.pstn.map((channel) => channel.number),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with SMS channels', async () => {
     const user = addSMSChannelToUser(addSMSChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -166,17 +157,14 @@ describe('Command: vonage users update', () => {
       smsNumber: user.channels.sms.map((channel) => channel.number),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with MMS channels', async () => {
     const user = addMMSChannelToUser(addMMSChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -192,17 +180,14 @@ describe('Command: vonage users update', () => {
       mmsNumber: user.channels.mms.map((channel) => channel.number),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with Viber channels', async () => {
     const user = addViberChannelToUser(addViberChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -217,17 +202,14 @@ describe('Command: vonage users update', () => {
       viberNumber: user.channels.viber.map((channel) => channel.number),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with SIP channels', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -244,17 +226,14 @@ describe('Command: vonage users update', () => {
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will not update a user with SIP channels when username is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -270,18 +249,15 @@ describe('Command: vonage users update', () => {
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(2);
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 2);
   });
 
   test('Will not update a user with SIP channels when password is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -297,18 +273,15 @@ describe('Command: vonage users update', () => {
       sipUsername: user.channels.sip.map((channel) => channel.username),
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(2);
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 2);
   });
 
   test('Will not update a user with SIP channels when missing a username', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -325,18 +298,15 @@ describe('Command: vonage users update', () => {
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(2);
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 2);
   });
 
   test('Will not update a user with SIP channels when missing a password', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
     const sdkMock = {
       users: {
         updateUser: updateUserMock,
@@ -353,18 +323,15 @@ describe('Command: vonage users update', () => {
       sipPassword: [user.channels.sip[0].password],
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(2);
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 2);
   });
 
   test('Will update a user with Websocket channels', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -382,17 +349,14 @@ describe('Command: vonage users update', () => {
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with Websocket channels and no headers', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -409,7 +373,7 @@ describe('Command: vonage users update', () => {
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith({
+    assertCalledWith(updateUserMock, {
       ...user,
       channels: {
         ...user.channels,
@@ -424,11 +388,8 @@ describe('Command: vonage users update', () => {
   test('Will update a user with Websocket channels and no content type', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -445,7 +406,7 @@ describe('Command: vonage users update', () => {
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith({
+    assertCalledWith(updateUserMock, {
       ...user,
       channels: {
         ...user.channels,
@@ -460,11 +421,8 @@ describe('Command: vonage users update', () => {
   test('Will not update a user with Websocket when missing header', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -482,17 +440,14 @@ describe('Command: vonage users update', () => {
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
   });
 
   test('Will not update a user with Websocket when missing content type', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -510,17 +465,14 @@ describe('Command: vonage users update', () => {
       websocketContentType: [user.channels.websocket[0].contentType],
     });
 
-    expect(updateUserMock).not.toHaveBeenCalled();
+    assert.strictEqual(updateUserMock.mock.callCount(), 0);
   });
 
   test('Will update a user with WhatsApp channels', async () => {
     const user = addWhatsAppChannelToUser(addWhatsAppChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -536,17 +488,14 @@ describe('Command: vonage users update', () => {
       whatsAppNumber: user.channels.whatsapp.map((channel) => channel.number),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 
   test('Will update a user with Messenger channels', async () => {
     const user = addMessengerChannelToUser(addMessengerChannelToUser(getTestUserForAPI()));
 
-    const updateUserMock = jest.fn()
-      .mockResolvedValue(user);
-
-    const getUserMock = jest.fn()
-      .mockResolvedValue(user);
+    const updateUserMock = mock.fn(() => Promise.resolve(user));
+    const getUserMock = mock.fn(() => Promise.resolve(user));
 
     const sdkMock = {
       users: {
@@ -562,6 +511,6 @@ describe('Command: vonage users update', () => {
       facebookMessengerId: user.channels.messenger.map((channel) => channel.id),
     });
 
-    expect(updateUserMock).toHaveBeenCalledWith(user);
+    assertCalledWith(updateUserMock, user);
   });
 });

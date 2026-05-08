@@ -5,10 +5,10 @@ import { countryCodes, displayCurrency, buildCountryString } from '../../../src/
 import { getTestPhoneNumber } from '../../numbers.js';
 import { Client } from '@vonage/server-client';
 
-const exitMock = jest.fn();
-const yargs = jest.fn().mockImplementation(() => ({ exit: exitMock }));
+const exitMock = mock.fn();
+const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const confirm = jest.fn();
+const confirm = mock.fn();
 
 const __moduleMocks = {
   'yargs': (() => ({
@@ -19,11 +19,6 @@ const __moduleMocks = {
   }))(),
 };
 
-
-
-
-
-
 const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/buy.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 
@@ -33,7 +28,9 @@ describe('Command: numbers buy', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    exitMock.mock.resetCalls();
+    yargs.mock.resetCalls();
+    confirm.mock.resetCalls();
   });
 
   test('Will purchase number', async () => {
@@ -48,15 +45,17 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
-    const buyNumberMock = jest.fn().mockResolvedValueOnce({
+    const buyNumberMock = mock.fn();
+    buyNumberMock.mock.mockImplementationOnce(() => Promise.resolve({
       errorCode: '200',
       errorStatus: 'success',
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -65,7 +64,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     await handler({
       country: country,
@@ -73,26 +72,24 @@ describe('Command: numbers buy', () => {
       SDK: sdkMock,
     });
 
-    expect(numbersMock).toHaveBeenCalledWith({
+    assertCalledWith(numbersMock, {
       country: country,
       size: 1,
       searchPattern: 1,
       pattern: testNumber.msisdn,
     });
 
-    expect(buyNumberMock).toHaveBeenCalledWith({
+    assertCalledWith(buyNumberMock, {
       country: country,
       msisdn: testNumber.msisdn,
     });
 
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
-      2,
-      `Number ${testNumber.msisdn} purchased`,
-    );
+    assertNthCalledWith(console.log, 2, `Number ${testNumber.msisdn} purchased`);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       4,
       [
         `Number: ${testNumber.msisdn}`,
@@ -121,15 +118,17 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
-    const buyNumberMock = jest.fn().mockResolvedValueOnce({
+    const buyNumberMock = mock.fn();
+    buyNumberMock.mock.mockImplementationOnce(() => Promise.resolve({
       errorCode: '200',
       errorStatus: 'success',
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -138,7 +137,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     await handler({
       country: country,
@@ -147,10 +146,11 @@ describe('Command: numbers buy', () => {
       json: true,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(buyNumberMock).toHaveBeenCalled();
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.ok(buyNumberMock.mock.callCount() > 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       JSON.stringify(
         Client.transformers.snakeCaseObjectKeys(testNumber, true, false),
@@ -172,15 +172,17 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
-    const buyNumberMock = jest.fn().mockResolvedValueOnce({
+    const buyNumberMock = mock.fn();
+    buyNumberMock.mock.mockImplementationOnce(() => Promise.resolve({
       errorCode: '200',
       errorStatus: 'success',
-    });
+    }));
 
     const sdkMock = {
       numbers: {
@@ -189,7 +191,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     await handler({
       country: country,
@@ -198,11 +200,12 @@ describe('Command: numbers buy', () => {
       yaml: true,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(buyNumberMock).toHaveBeenCalled();
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.ok(buyNumberMock.mock.callCount() > 0);
+    assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    expect(console.log).toHaveBeenNthCalledWith(
+    assertNthCalledWith(
+      console.log,
       2,
       yaml.stringify(
         Client.transformers.snakeCaseObjectKeys(testNumber, true, false),
@@ -224,12 +227,13 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
-    const buyNumberMock = jest.fn();
+    const buyNumberMock = mock.fn();
 
     const sdkMock = {
       numbers: {
@@ -238,7 +242,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
     await handler({
       country: country,
@@ -246,9 +250,9 @@ describe('Command: numbers buy', () => {
       SDK: sdkMock,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(buyNumberMock).not.toHaveBeenCalled();
-    expect(exitMock).not.toHaveBeenCalled();
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(buyNumberMock.mock.callCount(), 0);
+    assert.strictEqual(exitMock.mock.callCount(), 0);
   });
 
   test('Will handel SDK error', async () => {
@@ -263,12 +267,14 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
       numbers: numbers,
-    });
+    }));
 
-    const buyNumberMock = jest.fn().mockRejectedValueOnce(new Error('SDK Error'));
+    const buyNumberMock = mock.fn();
+    buyNumberMock.mock.mockImplementationOnce(() => Promise.reject(new Error('SDK Error')));
 
     const sdkMock = {
       numbers: {
@@ -277,7 +283,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(true);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
 
     await handler({
       country: country,
@@ -285,9 +291,9 @@ describe('Command: numbers buy', () => {
       SDK: sdkMock,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(buyNumberMock).toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(99);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.ok(buyNumberMock.mock.callCount() > 0);
+    assertCalledWith(exitMock, 99);
   });
 
   test('Will not purchase number when not found', async () => {
@@ -302,11 +308,12 @@ describe('Command: numbers buy', () => {
 
     const numbers = [testNumber];
 
-    const numbersMock = jest.fn().mockResolvedValueOnce({
+    const numbersMock = mock.fn();
+    numbersMock.mock.mockImplementationOnce(() => Promise.resolve({
       count: numbers.length,
-    });
+    }));
 
-    const buyNumberMock = jest.fn();
+    const buyNumberMock = mock.fn();
 
     const sdkMock = {
       numbers: {
@@ -315,7 +322,7 @@ describe('Command: numbers buy', () => {
       },
     };
 
-    confirm.mockResolvedValueOnce(false);
+    confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
 
     await handler({
       country: country,
@@ -323,8 +330,8 @@ describe('Command: numbers buy', () => {
       SDK: sdkMock,
     });
 
-    expect(numbersMock).toHaveBeenCalled();
-    expect(buyNumberMock).not.toHaveBeenCalled();
-    expect(exitMock).toHaveBeenCalledWith(44);
+    assert.ok(numbersMock.mock.callCount() > 0);
+    assert.strictEqual(buyNumberMock.mock.callCount(), 0);
+    assertCalledWith(exitMock, 44);
   });
 });
