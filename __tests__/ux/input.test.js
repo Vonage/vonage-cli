@@ -2,24 +2,24 @@ import EventEmitter from 'node:events';
 import { mockConsole } from '../helpers.js';
 
 describe('UX: input tests', () => {
-  const questionMock = jest.fn();
-  const emitKeypressEventsMock = jest.fn();
-  const rlOn = jest.fn();
-  const rlOff = jest.fn();
-  const readline = jest.createMockFromModule('readline');
+  const questionMock = mock.fn();
+  const emitKeypressEventsMock = mock.fn();
+  const rlOn = mock.fn();
+  const rlOff = mock.fn();
+  const readline = {};
 
   const inputMock = new EventEmitter();
 
-  const closeMock = jest.fn().mockImplementation(() => undefined);
+  const closeMock = mock.fn(() => undefined);
 
-  const createInterface = jest.fn().mockReturnValue({
+  const createInterface = mock.fn(() => ({
     question: questionMock,
     close: closeMock,
     emitKeypressEvents: emitKeypressEventsMock,
     input: inputMock,
     on: rlOn,
     off: rlOff,
-  });
+  }));
 
   readline.createInterface = createInterface;
   readline.emitKeypressEvents = emitKeypressEventsMock;
@@ -30,7 +30,12 @@ describe('UX: input tests', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    questionMock.mock.resetCalls();
+    emitKeypressEventsMock.mock.resetCalls();
+    rlOn.mock.resetCalls();
+    rlOff.mock.resetCalls();
+    closeMock.mock.resetCalls();
+    createInterface.mock.resetCalls();
   });
 
   test('Will capture printable keys', async () => {
@@ -50,7 +55,7 @@ describe('UX: input tests', () => {
 
     const result = await input;
 
-    expect(result).toBe('foo');
+    assert.strictEqual(result, 'foo');
   });
 
   test('Will delete characters with delete key', async () => {
@@ -71,7 +76,7 @@ describe('UX: input tests', () => {
 
     const result = await input;
 
-    expect(result).toBe('fo');
+    assert.strictEqual(result, 'fo');
   });
 
   test('Will delete characters with backspace key', async () => {
@@ -89,6 +94,6 @@ describe('UX: input tests', () => {
     const input = inputFromTTY({});
 
     const result = await input;
-    expect(result).toBe('fo');
+    assert.strictEqual(result, 'fo');
   });
 });

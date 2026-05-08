@@ -1,11 +1,10 @@
-
 const mockLogger = {
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
-  debug: jest.fn(),
+  info: mock.fn(),
+  warn: mock.fn(),
+  error: mock.fn(),
+  debug: mock.fn(),
 };
-const createLoggerMock = jest.fn(() => mockLogger);
+const createLoggerMock = mock.fn(() => mockLogger);
 
 const origConsole = {
   info: console.info,
@@ -24,7 +23,7 @@ const getWinstonMock = () => ({
       simple: () => undefined,
     },
     transports: {
-      Console: jest.fn(() => ({})),
+      Console: mock.fn(() => ({})),
     },
   },
 });
@@ -35,19 +34,19 @@ describe('Middleware: Log', () => {
     console.warn = origConsole.warn;
     console.error = origConsole.error;
     console.debug = origConsole.debug;
-    mockLogger.info.mockReset();
-    mockLogger.warn.mockReset();
-    mockLogger.error.mockReset();
-    mockLogger.debug.mockReset();
-    createLoggerMock.mockReset();
-    createLoggerMock.mockImplementation(() => mockLogger);
+    mockLogger.info.mock.resetCalls();
+    mockLogger.warn.mock.resetCalls();
+    mockLogger.error.mock.resetCalls();
+    mockLogger.debug.mock.resetCalls();
+    createLoggerMock.mock.resetCalls();
+    createLoggerMock.mock.mockImplementation(() => mockLogger);
   });
 
   test('Will overwrite console log', async () => {
-    expect(console.info).not.toEqual(mockLogger.info);
-    expect(console.warn).not.toEqual(mockLogger.warn);
-    expect(console.error).not.toEqual(mockLogger.error);
-    expect(console.debug).not.toEqual(mockLogger.debug);
+    assert.notStrictEqual(console.info, mockLogger.info);
+    assert.notStrictEqual(console.warn, mockLogger.warn);
+    assert.notStrictEqual(console.error, mockLogger.error);
+    assert.notStrictEqual(console.debug, mockLogger.debug);
 
     const { setupLog } = await loadModule(
       import.meta.url,
@@ -62,12 +61,12 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(mockLogger.info).toHaveBeenCalled();
-    expect(mockLogger.warn).toHaveBeenCalled();
-    expect(mockLogger.error).toHaveBeenCalled();
-    expect(mockLogger.debug).toHaveBeenCalled();
+    assert.ok(mockLogger.info.mock.callCount() > 0);
+    assert.ok(mockLogger.warn.mock.callCount() > 0);
+    assert.ok(mockLogger.error.mock.callCount() > 0);
+    assert.ok(mockLogger.debug.mock.callCount() > 0);
 
-    expect(createLoggerMock).toHaveBeenCalledWith({
+    assertCalledWith(createLoggerMock, {
       format: undefined,
       level: 'emerg',
       transports: [{}],
@@ -75,10 +74,10 @@ describe('Middleware: Log', () => {
   });
 
   test('Will overwrite console log and set the level to info', async () => {
-    expect(console.info).not.toEqual(mockLogger.info);
-    expect(console.warn).not.toEqual(mockLogger.warn);
-    expect(console.error).not.toEqual(mockLogger.error);
-    expect(console.debug).not.toEqual(mockLogger.debug);
+    assert.notStrictEqual(console.info, mockLogger.info);
+    assert.notStrictEqual(console.warn, mockLogger.warn);
+    assert.notStrictEqual(console.error, mockLogger.error);
+    assert.notStrictEqual(console.debug, mockLogger.debug);
 
     const { setupLog } = await loadModule(
       import.meta.url,
@@ -93,12 +92,12 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(mockLogger.info).toHaveBeenCalled();
-    expect(mockLogger.warn).toHaveBeenCalled();
-    expect(mockLogger.error).toHaveBeenCalled();
-    expect(mockLogger.debug).toHaveBeenCalled();
+    assert.ok(mockLogger.info.mock.callCount() > 0);
+    assert.ok(mockLogger.warn.mock.callCount() > 0);
+    assert.ok(mockLogger.error.mock.callCount() > 0);
+    assert.ok(mockLogger.debug.mock.callCount() > 0);
 
-    expect(createLoggerMock).toHaveBeenCalledWith({
+    assertCalledWith(createLoggerMock, {
       format: undefined,
       level: 'info',
       transports: [{}],
@@ -106,10 +105,10 @@ describe('Middleware: Log', () => {
   });
 
   test('Will overwrite console log and set the level to debug', async () => {
-    expect(console.info).not.toEqual(mockLogger.info);
-    expect(console.warn).not.toEqual(mockLogger.warn);
-    expect(console.error).not.toEqual(mockLogger.error);
-    expect(console.debug).not.toEqual(mockLogger.debug);
+    assert.notStrictEqual(console.info, mockLogger.info);
+    assert.notStrictEqual(console.warn, mockLogger.warn);
+    assert.notStrictEqual(console.error, mockLogger.error);
+    assert.notStrictEqual(console.debug, mockLogger.debug);
 
     const { setupLog } = await loadModule(
       import.meta.url,
@@ -124,12 +123,12 @@ describe('Middleware: Log', () => {
     console.error('error');
     console.debug('debug');
 
-    expect(mockLogger.info).toHaveBeenCalled();
-    expect(mockLogger.warn).toHaveBeenCalled();
-    expect(mockLogger.error).toHaveBeenCalled();
-    expect(mockLogger.debug).toHaveBeenCalled();
+    assert.ok(mockLogger.info.mock.callCount() > 0);
+    assert.ok(mockLogger.warn.mock.callCount() > 0);
+    assert.ok(mockLogger.error.mock.callCount() > 0);
+    assert.ok(mockLogger.debug.mock.callCount() > 0);
 
-    expect(createLoggerMock).toHaveBeenCalledWith({
+    assertCalledWith(createLoggerMock, {
       format: undefined,
       level: 'debug',
       transports: [{}],

@@ -19,22 +19,22 @@ describe('Utils: ACL Diff', () => {
     const flagAcl = tokenAcl;
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(true);
+    assert.strictEqual(results.ok, true);
 
-    expect(results.paths['/*/rtc/**']).toEqual({
+    assert.deepStrictEqual(results.paths['/*/rtc/**'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.OK,
       state: status.OK,
     });
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'PUT, DELETE',
       methodsStatus: status.OK,
       filtersStatus: status.OK,
       state: status.OK,
     });
-    expect(dumpAclDiff(results)).toEqual([
+    assert.deepStrictEqual(dumpAclDiff(results), [
       '✅ [ANY]          /*/rtc/**',
       '✅ [PUT, DELETE]  /messages/*',
     ].join('\n'));
@@ -61,23 +61,23 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(true);
+    assert.strictEqual(results.ok, true);
 
-    expect(results.paths['/*/rtc/**']).toEqual({
+    assert.deepStrictEqual(results.paths['/*/rtc/**'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.OK,
       state: status.OK,
     });
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.OK,
       state: status.PRESENT,
     });
 
-    expect(dumpAclDiff(results)).toEqual([
+    assert.deepStrictEqual(dumpAclDiff(results), [
       '✅ [ANY]  /*/rtc/**',
       'ℹ️ [ANY]  /messages/* (present in token)',
     ].join('\n'));
@@ -102,16 +102,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(true);
+    assert.strictEqual(results.ok, true);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.MISSING,
       state: status.PASS,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['ℹ️ [ANY]  /messages/* (No filter is specified in the token)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['ℹ️ [ANY]  /messages/* (No filter is specified in the token)'].join('\n'));
   });
 
   test('Will fail when methods in token but not flag', () => {
@@ -130,16 +130,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'ANY',
       methodsStatus: status.PRESENT,
       filtersStatus: status.OK,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['❌ [ANY]  /messages/* (methods present in token)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (methods present in token)'].join('\n'));
   });
 
   test('Will fail when methods in flag but not token', () => {
@@ -159,16 +159,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'PUT, DELETE',
       methodsStatus: status.MISSING,
       filtersStatus: status.OK,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['❌ [PUT, DELETE]  /messages/* (methods missing in token)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['❌ [PUT, DELETE]  /messages/* (methods missing in token)'].join('\n'));
   });
 
   test('Will fail when methods are mismatched', () => {
@@ -189,16 +189,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'GET, DELETE',
       methodsStatus: status.MISMATCH,
       filtersStatus: status.OK,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['❌ [GET, DELETE]  /messages/* (methods mismatch)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['❌ [GET, DELETE]  /messages/* (methods mismatch)'].join('\n'));
   });
 
   test('Will fail when filters in token but not flag', () => {
@@ -219,16 +219,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.PRESENT,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['❌ [ANY]  /messages/* (filters present in token)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (filters present in token)'].join('\n'));
   });
 
   test('Will fail when filters are mismatched', () => {
@@ -254,16 +254,16 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'ANY',
       methodsStatus: status.OK,
       filtersStatus: status.MISMATCH,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(['❌ [ANY]  /messages/* (filters mismatch)'].join('\n'));
+    assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (filters mismatch)'].join('\n'));
   });
 
   test('Will fail when both filters and methods are mismatched', () => {
@@ -291,16 +291,17 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'GET, DELETE',
       methodsStatus: status.MISMATCH,
       filtersStatus: status.MISMATCH,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(
+    assert.deepStrictEqual(
+      dumpAclDiff(results),
       ['❌ [GET, DELETE]  /messages/* (methods mismatch & filters mismatch)'].join('\n'),
     );
   });
@@ -326,16 +327,17 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'GET, DELETE',
       methodsStatus: status.MISMATCH,
       filtersStatus: status.MISSING,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(
+    assert.deepStrictEqual(
+      dumpAclDiff(results),
       ['❌ [GET, DELETE]  /messages/* (methods mismatch & No filter is specified in the token)'].join('\n'),
     );
   });
@@ -361,16 +363,17 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'GET, DELETE',
       methodsStatus: status.MISMATCH,
       filtersStatus: status.PRESENT,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(
+    assert.deepStrictEqual(
+      dumpAclDiff(results),
       // Done mention filters present since that did not cause the failure
       ['❌ [GET, DELETE]  /messages/* (methods mismatch)'].join('\n'),
     );
@@ -396,16 +399,17 @@ describe('Utils: ACL Diff', () => {
     };
 
     const results = aclDiff(tokenAcl, flagAcl);
-    expect(results.ok).toBe(false);
+    assert.strictEqual(results.ok, false);
 
-    expect(results.paths['/messages/*']).toEqual({
+    assert.deepStrictEqual(results.paths['/messages/*'], {
       methods: 'GET, DELETE',
       methodsStatus: status.MISSING,
       filtersStatus: status.PRESENT,
       state: status.INVALID,
     });
 
-    expect(dumpAclDiff(results)).toEqual(
+    assert.deepStrictEqual(
+      dumpAclDiff(results),
       ['❌ [GET, DELETE]  /messages/* (methods missing in token)'].join('\n'),
     );
   });

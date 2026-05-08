@@ -1,9 +1,8 @@
-
 describe('UX: confirm', () => {
-  const inputFromTTY = jest.fn();
+  const inputFromTTY = mock.fn();
 
   test('Will confrim the message with y', async () => {
-    inputFromTTY.mockResolvedValue('y');
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('y'));
     const { confirm } = await loadModule(
       import.meta.url,
       '../../src/ux/confirm.js',
@@ -11,14 +10,14 @@ describe('UX: confirm', () => {
     );
 
     const result = await confirm('Are you sure?');
-    expect(result).toBe(true);
-    expect(inputFromTTY).toHaveBeenCalledWith({ message: 'Are you sure?', length: 1 });
-    expect(inputFromTTY).toHaveBeenCalledTimes(1);
+    assert.strictEqual(result, true);
+    assertCalledWith(inputFromTTY, { message: 'Are you sure?', length: 1 });
+    assert.strictEqual(inputFromTTY.mock.callCount(), 1);
   });
 
   test('Will confrim the message with n', async () => {
-    inputFromTTY.mockReset();
-    inputFromTTY.mockResolvedValue('n');
+    inputFromTTY.mock.resetCalls();
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('n'));
 
     const { confirm } = await loadModule(
       import.meta.url,
@@ -26,12 +25,13 @@ describe('UX: confirm', () => {
       { '../../src/ux/input.js': { inputFromTTY } },
     );
     const result = await confirm('Are you sure?');
-    expect(result).toBe(false);
+    assert.strictEqual(result, false);
   });
 
   test('Will keep asking with invalid input message', async () => {
-    inputFromTTY.mockReset();
-    inputFromTTY.mockResolvedValueOnce('x').mockResolvedValue('y');
+    inputFromTTY.mock.resetCalls();
+    inputFromTTY.mock.mockImplementationOnce(() => Promise.resolve('x'));
+    inputFromTTY.mock.mockImplementation(() => Promise.resolve('y'));
 
     const { confirm } = await loadModule(
       import.meta.url,
@@ -39,7 +39,7 @@ describe('UX: confirm', () => {
       { '../../src/ux/input.js': { inputFromTTY } },
     );
     const result = await confirm('Are you sure?');
-    expect(result).toBe(true);
-    expect(inputFromTTY).toHaveBeenCalledTimes(2);
+    assert.strictEqual(result, true);
+    assert.strictEqual(inputFromTTY.mock.callCount(), 2);
   });
 });
