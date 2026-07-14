@@ -3,6 +3,15 @@ import { handler, jwtFlags } from '../../../src/commands/jwt/create.js';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
 import jwt from 'jsonwebtoken';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const cliBin = path.join(__dirname, '../../../bin/vonage.js');
+const testPrivateKeyFile = path.join(__dirname, '../../test.private.key');
 
 describe('Command: vonage jwt create', () => {
   beforeEach(() => {
@@ -83,5 +92,33 @@ describe('Command: vonage jwt create', () => {
     expect(jwtFlags.acl.coerce).toBeDefined();
     expect(() => jwtFlags.acl.coerce('invalid')).toThrow('Failed to parse JSON for ACL');
     expect(() => jwtFlags.acl.coerce('{"foo": "bar"}')).toThrow('ACL Failed to validate against schema');
+  });
+
+  describe('CLI output', () => {
+    let homeDir;
+
+    beforeEach(() => {
+      homeDir = mkdtempSync(path.join(tmpdir(), 'vonage-cli-test-'));
+    });
+
+    afterEach(() => {
+      rmSync(homeDir, { recursive: true, force: true });
+    });
+
+    test('should not print a trailing cursor-show escape sequence (\u001B[?25h) to stdout', () => {
+      const stdout = execFileSync(
+        process.execPath,
+        [
+          cliBin,
+          'jwt',
+          'create',
+          '--app-id', '00000000-0000-0000-0000-000000000000',
+          '--private-key', testPrivateKeyFile,
+        ],
+        { env: { ...process.env, HOME: homeDir } },
+      ).toString();
+
+      expect(stdout).not.toContain('\u001B[?25h');
+    });
   });
 });

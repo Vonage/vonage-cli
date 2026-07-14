@@ -1,9 +1,17 @@
+let isHidden = false;
+
 const resetCursor = () => {
+  if (!isHidden) {
+    return;
+  }
+
+  isHidden = false;
   process.stderr.write('\u001B[?25h');
   process.stdout.write('\u001B[?25h');
 };
 
 const hideCursor = () => {
+  isHidden = true;
   process.stderr.write('\u001B[?25l');
   process.stdout.write('\u001B[?25l');
 };
