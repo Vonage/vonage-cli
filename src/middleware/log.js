@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import console from 'console';
 import winston from 'winston';
 import { table } from '../ux/table.js';
 const { format, transports } = winston;
@@ -30,17 +29,17 @@ export const setupLog = (argv) => {
   });
 
   global.console.info = (...args) => logger.info(...args);
-  global.console.warn = (...args) =>{
+  global.console.warn = (...args) => {
     warning(args[0]);
-    logger.warn( ...args);
+    logger.warn(...args);
   };
 
   global.console.error = (...args) => {
     error(args[0]);
-    logger.error( ...args);
+    logger.error(...args);
   };
-  global.console.debug = (...args) => logger.debug( ...args);
-  global.console.table = (...args) => console.log(table(...args));
+  global.console.debug = (...args) => logger.debug(...args);
+  global.console.table = (...args) => global.console.log(table(...args));
 
   return {
     logger: logger,

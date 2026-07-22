@@ -10,52 +10,71 @@ import chalk from 'chalk';
 import yargs from 'yargs';
 const { version } = require('../../package.json');
 import os from 'os';
+import {
+  GLOBAL_CONFIG_DIR,
+  GLOBAL_CONFIG_FILE,
+  LOCAL_CONFIG_FILE,
+  SETTINGS_FILE,
+} from '../utils/config.js';
 
 const y = yargs();
 
 const getSharedConfig = () => {
   const homedir = os.homedir();
-  const globalConfigPath = path.join(homedir, '.vonage');
-  const globalConfigFileName = 'config.json';
+  const globalConfigPath = path.join(homedir, GLOBAL_CONFIG_DIR);
+  const globalConfigFileName = GLOBAL_CONFIG_FILE;
   const globalConfigFile = path.join(globalConfigPath, globalConfigFileName);
   const globalConfigExists = existsSync(globalConfigFile);
 
   const localConfigPath = process.cwd();
-  const localConfigFileName = '.vonagerc';
+  const localConfigFileName = LOCAL_CONFIG_FILE;
   const localConfigFile = path.join(localConfigPath, localConfigFileName);
   const localConfigExists = existsSync(localConfigFile);
 
-  const settingsFile = path.join(globalConfigPath, 'settings.json');
+  const settingsFile = path.join(globalConfigPath, SETTINGS_FILE);
   const settingsFileExists = existsSync(settingsFile);
 
   return {
-    globalConfigPath: globalConfigPath,
-    globalConfigFileName: globalConfigFileName,
-    globalConfigFile: globalConfigFile,
-    globalConfigExists: globalConfigExists,
+    globalConfigPath,
+    globalConfigFileName,
+    globalConfigFile,
+    globalConfigExists,
 
-    localConfigPath: localConfigPath,
-    localConfigFileName: localConfigFileName,
-    localConfigFile: localConfigFile,
-    localConfigExists: localConfigExists,
+    localConfigPath,
+    localConfigFileName,
+    localConfigFile,
+    localConfigExists,
 
-    settingsFile: settingsFile,
-    settingsFileExists: settingsFileExists,
+    settingsFile,
+    settingsFileExists,
   };
 };
 
-const decideConfig = (argv, config) => {
+const normalizeConfig = (raw, source) => ({
+  apiKey: raw['apiKey'] || raw['api-key'],
+  apiSecret: raw['apiSecret'] || raw['api-secret'],
+  privateKey: raw['privateKey'] || raw['private-key'],
+  appId: raw['appId'] || raw['app-id'],
+  source,
+});
+
+const buildCliConfig = (argv) => {
+  const keys = ['apiKey', 'apiSecret', 'privateKey', 'appId'];
+  return Object.fromEntries(keys.filter((k) => argv[k]).map((k) => [k, argv[k]]));
+};
+
+const selectConfigSource = (argv, config) => {
   if ((argv.apiKey && argv.apiSecret) || (argv.privateKey && argv.appId)) {
     console.debug('Using passed in arguments');
     return config.cli;
   }
 
-  if (config.localConfigExists) {
+  if (config.localConfigExists && config.local.source) {
     console.debug('Using local config file');
     return config.local;
   }
 
-  if (config.globalConfigExists) {
+  if (config.globalConfigExists && config.global.source) {
     console.debug('Using global config file');
     return config.global;
   }
@@ -110,12 +129,7 @@ export const setConfig = (argv) => {
     ...sharedConfig,
     local: {},
     global: {},
-    cli: {
-      ...(argv.apiKey ? { apiKey: argv.apiKey } : {}),
-      ...(argv.apiSecret ? { apiSecret: argv.apiSecret } : {}),
-      ...(argv.privateKey ? { privateKey: argv.privateKey } : {}),
-      ...(argv.appId ? { appId: argv.appId } : {}),
-    },
+    cli: buildCliConfig(argv),
   };
 
   if (Object.entries(config.cli).length) {
@@ -125,35 +139,31 @@ export const setConfig = (argv) => {
   console.debug(`Local config [${localConfigFile}] exists? ${localConfigExists ? 'Yes' : 'No'}`);
   if (localConfigExists) {
     console.debug('Reading Local Config');
-    const localConfig = JSON.parse(readFileSync(localConfigFile, 'utf8'));
-    console.debug('Local Config:', localConfig);
-    config.local = {
-      apiKey: localConfig['apiKey'] || localConfig['api-key'],
-      apiSecret: localConfig['apiSecret'] || localConfig['api-secret'],
-      privateKey: localConfig['privateKey'] || localConfig['private-key'],
-      appId: localConfig['appId'] || localConfig['app-id'],
-      source: 'Local Config File',
-    };
+    try {
+      const localConfig = JSON.parse(readFileSync(localConfigFile, 'utf8'));
+      console.debug('Local Config:', localConfig);
+      config.local = normalizeConfig(localConfig, 'Local Config File');
+    } catch (err) {
+      console.error(`Error reading local config file: ${err.message}`);
+    }
   }
 
   console.debug(`Global Config [${globalConfigFile}] exists? ${globalConfigExists ? 'Yes' : 'No'}`);
 
   if (globalConfigExists) {
     console.debug('Reading global Config');
-    const fileContents = readFileSync(globalConfigFile, 'utf8');
-    console.debug(`Global File Contents: ${fileContents}`);
-    const globalConfig = JSON.parse(fileContents);
-    console.debug('global Config:', globalConfig);
-    config.global = {
-      apiKey: globalConfig['apiKey'] || globalConfig['api-key'],
-      apiSecret: globalConfig['apiSecret'] || globalConfig['api-secret'],
-      privateKey: globalConfig['privateKey'] || globalConfig['private-key'],
-      appId: globalConfig['appId'] || globalConfig['app-id'],
-      source: 'Global Config File',
-    };
+    try {
+      const fileContents = readFileSync(globalConfigFile, 'utf8');
+      console.debug(`Global File Contents: ${fileContents}`);
+      const globalConfig = JSON.parse(fileContents);
+      console.debug('global Config:', globalConfig);
+      config.global = normalizeConfig(globalConfig, 'Global Config File');
+    } catch (err) {
+      console.error(`Error reading global config file: ${err.message}`);
+    }
   }
 
-  const authConfig = decideConfig(argv, config);
+  const authConfig = selectConfigSource(argv, config);
 
   if (!authConfig) {
     errorNoConfig();
