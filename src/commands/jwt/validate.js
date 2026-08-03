@@ -159,7 +159,7 @@ export const builder = (yargs) => yargs.options({
 })
   .epilogue([
     'By default, the private key and application id from the config will be used',
-    `Use ${dumpCommand('$0 auth show')} check what those values are.`,
+    `Use ${dumpCommand('vonage auth show')} check what those values are.`,
     '',
     `If you want to validate a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
   ].join('\n'))

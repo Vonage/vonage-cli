@@ -9,6 +9,13 @@ export const command = '<id> voice';
 export const description = 'Update voice capabilities';
 
 export const builder = (yargs) => yargs
+  .positional(
+    'id',
+    {
+      type: 'string',
+      describe: 'The application ID',
+    },
+  )
   .options({
     'api-key': apiKey,
     'api-secret': apiSecret,
