@@ -31,6 +31,10 @@ export const builder = (yargs) => yargs
       type: 'boolean',
     },
   })
+  .example(
+    dumpCommand('vonage apps numbers list <id>'),
+    'List numbers linked to an application',
+  )
   .epilogue(['The --fail flag will cause the command to exit with 15 code if the application does not have the voice or messages capability enabled.'].join('\n'));
 
 export const handler = async (argv) => {
@@ -81,7 +85,7 @@ export const handler = async (argv) => {
   if (totalNumbers === 0) {
     console.log('No numbers linked to this application.');
     console.log('');
-    console.log(`Use ${dumpCommand('vonage apps link')} to link a number to this application.`);
+    console.log(`Use ${dumpCommand('vonage apps numbers link')} to link a number to this application.`);
     return;
   }
 
@@ -111,4 +115,3 @@ export const handler = async (argv) => {
     return;
   }
 };
-

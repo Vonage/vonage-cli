@@ -55,7 +55,11 @@ export const builder = (yargs) => yargs
     'api-secret': apiSecret,
     'yaml': yaml,
     'json': json,
-  });
+  })
+  .example(
+    dumpCommand('vonage numbers search <country> [--pattern <pattern>]'),
+    'Search for numbers to buy',
+  );
 
 export const handler = async (argv) => {
   const { SDK, page, features, country, limit, type, pattern, searchPattern } = argv;
@@ -142,4 +146,3 @@ export const handler = async (argv) => {
   displayNumbers(numbers, fieldsToShow);
   console.log(`Use ${dumpCommand('vonage numbers buy')} to purchase.`);
 };
-

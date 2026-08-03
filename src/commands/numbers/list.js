@@ -42,6 +42,10 @@ export const desc = 'List all numbers that you own';
 
 export const builder = (yargs) => yargs
   .options(flags)
+  .example(
+    dumpCommand('vonage numbers list [--country <code>]'),
+    'List owned numbers',
+  )
   .epilogue(`To list numbers that are linked to an application, use ${dumpCommand('vonage apps numbers list <id>')}.`);
 
 export const handler = async (argv) => {
@@ -114,4 +118,3 @@ export const handler = async (argv) => {
 
   displayNumbers(numbers, ['country', 'type', 'feature', 'app_id']);
 };
-

@@ -9,6 +9,7 @@ import {
   normalizeSip,
   normalizeWss,
 } from './create.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 
@@ -29,7 +30,11 @@ export const builder = (yargs) => yargs
     ...userFlags,
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage users update <id> [--name <name>]'),
+    'Update a user',
+  );
 
 export const handler = async (argv) => {
   console.info('Updating user');

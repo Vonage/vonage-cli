@@ -56,19 +56,19 @@ export const builder = (yargs) => yargs
     'yaml': yaml,
   })
   .example(
-    'vonage mock sms',
+    'vonage mock <api>',
     'Start a mock server for the SMS API on port 4010',
   )
   .example(
-    'vonage mock sms --port 8080',
-    'Start a mock server for the SMS API on port 8080',
+    'vonage mock <api> [--port <port>]',
+    'Start a mock server on a specific port',
   )
   .example(
-    'vonage mock sms --download-only',
+    'vonage mock <api> [--download-only]',
     'Download the SMS API spec without starting the server',
   )
   .example(
-    'vonage mock sms --latest',
+    'vonage mock <api> [--latest]',
     'Force re-download the latest SMS API spec and start the server',
   );
 

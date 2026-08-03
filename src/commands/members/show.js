@@ -5,6 +5,7 @@ import { json, yaml } from '../../commonFlags.js';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'show <conversation-id> <member-id>';
 
@@ -28,7 +29,11 @@ export const builder = (yargs) => yargs
     'yaml': yaml,
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage members show <conversation-id> <member-id>'),
+    'Show a conversation member',
+  );
 
 export const handler = async (argv) => {
   console.info('Show member');

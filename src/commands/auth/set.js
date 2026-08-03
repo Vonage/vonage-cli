@@ -3,6 +3,7 @@ import { dumpAuth } from '../../ux/dumpAuth.js';
 import { validateApiKeyAndSecret, validatePrivateKeyAndAppId } from '../../utils/validateSDKAuth.js';
 import { writeJSONFile, createDirectory } from '../../utils/fs.js';
 import { apiKey, apiSecret, appId, privateKey } from '../../credentialFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 const setApiKeyAndSecret = async (apiKey, apiSecret) => {
@@ -41,6 +42,10 @@ export const builder = (yargs) => yargs.options({
     'apiKey': apiKey,
     'apiSecret': apiSecret,
   })
+  .example(
+    dumpCommand('vonage auth set --api-key <api-key> --api-secret <api-secret> [--app-id <id>] [--private-key <path>]'),
+    'Set authentication values',
+  )
   .demandOption(['api-key', 'api-secret']);
 
 export const handler = async (argv) => {

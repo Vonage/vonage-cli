@@ -6,7 +6,7 @@ import { apiKey, apiSecret } from '../../../../credentialFlags.js';
 
 export const command = '<id> network_apis';
 
-export const description = 'Update application capabilities';
+export const description = 'Update network APIs capabilities';
 
 export const builder = (yargs) => yargs
   .positional(
@@ -22,8 +22,8 @@ export const builder = (yargs) => yargs
     ...networkFlags,
   })
   .example(
-    dumpCommand('vonage apps capabilities update 000[...]000 verify --verify-status-url="https://example.com/verify"'),
-    'Update the verify status url',
+    dumpCommand('vonage apps capabilities update <id> network_apis [--network-app-id <id>] [--network-redirect-url <url>]'),
+    'Update network APIs capability',
   );
 
 export const handler = async (argv) => {

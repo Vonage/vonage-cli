@@ -8,6 +8,7 @@ import { coerceUrl } from '../../utils/coerceUrl.js';
 import { coerceJSON } from '../../utils/coerceJSON.js';
 import yargs from 'yargs';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 
@@ -115,7 +116,11 @@ export const builder = (yargs) => yargs
     'app-id': appId,
     'private-key': privateKey,
     'force': force,
-  });
+  })
+  .example(
+    dumpCommand('vonage conversations create [--name <name>]'),
+    'Create a conversation',
+  );
 
 export const handler = async (argv) => {
   console.info('Creating conversation');

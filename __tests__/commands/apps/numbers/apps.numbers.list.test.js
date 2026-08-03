@@ -120,7 +120,7 @@ suite('Command: vonage apps numbers list', { concurrency: 1 }, () => {
 
     assertNthCalledWith(console.log, 
       4,
-      'Use vonage apps link to link a number to this application.',
+      'Use vonage apps numbers link to link a number to this application.',
     );
 
     assert.strictEqual(console.table.mock.callCount(), 0);

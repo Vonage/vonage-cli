@@ -11,10 +11,11 @@ import { writeFile, writeJSONFile } from '../../utils/fs.js';
 import { overwriteWithNewLine } from '../../ux/clear.js';
 import { EOL } from 'os';
 import YAML from 'yaml';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'init';
 
-export const desc = 'Interactivly create a new application';
+export const desc = 'Interactively create a new application';
 
 /* istanbul ignore next */
 export const builder = (yargs) => yargs
@@ -24,10 +25,14 @@ export const builder = (yargs) => yargs
     'force': force,
     'json': json,
     'yaml': yaml,
-  });
+  })
+  .example(
+    dumpCommand('vonage apps init'),
+    'Create a new application interactively',
+  );
 
 export const handler = async (argv) => {
-  console.info('Interactivly creating application');
+  console.info('Interactively creating application');
   process.stderr.write(chalk.underline('Create a new application'));
   const { SDK } = argv;
 
@@ -92,8 +97,8 @@ export const handler = async (argv) => {
   console.debug('New Config', newAuthInformation);
 
   try {
-    console.info('Saiving local config');
-    process.stderr.write('Saiving local config ...');
+    console.info('Saving local config');
+    process.stderr.write('Saving local config ...');
     await writeJSONFile(
       argv.config.localConfigFile,
       newAuthInformation,
@@ -126,5 +131,3 @@ export const handler = async (argv) => {
   console.log('Application created');
   displayApplication(newApplication);
 };
-
-

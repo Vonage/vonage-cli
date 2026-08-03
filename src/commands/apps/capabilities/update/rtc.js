@@ -22,8 +22,8 @@ export const builder = (yargs) => yargs
     ...rtcFlags,
   })
   .example(
-    dumpCommand('vonage apps capabilities update 000[...]000 verify --verify-status-url="https://example.com/verify"'),
-    'Update the verify status url',
+    dumpCommand('vonage apps capabilities update <id> rtc [--rtc-event-url <url>] [--rtc-event-method <method>]'),
+    'Update RTC capability',
   );
 
 export const handler = async (argv) => {

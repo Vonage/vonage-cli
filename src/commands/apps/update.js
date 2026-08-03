@@ -38,8 +38,8 @@ export const builder = (yargs) => yargs
     'api-secret': apiSecret,
   })
   .example(
-    dumpCommand('vonage apps update 000[...]000 --name "New Name"'),
-    'Update the name of application 000[...]000',
+    dumpCommand('vonage apps update <id> [--name <name>]'),
+    'Update an application name',
   );
 
 export const handler = async (argv) => {
