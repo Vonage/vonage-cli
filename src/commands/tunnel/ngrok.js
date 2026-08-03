@@ -8,11 +8,12 @@ import { inputFromTTY } from '../../ux/input.js';
 import { hideCursor, resetCursor } from '../../ux/cursor.js';
 import ngrok from 'ngrok';
 import { EOL } from 'os';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 export const command = 'ngrok <id>';
 
-export const desc = 'Open an ngrok tunnel for application';
+export const desc = 'Open an ngrok tunnel for an application';
 
 /* istanbul ignore next */
 export const builder = (yargs) => yargs
@@ -48,7 +49,11 @@ export const builder = (yargs) => yargs
       default: 'us',
       group: 'Ngrok',
     },
-  });
+  })
+  .example(
+    dumpCommand('vonage tunnel ngrok <id> [--port <port>]'),
+    'Open an ngrok tunnel for an application',
+  );
 
 const updateHooks = (config, ngrokUrl) => Object.entries(config).reduce(
   (acc, [key, value]) => {

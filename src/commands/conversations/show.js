@@ -2,6 +2,7 @@ import { appId, privateKey } from '../../credentialFlags.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import { displayConversation } from '../../conversations/display.js';
 import { conversationIdFlag } from '../../conversations/conversationFlags.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'show <conversation-id>';
 
@@ -15,7 +16,11 @@ export const builder = (yargs) => yargs
   .options({
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage conversations show <conversation-id>'),
+    'Show a conversation',
+  );
 
 export const handler = async (argv) => {
   const { SDK, conversationId } = argv;

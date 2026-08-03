@@ -10,7 +10,7 @@ import { dumpCommand } from '../../../ux/dump.js';
 
 export const command = 'unlink <id> <msisdn>';
 
-export const desc = 'Unlink a number to an application';
+export const desc = 'Unlink a number from an application';
 
 export const builder = (yargs) => yargs
   .positional(
@@ -22,7 +22,7 @@ export const builder = (yargs) => yargs
   .positional(
     'msisdn',
     {
-      describe: 'The number to unlink to the application',
+      describe: 'The number to unlink from the application',
     },
   )
   .options({
@@ -32,8 +32,8 @@ export const builder = (yargs) => yargs
     'json': json,
   })
   .example(
-    dumpCommand('vonage apps unlink 000[...]000 19162255887'),
-    'Unlink number 19162255887 to application 000[...]000',
+    dumpCommand('vonage apps numbers unlink <id> <msisdn>'),
+    'Unlink a number from an application',
   );
 
 export const handler = async (argv) => {

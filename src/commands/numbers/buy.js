@@ -46,7 +46,11 @@ export const builder = (yargs) => yargs
     },
   )
   .options(flags)
-  .epilogue(`To search for a number to purchase, use ${dumpCommand('vonage apps search')}.`);
+  .example(
+    dumpCommand('vonage numbers buy <country> <msisdn>'),
+    'Buy a number',
+  )
+  .epilogue(`To search for a number to purchase, use ${dumpCommand('vonage numbers search')}.`);
 
 
 export const handler = async (argv) => {

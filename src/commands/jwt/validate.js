@@ -164,11 +164,11 @@ export const builder = (yargs) => yargs.options({
     `If you want to validate a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
   ].join('\n'))
   .example(
-    dumpCommand('$0 jwt validate <token>'),
+    dumpCommand('vonage jwt validate <token>'),
     'Validate a token using the configured private key and application id',
   )
   .example(
-    dumpCommand('$0 jwt validate <token> --app-id 000[...]000 --private-key ./path/to/private.key'),
+    dumpCommand('vonage jwt validate <token> [--app-id <id>] [--private-key <path>]'),
     'Validate a token with a different application id and private key',
   )
   .positional(

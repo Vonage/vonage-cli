@@ -15,8 +15,8 @@ export const builder = (yargs) => yargs
     ...voiceFlags,
   })
   .example(
-    dumpCommand('vonage apps capabilities update 000[...]000 verify --verify-status-url="https://example.com/verify"'),
-    'Update the verify status url',
+    dumpCommand('vonage apps capabilities update <id> voice [--voice-event-url <url>]'),
+    'Update voice capability webhooks',
   );
 
 export const handler = async (argv) => {

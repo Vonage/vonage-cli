@@ -3,6 +3,7 @@ import { appId, privateKey } from '../../credentialFlags.js';
 import { yaml, json } from '../../commonFlags.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import { displayFullUser } from '../../users/display.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'show <id>';
 
@@ -20,7 +21,11 @@ export const builder = (yargs) => yargs
     'private-key': privateKey,
     'json': json,
     'yaml': yaml,
-  });
+  })
+  .example(
+    dumpCommand('vonage users show <id>'),
+    'Show a user',
+  );
 
 export const handler = async (argv) => {
   const { SDK, id } = argv;

@@ -18,11 +18,11 @@ export const builder = (yargs) => yargs.options({
   },
 })
   .example(
-    dumpCommand('$0 auth check'),
+    dumpCommand('vonage auth check'),
     'Check the global configuration',
   )
   .example(
-    dumpCommand('$0 auth check --local'),
+    dumpCommand('vonage auth check [--local]'),
     'Check the local configuration',
   )
   .epilogue([`By default, the global configuration is checked. Use the ${dumpCommand('--local')} flag to check the local configuration.`].join('\n'));
@@ -96,4 +96,3 @@ export const handler = async (argv) => {
     y.exit(validPrivateKey ? 5 : 22);
   }
 };
-

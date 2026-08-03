@@ -34,6 +34,10 @@ export const command = 'show';
 export const description = ['Show configured Vonage API authentication information'].join('\n');
 
 export const builder = (yargs) => yargs.options(showFlags)
+  .example(
+    dumpCommand('vonage auth show [--show-all]'),
+    'Show configured authentication details',
+  )
   .epilogue([
     '',
     `This will display (and validate) the configured API key, API secret, private key, and application ID the Vonage CLI will use when making calls. The API secret and private key will be redacted (unless using ${dumpCommand('--json')} or ${dumpCommand('--yaml')}). Use the ${dumpCommand('--show-all')} flag to display them. `,
@@ -161,4 +165,3 @@ export const handler = async (argv) => {
     return;
   }
 };
-

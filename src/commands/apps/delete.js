@@ -21,8 +21,8 @@ export const builder = (yargs) => yargs
     force: force,
   })
   .example(
-    dumpCommand('vonage apps delete 000[...]000'),
-    'Delete application with ID 000[...]000',
+    dumpCommand('vonage apps delete <id>'),
+    'Delete an application',
   );
 
 export const handler = async (argv) => {

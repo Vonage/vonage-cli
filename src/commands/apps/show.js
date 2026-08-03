@@ -25,8 +25,8 @@ export const builder = (yargs) => yargs
     'json': json,
   })
   .example(
-    dumpCommand('vonage apps show 000[...]000'),
-    'Show information for application 000[...]000',
+    dumpCommand('vonage apps show <id>'),
+    'Show application details',
   );
 
 export const handler = async (argv) => {

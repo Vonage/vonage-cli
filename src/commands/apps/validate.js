@@ -98,15 +98,15 @@ export const builder = (yargs) => yargs
     '  Exit 15 will be returned if the application is missing messages or voice capabilities and has numbers linked to it',
   ].join('\n'))
   .example(
-    dumpCommand('vonage apps validate 000[...]000 --private-key=./path/to/private.key'),
+    dumpCommand('vonage apps validate <id> [--private-key <path>]'),
     'Validate application has the correct private key',
   )
   .example(
-    dumpCommand('vonage apps validate 000[...]000 --messages --voice'),
+    dumpCommand('vonage apps validate <id> [--messages] [--voice]'),
     'Validate application has messages and voice capabilities',
   )
   .example(
-    dumpCommand('vonage apps validate 000[...]000 --linked-numbers=19162255887,12127779311'),
+    dumpCommand('vonage apps validate <id> [--linked-numbers <msisdn>,<msisdn>]'),
     'Validate application has the specified linked numbers',
   );
 

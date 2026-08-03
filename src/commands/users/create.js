@@ -4,6 +4,7 @@ import { appId, privateKey } from '../../credentialFlags.js';
 import { displayFullUser } from '../../users/display.js';
 import { coerceUrl } from '../../utils/coerceUrl.js';
 import { coerceJSON } from '../../utils/coerceJSON.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 const userFlags = {
@@ -203,7 +204,11 @@ export const builder = (yargs) => yargs
     ...userFlags,
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage users create [--name <name>]'),
+    'Create a user',
+  );
 
 export const handler = async (argv) => {
   console.info('Creating user');

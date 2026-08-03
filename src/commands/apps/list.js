@@ -75,16 +75,16 @@ export const builder = (yargs) => yargs.options({
     'List all applications',
   )
   .example(
-    dumpCommand('vonage apps list --app-name=myapp'),
-    'List all applications that have "myapp" in the name',
+    dumpCommand('vonage apps list [--app-name <name>]'),
+    'List applications that match a name',
   )
   .example(
-    dumpCommand('vonage apps list --capability=voice+messages'),
-    'List all applications with that have both voice and messages capability',
+    dumpCommand('vonage apps list [--capability <capability>+<capability>]'),
+    'List applications that have all specified capabilities',
   )
   .example(
-    dumpCommand('vonage apps list --capability=voice,messages'),
-    'List all applications with that have voice and or messages capability',
+    dumpCommand('vonage apps list [--capability <capability>,<capability>]'),
+    'List applications that have any specified capability',
   );
 
 export const handler = async (argv) => {

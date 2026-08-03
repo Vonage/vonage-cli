@@ -35,8 +35,8 @@ export const builder = (yargs) => yargs
     'json': json,
   })
   .example(
-    dumpCommand('vonage apps link 000[...]000 19162255887'),
-    'Link number 19162255887 to application 000[...]000',
+    dumpCommand('vonage apps numbers link <id> <msisdn>'),
+    'Link a number to an application',
   );
 
 export const handler = async (argv) => {

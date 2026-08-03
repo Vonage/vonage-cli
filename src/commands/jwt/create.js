@@ -42,15 +42,15 @@ export const description = 'Create a JWT token for authentication';
 
 export const builder = (yargs) => yargs.options(jwtFlags)
   .example(
-    dumpCommand('$0 jwt create'),
+    dumpCommand('vonage jwt create'),
     'Create a token using the configured private key and application id',
   )
   .example(
-    dumpCommand('$0 jwt create --exp 3600 --ttl 600 --sub my-subject'),
-    'Create a token with a 1 hour expiry, 10 minute TTL and subject "my-subject"',
+    dumpCommand('vonage jwt create [--exp <seconds>] [--ttl <seconds>] [--sub <subject>]'),
+    'Create a token with custom expiry, TTL, and subject',
   )
   .example(
-    dumpCommand('$0 jwt create --app-id 000[...]000 --private-key ./path/to/private.key'),
+    dumpCommand('vonage jwt create [--app-id <id>] [--private-key <path>]'),
     'Create a token with a different application id and private key',
   )
   .epilogue([

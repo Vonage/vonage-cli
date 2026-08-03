@@ -2,6 +2,7 @@ import { confirm } from '../../ux/confirm.js';
 import { appId, privateKey } from '../../credentialFlags.js';
 import { force } from '../../commonFlags.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'delete <id>';
 
@@ -17,7 +18,11 @@ export const builder = (yargs) => yargs
     'force': force,
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage conversations delete <id>'),
+    'Delete a conversation',
+  );
 
 export const handler = async (argv) => {
   const { SDK, id } = argv;

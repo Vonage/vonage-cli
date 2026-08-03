@@ -54,6 +54,10 @@ export const builder = (yargs) => yargs
     },
   )
   .options(flags)
+  .example(
+    dumpCommand('vonage numbers update <country> <msisdn> [--voice-callback-type <type>]'),
+    'Update a number',
+  )
   .epilogue('It is better to use application webhooks as they offer more flexibility and control over the number\'s behavior.');
 
 export const handler = async (argv) => {

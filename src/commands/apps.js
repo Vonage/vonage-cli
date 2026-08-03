@@ -7,7 +7,10 @@ export const command = 'apps [command]';
 export const desc = 'Manage applications';
 
 export const builder = (yargs) => yargs.commandDir('apps')
+  .example(
+    dumpCommand('vonage apps list'),
+    'List applications',
+  )
   .epilogue(`When no command is given, ${dumpCommand('vonage apps')} will act the same as ${dumpCommand('vonage apps list')}. Run ${dumpCommand('vonage apps list --help')} to see options.`);
 
 export { handler };
-

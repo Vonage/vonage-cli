@@ -8,6 +8,10 @@ export const description = 'Manage authentication information';
 
 export const builder = (yargs) => yargs
   .commandDir('auth')
+  .example(
+    dumpCommand('vonage auth show'),
+    'Show configured authentication',
+  )
   .epilogue([
     `When ${dumpCommand('command')} is not passed, ${dumpCommand('vonage auth')} will function the same as ${dumpCommand('vonage auth show')}.`,
     '',

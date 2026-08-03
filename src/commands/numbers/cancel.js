@@ -37,7 +37,11 @@ export const builder = (yargs) => yargs
       group: 'Numbers',
     },
   )
-  .options(flags);
+  .options(flags)
+  .example(
+    dumpCommand('vonage numbers cancel <country> <msisdn>'),
+    'Cancel an owned number',
+  );
 
 
 export const handler = async (argv) => {

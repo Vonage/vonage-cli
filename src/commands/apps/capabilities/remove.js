@@ -18,8 +18,8 @@ export const builder = (yargs) => yargs
     'force': force,
   })
   .example(
-    dumpCommand('$0 apps capabilities rm 000[...]000 network_apis'),
-    'Remove the network_apis capability from application',
+    dumpCommand('vonage apps capabilities rm <id> <which>'),
+    'Remove a capability from an application',
   )
   .positional(
     'which',

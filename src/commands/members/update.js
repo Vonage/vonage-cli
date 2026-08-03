@@ -5,6 +5,7 @@ import { yaml, json, force } from '../../commonFlags.js';
 import { displayFullMember } from '../../members/display.js';
 import { Client } from '@vonage/server-client';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'update <conversation-id> <member-id>';
 
@@ -49,7 +50,11 @@ export const builder = (yargs) => yargs
     'force': force,
     'app-id': appId,
     'private-key': privateKey,
-  });
+  })
+  .example(
+    dumpCommand('vonage members update <conversation-id> <member-id> [--state <state>]'),
+    'Update a conversation member',
+  );
 
 export const handler = async (argv) => {
   console.info('Update member');

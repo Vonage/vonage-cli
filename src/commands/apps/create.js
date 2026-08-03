@@ -46,15 +46,15 @@ export const builder = (yargs) => yargs
     'yaml': yaml,
   })
   .example(
-    dumpCommand('vonage apps create "My New Application"'),
-    'Create a new application with the name "My New Application"',
+    dumpCommand('vonage apps create <name>'),
+    'Create a new application',
   )
   .example(
-    dumpCommand('vonage apps create "My New Application" --public-key=./public.key'),
-    'Create a new application with the name "My New Application" and a public key from ./public.key',
+    dumpCommand('vonage apps create <name> [--public-key <path>]'),
+    'Create a new application with a public key',
   )
   .epilogue([
-    `After creating the application, you can use ${dumpCommand('vonage apps capability')} to manage the capabilities.`,
+    `After creating the application, you can use ${dumpCommand('vonage apps capabilities')} to manage the capabilities.`,
     `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to use ${dumpCommand('vonage apps update')} to generate a new private key.`,
   ].join('\n'));
 

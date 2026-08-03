@@ -211,6 +211,10 @@ export const builder = (yargs) => yargs
     'yaml': yaml,
     'json': json,
   })
+  .example(
+    dumpCommand('vonage members create <conversation-id> [--user-id <id>]'),
+    'Create a member in a conversation',
+  )
   .demandOption(['state', 'channel-from-type']);
 
 

@@ -3,6 +3,7 @@ import { appId, privateKey } from '../../credentialFlags.js';
 import { confirm } from '../../ux/confirm.js';
 import { conversationSummary } from '../../conversations/display.js';
 import { sdkError } from '../../utils/sdkError.js';
+import { dumpCommand } from '../../ux/dump.js';
 
 export const command = 'list';
 
@@ -18,7 +19,11 @@ export const builder = (yargs) => yargs.options({
   },
   'app-id': appId,
   'private-key': privateKey,
-});
+})
+  .example(
+    dumpCommand('vonage conversations list [--page-size <count>]'),
+    'List conversations',
+  );
 
 export const handler = async (argv) => {
   const { SDK, pageSize, cursor } = argv;

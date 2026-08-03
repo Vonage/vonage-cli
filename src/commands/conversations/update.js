@@ -5,6 +5,7 @@ import { force } from '../../commonFlags.js';
 import { displayConversation } from '../../conversations/display.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import yargs from 'yargs';
+import { dumpCommand } from '../../ux/dump.js';
 
 const y = yargs();
 
@@ -53,7 +54,11 @@ export const builder = (yargs) => yargs
     'app-id': appId,
     'private-key': privateKey,
     'force': force,
-  });
+  })
+  .example(
+    dumpCommand('vonage conversations update <id> [--name <name>]'),
+    'Update a conversation',
+  );
 
 const updateCallback = ({
   callbackEventMask,
