@@ -1,6 +1,8 @@
 import { suite, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { faker } from '@faker-js/faker';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { handler, jwtFlags } from '../../../src/commands/jwt/create.js';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
@@ -84,5 +86,31 @@ suite('Command: vonage jwt create', { concurrency: 1 }, () => {
     assert.notStrictEqual(jwtFlags.acl.coerce, undefined);
     assert.throws(() => jwtFlags.acl.coerce('invalid'), /Failed to parse JSON for ACL/);
     assert.throws(() => jwtFlags.acl.coerce('{"foo": "bar"}'), /ACL Failed to validate against schema/);
+  });
+
+  test('should not append cursor control characters when run through the CLI', async () => {
+    const cliPath = fileURLToPath(new URL('../../../bin/vonage.js', import.meta.url));
+    const privateKeyPath = fileURLToPath(new URL('../../test.private.key', import.meta.url));
+
+    const result = spawnSync(
+      'node',
+      [
+        cliPath,
+        'jwt',
+        'create',
+        '--app-id',
+        '11111111-1111-1111-1111-111111111111',
+        '--private-key',
+        privateKeyPath,
+      ],
+      {
+        encoding: 'utf8',
+      },
+    );
+
+    assert.strictEqual(result.status, 0, result.stderr);
+    assert.strictEqual(result.stderr, '');
+    assert.match(result.stdout, /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\n$/);
+    assert.ok(!result.stdout.includes('\u001B[?25h'));
   });
 });

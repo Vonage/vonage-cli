@@ -1,25 +1,32 @@
+let handlersRegistered = false;
+
+const writeCursor = (sequence) => {
+  if (process.stderr.isTTY) {
+    process.stderr.write(sequence);
+  }
+};
+
 const resetCursor = () => {
-  process.stderr.write('\u001B[?25h');
-  process.stdout.write('\u001B[?25h');
+  writeCursor('\u001B[?25h');
 };
 
 const hideCursor = () => {
-  process.stderr.write('\u001B[?25l');
-  process.stdout.write('\u001B[?25l');
+  if (!handlersRegistered) {
+    process.on('exit', resetCursor);
+    process.on('SIGINT', exitAndShowCursor);
+    process.on('SIGTERM', exitAndShowCursor);
+    process.on('SIGQUIT', exitAndShowCursor);
+    process.on('SIGHUP', exitAndShowCursor);
+    handlersRegistered = true;
+  }
+
+  writeCursor('\u001B[?25l');
 };
 
 const exitAndShowCursor = () => {
   resetCursor();
 };
 
-
-process.on('exit', resetCursor);
-process.on('SIGINT', exitAndShowCursor);
-process.on('SIGTERM', exitAndShowCursor);
-process.on('SIGQUIT', exitAndShowCursor);
-process.on('SIGHUP', exitAndShowCursor);
-
 export { hideCursor };
 export { resetCursor };
 export { exitAndShowCursor };
-
