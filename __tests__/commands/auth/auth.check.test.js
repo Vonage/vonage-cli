@@ -3,13 +3,14 @@ import assert from 'node:assert/strict';
 import { isDeepStrictEqual } from 'node:util';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../helpers.js';
-import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
+import { getTestMiddlewareArgs, testPrivateKey, getLocalConfig, getGlobalConfig } from '../../common.js';
 
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));
 const validateApiKeyAndSecretMock = mock.fn();
 const validatePrivateKeyAndAppIdMock = mock.fn();
 const errorNoConfigMock = mock.fn();
+
 
 const __moduleMocks = {
   'yargs': (() => ({
@@ -21,6 +22,13 @@ const __moduleMocks = {
   }))(),
   '../../../src/middleware/config.js': (() => ({
     errorNoConfig: errorNoConfigMock,
+    getSharedConfig: () => ({
+      ...getLocalConfig(),
+      ...getGlobalConfig(),
+
+      settingsFile: '',
+      settingsFileExists: true,
+    })
   }))(),
 };
 
@@ -70,10 +78,10 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
       `API Secret: ${redactedGlobal}`,
       `App ID: ${config.global.appId}`,
       'Private Key: Is Set',
-    ].join('\n'), ]);;
+    ].join('\n'),]);;
 
-    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret, ])));;
-    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret, config.global.appId, config.global.privateKey, ])));;
+    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret,])));;
+    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret, config.global.appId, config.global.privateKey,])));;
     assert.strictEqual(errorNoConfigMock.mock.callCount(), 0);
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
@@ -104,10 +112,10 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
       `API Secret: ${redactedLocal}`,
       `App ID: ${config.local.appId}`,
       'Private Key: Is Set',
-    ].join('\n'), ]);;
+    ].join('\n'),]);;
 
-    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.local.apiKey, config.local.apiSecret, ])));;
-    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.local.apiKey, config.local.apiSecret, config.local.appId, config.local.privateKey, ])));;
+    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.local.apiKey, config.local.apiSecret,])));;
+    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.local.apiKey, config.local.apiSecret, config.local.appId, config.local.privateKey,])));;
   });
 
   await ctx.test('Should validate the cli arguments config settings', async () => {
@@ -132,10 +140,10 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
       `API Secret: ${redactedCli}`,
       `App ID: ${config.cli.appId}`,
       'Private Key: Is Set',
-    ].join('\n'), ]);;
+    ].join('\n'),]);;
 
-    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret, ])));;
-    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret, config.cli.appId, config.cli.privateKey, ])));;
+    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret,])));;
+    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret, config.cli.appId, config.cli.privateKey,])));;
   });
 
   await ctx.test('Should validate the API Key and Secret only in the CLI', async () => {
@@ -158,15 +166,15 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
     assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
       `API Key: ${config.cli.apiKey}`,
       `API Secret: ${redactedCli}`,
-    ].join('\n'), ]);;
+    ].join('\n'),]);;
 
-    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret, ])));;
+    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.cli.apiKey, config.cli.apiSecret,])));;
     assert.strictEqual(validatePrivateKeyAndAppIdMock.mock.callCount(), 0);
     assert.ok(
       console.log.mock.calls.some(({ arguments: [value] }) =>
         typeof value === 'string'
-          && value.includes('Checking App ID and Private Key: ...')
-          && value.includes('skipped')
+        && value.includes('Checking App ID and Private Key: ...')
+        && value.includes('skipped')
       ),
     );
   });
@@ -228,7 +236,7 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
 
     assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [5])));;
     assert.ok(console.error.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Configuration is not valid'])));;
-    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.global.apiKey, args.config.global.apiSecret, args.config.global.appId, args.config.global.privateKey, ])));;
+    assert.ok(validatePrivateKeyAndAppIdMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.global.apiKey, args.config.global.apiSecret, args.config.global.appId, args.config.global.privateKey,])));;
   });
 
   await ctx.test('Should fail to validate the config settings with invalid private key', async () => {
@@ -254,9 +262,9 @@ test('Command: vonage auth check', { concurrency: 1 }, async (ctx) => {
       `API Secret: ${redactedGlobal}`,
       `App ID: ${config.global.appId}`,
       'Private Key: INVALID KEY',
-    ].join('\n'), ]);;
+    ].join('\n'),]);;
 
-    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret, ])));;
+    assert.ok(validateApiKeyAndSecretMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.apiKey, config.global.apiSecret,])));;
     assert.strictEqual(validatePrivateKeyAndAppIdMock.mock.callCount(), 0);
     assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [22])));;
   });

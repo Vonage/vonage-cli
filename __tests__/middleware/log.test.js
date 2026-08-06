@@ -1,5 +1,6 @@
 import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
+import chalk from 'chalk';
 
 const mockLogger = {
   info: mock.fn(),
@@ -119,5 +120,19 @@ test('Middleware: Log', async (ctx) => {
     assert.ok(mockLogger.debug.mock.calls.length > 0);
     assert.strictEqual(console.table, origConsole.table);
     assertLoggerSetup('debug');
+  });
+
+  await ctx.test('Will disable chalk colors when color output is turned off', async () => {
+    const originalArgv = process.argv;
+    const originalLevel = chalk.level;
+    process.argv = ['node', 'vonage', '--no-color'];
+
+
+    setupLog({});
+
+    assert.strictEqual(chalk.level, 0);
+
+    process.argv = originalArgv;
+    chalk.level = originalLevel;
   });
 });
