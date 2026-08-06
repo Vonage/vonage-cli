@@ -26,7 +26,7 @@ const loadSettingsFile = () => {
   }
 };
 
-const saveSettingsFile = () => {
+export const saveSettingsFile = () => {
   const { settingsFile, globalConfigPath } = getSharedConfig();
 
   if (!existsSync(globalConfigPath)) {
@@ -37,14 +37,18 @@ const saveSettingsFile = () => {
   console.debug(`Saving settings file to: ${settingsFile}`);
 
   writeFileSync(settingsFile, JSON.stringify(settings, null, 2));
+  changed = false;
 };
 
-const setSetting = (key, value) => {
+export const setSetting = (key, value) => {
+  if (settings === null) {
+    loadSettingsFile();
+  }
+
   changed = true;
   settings[key] = value;
 };
 
-export { setSetting };
 export const getSettings = () => {
   if (settings === null) {
     loadSettingsFile();
@@ -52,4 +56,3 @@ export const getSettings = () => {
 
   return settings;
 };
-

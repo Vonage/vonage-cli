@@ -1,5 +1,6 @@
 import { suite, mock, test } from 'node:test';
 import assert from 'node:assert/strict';
+import chalk from 'chalk';
 const mockLogger = {
   info: mock.fn(),
   warn: mock.fn(),
@@ -135,5 +136,24 @@ suite('Middleware: Log', () => {
       level: 'debug',
       transports: [{}],
     });
+  });
+
+  test('Will disable chalk colors when color output is turned off', async () => {
+    const originalArgv = process.argv;
+    const originalLevel = chalk.level;
+    process.argv = ['node', 'vonage', '--no-color'];
+
+    const { setupLog } = await loadModule(
+      import.meta.url,
+      '../../src/middleware/log.js',
+      { 'winston': getWinstonMock() },
+    );
+
+    setupLog({});
+
+    assert.strictEqual(chalk.level, 0);
+
+    process.argv = originalArgv;
+    chalk.level = originalLevel;
   });
 });
