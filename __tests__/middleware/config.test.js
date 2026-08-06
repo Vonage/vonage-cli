@@ -16,9 +16,13 @@ import { sep } from 'path';
 const mockFiles = new Map();
 const existsSyncMock = mock.fn((path) => mockFiles.has(path));
 const readFileSyncMock = mock.fn((path) => {
-  if (!mockFiles.has(path)) throw new Error(`ENOENT: no such file: ${path}`);
+  if (!mockFiles.has(path)) {
+    throw new Error(`ENOENT: no such file: ${path}`);
+  }
+
   return mockFiles.get(path);
 });
+
 const homedirMock = mock.fn();
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));

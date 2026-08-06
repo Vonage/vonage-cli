@@ -40,9 +40,20 @@ const vonageCLI = yargsInstance.fail((_, err) => {
       describe: 'Print debug information',
       type: 'boolean',
     },
-    'no-color': {
-      describe: 'Toggle color output off',
+    'color': {
+      describe: 'Toggle color output on or off',
       type: 'boolean',
+      group: 'UX',
+    },
+    'emoji': {
+      describe: 'Toggle emoji output on or off',
+      type: 'boolean',
+      group: 'UX',
+    },
+    'redact': {
+      describe: 'Toggle redaction on or off',
+      type: 'boolean',
+      group: 'UX',
     },
   })
   .middleware(setupLog)
