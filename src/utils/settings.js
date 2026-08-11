@@ -19,7 +19,7 @@ const loadSettingsFile = () => {
   }
 
   try {
-    settings = JSON.parse(readFileSync(settingsFile));
+    settings = JSON.parse(readFileSync(settingsFile)) || {};
   } catch (error) {
     console.error('Error reading settings file:', error);
     settings = {};
@@ -27,11 +27,11 @@ const loadSettingsFile = () => {
 };
 
 const saveSettingsFile = () => {
-  const { settingsFile, globalConfigPath} = getSharedConfig();
+  const { settingsFile, globalConfigPath } = getSharedConfig();
 
   if (!existsSync(globalConfigPath)) {
     console.debug(`Creating global config folder: ${globalConfigPath}`);
-    mkdirSync(globalConfigPath, {recursive: true});
+    mkdirSync(globalConfigPath, { recursive: true });
   }
 
   console.debug(`Saving settings file to: ${settingsFile}`);
