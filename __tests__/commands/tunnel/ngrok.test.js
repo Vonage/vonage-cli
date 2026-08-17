@@ -1,6 +1,6 @@
 process.env.FORCE_COLOR = 0;
 
-import { suite, mock, test, beforeEach } from 'node:test';
+import { suite, mock, test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { Client } from '@vonage/server-client';
 import {
@@ -12,6 +12,8 @@ import {
 import { mockConsole } from '../../helpers.js';
 
 let exitMock;
+const originalNgrokAuthtoken = process.env.NGROK_AUTHTOKEN;
+const originalNgrokAuthToken = process.env.NGROK_AUTH_TOKEN;
 
 const yargs = mock.fn(() => ({ exit: exitMock }));
 
@@ -89,9 +91,16 @@ suite('Command: vonage tunnel ngrok', { concurrency: 1 }, () => {
   let hideCursor;
   let resetCursor;
 
+  afterEach(() => {
+    process.env.NGROK_AUTHTOKEN = originalNgrokAuthtoken;
+    process.env.NGROK_AUTH_TOKEN = originalNgrokAuthToken;
+  });
+
   beforeEach(async () => {
     mockConsole();
     exitMock = mock.fn();
+    delete process.env.NGROK_AUTHTOKEN;
+    delete process.env.NGROK_AUTH_TOKEN;
 
     confirm = __moduleMocks['../../../src/ux/confirm.js'].confirm;
     makeSDKCall = __moduleMocks['../../../src/utils/makeSDKCall.js'].makeSDKCall;
@@ -197,4 +206,114 @@ suite('Command: vonage tunnel ngrok', { concurrency: 1 }, () => {
     );
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
+
+  test('exits when the user declines the initial risk confirmation', async () => {
+    confirm.mock.mockImplementation(() => Promise.resolve(false));
+
+    await handler({
+      id: 'app-id',
+      SDK: {
+        applications: {
+          getApplication: mock.fn(),
+          updateApplication: mock.fn(),
+        },
+      },
+    });
+
+    assert.strictEqual(confirm.mock.callCount(), 1);
+    assertNthCalledWith(confirm, 1, 'Are you sure you want to continue? [y/n]');
+    assertCalledWith(exitMock, 1);
+    assert.strictEqual(makeSDKCall.mock.callCount(), 0);
+    assert.strictEqual(ngrok.forward.mock.callCount(), 0);
+    assert.strictEqual(spinner.mock.callCount(), 0);
+  });
+
+  test('exits when ngrok auth cannot be verified and the user declines to continue', async () => {
+    const app = getTestApp();
+    const sdkMock = {
+      applications: {
+        getApplication: mock.fn(),
+        updateApplication: mock.fn(),
+      },
+    };
+
+    mockQueue(confirm, [
+      () => Promise.resolve(true),
+      () => Promise.resolve(false),
+    ]);
+    makeSDKCall.mock.mockImplementation(() => Promise.resolve(app));
+
+    await handler({
+      id: app.id,
+      SDK: sdkMock,
+      region: 'us',
+      port: 3000,
+    });
+
+    assert.strictEqual(confirm.mock.callCount(), 2);
+    assertNthCalledWith(
+      confirm,
+      2,
+      '‼️ Unable to verify the ngrok authentication token! This may cause the tunnel to not be created. Ok to proceed? [y/n]',
+      { noForce: true },
+    );
+    assertCalledWith(exitMock, 1);
+    assert.strictEqual(makeSDKCall.mock.callCount(), 1);
+    assert.strictEqual(makeSDKCall.mock.calls[0].arguments[1], 'Fetching Application');
+    assert.strictEqual(ngrok.forward.mock.callCount(), 0);
+    assert.strictEqual(spinner.mock.callCount(), 0);
+  });
+
+  test('exits with code 69 when ngrok fails to open the tunnel', async () => {
+    const app = getTestApp();
+    const fail = mock.fn();
+    const stop = mock.fn();
+    const sdkMock = {
+      applications: {
+        getApplication: mock.fn(),
+        updateApplication: mock.fn(),
+      },
+    };
+    const error = {
+      body: {
+        details: {
+          err: 'ngrok tunnel unavailable',
+        },
+      },
+    };
+
+    confirm.mock.mockImplementation(() => Promise.resolve(true));
+    makeSDKCall.mock.mockImplementation(() => Promise.resolve(app));
+    spinner.mock.mockImplementation(() => ({ stop, fail }));
+    ngrok.forward.mock.mockImplementation(() => Promise.reject(error));
+
+    await handler({
+      id: app.id,
+      SDK: sdkMock,
+      authToken: 'cli-token',
+      region: 'eu',
+      port: 3001,
+    });
+
+    assert.strictEqual(makeSDKCall.mock.callCount(), 1);
+    assertCalledWith(ngrok.forward, {
+      authtoken: 'cli-token',
+      region: 'eu',
+      addr: 3001,
+      subdomain: undefined,
+    });
+    assert.strictEqual(fail.mock.callCount(), 1);
+    assert.strictEqual(stop.mock.callCount(), 0);
+    assert.strictEqual(ngrok.disconnect.mock.callCount(), 0);
+    assert.strictEqual(ngrok.kill.mock.callCount(), 0);
+    assert.strictEqual(hideCursor.mock.callCount(), 0);
+    assert.strictEqual(resetCursor.mock.callCount(), 0);
+    assertCalledWith(exitMock, 69);
+    assertCalledWith(console.error, 'Unable to open ngrok tunnel');
+    assertCalledWith(console.log, 'ngrok tunnel unavailable');
+  });
 });
+
+
+// ‼️ Unable to verify the ngrok authentication token! This may cause the tunnel to not be created. Ok to proceed? [y/n] ‼️
+// ‼️ Unable to verify the ngrok authentication token! This may cause the tunnel to not be created. OK to proceed? [y/n] ‼️
