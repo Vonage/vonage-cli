@@ -10,6 +10,7 @@ import ngrok from '@ngrok/ngrok';
 import { EOL } from 'os';
 import { dumpCommand } from '../../ux/dump.js';
 import dotenv from 'dotenv';
+import { printEmoji } from '../../ux/printEmoji.js';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export const command = 'ngrok <id>';
 
 export const desc = 'Open an ngrok tunnel for an application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -57,7 +58,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage tunnel ngrok <id> [--port <port>]'),
     'Open an ngrok tunnel for an application',
   );
-
+/* node:coverage enable  */
 const updateHooks = (config, ngrokUrl) => Object.entries(config).reduce(
   (acc, [key, value]) => {
     const varType = Array.isArray(value) ? 'array' : typeof value;
@@ -82,7 +83,7 @@ const updateHooks = (config, ngrokUrl) => Object.entries(config).reduce(
 
 export const handler = async (argv) => {
   console.info(`Opening ngrok tunnel for application ${argv.id}`);
-  console.log('⚠️ ⚠️ This will update the all the WebHooks for your application ⚠️ ⚠️ ');
+  console.log(`${printEmoji('⚠️ ⚠️')} This will update the all the WebHooks for your application ${printEmoji('⚠️ ⚠️')}`);
   console.log('This will cause WebHooks to directed to Ngrok instead of your servers');
   console.log('Use caution when using with production applications.');
   console.log('You have been warned');
@@ -107,14 +108,14 @@ export const handler = async (argv) => {
   );
 
   let ngrokUrl;
-  const ngrokAuth = argv.authToken // CLI argument takes precedence
+  const ngrokAuth = argv.authToken // Passed in arguments always takes precenent
     ?? process.env.NGROK_AUTHTOKEN // Latest recommendation from ngrok
     ?? process.env.NGROK_AUTH_TOKEN; // Previous recommendation from ngrok
 
 
   const proceed = !ngrokAuth
     ? await confirm(
-      '‼️ Unable to verify the ngrok authentication token proceed? ‼️',
+      `${printEmoji('‼️')} Unable to verify the ngrok authentication token! This may cause the tunnel to not be created. Ok to proceed? [y/n]`,
       { noForce: true }
     )
     : true;
@@ -122,10 +123,11 @@ export const handler = async (argv) => {
   if (!proceed) {
     console.error('Cannot open ngrok tunnel without the ngrok authentication token');
     console.error('');
-    console.error('If you have not created a token, see https://dashboard.ngrok.com/get-started/your-authtoken');
+    console.error('If you have not created an token, see https://dashboard.ngrok.com/get-started/your-authtoken');
     console.error('');
     console.error(`Once you have created the token, add ${dumpCommand('NGROK_AUTHTOKEN')} to your environment variables`);
     y.exit(1);
+    return;
   }
 
   const ngrokConfig = {
@@ -135,7 +137,13 @@ export const handler = async (argv) => {
     subdomain: argv.subdomain,
   };
 
-  console.debug('Ngrok config', ngrokConfig);
+  console.debug(
+    'Ngrok config',
+    {
+      ...ngrokConfig,
+      ...(ngrokConfig.authtoken ? { authtoken: '[REDACTED]' } : {})
+    },
+  );
 
   const { stop, fail } = spinner({
     message: `Opening ${argv.region} ngrok tunnel to port ${argv.port}`,
@@ -171,7 +179,7 @@ export const handler = async (argv) => {
 
   console.log('');
   console.log('Ngrok is running');
-  console.log(`Forwarding: ${ngrokUrl.toString()} -> localhost:${argv.port}`);
+  console.log(`Forwarding: ${ngrokUrl.toString()} -> ${ngrokUrl}`);
   console.log('Web Interface: http://127.0.0.1:4040');
   hideCursor();
   process.stdout.write('Press q to quit');
