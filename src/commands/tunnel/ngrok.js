@@ -6,9 +6,12 @@ import { spinner } from '../../ux/spinner.js';
 import { confirm } from '../../ux/confirm.js';
 import { inputFromTTY } from '../../ux/input.js';
 import { hideCursor, resetCursor } from '../../ux/cursor.js';
-import ngrok from 'ngrok';
+import ngrok from '@ngrok/ngrok';
 import { EOL } from 'os';
 import { dumpCommand } from '../../ux/dump.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const y = yargs();
 export const command = 'ngrok <id>';
@@ -104,12 +107,34 @@ export const handler = async (argv) => {
   );
 
   let ngrokUrl;
+  const ngrokAuth = argv.authToken // Passed in arguments always takes precenent
+    ?? process.env.NGROK_AUTHTOKEN // Latest recommendation from ngrok
+    ?? process.env.NGROK_AUTH_TOKEN; // Previous recommendation from ngrok
+
+
+  const proceed = !ngrokAuth
+    ? await confirm(
+      '‼️ Unable to verify the ngrok authentication token proceed? ‼️',
+      { noForce: true }
+    )
+    : true;
+
+  if (!proceed) {
+    console.error('Cannot open ngrok tunnel without the ngrok authentication token');
+    console.error('');
+    console.error('If you have not created an token, see https://dashboard.ngrok.com/get-started/your-authtoken');
+    console.error('');
+    console.error(`Once you have created the token, add ${dumpCommand('NGROK_AUTHTOKEN')} to your environment variables`);
+    y.exit(1);
+  }
+
   const ngrokConfig = {
-    authtoken: argv.authToken,
+    ...(ngrokAuth ? { authtoken: ngrokAuth } : { auth_from_env: true }),
     region: argv.region,
     addr: argv.port,
     subdomain: argv.subdomain,
   };
+
   console.debug('Ngrok config', ngrokConfig);
 
   const { stop, fail } = spinner({
@@ -117,10 +142,12 @@ export const handler = async (argv) => {
   });
 
   try {
-    ngrokUrl = new URL(await ngrok.connect(ngrokConfig));
+    const forwarder = await ngrok.forward(ngrokConfig);
+    ngrokUrl = new URL(forwarder.url());
     stop();
   } catch (error) {
     fail();
+    console.debug('Ngrok Error', error);
     console.log('');
     console.error('Unable to open ngrok tunnel');
     const reason = error?.body?.details?.err;
@@ -142,14 +169,9 @@ export const handler = async (argv) => {
     updatedApp,
   );
 
-  const ngrokApi = ngrok.getApi();
-  const { tunnels } = await ngrokApi.listTunnels();
-
-  const { config } = tunnels[0] || {};
-
   console.log('');
   console.log('Ngrok is running');
-  console.log(`Forwarding: ${ngrokUrl.toString()} -> ${config?.addr}`);
+  console.log(`Forwarding: ${ngrokUrl.toString()} -> ${ngrokUrl}`);
   console.log('Web Interface: http://127.0.0.1:4040');
   hideCursor();
   process.stdout.write('Press q to quit');
