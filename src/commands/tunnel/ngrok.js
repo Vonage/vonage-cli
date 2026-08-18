@@ -122,7 +122,7 @@ export const handler = async (argv) => {
   if (!proceed) {
     console.error('Cannot open ngrok tunnel without the ngrok authentication token');
     console.error('');
-    console.error('If you have not created an token, see https://dashboard.ngrok.com/get-started/your-authtoken');
+    console.error('If you have not created a token, see https://dashboard.ngrok.com/get-started/your-authtoken');
     console.error('');
     console.error(`Once you have created the token, add ${dumpCommand('NGROK_AUTHTOKEN')} to your environment variables`);
     y.exit(1);
