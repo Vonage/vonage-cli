@@ -1,4 +1,5 @@
 import { mock, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
 
 const originalConsole = {
   log: console.log,
@@ -35,4 +36,28 @@ export const mockConsole = () => {
   process.stdout.write = mock.fn();
   process.stderr.write = mock.fn();
   return console;
+};
+
+export const buildMessagesSDK = (messageUUID) => {
+  const sendMock = mock.fn(() => Promise.resolve({ messageUUID }));
+
+  return {
+    sendMock,
+    sdkMock: {
+      messages: {
+        send: sendMock,
+      },
+    },
+  };
+};
+
+export const assertSentMessage = (sendMock, MessageClass, params) => {
+  assert.strictEqual(sendMock.mock.callCount(), 1);
+
+  const [message] = sendMock.mock.calls[0].arguments;
+  assert.ok(message instanceof MessageClass);
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(message)),
+    JSON.parse(JSON.stringify(new MessageClass(params))),
+  );
 };
