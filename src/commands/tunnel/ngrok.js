@@ -171,7 +171,7 @@ export const handler = async (argv) => {
 
   console.log('');
   console.log('Ngrok is running');
-  console.log(`Forwarding: ${ngrokUrl.toString()} -> ${ngrokUrl}`);
+  console.log(`Forwarding: ${ngrokUrl.toString()} -> localhost:${argv.port}`);
   console.log('Web Interface: http://127.0.0.1:4040');
   hideCursor();
   process.stdout.write('Press q to quit');
