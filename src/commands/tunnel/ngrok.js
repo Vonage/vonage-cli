@@ -107,7 +107,7 @@ export const handler = async (argv) => {
   );
 
   let ngrokUrl;
-  const ngrokAuth = argv.authToken // Passed in arguments always takes precenent
+  const ngrokAuth = argv.authToken // CLI argument takes precedence
     ?? process.env.NGROK_AUTHTOKEN // Latest recommendation from ngrok
     ?? process.env.NGROK_AUTH_TOKEN; // Previous recommendation from ngrok
 
