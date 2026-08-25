@@ -1,11 +1,14 @@
 const resetCursor = () => {
   process.stderr.write('\u001B[?25h');
   process.stdout.write('\u001B[?25h');
+  process.off('exit', resetCursor);
 };
 
 const hideCursor = () => {
   process.stderr.write('\u001B[?25l');
   process.stdout.write('\u001B[?25l');
+  process.off('exit', resetCursor);
+  process.on('exit', resetCursor);
 };
 
 const exitAndShowCursor = () => {
@@ -13,7 +16,6 @@ const exitAndShowCursor = () => {
 };
 
 
-process.on('exit', resetCursor);
 process.on('SIGINT', exitAndShowCursor);
 process.on('SIGTERM', exitAndShowCursor);
 process.on('SIGQUIT', exitAndShowCursor);
