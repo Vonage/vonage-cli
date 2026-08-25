@@ -83,5 +83,8 @@
   },
   "engines": {
     "node": ">=22.0.0"
+  },
+  "overrides": {
+    "js-yaml": "3.15.1"
   }
 }
