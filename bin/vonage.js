@@ -48,6 +48,7 @@ const vonageCLI = yargsInstance.fail((_, err) => {
   .middleware(setupLog)
   .middleware(setConfig)
   .middleware(checkForUpdate)
+  .completion()
   .scriptName('vonage')
   .commandDir('../src/commands')
   .demandCommand()
