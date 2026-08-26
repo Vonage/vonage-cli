@@ -26,12 +26,11 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     name: Test and build
-
-      strategy:
-        fail-fast: false
-        matrix:
-          os: [ubuntu-latest, windows-latest]
-          node: [22.x, 24.x, 26.x]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [22.x, 24.x, 26.x]
     steps:
       - uses: actions/checkout@v3
 
