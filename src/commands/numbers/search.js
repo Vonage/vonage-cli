@@ -145,6 +145,6 @@ export const handler = async (argv) => {
     'setup_cost',
   ];
 
-  displayNumbers(numbers, fieldsToShow);
+  await displayNumbers(numbers, fieldsToShow);
   console.log(`Use ${dumpCommand('vonage numbers buy')} to purchase.`);
 };

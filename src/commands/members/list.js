@@ -4,6 +4,7 @@ import { confirm } from '../../ux/confirm.js';
 import { memberSummary } from '../../members/display.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import { dumpCommand } from '../../ux/dump.js';
+import { table } from '../../ux/table.js';
 
 export const command = 'list <conversation-id>';
 
@@ -66,7 +67,10 @@ export const handler = async (argv) => {
       return;
     }
 
-    console.table(membersToDisplay);
+    const output = await table(membersToDisplay);
+    if (output !== undefined) {
+      console.log(output);
+    }
 
     pageCursor = response.links?.next?.href
       ? new URL(response.links.next.href).searchParams.get('cursor')

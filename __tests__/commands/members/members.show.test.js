@@ -1,4 +1,5 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
+import assert from 'node:assert/strict';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
@@ -7,19 +8,8 @@ const yargs = mock.fn(() => ({ exit: exitMock }));
 
 const confirm = mock.fn();
 
-const __moduleMocks = {
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
 
 
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/show.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { displayDate } from '../../../src/ux/locale.js';
 import {
@@ -34,18 +24,21 @@ import {
 } from '../../members.js';
 import { stateLabels, memberChannelType } from '../../../src/members/display.js';
 
-suite('Command: vonage members show', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage members show', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+  const { handler } = await import('../../../src/commands/members/show.js');
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
     confirm.mock.resetCalls();
   });
 
-  test('Will show a member with no channel', async () => {
+  await ctx.test('Will show a member with no channel', async () => {
     const member = getTestMemberForAPI();
 
     const memberMock = mock.fn();
@@ -63,60 +56,40 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(
-      console.log,
-      1,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
 
-    assertNthCalledWith(console.log, 3, 'User');
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, ['User']);
 
-    assertNthCalledWith(
-      console.log,
-      4,
-      [
-        `  User ID: ${member.user.id}`,
-        `  Name: ${member.user.name}`,
-        `  Display Name: ${member.user.displayName}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[4 - 1].arguments, [[
+      `  User ID: ${member.user.id}`,
+      `  Name: ${member.user.name}`,
+      `  Display Name: ${member.user.displayName}`,
+    ].join('\n')]);
 
-    assertNthCalledWith(console.log, 6, 'Timestamps');
+    assert.deepStrictEqual(console.log.mock.calls[6 - 1].arguments, ['Timestamps']);
 
-    assertNthCalledWith(
-      console.log,
-      7,
-      [
-        `  Invited: ${displayDate(member.timestamp.invited)}`,
-        `  Joined: ${displayDate(member.timestamp.joined)}`,
-        `  Left: ${displayDate(member.timestamp.left)}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[7 - 1].arguments, [[
+      `  Invited: ${displayDate(member.timestamp.invited)}`,
+      `  Joined: ${displayDate(member.timestamp.joined)}`,
+      `  Left: ${displayDate(member.timestamp.left)}`,
+    ].join('\n')]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: Not Set',
-        '  Can accept messages from: Not Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: Not Set',
+      '  Can accept messages from: Not Set',
+    ].join('\n')]);
   });
 
-  test('Will show a member with app channel', async () => {
+  await ctx.test('Will show a member with app channel', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -134,26 +107,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: Application',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can message user: ${member.channel.to.user}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: Application',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can message user: ${member.channel.to.user}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with phone channel', async () => {
+  await ctx.test('Will show a member with phone channel', async () => {
     const member = addPhoneChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -171,26 +136,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: Phone',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can call: ${member.channel.to.number}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: Phone',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can call: ${member.channel.to.number}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with sms channel', async () => {
+  await ctx.test('Will show a member with sms channel', async () => {
     const member = addSMSChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -208,26 +165,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: SMS',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can send SMS messages to: ${member.channel.to.number}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: SMS',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can send SMS messages to: ${member.channel.to.number}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with MMS channel', async () => {
+  await ctx.test('Will show a member with MMS channel', async () => {
     const member = addMMSChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -245,26 +194,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: MMS',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can send MMS messages to: ${member.channel.to.number}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: MMS',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can send MMS messages to: ${member.channel.to.number}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with WhatsApp channel', async () => {
+  await ctx.test('Will show a member with WhatsApp channel', async () => {
     const member = addWhatsAppChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -282,26 +223,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: WhatsApp',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can send WhatsApp messages to: ${member.channel.to.number}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: WhatsApp',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can send WhatsApp messages to: ${member.channel.to.number}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with Viber channel', async () => {
+  await ctx.test('Will show a member with Viber channel', async () => {
     const member = addViberChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -319,26 +252,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: Viber',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can send Viber messages to: ${member.channel.to.id}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: Viber',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can send Viber messages to: ${member.channel.to.id}`,
+    ].join('\n')]);
   });
 
-  test('Will show a member with Messenger channel', async () => {
+  await ctx.test('Will show a member with Messenger channel', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -356,26 +281,18 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       conversationId: member.conversationId,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(console.log, 9, 'Channel');
+    assert.deepStrictEqual(console.log.mock.calls[9 - 1].arguments, ['Channel']);
 
-    assertNthCalledWith(
-      console.log,
-      10,
-      [
-        '  Channel Type: Messenger',
-        `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
-        `  Can send Messenger messages to: ${member.channel.to.id}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[10 - 1].arguments, [[
+      '  Channel Type: Messenger',
+      `  Can accept messages from: ${memberChannelType(member.channel.from)}`,
+      `  Can send Messenger messages to: ${member.channel.to.id}`,
+    ].join('\n')]);
   });
 
-  test('Will output JSON', async () => {
+  await ctx.test('Will output JSON', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -394,24 +311,16 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       json: true,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(
-      console.log,
-      1,
-      JSON.stringify(
-        Client.transformers.snakeCaseObjectKeys(member, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [JSON.stringify(
+      Client.transformers.snakeCaseObjectKeys(member, true),
+      null,
+      2,
+    )]);
   });
 
-  test('Will output YAML', async () => {
+  await ctx.test('Will output YAML', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
 
     const memberMock = mock.fn();
@@ -430,20 +339,12 @@ suite('Command: vonage members show', { concurrency: 1 }, () => {
       yaml: true,
     });
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
-      member.id,
-    );
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId, member.id]);
 
-    assertNthCalledWith(
-      console.log,
-      1,
-      YAML.stringify(
-        Client.transformers.snakeCaseObjectKeys(member, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [YAML.stringify(
+      Client.transformers.snakeCaseObjectKeys(member, true),
+      null,
+      2,
+    )]);
   });
 });

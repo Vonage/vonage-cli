@@ -1,4 +1,4 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../helpers.js';
@@ -7,12 +7,13 @@ import { Client } from '@vonage/server-client';
 import { handler } from '../../../src/commands/apps/update.js';
 import yaml from 'yaml';
 
-suite('Command: vonage apps update', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage apps update', { concurrency: 1 }, async (ctx) => {
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  test('Will update application name', async () => {
+  await ctx.test('Will update application name', async () => {
     const app = getBasicApplication();
 
     const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
@@ -30,14 +31,14 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       name: `${app.name} new`,
     });
 
-    assertCalledWith(getAppMock, app.id);
-    assertCalledWith(updateAppMock, {
+    assert.deepStrictEqual(getAppMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateAppMock.mock.calls[0].arguments, [{
       ...app,
       name: `${app.name} new`,
-    });
+    }]);
   });
 
-  test('Will update application AI', async () => {
+  await ctx.test('Will update application AI', async () => {
     const app = getBasicApplication();
     app.privacy.improveAi = false;
 
@@ -56,16 +57,16 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       improveAi: true,
     });
 
-    assertCalledWith(getAppMock, app.id);
-    assertCalledWith(updateAppMock, {
+    assert.deepStrictEqual(getAppMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateAppMock.mock.calls[0].arguments, [{
       ...app,
       privacy: {
         improveAi: true,
       },
-    });
+    }]);
   });
 
-  test('Will update application public key', async () => {
+  await ctx.test('Will update application public key', async () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
@@ -84,16 +85,16 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       publicKeyFile: newPublicKey,
     });
 
-    assertCalledWith(getAppMock, app.id);
-    assertCalledWith(updateAppMock, {
+    assert.deepStrictEqual(getAppMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateAppMock.mock.calls[0].arguments, [{
       ...app,
       keys: {
         publicKey: newPublicKey,
       },
-    });
+    }]);
   });
 
-  test('Will update all application information', async () => {
+  await ctx.test('Will update all application information', async () => {
     const app = getBasicApplication();
     app.privacy.improveAi = false;
 
@@ -115,8 +116,8 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       publicKeyFile: newPublicKey,
     });
 
-    assertCalledWith(getAppMock, app.id);
-    assertCalledWith(updateAppMock, {
+    assert.deepStrictEqual(getAppMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateAppMock.mock.calls[0].arguments, [{
       id: app.id,
       name: `${app.name} new`,
       privacy: {
@@ -125,10 +126,10 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       keys: {
         publicKey: newPublicKey,
       },
-    });
+    }]);
   });
 
-  test('Will no op when no changes detected', async () => {
+  await ctx.test('Will no op when no changes detected', async () => {
     const app = getBasicApplication();
 
     const getAppMock = mock.fn(() => Promise.resolve({ ...app }));
@@ -148,12 +149,12 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
       publicKeyFile: app.keys.publicKey,
     });
 
-    assertCalledWith(getAppMock, app.id);
+    assert.deepStrictEqual(getAppMock.mock.calls[0].arguments, [app.id]);
     assert.strictEqual(updateAppMock.mock.callCount(), 0);
-    assertCalledWith(console.log, 'No changes detected');
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, ['No changes detected']);
   });
 
-  test('Will output JSON when requested', async () => {
+  await ctx.test('Will output JSON when requested', async () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
@@ -176,30 +177,27 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
 
     assert.strictEqual(console.log.mock.callCount(), 1);
 
-    assertNthCalledWith(console.log, 
-      1,
-      JSON.stringify(
-        Client.transformers.snakeCaseObjectKeys(
-          {
-            id: app.id,
-            name: `${app.name} new`,
-            keys: {
-              public_key: newPublicKey,
-            },
-            privacy: {
-              improve_ai: app.privacy.improveAi,
-            },
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [JSON.stringify(
+      Client.transformers.snakeCaseObjectKeys(
+        {
+          id: app.id,
+          name: `${app.name} new`,
+          keys: {
+            public_key: newPublicKey,
           },
-          true,
-          false,
-        ),
-        null,
-        2,
+          privacy: {
+            improve_ai: app.privacy.improveAi,
+          },
+        },
+        true,
+        false,
       ),
-    );
+      null,
+      2,
+    )]);
   });
 
-  test('Will output YAML when requested', async () => {
+  await ctx.test('Will output YAML when requested', async () => {
     const app = getBasicApplication();
 
     const newPublicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
@@ -221,24 +219,22 @@ suite('Command: vonage apps update', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(console.log.mock.callCount(), 1);
-    assertNthCalledWith(console.log, 
-      1, yaml.stringify(
-        Client.transformers.snakeCaseObjectKeys(
-          {
-            id: app.id,
-            name: `${app.name} new`,
-            keys: {
-              public_key: newPublicKey,
-            },
-            privacy: {
-              improve_ai: app.privacy.improveAi,
-            },
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [yaml.stringify(
+      Client.transformers.snakeCaseObjectKeys(
+        {
+          id: app.id,
+          name: `${app.name} new`,
+          keys: {
+            public_key: newPublicKey,
           },
-          true,
-        ),
-        null,
-        2,
+          privacy: {
+            improve_ai: app.privacy.improveAi,
+          },
+        },
+        true,
       ),
-    );
+      null,
+      2,
+    )]);
   });
 });

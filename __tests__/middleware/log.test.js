@@ -1,5 +1,6 @@
-import { suite, mock, test } from 'node:test';
+import { test, mock } from 'node:test';
 import assert from 'node:assert/strict';
+
 const mockLogger = {
   info: mock.fn(),
   warn: mock.fn(),
@@ -13,29 +14,27 @@ const origConsole = {
   warn: console.warn,
   error: console.error,
   debug: console.debug,
+  table: console.table,
 };
 
 const getWinstonMock = () => ({
-  default: {
-    createLogger: createLoggerMock,
-    format: {
-      combine: () => undefined,
-      colorize: () => undefined,
-      padLevels: () => undefined,
-      simple: () => undefined,
-    },
-    transports: {
-      Console: function() { return {}; },
-    },
+  createLogger: createLoggerMock,
+  format: {
+    combine: () => undefined,
+    colorize: () => undefined,
+    padLevels: () => undefined,
+    simple: () => undefined,
+  },
+  transports: {
+    Console: function() { return {}; },
   },
 });
 
-suite('Middleware: Log', () => {
-  afterEach(() => {
-    console.info = origConsole.info;
-    console.warn = origConsole.warn;
-    console.error = origConsole.error;
-    console.debug = origConsole.debug;
+test('Middleware: Log', async (ctx) => {
+  ctx.mock.module('winston', { defaultExport: getWinstonMock() });
+  const { setupLog } = await import('../../src/middleware/log.js');
+
+  ctx.beforeEach(() => {
     mockLogger.info.mock.resetCalls();
     mockLogger.warn.mock.resetCalls();
     mockLogger.error.mock.resetCalls();
@@ -44,96 +43,81 @@ suite('Middleware: Log', () => {
     createLoggerMock.mock.mockImplementation(() => mockLogger);
   });
 
-  test('Will overwrite console log', async () => {
+  ctx.afterEach(() => {
+    console.info = origConsole.info;
+    console.warn = origConsole.warn;
+    console.error = origConsole.error;
+    console.debug = origConsole.debug;
+  });
+
+  const assertLoggerSetup = (level) => {
+    assert.deepStrictEqual(createLoggerMock.mock.calls[0].arguments[0], {
+      format: undefined,
+      level,
+      transports: [{}],
+    });
+  };
+
+  await ctx.test('Will overwrite console log', () => {
     assert.notStrictEqual(console.info, mockLogger.info);
     assert.notStrictEqual(console.warn, mockLogger.warn);
     assert.notStrictEqual(console.error, mockLogger.error);
     assert.notStrictEqual(console.debug, mockLogger.debug);
-
-    const { setupLog } = await loadModule(
-      import.meta.url,
-      '../../src/middleware/log.js',
-      { 'winston': getWinstonMock() },
-    );
+    assert.strictEqual(console.table, origConsole.table);
 
     setupLog({});
-
     console.info('info');
     console.warn('warn');
     console.error('error');
     console.debug('debug');
 
-    assert.ok(mockLogger.info.mock.callCount() > 0);
-    assert.ok(mockLogger.warn.mock.callCount() > 0);
-    assert.ok(mockLogger.error.mock.callCount() > 0);
-    assert.ok(mockLogger.debug.mock.callCount() > 0);
-
-    assertCalledWith(createLoggerMock, {
-      format: undefined,
-      level: 'emerg',
-      transports: [{}],
-    });
+    assert.ok(mockLogger.info.mock.calls.length > 0);
+    assert.ok(mockLogger.warn.mock.calls.length > 0);
+    assert.ok(mockLogger.error.mock.calls.length > 0);
+    assert.ok(mockLogger.debug.mock.calls.length > 0);
+    assert.strictEqual(console.table, origConsole.table);
+    assertLoggerSetup('emerg');
   });
 
-  test('Will overwrite console log and set the level to info', async () => {
+  await ctx.test('Will overwrite console log and set the level to info', () => {
     assert.notStrictEqual(console.info, mockLogger.info);
     assert.notStrictEqual(console.warn, mockLogger.warn);
     assert.notStrictEqual(console.error, mockLogger.error);
     assert.notStrictEqual(console.debug, mockLogger.debug);
-
-    const { setupLog } = await loadModule(
-      import.meta.url,
-      '../../src/middleware/log.js',
-      { 'winston': getWinstonMock() },
-    );
+    assert.strictEqual(console.table, origConsole.table);
 
     setupLog({ verbose: true });
-
     console.info('info');
     console.warn('warn');
     console.error('error');
     console.debug('debug');
 
-    assert.ok(mockLogger.info.mock.callCount() > 0);
-    assert.ok(mockLogger.warn.mock.callCount() > 0);
-    assert.ok(mockLogger.error.mock.callCount() > 0);
-    assert.ok(mockLogger.debug.mock.callCount() > 0);
-
-    assertCalledWith(createLoggerMock, {
-      format: undefined,
-      level: 'info',
-      transports: [{}],
-    });
+    assert.ok(mockLogger.info.mock.calls.length > 0);
+    assert.ok(mockLogger.warn.mock.calls.length > 0);
+    assert.ok(mockLogger.error.mock.calls.length > 0);
+    assert.ok(mockLogger.debug.mock.calls.length > 0);
+    assert.strictEqual(console.table, origConsole.table);
+    assertLoggerSetup('info');
   });
 
-  test('Will overwrite console log and set the level to debug', async () => {
+  await ctx.test('Will overwrite console log and set the level to debug', () => {
     assert.notStrictEqual(console.info, mockLogger.info);
     assert.notStrictEqual(console.warn, mockLogger.warn);
     assert.notStrictEqual(console.error, mockLogger.error);
     assert.notStrictEqual(console.debug, mockLogger.debug);
-
-    const { setupLog } = await loadModule(
-      import.meta.url,
-      '../../src/middleware/log.js',
-      { 'winston': getWinstonMock() },
-    );
+    assert.strictEqual(console.table, origConsole.table);
 
     setupLog({ verbose: true, debug: true });
-
     console.info('info');
     console.warn('warn');
     console.error('error');
     console.debug('debug');
 
-    assert.ok(mockLogger.info.mock.callCount() > 0);
-    assert.ok(mockLogger.warn.mock.callCount() > 0);
-    assert.ok(mockLogger.error.mock.callCount() > 0);
-    assert.ok(mockLogger.debug.mock.callCount() > 0);
-
-    assertCalledWith(createLoggerMock, {
-      format: undefined,
-      level: 'debug',
-      transports: [{}],
-    });
+    assert.ok(mockLogger.info.mock.calls.length > 0);
+    assert.ok(mockLogger.warn.mock.calls.length > 0);
+    assert.ok(mockLogger.error.mock.calls.length > 0);
+    assert.ok(mockLogger.debug.mock.calls.length > 0);
+    assert.strictEqual(console.table, origConsole.table);
+    assertLoggerSetup('debug');
   });
 });

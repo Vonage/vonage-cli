@@ -1,31 +1,25 @@
 
-const confirm = mock.fn();
-
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/delete.js', __moduleMocks);
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import { getTestUserForAPI } from '../../users.js';
 
-suite('Command: vonage users delete', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage users delete', { concurrency: 1 }, async (ctx) => {
+  const confirm = mock.fn();
+
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+
+  const { handler } = await import('../../../src/commands/users/delete.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     confirm.mock.resetCalls();
   });
 
-  test('Will delete a user', async () => {
+  await ctx.test('Will delete a user', async () => {
     confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
     const user = getTestUserForAPI();
 
@@ -43,17 +37,13 @@ suite('Command: vonage users delete', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    assertCalledWith(userMock, user.id);
-    assertCalledWith(deleteUserMock, user.id);
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [user.id]);
+    assert.deepStrictEqual(deleteUserMock.mock.calls[0].arguments, [user.id]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      'User deleted',
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['User deleted', ]);
   });
 
-  test('Will not delete a user when user declines', async () => {
+  await ctx.test('Will not delete a user when user declines', async () => {
     confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
     const user = getTestUserForAPI();
 
@@ -71,13 +61,9 @@ suite('Command: vonage users delete', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, id: user.id });
 
-    assertCalledWith(userMock, user.id);
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [user.id]);
     assert.strictEqual(deleteUserMock.mock.callCount(), 0);
 
-    assertNthCalledWith(
-      console.log,
-      1,
-      'User not deleted',
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, ['User not deleted', ]);
   });
 });

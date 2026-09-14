@@ -106,7 +106,7 @@ export const handler = async (argv) => {
   );
   console.log('');
 
-  displayNumbers(numbers, ['type', 'feature', 'country']);
+  await displayNumbers(numbers, ['type', 'feature', 'country']);
 
   if (numbers.length > 0 && !hasCorrectCapabilities && fail) {
     console.error(

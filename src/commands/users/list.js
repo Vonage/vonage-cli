@@ -4,6 +4,7 @@ import { userSummary } from '../../users/display.js';
 import { makeSDKCall } from '../../utils/makeSDKCall.js';
 import { dumpCommand } from '../../ux/dump.js';
 import { Client } from '@vonage/server-client';
+import { table } from '../../ux/table.js';
 
 export const command = 'list';
 
@@ -67,8 +68,13 @@ export const handler = async (argv) => {
       true,
     );
 
+    const usersToDisplay = [...(response.embedded?.users || [])].map(userSummary);
+
     console.log('');
-    console.table([...(response.embedded?.users || [])].map(userSummary));
+    console.log(usersToDisplay.length === 0
+      ? 'No users found'
+      : await table(usersToDisplay)
+    );
 
     pageCursor = response.links?.next?.href
       ? new URL(response.links.next.href).searchParams.get('cursor')

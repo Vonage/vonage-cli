@@ -1,5 +1,6 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { isDeepStrictEqual } from 'node:util';
 import { faker } from '@faker-js/faker';
 
 const exitMock = mock.fn();
@@ -16,22 +17,31 @@ const __moduleMocks = {
   }))(),
 };
 
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/numbers/cancel.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestPhoneNumber } from '../../numbers.js';
 
-suite('Command: vonage numbers cancel', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage numbers cancel', { concurrency: 1 }, async (ctx) => {
+  for (const [specifier, namedExports] of Object.entries(__moduleMocks)) {
+    const moduleOptions = { namedExports: { ...namedExports } };
+    if (Object.hasOwn(moduleOptions.namedExports, 'default')) {
+      moduleOptions.defaultExport = moduleOptions.namedExports.default;
+      delete moduleOptions.namedExports.default;
+    }
+    ctx.mock.module(specifier, moduleOptions);
+  }
+  const { handler } = await import('../../../src/commands/numbers/cancel.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
     confirm.mock.resetCalls();
   });
 
-  test('Will cancel a number', async () => {
+  await ctx.test('Will cancel a number', async () => {
     const testNumber = {
       ...getTestPhoneNumber(),
       appId: faker.datatype.boolean()
@@ -62,21 +72,21 @@ suite('Command: vonage numbers cancel', { concurrency: 1 }, () => {
       msisdn: testNumber.msisdn,
     });
 
-    assertCalledWith(numbersMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(numbersMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       index: 1,
       size: 1,
       country: testNumber.country,
       pattern: testNumber.msisdn,
       searchPattern: 1,
-    });
+    }])));
 
-    assertCalledWith(cancelNumberMock, {
+    assert.ok(cancelNumberMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [{
       country: testNumber.country,
       msisdn: testNumber.msisdn,
-    });
+    }])));;
   });
 
-  test('Will not cancel the number when user declines', async () => {
+  await ctx.test('Will not cancel the number when user declines', async () => {
     const testNumber = {
       ...getTestPhoneNumber(),
       appId: faker.datatype.boolean()
@@ -111,7 +121,7 @@ suite('Command: vonage numbers cancel', { concurrency: 1 }, () => {
     assert.strictEqual(cancelNumberMock.mock.callCount(), 0);
   });
 
-  test('Will not call cancel number when number not found', async () => {
+  await ctx.test('Will not call cancel number when number not found', async () => {
     const testNumber = {
       ...getTestPhoneNumber(),
       appId: faker.datatype.boolean()
@@ -141,6 +151,6 @@ suite('Command: vonage numbers cancel', { concurrency: 1 }, () => {
 
     assert.ok(numbersMock.mock.callCount() > 0);
     assert.strictEqual(cancelNumberMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 44);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [44])));;
   });
 });

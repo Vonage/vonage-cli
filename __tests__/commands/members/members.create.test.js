@@ -1,20 +1,12 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import YAML from 'yaml';
 import { Client } from '@vonage/server-client';
 
 const confirm = mock.fn();
 
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
 
 
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import {
   getTestMemberForAPI,
@@ -29,16 +21,18 @@ import {
 import { getTestConversationForAPI } from '../../conversations.js';
 import { stateLabels } from '../../../src/members/display.js';
 
-suite('Command: vonage members create', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage members create', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+  const { handler } = await import('../../../src/commands/members/create.js');
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     confirm.mock.resetCalls();
   });
 
-  test('Will create an app member', async () => {
+  await ctx.test('Will create an app member', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -74,9 +68,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -87,22 +79,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
         knockingId: member.knockingId,
         memberIdInviting: member.memberIdInviting,
         from: member.from,
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create a phone member', async () => {
+  await ctx.test('Will create a phone member', async () => {
     const member = addPhoneChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -135,9 +122,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -152,22 +137,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create an SMS member', async () => {
+  await ctx.test('Will create an SMS member', async () => {
     const member = addSMSChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -200,9 +180,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -217,22 +195,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create an MMS member', async () => {
+  await ctx.test('Will create an MMS member', async () => {
     const member = addMMSChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -265,9 +238,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -282,22 +253,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create a WhatsApp member', async () => {
+  await ctx.test('Will create a WhatsApp member', async () => {
     const member = addWhatsAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -330,9 +296,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -347,22 +311,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create a Viber member', async () => {
+  await ctx.test('Will create a Viber member', async () => {
     const member = addViberChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -395,9 +354,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -412,22 +369,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create a Messenger member', async () => {
+  await ctx.test('Will create a Messenger member', async () => {
     const member = addMessengerChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -460,9 +412,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      conversation.id,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [conversation.id,
       {
         state: member.state,
         user: {
@@ -477,22 +427,17 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           },
           audio: false,
         },
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Member ID: ${member.id}`,
-        `State: ${stateLabels[member.state]}`,
-        `Knocking Id: ${member.knockingId}`,
-        `Invited by: ${member.memberIdInviting}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Member ID: ${member.id}`,
+      `State: ${stateLabels[member.state]}`,
+      `Knocking Id: ${member.knockingId}`,
+      `Invited by: ${member.memberIdInviting}`,
+    ].join('\n')]);
   });
 
-  test('Will create a member and output json', async () => {
+  await ctx.test('Will create a member and output json', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -529,14 +474,14 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(console.log, JSON.stringify(
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, [JSON.stringify(
       Client.transformers.snakeCaseObjectKeys(member, true),
       null,
       2,
-    ));
+    )]);
   });
 
-  test('Will create a member and output yaml', async () => {
+  await ctx.test('Will create a member and output yaml', async () => {
     const member = addAppChannelToMember(getTestMemberForAPI());
     const conversation = getTestConversationForAPI();
 
@@ -573,10 +518,10 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
     assert.strictEqual(conversationMock.mock.callCount(), 1);
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(console.log, YAML.stringify(
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, [YAML.stringify(
       Client.transformers.snakeCaseObjectKeys(member, true),
       null,
       2,
-    ));
+    )]);
   });
 });

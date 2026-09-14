@@ -1,5 +1,6 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { isDeepStrictEqual } from 'node:util';
 import { faker } from '@faker-js/faker';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey } from '../../common.js';
@@ -15,15 +16,24 @@ const __moduleMocks = {
 
 
 
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/jwt/validate.js', __moduleMocks);
 
-suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage jwt validate', { concurrency: 1 }, async (ctx) => {
+  for (const [specifier, namedExports] of Object.entries(__moduleMocks)) {
+    const moduleOptions = { namedExports: { ...namedExports } };
+    if (Object.hasOwn(moduleOptions.namedExports, 'default')) {
+      moduleOptions.defaultExport = moduleOptions.namedExports.default;
+      delete moduleOptions.namedExports.default;
+    }
+    ctx.mock.module(specifier, moduleOptions);
+  }
+  const { handler } = await import('../../../src/commands/jwt/validate.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
     exitMock.mock.resetCalls();
   });
 
-  test('should validate token', async () => {
+  await ctx.test('should validate token', async () => {
     const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
@@ -53,7 +63,7 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
 
-  test('Should validate with sub and acl flags', async () => {
+  await ctx.test('Should validate with sub and acl flags', async () => {
     const args = getTestMiddlewareArgs();
     const sub = faker.string.alpha(10);
     const acl = {
@@ -111,7 +121,7 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
 
-  test('Should validate token that has ACL and sub but command has no flags', async () => {
+  await ctx.test('Should validate token that has ACL and sub but command has no flags', async () => {
     const args = getTestMiddlewareArgs();
     const sub = faker.string.alpha(10);
     const acl = {
@@ -163,7 +173,7 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
 
-  test('Should fail to validate token when application id mismatches', async () => {
+  await ctx.test('Should fail to validate token when application id mismatches', async () => {
     const args = getTestMiddlewareArgs();
     const wrongAppId = faker.string.uuid();
     const token = jwt.sign(
@@ -184,10 +194,10 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
     });
 
     assert.deepStrictEqual(console.log.mock.calls[1].arguments, [`❌ Application Id [${wrongAppId}] does not match [${args.appId}]`]);
-    assertCalledWith(exitMock, 22);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [22])));;
   });
 
-  test('Should fail to validate token when subject mismatches', async () => {
+  await ctx.test('Should fail to validate token when subject mismatches', async () => {
     const args = getTestMiddlewareArgs();
     const wrongSub = faker.string.alpha(10);
     const correctSub = faker.string.alpha(10);
@@ -210,16 +220,12 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
       sub: correctSub,
     });
 
-    assertNthCalledWith(
-      console.log,
-      3,
-      `❌ Subject [${wrongSub}] does not match [${correctSub}]`,
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [`❌ Subject [${wrongSub}] does not match [${correctSub}]`, ]);;
 
-    assertCalledWith(exitMock, 22);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [22])));;
   });
 
-  test('should fail to validate token when token is expired', async () => {
+  await ctx.test('should fail to validate token when token is expired', async () => {
     const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
@@ -239,15 +245,11 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
       token: token,
     });
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      '❌ Token has expired',
-    );
-    assertCalledWith(exitMock, 127);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['❌ Token has expired', ]);;
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [127])));;
   });
 
-  test('should fail to validate token when token is nbf is before current date', async () => {
+  await ctx.test('should fail to validate token when token is nbf is before current date', async () => {
     const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
@@ -266,15 +268,11 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
       privateKey: testPrivateKey,
       token: token,
     });
-    assertNthCalledWith(
-      console.log,
-      2,
-      '❌ Token is not yet valid',
-    );
-    assertCalledWith(exitMock, 127);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['❌ Token is not yet valid', ]);;
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [127])));;
   });
 
-  test('should fail to validate token when token is missing application id', async () => {
+  await ctx.test('should fail to validate token when token is missing application id', async () => {
     const args = getTestMiddlewareArgs();
     const token = jwt.sign(
       {
@@ -292,12 +290,8 @@ suite('Command: vonage jwt validate', { concurrency: 1 }, () => {
       token: token,
     });
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      '❌ Application Id is not present in the token',
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['❌ Application Id is not present in the token', ]);;
 
-    assertCalledWith(exitMock, 22);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [22])));;
   });
 });

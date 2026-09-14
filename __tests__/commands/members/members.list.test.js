@@ -1,31 +1,29 @@
 const confirm = mock.fn();
-
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
+const renderTable = (rows) => `TABLE:${JSON.stringify(rows)}`;
+const tableMock = mock.fn(async (rows) => renderTable(rows));
 
 
 
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/members/list.js', __moduleMocks);
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import { getTestMemberForAPI } from '../../members.js';
 import { stateLabels } from '../../../src/members/display.js';
 
-suite('Command: vonage members list', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage members list', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+  ctx.mock.module('../../../src/ux/table.js', { namedExports: { table: tableMock } });
+  const { handler } = await import('../../../src/commands/members/list.js');
+  ctx.beforeEach(() => {
+    tableMock.mock.resetCalls();
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     confirm.mock.resetCalls();
   });
 
-  test('Will show one page of members', async () => {
+  await ctx.test('Will show one page of members', async () => {
     const member = getTestMemberForAPI();
 
     const memberMock = mock.fn();
@@ -45,31 +43,30 @@ suite('Command: vonage members list', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
-    assert.strictEqual(console.table.mock.callCount(), 1);
+    assert.strictEqual(tableMock.mock.callCount(), 1);
     assert.strictEqual(confirm.mock.callCount(), 0);
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId,
       {
         cursor: undefined,
         pageSize: undefined,
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.table,
-      1,
-      [
-        {
-          'Member ID': member.id,
-          'State': stateLabels[member.state],
-        },
-      ],
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[1 - 1].arguments, [[
+      {
+        'Member ID': member.id,
+        'State': stateLabels[member.state],
+      },
+    ]]);
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [renderTable([
+      {
+        'Member ID': member.id,
+        'State': stateLabels[member.state],
+      },
+    ])]);
   });
 
-  test('Will handle no members', async () => {
+  await ctx.test('Will handle no members', async () => {
     const member = getTestMemberForAPI();
 
     const memberMock = mock.fn();
@@ -89,41 +86,37 @@ suite('Command: vonage members list', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
-    assert.strictEqual(console.table.mock.callCount(), 0);
+    assert.strictEqual(tableMock.mock.callCount(), 0);
     assert.strictEqual(confirm.mock.callCount(), 0);
 
-    assertCalledWith(
-      memberMock,
-      member.conversationId,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [member.conversationId,
       {
         cursor: undefined,
         pageSize: undefined,
-      },
-    );
+      }]);
 
-    assertCalledWith(
-      console.log,
-      'No members found for this conversation.',
-    );
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, ['No members found for this conversation.']);
   });
 
-  test('Will show two page of members', async () => {
+  await ctx.test('Will show two page of members', async () => {
     const memberOne = getTestMemberForAPI();
     const memberTwo = getTestMemberForAPI();
 
-    const memberMock = mockQueue(mock.fn(), [
-      () => Promise.resolve({
+    const memberResponses = [
+      {
         members: [memberOne],
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations/CON-123/members?cursor=CUR-123',
           },
         },
-      }),
-      () => Promise.resolve({
+      },
+      {
         members: [memberTwo],
-      }),
-    ]);
+      },
+    ];
+    const memberMock = mock.fn();
+    memberMock.mock.mockImplementation(() => Promise.resolve(memberResponses.shift()));
 
     const sdkMock = {
       conversations: {
@@ -139,47 +132,45 @@ suite('Command: vonage members list', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(memberMock.mock.callCount(), 2);
-    assert.strictEqual(console.table.mock.callCount(), 2);
+    assert.strictEqual(tableMock.mock.callCount(), 2);
     assert.strictEqual(confirm.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      memberOne.conversationId,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [memberOne.conversationId,
       {
         cursor: undefined,
         pageSize: undefined,
+      }]);
+
+    assert.deepStrictEqual(confirm.mock.calls[0].arguments, ['There are more members. Do you want to continue?']);
+
+    assert.deepStrictEqual(tableMock.mock.calls[1 - 1].arguments, [[
+      {
+        'Member ID': memberOne.id,
+        'State': stateLabels[memberOne.state],
       },
-    );
+    ]]);
 
-    assertCalledWith(
-      confirm,
-      'There are more members. Do you want to continue?',
-    );
-
-    assertNthCalledWith(
-      console.table,
-      1,
-      [
-        {
-          'Member ID': memberOne.id,
-          'State': stateLabels[memberOne.state],
-        },
-      ],
-    );
-
-    assertNthCalledWith(
-      console.table,
-      2,
-      [
-        {
-          'Member ID': memberTwo.id,
-          'State': stateLabels[memberTwo.state],
-        },
-      ],
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[2 - 1].arguments, [[
+      {
+        'Member ID': memberTwo.id,
+        'State': stateLabels[memberTwo.state],
+      },
+    ]]);
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [renderTable([
+      {
+        'Member ID': memberOne.id,
+        'State': stateLabels[memberOne.state],
+      },
+    ])]);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [renderTable([
+      {
+        'Member ID': memberTwo.id,
+        'State': stateLabels[memberTwo.state],
+      },
+    ])]);
   });
 
-  test('Will show one page of members when user declines next page', async () => {
+  await ctx.test('Will show one page of members when user declines next page', async () => {
     const memberOne = getTestMemberForAPI();
 
     const memberMock = mock.fn();
@@ -206,27 +197,26 @@ suite('Command: vonage members list', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
-    assert.strictEqual(console.table.mock.callCount(), 1);
+    assert.strictEqual(tableMock.mock.callCount(), 1);
     assert.strictEqual(confirm.mock.callCount(), 1);
 
-    assertCalledWith(
-      memberMock,
-      memberOne.conversationId,
+    assert.deepStrictEqual(memberMock.mock.calls[0].arguments, [memberOne.conversationId,
       {
         cursor: undefined,
         pageSize: undefined,
-      },
-    );
+      }]);
 
-    assertNthCalledWith(
-      console.table,
-      1,
-      [
-        {
-          'Member ID': memberOne.id,
-          'State': stateLabels[memberOne.state],
-        },
-      ],
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[1 - 1].arguments, [[
+      {
+        'Member ID': memberOne.id,
+        'State': stateLabels[memberOne.state],
+      },
+    ]]);
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [renderTable([
+      {
+        'Member ID': memberOne.id,
+        'State': stateLabels[memberOne.state],
+      },
+    ])]);
   });
 });

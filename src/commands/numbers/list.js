@@ -118,5 +118,5 @@ export const handler = async (argv) => {
 
   console.log('');
 
-  displayNumbers(numbers, ['country', 'type', 'feature', 'app_id']);
+  await displayNumbers(numbers, ['country', 'type', 'feature', 'app_id']);
 };

@@ -1,7 +1,5 @@
 import chalk from 'chalk';
-import console from 'console';
 import winston from 'winston';
-import { table } from '../ux/table.js';
 const { format, transports } = winston;
 
 const warning = (message) => process.stderr.write(`${chalk.yellow('Warning')}: ${message}\n`);
@@ -40,7 +38,6 @@ export const setupLog = (argv) => {
     logger.error( ...args);
   };
   global.console.debug = (...args) => logger.debug( ...args);
-  global.console.table = (...args) => console.log(table(...args));
 
   return {
     logger: logger,

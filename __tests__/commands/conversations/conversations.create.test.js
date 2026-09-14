@@ -1,45 +1,35 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventType } from '@vonage/conversations';
 import { displayDate } from '../../../src/ux/locale.js';
 
-const confirm = mock.fn();
-
-const exitMock = mock.fn();
-const yargs = mock.fn(() => ({ exit: exitMock }));
-
-
-
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/create.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 
 const conversationEvents = Object.values(EventType);
 
-suite('Command: vonage conversations create', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage conversations create', { concurrency: 1 }, async (ctx) => {
+  const confirm = mock.fn();
+
+  const exitMock = mock.fn();
+  const yargs = mock.fn(() => ({ exit: exitMock }));
+
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+  ctx.mock.module('yargs', { defaultExport: yargs });
+
+  const { handler } = await import('../../../src/commands/conversations/create.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     confirm.mock.resetCalls();
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
   });
 
-  test('Will create a conversation with no options', async () => {
+  await ctx.test('Will create a conversation with no options', async () => {
     const conversation = getTestConversationForAPI();
 
     const conversationMock = mock.fn(() => Promise.resolve(conversation));
@@ -52,7 +42,7 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock });
 
-    assertCalledWith(conversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(conversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       displayName: undefined,
       imageUrl: undefined,
       name: undefined,
@@ -70,27 +60,23 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
         },
         url: undefined,
       },
-    });
+    }])));
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Name: ${conversation.name}`,
-        `Conversation ID: ${conversation.id}`,
-        `Display Name: ${conversation.displayName}`,
-        `Image URL: ${conversation.imageUrl}`,
-        `State: ${conversation.state}`,
-        `Time to Leave: ${conversation.properties.ttl}`,
-        `Created at: ${displayDate(conversation.timestamp.created)}`,
-        `Updated at: ${displayDate(conversation.timestamp.updated)}`,
-        'Destroyed at: Not Set',
-        `Sequence: ${conversation.sequenceNumber}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Name: ${conversation.name}`,
+      `Conversation ID: ${conversation.id}`,
+      `Display Name: ${conversation.displayName}`,
+      `Image URL: ${conversation.imageUrl}`,
+      `State: ${conversation.state}`,
+      `Time to Leave: ${conversation.properties.ttl}`,
+      `Created at: ${displayDate(conversation.timestamp.created)}`,
+      `Updated at: ${displayDate(conversation.timestamp.updated)}`,
+      'Destroyed at: Not Set',
+      `Sequence: ${conversation.sequenceNumber}`,
+    ].join('\n'), ]);
   });
 
-  test('Will create a conversation', async () => {
+  await ctx.test('Will create a conversation', async () => {
     const conversation = getTestConversationForAPI();
     const cliConversation = addCLIPropertiesToConversation(conversation);
 
@@ -117,7 +103,7 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
       callbackNccoUrl: cliConversation.callback.params.nccoUrl,
     });
 
-    assertCalledWith(conversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(conversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       displayName: cliConversation.displayName,
       imageUrl: cliConversation.imageUrl,
       name: cliConversation.name,
@@ -139,27 +125,23 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
         },
         url: cliConversation.callback.url,
       },
-    });
+    }])));
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Name: ${conversation.name}`,
-        `Conversation ID: ${conversation.id}`,
-        `Display Name: ${conversation.displayName}`,
-        `Image URL: ${conversation.imageUrl}`,
-        `State: ${conversation.state}`,
-        `Time to Leave: ${conversation.properties.ttl}`,
-        `Created at: ${displayDate(conversation.timestamp.created)}`,
-        `Updated at: ${displayDate(conversation.timestamp.updated)}`,
-        'Destroyed at: Not Set',
-        `Sequence: ${conversation.sequenceNumber}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Name: ${conversation.name}`,
+      `Conversation ID: ${conversation.id}`,
+      `Display Name: ${conversation.displayName}`,
+      `Image URL: ${conversation.imageUrl}`,
+      `State: ${conversation.state}`,
+      `Time to Leave: ${conversation.properties.ttl}`,
+      `Created at: ${displayDate(conversation.timestamp.created)}`,
+      `Updated at: ${displayDate(conversation.timestamp.updated)}`,
+      'Destroyed at: Not Set',
+      `Sequence: ${conversation.sequenceNumber}`,
+    ].join('\n'), ]);
   });
 
-  test('Will validate event mask and create', async () => {
+  await ctx.test('Will validate event mask and create', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
@@ -176,7 +158,7 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
       callbackEventMask: ['foo:bar'],
     });
 
-    assertCalledWith(conversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(conversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       displayName: undefined,
       imageUrl: undefined,
       name: undefined,
@@ -194,12 +176,12 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
         },
         url: undefined,
       },
-    });
-    assertCalledWith(console.warn, 'Invalid event mask: foo:bar');
-    assertCalledWith(confirm, 'Do you want to continue with this mask?');
+    }])));
+    assert.deepStrictEqual(console.warn.mock.calls[0].arguments, ['Invalid event mask: foo:bar']);
+    assert.deepStrictEqual(confirm.mock.calls[0].arguments, ['Do you want to continue with this mask?']);
   });
 
-  test('Will validate multiple event masks and create', async () => {
+  await ctx.test('Will validate multiple event masks and create', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
@@ -219,21 +201,13 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
       ],
     });
 
-    assertNthCalledWith(
-      console.warn,
-      1,
-      'Invalid event mask: aduio:play',
-    );
+    assert.deepStrictEqual(console.warn.mock.calls[1 - 1].arguments, ['Invalid event mask: aduio:play', ]);
 
-    assertNthCalledWith(
-      console.warn,
-      2,
-      'Did you mean: audio:play?',
-    );
+    assert.deepStrictEqual(console.warn.mock.calls[2 - 1].arguments, ['Did you mean: audio:play?', ]);
 
-    assertCalledWith(confirm, 'Do you want to continue with these masks?');
+    assert.deepStrictEqual(confirm.mock.calls[0].arguments, ['Do you want to continue with these masks?']);
 
-    assertCalledWith(conversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(conversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       displayName: undefined,
       imageUrl: undefined,
       name: undefined,
@@ -254,10 +228,10 @@ suite('Command: vonage conversations create', { concurrency: 1 }, () => {
         },
         url: undefined,
       },
-    });
+    }])));
   });
 
-  test('Will validate multiple event masks and not create', async () => {
+  await ctx.test('Will validate multiple event masks and not create', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(false));
     const conversation = getTestConversationForAPI();
 

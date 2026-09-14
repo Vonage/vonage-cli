@@ -1,5 +1,5 @@
 process.env.FORCE_COLOR = 0;
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Client } from '@vonage/server-client';
 import { mockConsole } from '../helpers.js';
@@ -22,23 +22,23 @@ const readFileSyncMock = mock.fn((path) => {
 const homedirMock = mock.fn();
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));
-
-const __moduleMocks = {
-  'fs': (() => ({
-    existsSync: existsSyncMock,
-    readFileSync: readFileSyncMock,
-  }))(),
-  'os': (() => ({ default: { homedir: homedirMock }, EOL: '\n' }))(),
-  'yargs': (() => ({ default: yargs }))(),
-};
-
-const { setConfig } = await loadModule(import.meta.url, '../../src/middleware/config.js', __moduleMocks);
-
 const oldEnv = process.env;
 const oldCwd = process.cwd;
 
-suite('Middeleware: Config', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Middeleware: Config', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('fs', {
+    namedExports: {
+      existsSync: existsSyncMock,
+      readFileSync: readFileSyncMock,
+    },
+  });
+  ctx.mock.module('os', {
+    defaultExport: { homedir: homedirMock },
+    namedExports: { EOL: '\n' },
+  });
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  const { setConfig } = await import('../../src/middleware/config.js');
+  ctx.beforeEach(() => {
     mockConsole();
     mockFiles.clear();
     existsSyncMock.mock.resetCalls();
@@ -48,12 +48,12 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     exitMock.mock.resetCalls();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     process.env = oldEnv;
     process.cwd = oldCwd;
   });
 
-  test('Will decide to use the global config when local or cli is not set', () => {
+  await ctx.test('Will decide to use the global config when local or cli is not set', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
@@ -96,7 +96,7 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     assert.strictEqual(args.AUTH.applicationId, globalConfig.appId);
   });
 
-  test('Will decide to use the local config when local or cli is not set', () => {
+  await ctx.test('Will decide to use the local config when local or cli is not set', () => {
     const localConfig = getLocalConfig();
     const localFile = getLocalFile();
 
@@ -129,7 +129,7 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     assert.strictEqual(args.source, 'Local Config File');
   });
 
-  test('Will decide to use the cli arguments when local or global is not set', () => {
+  await ctx.test('Will decide to use the cli arguments when local or global is not set', () => {
     homedirMock.mock.mockImplementation(() => `${sep}dev${sep}null`);
     process.cwd = mock.fn(() => `${sep}dev${sep}null`);
 
@@ -154,7 +154,7 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     assert.strictEqual(args.source, 'CLI Arguments');
   });
 
-  test('Will decide to use the cli arguments over local and global', () => {
+  await ctx.test('Will decide to use the cli arguments over local and global', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
@@ -205,7 +205,7 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     assert.strictEqual(args.source, 'CLI Arguments');
   });
 
-  test('Will decide to use the local file over global file', () => {
+  await ctx.test('Will decide to use the local file over global file', () => {
     const globalConfig = getGlobalConfig();
     const globalFile = getGlobalFile();
 
@@ -255,8 +255,8 @@ suite('Middeleware: Config', { concurrency: 1 }, () => {
     assert.strictEqual(args.source, 'Local Config File');
   });
 
-  test('Will exit when no config is found', () => {
+  await ctx.test('Will exit when no config is found', () => {
     setConfig({});
-    assertCalledWith(exitMock, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [2]);
   });
 });

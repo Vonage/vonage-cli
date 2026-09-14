@@ -1,5 +1,6 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { isDeepStrictEqual } from 'node:util';
 import yaml from 'yaml';
 import { mockConsole } from '../../helpers.js';
 import { getTestMiddlewareArgs, testPrivateKey, testPublicKey } from '../../common.js';
@@ -36,13 +37,22 @@ const __moduleMocks = {
   })(),
 };
 
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/auth/show.js', __moduleMocks);
 const { Vonage } = __moduleMocks['@vonage/server-sdk'];
 
 const oldProcessStdoutWrite = process.stdout.write;
 
-suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage auth show and vonage auth', { concurrency: 1 }, async (ctx) => {
+  for (const [specifier, namedExports] of Object.entries(__moduleMocks)) {
+    const moduleOptions = { namedExports: { ...namedExports } };
+    if (Object.hasOwn(moduleOptions.namedExports, 'default')) {
+      moduleOptions.defaultExport = moduleOptions.namedExports.default;
+      delete moduleOptions.namedExports.default;
+    }
+    ctx.mock.module(specifier, moduleOptions);
+  }
+  const { handler } = await import('../../../src/commands/auth/show.js');
+
+  ctx.beforeEach(() => {
     process.stdout.write = mock.fn();
     mockConsole();
     mockGetApplicationPage.mock.resetCalls();
@@ -56,11 +66,11 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     }));
   });
 
-  afterAll(() => {
+  ctx.after(() => {
     process.stdout.write = oldProcessStdoutWrite;
   });
 
-  test('Should show the config settings, validate them', async () => {
+  await ctx.test('Should show the config settings, validate them', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -84,43 +94,35 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     await handler(args);
 
     const { config } = args;
-    assertCalledWith(console.info, 'Displaying auth information');
-    assertNthCalledWith(console.log, 1, `Local credentials found at: ${config.localConfigFile}`);
+    assert.ok(console.info.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Displaying auth information'])));;
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [`Local credentials found at: ${config.localConfigFile}`]);;
 
     const redactedLocal = `${config.local.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.local.apiSecret}`.length - 2);
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.local.apiKey}`,
-        `API Secret: ${redactedLocal}`,
-        `App ID: ${config.local.appId}`,
-        'Private Key: Is Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.local.apiKey}`,
+      `API Secret: ${redactedLocal}`,
+      `App ID: ${config.local.appId}`,
+      'Private Key: Is Set',
+    ].join('\n'), ]);;
 
-    assertNthCalledWith(console.log, 5, `Global credentials found at: ${config.globalConfigFile}`);
+    assert.deepStrictEqual(console.log.mock.calls[5 - 1].arguments, [`Global credentials found at: ${config.globalConfigFile}`]);;
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    assertNthCalledWith(
-      console.log,
-      7,
-      [
-        `API Key: ${config.global.apiKey}`,
-        `API Secret: ${redactedGlobal}`,
-        `App ID: ${config.global.appId}`,
-        'Private Key: Is Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[7 - 1].arguments, [[
+      `API Key: ${config.global.apiKey}`,
+      `API Secret: ${redactedGlobal}`,
+      `App ID: ${config.global.appId}`,
+      'Private Key: Is Set',
+    ].join('\n'), ]);;
 
     // twice once for local and once for global
     assert.strictEqual(mockGetApplicationPage.mock.callCount(), 2);
     assert.strictEqual(mockGetApplication.mock.callCount(), 2);
-    assertNthCalledWith(mockGetApplication, 1, config.local.appId);
-    assertNthCalledWith(mockGetApplication, 2, config.global.appId);
+    assert.deepStrictEqual(mockGetApplication.mock.calls[1 - 1].arguments, [config.local.appId]);;
+    assert.deepStrictEqual(mockGetApplication.mock.calls[2 - 1].arguments, [config.global.appId]);;
   });
 
-  test('Should show only the local config settings', async () => {
+  await ctx.test('Should show only the local config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -141,27 +143,23 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     await handler(args);
 
     const { config } = args;
-    assertCalledWith(console.info, 'Displaying auth information');
-    assertNthCalledWith(console.log, 1, `Local credentials found at: ${config.localConfigFile}`);
+    assert.ok(console.info.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Displaying auth information'])));;
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [`Local credentials found at: ${config.localConfigFile}`]);;
 
     const redactedLocal = `${config.local.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.local.apiSecret}`.length - 2);
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.local.apiKey}`,
-        `API Secret: ${redactedLocal}`,
-        `App ID: ${config.local.appId}`,
-        'Private Key: Is Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.local.apiKey}`,
+      `API Secret: ${redactedLocal}`,
+      `App ID: ${config.local.appId}`,
+      'Private Key: Is Set',
+    ].join('\n'), ]);;
 
     assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
     assert.strictEqual(mockGetApplication.mock.callCount(), 1);
-    assertCalledWith(mockGetApplication, config.local.appId);
+    assert.ok(mockGetApplication.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.local.appId])));;
   });
 
-  test('Should show only the global config settings', async () => {
+  await ctx.test('Should show only the global config settings', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -182,27 +180,23 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     await handler(args);
 
     const { config } = args;
-    assertCalledWith(console.info, 'Displaying auth information');
-    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
+    assert.ok(console.info.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Displaying auth information'])));;
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [`Global credentials found at: ${config.globalConfigFile}`]);;
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.global.apiKey}`,
-        `API Secret: ${redactedGlobal}`,
-        `App ID: ${config.global.appId}`,
-        'Private Key: Is Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.global.apiKey}`,
+      `API Secret: ${redactedGlobal}`,
+      `App ID: ${config.global.appId}`,
+      'Private Key: Is Set',
+    ].join('\n'), ]);;
 
     assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
     assert.strictEqual(mockGetApplication.mock.callCount(), 1);
-    assertCalledWith(mockGetApplication, config.global.appId);
+    assert.ok(mockGetApplication.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.appId])));;
   });
 
-  test('Should show only the API Key and Secret', async () => {
+  await ctx.test('Should show only the API Key and Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -222,24 +216,20 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     await handler(args);
 
     const { config } = args;
-    assertCalledWith(console.info, 'Displaying auth information');
-    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
+    assert.ok(console.info.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Displaying auth information'])));;
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [`Global credentials found at: ${config.globalConfigFile}`]);;
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.global.apiKey}`,
-        `API Secret: ${redactedGlobal}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.global.apiKey}`,
+      `API Secret: ${redactedGlobal}`,
+    ].join('\n'), ]);;
 
     assert.strictEqual(mockGetApplicationPage.mock.callCount(), 1);
     assert.strictEqual(mockGetApplication.mock.callCount(), 0);
   });
 
-  test('Should show only the App Id and Private Key', async () => {
+  await ctx.test('Should show only the App Id and Private Key', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -262,26 +252,22 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
     const { config } = args;
 
     const redactedGlobal = `${config.global.apiSecret}`.substring(0, 3) + '*'.repeat(`${config.global.apiSecret}`.length - 2);
-    assertCalledWith(console.info, 'Displaying auth information');
-    assertNthCalledWith(console.log, 1, `Global credentials found at: ${config.globalConfigFile}`);
+    assert.ok(console.info.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, ['Displaying auth information'])));;
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [`Global credentials found at: ${config.globalConfigFile}`]);;
 
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.global.apiKey}`,
-        `API Secret: ${redactedGlobal}`,
-        `App ID: ${config.global.appId}`,
-        'Private Key: Is Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.global.apiKey}`,
+      `API Secret: ${redactedGlobal}`,
+      `App ID: ${config.global.appId}`,
+      'Private Key: Is Set',
+    ].join('\n'), ]);;
 
     assert.ok(mockGetApplicationPage.mock.callCount() > 0);
     assert.strictEqual(mockGetApplication.mock.callCount(), 1);
-    assertCalledWith(mockGetApplication, config.global.appId);
+    assert.ok(mockGetApplication.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [config.global.appId])));;
   });
 
-  test('Should show the full Private Key and API Secret', async () => {
+  await ctx.test('Should show the full Private Key and API Secret', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -305,19 +291,15 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
 
     const { config } = args;
 
-    assertNthCalledWith(
-      console.log,
-      3,
-      [
-        `API Key: ${config.global.apiKey}`,
-        `API Secret: ${config.global.apiSecret}`,
-        `App ID: ${config.global.appId}`,
-        `Private Key: ${testPrivateKey}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, [[
+      `API Key: ${config.global.apiKey}`,
+      `API Secret: ${config.global.apiSecret}`,
+      `App ID: ${config.global.appId}`,
+      `Private Key: ${testPrivateKey}`,
+    ].join('\n'), ]);;
   });
 
-  test('should output JSON', async () => {
+  await ctx.test('should output JSON', async () => {
     const args = getTestMiddlewareArgs();
     handler({
       ...args,
@@ -326,10 +308,10 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
 
     const { config } = args;
     assert.strictEqual(console.table.mock.callCount(), 0);
-    assertNthCalledWith(console.log, 1, JSON.stringify([config.local, config.global], null, 2));
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [JSON.stringify([config.local, config.global], null, 2)]);;
   });
 
-  test('should output YAML', async () => {
+  await ctx.test('should output YAML', async () => {
     const args = getTestMiddlewareArgs();
     handler({
       ...args,
@@ -338,6 +320,6 @@ suite('Command: vonage auth show and vonage auth', { concurrency: 1 }, () => {
 
     const { config } = args;
     assert.strictEqual(console.table.mock.callCount(), 0);
-    assertNthCalledWith(console.log, 1, yaml.stringify([config.local, config.global], null, 2));
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [yaml.stringify([config.local, config.global], null, 2)]);;
   });
 });

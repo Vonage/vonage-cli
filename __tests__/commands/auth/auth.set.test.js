@@ -1,5 +1,6 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
+import { isDeepStrictEqual } from 'node:util';
 import { getTestMiddlewareArgs, testPublicKey, testPrivateKey } from '../../common.js';
 import { getBasicApplication } from '../../app.js';
 import { mockConsole } from '../../helpers.js';
@@ -46,11 +47,20 @@ const __moduleMocks = {
 
 
 
-const set = await loadModule(import.meta.url, '../../../src/commands/auth/set.js', __moduleMocks);
 const { Vonage } = __moduleMocks['@vonage/server-sdk'];
 
-suite('Command: vonage auth set', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage auth set', { concurrency: 1 }, async (ctx) => {
+  for (const [specifier, namedExports] of Object.entries(__moduleMocks)) {
+    const moduleOptions = { namedExports: { ...namedExports } };
+    if (Object.hasOwn(moduleOptions.namedExports, 'default')) {
+      moduleOptions.defaultExport = moduleOptions.namedExports.default;
+      delete moduleOptions.namedExports.default;
+    }
+    ctx.mock.module(specifier, moduleOptions);
+  }
+  const set = await import('../../../src/commands/auth/set.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
     mockGetApplicationPage.mock.resetCalls();
     mockGetApplication.mock.resetCalls();
@@ -68,7 +78,7 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
     }));
   });
 
-  test('Should write to the global config file', async () => {
+  await ctx.test('Should write to the global config file', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -87,21 +97,18 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
 
     await set.handler(args);
 
-    assertCalledWith(createDirectoryMock, args.config.globalConfigPath);
-    assertCalledWith(
-      writeJSONFileMock,
-      args.config.globalConfigFile,
+    assert.ok(createDirectoryMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.globalConfigPath])));;
+    assert.ok(writeJSONFileMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.globalConfigFile,
       {
         'api-key': args.config.cli.apiKey,
         'api-secret': args.config.cli.apiSecret,
         'app-id': args.config.cli.appId,
         'private-key': args.config.cli.privateKey,
       },
-      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`,
-    );
+      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`, ])));;
   });
 
-  test('Should only write api key and secret', async () => {
+  await ctx.test('Should only write api key and secret', async () => {
     const application = getBasicApplication();
 
     mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
@@ -119,19 +126,16 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
 
     await set.handler(args);
 
-    assertCalledWith(createDirectoryMock, args.config.globalConfigPath);
-    assertCalledWith(
-      writeJSONFileMock,
-      args.config.globalConfigFile,
+    assert.ok(createDirectoryMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.globalConfigPath])));;
+    assert.ok(writeJSONFileMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.globalConfigFile,
       {
         'api-key': args.config.cli.apiKey,
         'api-secret': args.config.cli.apiSecret,
       },
-      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`,
-    );
+      `Configuration file ${args.config.globalConfigFile} already exists. Overwrite?`, ])));;
   });
 
-  test('Should write to the local config file', async () => {
+  await ctx.test('Should write to the local config file', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -151,20 +155,17 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
     await set.handler({ ...args, local: true });
 
     assert.strictEqual(createDirectoryMock.mock.callCount(), 0);
-    assertCalledWith(
-      writeJSONFileMock,
-      args.config.localConfigFile,
+    assert.ok(writeJSONFileMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.localConfigFile,
       {
         'api-key': args.config.cli.apiKey,
         'api-secret': args.config.cli.apiSecret,
         'app-id': args.config.cli.appId,
         'private-key': args.config.cli.privateKey,
       },
-      `Configuration file ${args.config.localConfigFile} already exists. Overwrite?`,
-    );
+      `Configuration file ${args.config.localConfigFile} already exists. Overwrite?`, ])));;
   });
 
-  test('Should handle error when writing config file fails', async () => {
+  await ctx.test('Should handle error when writing config file fails', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -188,7 +189,7 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
     assert.strictEqual(exitMock.mock.callCount(), 0);
   });
 
-  test('Should not write when API Key and Secret validation fails', async () => {
+  await ctx.test('Should not write when API Key and Secret validation fails', async () => {
     mockGetApplicationPage.mock.mockImplementation(() => Promise.reject({ response: { status: 401 } }));
 
     const args = { ...getTestMiddlewareArgs() };
@@ -204,10 +205,10 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
     await set.handler(args);
 
     assert.strictEqual(writeJSONFileMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 5);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [5])));;
   });
 
-  test('Should not write when App Id and Private Key fails', async () => {
+  await ctx.test('Should not write when App Id and Private Key fails', async () => {
     const application = getBasicApplication();
 
     mockGetApplicationPage.mock.mockImplementation(() => Promise.resolve({ response: { status: 200 } }));
@@ -226,10 +227,10 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
     await set.handler(args);
 
     assert.strictEqual(writeJSONFileMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 5);
+    assert.ok(exitMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [5])));;
   });
 
-  test('Should not write when createDirectory fails', async () => {
+  await ctx.test('Should not write when createDirectory fails', async () => {
     const application = getBasicApplication();
     application.keys.publicKey = testPublicKey;
 
@@ -249,7 +250,7 @@ suite('Command: vonage auth set', { concurrency: 1 }, () => {
 
     await set.handler(args);
 
-    assertCalledWith(createDirectoryMock, args.config.globalConfigPath);
+    assert.ok(createDirectoryMock.mock.calls.some(({ arguments: callArguments }) => isDeepStrictEqual(callArguments, [args.config.globalConfigPath])));;
     assert.strictEqual(writeJSONFileMock.mock.callCount(), 0);
   });
 });

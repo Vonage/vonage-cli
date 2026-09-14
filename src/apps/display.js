@@ -2,11 +2,12 @@ import { indentLines } from '../ux/indentLines.js';
 import { dumpObject, dumpKey } from '../ux/dump.js';
 import { dumpOnOff, dumpOffOrValue } from '../ux/dumpYesNo.js';
 import { descriptionList } from '../ux/descriptionList.js';
+import { table } from '../ux/table.js';
 import chalk from 'chalk';
 import { capabilityLabels, getAppCapabilities } from './capabilities.js';
 
-const capabilitiesSummary = ({capabilities = {}}) => {
-  const appCapabilities = getAppCapabilities({capabilities});
+const capabilitiesSummary = ({ capabilities = {} }) => {
+  const appCapabilities = getAppCapabilities({ capabilities });
 
   return appCapabilities.length > 0
     ? appCapabilities.sort().map((capability) => capabilityLabels[capability]).join(', ')
@@ -14,7 +15,9 @@ const capabilitiesSummary = ({capabilities = {}}) => {
 };
 
 const listApplications = (apps) => {
-  console.table(apps.map((app) => buildApplicationSummary(app)));
+  if (apps.length > 0) {
+    console.log(table(apps.map((app) => buildApplicationSummary(app))));
+  }
 };
 
 const buildApplicationSummary = (app) => ({
@@ -35,7 +38,7 @@ const displayApplication = (app) => {
   displayCapabilities(app);
 };
 
-const displayCapabilities = ({capabilities}) => {
+const displayCapabilities = ({ capabilities }) => {
   if (!capabilities) {
     console.debug('No capabilities');
     return;
@@ -64,11 +67,11 @@ const displayCapabilities = ({capabilities}) => {
   ].join('\n'));
 };
 
-const dumpWebhook = ({address, httpMethod} = {}) => address
+const dumpWebhook = ({ address, httpMethod } = {}) => address
   ? `[${httpMethod || 'POST'}] ${address}`
   : undefined;
 
-const displayVBCApplication = ({vbc}) => {
+const displayVBCApplication = ({ vbc }) => {
   if (!vbc) {
     console.debug('No VBC capabilities');
     return;
@@ -77,7 +80,7 @@ const displayVBCApplication = ({vbc}) => {
   return [chalk.underline('NB: VBC capabilities is not supported through the command line.')].join('\n');
 };
 
-const displayNetworkApplication = ({networkApis}) => {
+const displayNetworkApplication = ({ networkApis }) => {
   if (!networkApis) {
     console.debug('No network capabilities');
     return;
@@ -88,20 +91,20 @@ const displayNetworkApplication = ({networkApis}) => {
     indentLines(descriptionList([
       [
         'Redirect URL',
-        dumpWebhook({address: networkApis.redirectUri, httpMethod: 'GET'}),
+        dumpWebhook({ address: networkApis.redirectUri, httpMethod: 'GET' }),
       ],
     ])),
     '',
   ].join('\n');
 };
 
-const displayVideoApplication = ({video}) => {
+const displayVideoApplication = ({ video }) => {
   if (!video) {
     console.debug('No video capabilities');
     return;
   }
 
-  const recordings =  [
+  const recordings = [
     `${chalk.underline(dumpKey('RECORDINGS STORAGE'))}:`,
     video.storage?.cloudStorage
       ? indentLines(descriptionList([
@@ -159,7 +162,7 @@ const displayVideoApplication = ({video}) => {
         dumpOffOrValue(video.webhooks?.sipCallCreated?.secret),
       ],
 
-      ['SIP Call Destroyed URL', dumpWebhook(video.webhooks?.sipCallDestroyed )],
+      ['SIP Call Destroyed URL', dumpWebhook(video.webhooks?.sipCallDestroyed)],
       [
         'SIP Call Destroyed Signature Secret',
         dumpOffOrValue(video.webhooks?.sipCallDestroyed?.secret),
@@ -195,7 +198,7 @@ const displayVideoApplication = ({video}) => {
   ].join('\n');
 };
 
-const displayVerifyApplication = ({verify}) => {
+const displayVerifyApplication = ({ verify }) => {
   if (!verify) {
     console.debug('No verify capabilities');
     return;
@@ -211,7 +214,7 @@ const displayVerifyApplication = ({verify}) => {
   ].join('\n');
 };
 
-const displayMessagesApplication = ({messages}) => {
+const displayMessagesApplication = ({ messages }) => {
   if (!messages) {
     console.debug('No messages capabilities');
     return;
@@ -222,14 +225,14 @@ const displayMessagesApplication = ({messages}) => {
     indentLines(descriptionList([
       ['Authenticate Inbound Media', dumpOnOff(messages.authenticateInboundMedia)],
       ['Webhook Version', messages.version],
-      ['Status URL',dumpWebhook(messages.webhooks?.statusUrl)],
+      ['Status URL', dumpWebhook(messages.webhooks?.statusUrl)],
       ['Inbound URL', dumpWebhook(messages.webhooks?.inboundUrl)],
     ])),
     '',
   ].join('\n');
 };
 
-const displayRTCApplication = ({rtc}) => {
+const displayRTCApplication = ({ rtc }) => {
   if (!rtc) {
     console.debug('No RTC capabilities');
     return;
@@ -245,7 +248,7 @@ const displayRTCApplication = ({rtc}) => {
   ].join('\n');
 };
 
-const displayVoiceApplication = ({voice}) => {
+const displayVoiceApplication = ({ voice }) => {
   if (!voice) {
     console.debug('No voice capabilities');
     return;

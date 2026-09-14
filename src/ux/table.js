@@ -1,9 +1,6 @@
 import { detectPlainOutput, detectScreenReader } from './detectScreenReader.js';
-import { descriptionList } from './descriptionList.js';
 import { EOL } from 'os';
-
-const isPlain = detectPlainOutput();
-const isScreenReader = detectScreenReader();
+import { descriptionList } from './descriptionList.js';
 
 /**
  * Custom error for invalid table rendering usage.
@@ -54,6 +51,7 @@ const defaultDataFormatter = (key, value) => String(value ?? '');
  * @property { Function } [formatHeaderCell] - Formatter for header cells
  * @property { Function } [formatDataCell] - Formatter for data cells
  * @property { boolean } [isPlain] - Whether to render without borders
+ * @property { boolean } [isScreenReader] - Whether to render screen-reader output
  */
 
 const defaultBorders = {
@@ -75,10 +73,12 @@ const table = (
     dataBorders = defaultBorders,
     formatHeaderCell = defaultHeaderFormatter,
     formatDataCell = defaultDataFormatter,
+    isPlain = detectPlainOutput(),
+    isScreenReader = detectScreenReader(),
   } = {},
 ) => {
   if (!Array.isArray(data) || data.length === 0) {
-    throw new TableError('renderTable() requires `data` to be an array.', data);
+    return;
   }
 
   if (isScreenReader) {

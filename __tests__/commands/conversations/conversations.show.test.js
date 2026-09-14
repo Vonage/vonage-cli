@@ -1,40 +1,32 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { displayDate } from '../../../src/ux/locale.js';
 
-const exitMock = mock.fn();
-const yargs = mock.fn(() => ({ exit: exitMock }));
-
-const confirm = mock.fn();
-
-const __moduleMocks = {
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/show.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 
-suite('Command: vonage conversations show', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage conversations show', { concurrency: 1 }, async (ctx) => {
+  const exitMock = mock.fn();
+  const yargs = mock.fn(() => ({ exit: exitMock }));
+
+  const confirm = mock.fn();
+
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+
+  const { handler } = await import('../../../src/commands/conversations/show.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
     confirm.mock.resetCalls();
   });
 
-  test('Will show a conversation', async () => {
+  await ctx.test('Will show a conversation', async () => {
     const conversation = getTestConversationForAPI();
 
     const conversationMock = mock.fn();
@@ -48,27 +40,23 @@ suite('Command: vonage conversations show', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, conversationId: conversation.id });
 
-    assertCalledWith(conversationMock, conversation.id);
+    assert.deepStrictEqual(conversationMock.mock.calls[0].arguments, [conversation.id]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Name: ${conversation.name}`,
-        `Conversation ID: ${conversation.id}`,
-        `Display Name: ${conversation.displayName}`,
-        `Image URL: ${conversation.imageUrl}`,
-        `State: ${conversation.state}`,
-        `Time to Leave: ${conversation.properties.ttl}`,
-        `Created at: ${displayDate(conversation.timestamp.created)}`,
-        `Updated at: ${displayDate(conversation.timestamp.updated)}`,
-        'Destroyed at: Not Set',
-        `Sequence: ${conversation.sequenceNumber}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Name: ${conversation.name}`,
+      `Conversation ID: ${conversation.id}`,
+      `Display Name: ${conversation.displayName}`,
+      `Image URL: ${conversation.imageUrl}`,
+      `State: ${conversation.state}`,
+      `Time to Leave: ${conversation.properties.ttl}`,
+      `Created at: ${displayDate(conversation.timestamp.created)}`,
+      `Updated at: ${displayDate(conversation.timestamp.updated)}`,
+      'Destroyed at: Not Set',
+      `Sequence: ${conversation.sequenceNumber}`,
+    ].join('\n'), ]);
   });
 
-  test('Will handle an error', async () => {
+  await ctx.test('Will handle an error', async () => {
     const conversation = getTestConversationForAPI();
 
     const conversationMock = mock.fn();
@@ -82,6 +70,6 @@ suite('Command: vonage conversations show', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, id: conversation.id });
     assert.strictEqual(console.log.mock.callCount(), 0);
-    assertCalledWith(exitMock, 99);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [99]);
   });
 });
