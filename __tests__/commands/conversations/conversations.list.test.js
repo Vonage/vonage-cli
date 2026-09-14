@@ -1,40 +1,34 @@
-const exitMock = mock.fn();
-const yargs = mock.fn(() => ({ exit: exitMock }));
-
-const confirm = mock.fn();
-
-
-
-const __moduleMocks = {
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/list.js', __moduleMocks);
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 
-suite('Command: vonage conversations list', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage conversations list', { concurrency: 1 }, async (ctx) => {
+  const exitMock = mock.fn();
+  const yargs = mock.fn(() => ({ exit: exitMock }));
+  const renderTable = (rows) => `TABLE:${JSON.stringify(rows)}`;
+  const tableMock = mock.fn(async (rows) => renderTable(rows));
+
+  const confirm = mock.fn();
+
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+  ctx.mock.module('../../../src/ux/table.js', { namedExports: { table: tableMock } });
+
+  const { handler } = await import('../../../src/commands/conversations/list.js');
+
+  ctx.beforeEach(() => {
+    tableMock.mock.resetCalls();
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
     confirm.mock.resetCalls();
   });
 
-  test('Will list with no conversations', async () => {
+  await ctx.test('Will list with no conversations', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(true));
 
     const conversationMock = mock.fn();
@@ -56,20 +50,17 @@ suite('Command: vonage conversations list', { concurrency: 1 }, () => {
     await handler({ SDK: sdkMock, pageSize: 10 });
 
     assert.strictEqual(conversationMock.mock.callCount(), 1);
-    assertNthCalledWith(
-      conversationMock,
-      1,
-      {
-        pageSize: 10,
-        cursor: undefined,
-      },
-    );
+    assert.deepStrictEqual(conversationMock.mock.calls[1 - 1].arguments, [{
+      pageSize: 10,
+      cursor: undefined,
+    }, ]);
 
-    assertNthCalledWith(console.log, 1, 'No conversations found');
-    assert.strictEqual(console.table.mock.callCount(), 0);
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, ['No conversations found']);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['Done Listing conversations']);
+    assert.strictEqual(tableMock.mock.callCount(), 0);
   });
 
-  test('Will list all conversations', async () => {
+  await ctx.test('Will list all conversations', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(true));
 
     const conversations = Array.from(
@@ -77,27 +68,29 @@ suite('Command: vonage conversations list', { concurrency: 1 }, () => {
       getTestConversationForAPI,
     );
 
-    const conversationMock = mockQueue(mock.fn(), [
-      () => Promise.resolve({
+    const conversationResponses = [
+      {
         conversations: conversations.slice(0, 10),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=1',
           },
         },
-      }),
-      () => Promise.resolve({
+      },
+      {
         conversations: conversations.slice(10, 20),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=2',
           },
         },
-      }),
-      () => Promise.resolve({
+      },
+      {
         conversations: conversations.slice(20),
-      }),
-    ]);
+      },
+    ];
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementation(() => Promise.resolve(conversationResponses.shift()));
 
     const sdkMock = {
       conversations: {
@@ -107,113 +100,95 @@ suite('Command: vonage conversations list', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
 
-    console.log(conversations.length);
-    console.log(conversations.slice(0, 10).length);
-    console.log(conversations.slice(10, 20).length);
-    console.log(conversations.slice(20).length);
-
     assert.strictEqual(confirm.mock.callCount(), 2);
-    assertNthCalledWith(
-      confirm,
-      1,
-      'There are more conversations. Do you want to continue?',
-    );
-    assertNthCalledWith(
-      confirm,
-      2,
-      'There are more conversations. Do you want to continue?',
-    );
+    assert.deepStrictEqual(confirm.mock.calls[1 - 1].arguments, ['There are more conversations. Do you want to continue?', ]);
+    assert.deepStrictEqual(confirm.mock.calls[2 - 1].arguments, ['There are more conversations. Do you want to continue?', ]);
 
     assert.strictEqual(conversationMock.mock.callCount(), 3);
-    assertNthCalledWith(
-      conversationMock,
-      1,
-      {
-        pageSize: 10,
-        cursor: undefined,
-      },
-    );
-    assertNthCalledWith(
-      conversationMock,
-      2,
-      {
-        pageSize: 10,
-        cursor: '1',
-      },
-    );
-    assertNthCalledWith(
-      conversationMock,
-      3,
-      {
-        pageSize: 10,
-        cursor: '2',
-      },
-    );
+    assert.deepStrictEqual(conversationMock.mock.calls[1 - 1].arguments, [{
+      pageSize: 10,
+      cursor: undefined,
+    }, ]);
+    assert.deepStrictEqual(conversationMock.mock.calls[2 - 1].arguments, [{
+      pageSize: 10,
+      cursor: '1',
+    }, ]);
+    assert.deepStrictEqual(conversationMock.mock.calls[3 - 1].arguments, [{
+      pageSize: 10,
+      cursor: '2',
+    }, ]);
 
-    assert.strictEqual(console.table.mock.callCount(), 3);
-    assertNthCalledWith(
-      console.table,
-      1,
-      conversations.slice(0, 10).map((conversation) => ({
-        'Name': conversation.name,
-        'Conversation ID': conversation.id,
-        'Display Name': conversation.displayName,
-        'Image URL': conversation.imageUrl,
-      })),
-    );
+    assert.strictEqual(tableMock.mock.callCount(), 3);
+    assert.deepStrictEqual(tableMock.mock.calls[1 - 1].arguments, [conversations.slice(0, 10).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })), ]);
 
-    assertNthCalledWith(
-      console.table,
-      2,
-      conversations.slice(10, 20).map((conversation) => ({
-        'Name': conversation.name,
-        'Conversation ID': conversation.id,
-        'Display Name': conversation.displayName,
-        'Image URL': conversation.imageUrl,
-      })),
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[2 - 1].arguments, [conversations.slice(10, 20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })), ]);
 
-    assertNthCalledWith(
-      console.table,
-      3,
-      conversations.slice(20).map((conversation) => ({
-        'Name': conversation.name,
-        'Conversation ID': conversation.id,
-        'Display Name': conversation.displayName,
-        'Image URL': conversation.imageUrl,
-      })),
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[3 - 1].arguments, [conversations.slice(20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })), ]);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [renderTable(conversations.slice(0, 10).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })))]);
+    assert.deepStrictEqual(console.log.mock.calls[4 - 1].arguments, [renderTable(conversations.slice(10, 20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })))]);
+    assert.deepStrictEqual(console.log.mock.calls[6 - 1].arguments, [renderTable(conversations.slice(20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })))]);
+    assert.deepStrictEqual(console.log.mock.calls[7 - 1].arguments, ['Done Listing conversations']);
   });
 
-  test('Will stop paging when user declines', async () => {
-    mockQueue(confirm, [
-      () => Promise.resolve(true),
-      () => Promise.resolve(false),
-    ]);
+  await ctx.test('Will stop paging when user declines', async () => {
+    const confirmValues = [true, false];
+    confirm.mock.mockImplementation(() => Promise.resolve(confirmValues.shift()));
 
     const conversations = Array.from(
       { length: 30 },
       getTestConversationForAPI,
     );
 
-    const conversationMock = mockQueue(mock.fn(), [
-      () => Promise.resolve({
+    const conversationResponses = [
+      {
         conversations: conversations.slice(0, 10),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=1',
           },
         },
-      }),
-      () => Promise.resolve({
+      },
+      {
         conversations: conversations.slice(10, 20),
         links: {
           next: {
             href: 'https://api.nexmo.com/conversations?cursor=2',
           },
         },
-      }),
-    ]);
+      },
+    ];
+    const conversationMock = mock.fn();
+    conversationMock.mock.mockImplementation(() => Promise.resolve(conversationResponses.shift()));
 
     const sdkMock = {
       conversations: {
@@ -225,48 +200,45 @@ suite('Command: vonage conversations list', { concurrency: 1 }, () => {
 
     assert.strictEqual(confirm.mock.callCount(), 2);
     assert.strictEqual(conversationMock.mock.callCount(), 2);
-    assertNthCalledWith(
-      conversationMock,
-      1,
-      {
-        pageSize: 10,
-        cursor: undefined,
-      },
-    );
-    assertNthCalledWith(
-      conversationMock,
-      2,
-      {
-        pageSize: 10,
-        cursor: '1',
-      },
-    );
+    assert.deepStrictEqual(conversationMock.mock.calls[1 - 1].arguments, [{
+      pageSize: 10,
+      cursor: undefined,
+    }, ]);
+    assert.deepStrictEqual(conversationMock.mock.calls[2 - 1].arguments, [{
+      pageSize: 10,
+      cursor: '1',
+    }, ]);
 
-    assert.strictEqual(console.table.mock.callCount(), 2);
-    assertNthCalledWith(
-      console.table,
-      1,
-      conversations.slice(0, 10).map((conversation) => ({
-        'Name': conversation.name,
-        'Conversation ID': conversation.id,
-        'Display Name': conversation.displayName,
-        'Image URL': conversation.imageUrl,
-      })),
-    );
+    assert.strictEqual(tableMock.mock.callCount(), 2);
+    assert.deepStrictEqual(tableMock.mock.calls[1 - 1].arguments, [conversations.slice(0, 10).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })), ]);
 
-    assertNthCalledWith(
-      console.table,
-      2,
-      conversations.slice(10, 20).map((conversation) => ({
-        'Name': conversation.name,
-        'Conversation ID': conversation.id,
-        'Display Name': conversation.displayName,
-        'Image URL': conversation.imageUrl,
-      })),
-    );
+    assert.deepStrictEqual(tableMock.mock.calls[2 - 1].arguments, [conversations.slice(10, 20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })), ]);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [renderTable(conversations.slice(0, 10).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })))]);
+    assert.deepStrictEqual(console.log.mock.calls[4 - 1].arguments, [renderTable(conversations.slice(10, 20).map((conversation) => ({
+      'Name': conversation.name,
+      'Conversation ID': conversation.id,
+      'Display Name': conversation.displayName,
+      'Image URL': conversation.imageUrl,
+    })))]);
+    assert.deepStrictEqual(console.log.mock.calls[5 - 1].arguments, ['Done Listing conversations']);
   });
 
-  test('Will handle SDK Error', async () => {
+  await ctx.test('Will handle SDK Error', async () => {
     const conversationMock = mock.fn(() => Promise.reject(new Error('SDK Error')));
 
     const sdkMock = {
@@ -277,6 +249,6 @@ suite('Command: vonage conversations list', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, pageSize: 10 });
     assert.strictEqual(conversationMock.mock.callCount(), 1);
-    assertCalledWith(exitMock, 99);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [99]);
   });
 });

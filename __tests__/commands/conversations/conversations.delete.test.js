@@ -1,30 +1,24 @@
-const confirm = mock.fn();
-
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/delete.js', __moduleMocks);
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 
-suite('Command: vonage conversations delete', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage conversations delete', { concurrency: 1 }, async (ctx) => {
+  const confirm = mock.fn();
+
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+
+  const { handler } = await import('../../../src/commands/conversations/delete.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     confirm.mock.resetCalls();
   });
 
-  test('Will delete a conversation', async () => {
+  await ctx.test('Will delete a conversation', async () => {
     confirm.mock.mockImplementationOnce(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
@@ -42,13 +36,13 @@ suite('Command: vonage conversations delete', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, id: conversation.id });
 
-    assertCalledWith(conversationMock, conversation.id);
-    assertCalledWith(deleteConversationMock, conversation.id);
+    assert.deepStrictEqual(conversationMock.mock.calls[0].arguments, [conversation.id]);
+    assert.deepStrictEqual(deleteConversationMock.mock.calls[0].arguments, [conversation.id]);
 
-    assertNthCalledWith(console.log, 2, 'Conversation deleted');
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['Conversation deleted']);
   });
 
-  test('Will not delete a conversation when user declines', async () => {
+  await ctx.test('Will not delete a conversation when user declines', async () => {
     confirm.mock.mockImplementationOnce(() => Promise.resolve(false));
     const conversation = getTestConversationForAPI();
 
@@ -66,9 +60,9 @@ suite('Command: vonage conversations delete', { concurrency: 1 }, () => {
 
     await handler({ SDK: sdkMock, id: conversation.id });
 
-    assertCalledWith(conversationMock, conversation.id);
+    assert.deepStrictEqual(conversationMock.mock.calls[0].arguments, [conversation.id]);
     assert.strictEqual(deleteConversationMock.mock.callCount(), 0);
 
-    assertNthCalledWith(console.log, 1, 'Conversation not deleted');
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, ['Conversation not deleted']);
   });
 });

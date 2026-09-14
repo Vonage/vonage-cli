@@ -139,5 +139,5 @@ export const handler = async (argv) => {
     return;
   }
 
-  listApplications(apps);
+  await listApplications(apps);
 };

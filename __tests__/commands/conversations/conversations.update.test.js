@@ -1,42 +1,32 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { displayDate } from '../../../src/ux/locale.js';
 
-const exitMock = mock.fn();
-const yargs = mock.fn(() => ({ exit: exitMock }));
-
-const confirm = mock.fn();
-
-
-
-const __moduleMocks = {
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-  '../../../src/ux/confirm.js': (() => ({
-    confirm,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/conversations/update.js', __moduleMocks);
 import { mockConsole } from '../../helpers.js';
 import { getTestConversationForAPI, addCLIPropertiesToConversation } from '../../conversations.js';
 
-suite('Command: vonage conversations update', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage conversations update', { concurrency: 1 }, async (ctx) => {
+  const exitMock = mock.fn();
+  const yargs = mock.fn(() => ({ exit: exitMock }));
+
+  const confirm = mock.fn();
+
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm } });
+
+  const { handler } = await import('../../../src/commands/conversations/update.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
     confirm.mock.resetCalls();
   });
 
-  test('Will update a conversation with no options', async () => {
+  await ctx.test('Will update a conversation with no options', async () => {
     const conversation = getTestConversationForAPI();
 
     const getConversationMock = mock.fn(() => Promise.resolve(conversation));
@@ -55,7 +45,7 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
       id: conversation.id,
     });
 
-    assertCalledWith(updateConversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(updateConversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       id: conversation.id,
       displayName: conversation.displayName,
       name: conversation.name,
@@ -64,27 +54,23 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
         ttl: conversation.properties.ttl,
         customData: conversation.properties.customData,
       },
-    });
+    }])));
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `Name: ${conversation.name}`,
-        `Conversation ID: ${conversation.id}`,
-        `Display Name: ${conversation.displayName}`,
-        `Image URL: ${conversation.imageUrl}`,
-        `State: ${conversation.state}`,
-        `Time to Leave: ${conversation.properties.ttl}`,
-        `Created at: ${displayDate(conversation.timestamp.created)}`,
-        `Updated at: ${displayDate(conversation.timestamp.updated)}`,
-        'Destroyed at: Not Set',
-        `Sequence: ${conversation.sequenceNumber}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Name: ${conversation.name}`,
+      `Conversation ID: ${conversation.id}`,
+      `Display Name: ${conversation.displayName}`,
+      `Image URL: ${conversation.imageUrl}`,
+      `State: ${conversation.state}`,
+      `Time to Leave: ${conversation.properties.ttl}`,
+      `Created at: ${displayDate(conversation.timestamp.created)}`,
+      `Updated at: ${displayDate(conversation.timestamp.updated)}`,
+      'Destroyed at: Not Set',
+      `Sequence: ${conversation.sequenceNumber}`,
+    ].join('\n'), ]);
   });
 
-  test('Will update a conversation', async () => {
+  await ctx.test('Will update a conversation', async () => {
     const conversation = getTestConversationForAPI();
     const cliConversation = addCLIPropertiesToConversation(conversation);
 
@@ -114,7 +100,7 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
       callbackNccoUrl: cliConversation.callback.params.nccoUrl,
     });
 
-    assertCalledWith(updateConversationMock, {
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(updateConversationMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       id: conversation.id,
       displayName: cliConversation.displayName,
       imageUrl: cliConversation.imageUrl,
@@ -132,10 +118,10 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
         },
         url: cliConversation.callback.url,
       },
-    });
+    }])));
   });
 
-  test('Will validate event mask and update', async () => {
+  await ctx.test('Will validate event mask and update', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(true));
     const conversation = getTestConversationForAPI();
 
@@ -156,10 +142,10 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
     });
 
     assert.ok(updateConversationMock.mock.callCount() > 0);
-    assertCalledWith(confirm, 'Do you want to continue with this mask?');
+    assert.deepStrictEqual(confirm.mock.calls[0].arguments, ['Do you want to continue with this mask?']);
   });
 
-  test('Will validate event mask and not update', async () => {
+  await ctx.test('Will validate event mask and not update', async () => {
     confirm.mock.mockImplementation(() => Promise.resolve(false));
     const conversation = getTestConversationForAPI();
 
@@ -179,6 +165,6 @@ suite('Command: vonage conversations update', { concurrency: 1 }, () => {
       callbackEventMask: ['foo:bar'],
     });
 
-    assertNotCalledWith(updateConversationMock);
+    assert.strictEqual(updateConversationMock.mock.callCount(), 0);
   });
 });

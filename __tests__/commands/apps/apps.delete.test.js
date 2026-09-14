@@ -1,4 +1,4 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { faker } from '@faker-js/faker';
 import { getBasicApplication } from '../../app.js';
@@ -8,25 +8,21 @@ import { Client } from '@vonage/server-client';
 const confirmMock = mock.fn();
 const sdkErrorMock = mock.fn();
 
-const __moduleMocks = {
-  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
-  '../../../src/utils/sdkError.js': (() => ({ sdkError: sdkErrorMock }))(),
-};
 
 
 
 
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/delete.js', __moduleMocks);
-
-suite('Command: vonage apps delete', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage apps delete', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm: confirmMock } });
+  ctx.mock.module('../../../src/utils/sdkError.js', { namedExports: { sdkError: sdkErrorMock } });
+  const { handler } = await import('../../../src/commands/apps/delete.js');
+  ctx.beforeEach(() => {
     mockConsole();
     confirmMock.mock.resetCalls();
     sdkErrorMock.mock.resetCalls();
   });
 
-  test('Should delete app', async () => {
+  await ctx.test('Should delete app', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -48,10 +44,10 @@ suite('Command: vonage apps delete', { concurrency: 1 }, () => {
       SDK: sdkMock,
     });
 
-    assertCalledWith(deleteMock, appId);
+    assert.deepStrictEqual(deleteMock.mock.calls[0].arguments, [appId]);
   });
 
-  test('Should not delete app when user declines', async () => {
+  await ctx.test('Should not delete app when user declines', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -76,7 +72,7 @@ suite('Command: vonage apps delete', { concurrency: 1 }, () => {
     assert.strictEqual(deleteMock.mock.callCount(), 0);
   });
 
-  test('Should handle error from delete', async () => {
+  await ctx.test('Should handle error from delete', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -100,7 +96,6 @@ suite('Command: vonage apps delete', { concurrency: 1 }, () => {
     });
 
     assert.ok(deleteMock.mock.callCount() > 0);
-    assertCalledWith(sdkErrorMock, testError);
+    assert.deepStrictEqual(sdkErrorMock.mock.calls[0].arguments, [testError]);
   });
 });
-

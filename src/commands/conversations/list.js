@@ -4,6 +4,7 @@ import { confirm } from '../../ux/confirm.js';
 import { conversationSummary } from '../../conversations/display.js';
 import { sdkError } from '../../utils/sdkError.js';
 import { dumpCommand } from '../../ux/dump.js';
+import { table } from '../../ux/table.js';
 
 export const command = 'list';
 
@@ -63,7 +64,10 @@ export const handler = async (argv) => {
     }
 
     console.log('');
-    console.table(conversations.map(conversationSummary));
+    const output = await table(conversations.map(conversationSummary));
+    if (output !== undefined) {
+      console.log(output);
+    }
 
     pageCursor = response.links?.next?.href
       ? new URL(response.links.next.href).searchParams.get('cursor')

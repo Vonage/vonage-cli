@@ -1,25 +1,28 @@
 import { dumpValue } from '../ux/dump.js';
 import { buildCountryString, displayCurrency } from '../ux/locale.js';
+import { table } from '../ux/table.js';
 import { typeLabels } from './types.js';
 
 const displayNumber = (number = {}, fields = []) => Object.assign({
   'Number': number.msisdn,
-  ...(fields.includes('country') ? {'Country': buildCountryString(number.country)} : {}),
-  ...(fields.includes('type') ? {'Type': typeLabels[number.type]} : {}),
-  ...(fields.includes('feature') ? {'Features': number.features.sort().join(', ')} : {}),
-  ...(fields.includes('monthly_cost') ? {'Monthly Cost': displayCurrency(number.cost)} : {}),
-  ...(fields.includes('setup_cost') ? {'Setup Cost': displayCurrency(number.initialPrice) } : {}),
-  ...(fields.includes('app_id') ? {'Linked Application ID': number.appId || dumpValue('Not linked to any application') } : {}),
-  ...(fields.includes('voice_callback_type') ? {'Voice Callback': number.voiceCallbackType} : {}),
-  ...(fields.includes('voice_callback_value') ? {'Voice Callback Value': number.voiceCallbackValue } : {}),
-  ...(fields.includes('voice_status_callback') ? {'Voice Status Callback': number.voiceStatusCallback} : {}),
+  ...(fields.includes('country') ? { 'Country': buildCountryString(number.country) } : {}),
+  ...(fields.includes('type') ? { 'Type': typeLabels[number.type] } : {}),
+  ...(fields.includes('feature') ? { 'Features': number.features.sort().join(', ') } : {}),
+  ...(fields.includes('monthly_cost') ? { 'Monthly Cost': displayCurrency(number.cost) } : {}),
+  ...(fields.includes('setup_cost') ? { 'Setup Cost': displayCurrency(number.initialPrice) } : {}),
+  ...(fields.includes('app_id') ? { 'Linked Application ID': number.appId || dumpValue('Not linked to any application') } : {}),
+  ...(fields.includes('voice_callback_type') ? { 'Voice Callback': number.voiceCallbackType } : {}),
+  ...(fields.includes('voice_callback_value') ? { 'Voice Callback Value': number.voiceCallbackValue } : {}),
+  ...(fields.includes('voice_status_callback') ? { 'Voice Status Callback': number.voiceStatusCallback } : {}),
 });
 
-const displayNumbers = (numbers = [], fields = []) => {
-  console.table(numbers.map((number) => displayNumber(
-    number,
-    fields,
-  )));
+const displayNumbers = async (numbers = [], fields = []) => {
+  if (numbers.length > 0) {
+    console.log(await table(numbers.map((number) => displayNumber(
+      number,
+      fields,
+    ))));
+  }
 };
 
 export const displayFullNumber = (number) => displayNumber(
@@ -39,4 +42,3 @@ export const displayFullNumber = (number) => displayNumber(
 export { displayNumber };
 
 export { displayNumbers };
-

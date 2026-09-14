@@ -28,8 +28,8 @@ export const runUpdateCapabilityTest = async ({ handler, testCase, exitMock }) =
   });
 
   assert.strictEqual(exitMock.mock.callCount(), 0);
-  assertCalledWith(getApplication, app.id);
-  assertCalledWith(updateApplication, expected);
+  assert.deepStrictEqual(getApplication.mock.calls[0].arguments, [app.id]);
+  assert.deepStrictEqual(JSON.parse(JSON.stringify(updateApplication.mock.calls[0].arguments)), JSON.parse(JSON.stringify([expected])));
 };
 
 export const runRemoveCapabilityTest = async ({
@@ -51,10 +51,10 @@ export const runRemoveCapabilityTest = async ({
   });
 
   assert.strictEqual(exitMock.mock.callCount(), 0);
-  assertCalledWith(getApplication, app.id);
+  assert.deepStrictEqual(getApplication.mock.calls[0].arguments, [app.id]);
 
   if (confirmed) {
-    assertCalledWith(updateApplication, expected);
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(updateApplication.mock.calls[0].arguments)), JSON.parse(JSON.stringify([expected])));
     return;
   }
 

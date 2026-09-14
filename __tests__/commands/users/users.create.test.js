@@ -1,18 +1,5 @@
 
-const exitMock = mock.fn();
-const yargs = mock.fn(() => ({ exit: exitMock }));
-
-const __moduleMocks = {
-  'yargs': (() => ({
-    default: yargs,
-  }))(),
-};
-
-
-
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/users/create.js', __moduleMocks);
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { mockConsole } from '../../helpers.js';
 import {
@@ -27,17 +14,24 @@ import {
   addMessengerChannelToUser,
 } from '../../users.js';
 
-suite('Command: vonage users create', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage users create', { concurrency: 1 }, async (ctx) => {
+  const exitMock = mock.fn();
+  const yargs = mock.fn(() => ({ exit: exitMock }));
+
+  ctx.mock.module('yargs', { defaultExport: yargs });
+
+  const { handler } = await import('../../../src/commands/users/create.js');
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  afterEach(() => {
+  ctx.afterEach(() => {
     exitMock.mock.resetCalls();
     yargs.mock.resetCalls();
   });
 
-  test('Will create a user with no options', async () => {
+  await ctx.test('Will create a user with no options', async () => {
     const user = getTestUserForAPI();
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -51,25 +45,21 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     await handler({ SDK: sdkMock });
     assert.strictEqual(exitMock.mock.callCount(), 0);
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       properties: {},
       channels: {},
-    });
+    }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `User ID: ${user.id}`,
-        `Name: ${user.name}`,
-        `Display Name: ${user.displayName}`,
-        `Image URL: ${user.imageUrl}`,
-        `Time to Live: ${user.properties.ttl}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `User ID: ${user.id}`,
+      `Name: ${user.name}`,
+      `Display Name: ${user.displayName}`,
+      `Image URL: ${user.imageUrl}`,
+      `Time to Live: ${user.properties.ttl}`,
+    ].join('\n'), ]);
   });
 
-  test('Will create a user', async () => {
+  await ctx.test('Will create a user', async () => {
     const user = getTestUserForAPI();
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -89,7 +79,7 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       customData: user.properties.customData,
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       displayName: user.displayName,
       imageUrl: user.imageUrl,
       name: user.name,
@@ -97,22 +87,18 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
         ttl: user.properties.ttl,
       },
       channels: {},
-    });
+    }]);
 
-    assertNthCalledWith(
-      console.log,
-      2,
-      [
-        `User ID: ${user.id}`,
-        `Name: ${user.name}`,
-        `Display Name: ${user.displayName}`,
-        `Image URL: ${user.imageUrl}`,
-        `Time to Live: ${user.properties.ttl}`,
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `User ID: ${user.id}`,
+      `Name: ${user.name}`,
+      `Display Name: ${user.displayName}`,
+      `Image URL: ${user.imageUrl}`,
+      `Time to Live: ${user.properties.ttl}`,
+    ].join('\n'), ]);
   });
 
-  test('Will create a user with PSTN channels', async () => {
+  await ctx.test('Will create a user with PSTN channels', async () => {
     const user = addPSTNChannelToUser(addPSTNChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -129,16 +115,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       pstnNumber: user.channels.pstn.map((channel) => channel.number),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         pstn: user.channels.pstn,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with SMS channels', async () => {
+  await ctx.test('Will create a user with SMS channels', async () => {
     const user = addSMSChannelToUser(addSMSChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -155,16 +141,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       smsNumber: user.channels.sms.map((channel) => channel.number),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         sms: user.channels.sms,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with MMS channels', async () => {
+  await ctx.test('Will create a user with MMS channels', async () => {
     const user = addMMSChannelToUser(addMMSChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -181,16 +167,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       mmsNumber: user.channels.mms.map((channel) => channel.number),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         mms: user.channels.mms,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with Viber channels', async () => {
+  await ctx.test('Will create a user with Viber channels', async () => {
     const user = addViberChannelToUser(addViberChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -207,16 +193,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       viberNumber: user.channels.viber.map((channel) => channel.number),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         viber: user.channels.viber,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with SIP channels', async () => {
+  await ctx.test('Will create a user with SIP channels', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -235,16 +221,71 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       sipPassword: user.channels.sip.map((channel) => channel.password),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         sip: user.channels.sip,
       },
-    });
+    }]);
   });
 
-  test('Will not create a user with SIP channels when username is missing', async () => {
+  await ctx.test('Will create a user with partially populated SIP and Websocket channels', async () => {
+    const user = {
+      ...getTestUserForAPI(),
+      channels: {
+        sip: [
+          {
+            uri: 'sip:alice@example.com',
+            username: 'alice',
+            password: 'super-secret',
+          },
+          {
+            uri: 'sip:bob@example.com',
+          },
+        ],
+        websocket: [
+          {
+            uri: 'wss://example.com/socket-1',
+            contentType: 'audio/l16;rate=16000',
+            headers: {
+              'X-Header': 'one',
+            },
+          },
+          {
+            uri: 'wss://example.com/socket-2',
+          },
+        ],
+      },
+    };
+
+    const userMock = mock.fn(() => Promise.resolve(user));
+
+    const sdkMock = {
+      users: {
+        createUser: userMock,
+      },
+    };
+
+    await handler({
+      SDK: sdkMock,
+      name: user.name,
+      sipUrl: user.channels.sip.map((channel) => channel.uri),
+      sipUsername: [user.channels.sip[0].username, ''],
+      sipPassword: [user.channels.sip[0].password, ''],
+      websocketUrl: user.channels.websocket.map((channel) => channel.uri),
+      websocketHeaders: [user.channels.websocket[0].headers, undefined],
+      websocketContentType: [user.channels.websocket[0].contentType, ''],
+    });
+
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
+      name: user.name,
+      properties: {},
+      channels: user.channels,
+    }]);
+  });
+
+  await ctx.test('Will not create a user with SIP channels when username is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -263,10 +304,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(userMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [2]);
   });
 
-  test('Will not create a user with SIP channels when password is missing', async () => {
+  await ctx.test('Will not create a user with SIP channels when password is missing', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -285,10 +326,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(userMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [2]);
   });
 
-  test('Will not create a user with SIP channels when missing a username', async () => {
+  await ctx.test('Will not create a user with SIP channels when missing a username', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -308,10 +349,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(userMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [2]);
   });
 
-  test('Will not create a user with SIP channels when missing a password', async () => {
+  await ctx.test('Will not create a user with SIP channels when missing a password', async () => {
     const user = addSIPChannelToUser(addSIPChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -331,10 +372,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(userMock.mock.callCount(), 0);
-    assertCalledWith(exitMock, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [2]);
   });
 
-  test('Will create a user with Websocket channels', async () => {
+  await ctx.test('Will create a user with Websocket channels', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -353,16 +394,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         websocket: user.channels.websocket,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with Websocket channels and no headers', async () => {
+  await ctx.test('Will create a user with Websocket channels and no headers', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -380,7 +421,7 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       websocketContentType: user.channels.websocket.map((channel) => channel.contentType),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
@@ -391,10 +432,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
           },
         ],
       },
-    });
+    }]);
   });
 
-  test('Will create a user with Websocket channels and no content type', async () => {
+  await ctx.test('Will create a user with Websocket channels and no content type', async () => {
     const user = addWebsocketChannelToUser(getTestUserForAPI());
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -412,7 +453,7 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       websocketHeaders: user.channels.websocket.map((channel) => channel.headers),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
@@ -423,10 +464,10 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
           },
         ],
       },
-    });
+    }]);
   });
 
-  test('Will not create a user with Websocket when missing header', async () => {
+  await ctx.test('Will not create a user with Websocket when missing header', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -448,7 +489,7 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     assert.strictEqual(userMock.mock.callCount(), 0);
   });
 
-  test('Will not create a user with Websocket when missing content type', async () => {
+  await ctx.test('Will not create a user with Websocket when missing content type', async () => {
     const user = addWebsocketChannelToUser(addWebsocketChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -470,7 +511,7 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
     assert.strictEqual(userMock.mock.callCount(), 0);
   });
 
-  test('Will create a user with WhatsApp channels', async () => {
+  await ctx.test('Will create a user with WhatsApp channels', async () => {
     const user = addWhatsAppChannelToUser(addWhatsAppChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -487,16 +528,16 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       whatsAppNumber: user.channels.whatsapp.map((channel) => channel.number),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         whatsapp: user.channels.whatsapp,
       },
-    });
+    }]);
   });
 
-  test('Will create a user with Messenger channels', async () => {
+  await ctx.test('Will create a user with Messenger channels', async () => {
     const user = addMessengerChannelToUser(addMessengerChannelToUser(getTestUserForAPI()));
 
     const userMock = mock.fn(() => Promise.resolve(user));
@@ -513,12 +554,12 @@ suite('Command: vonage users create', { concurrency: 1 }, () => {
       facebookMessengerId: user.channels.messenger.map((channel) => channel.id),
     });
 
-    assertCalledWith(userMock, {
+    assert.deepStrictEqual(userMock.mock.calls[0].arguments, [{
       name: user.name,
       properties: {},
       channels: {
         messenger: user.channels.messenger,
       },
-    });
+    }]);
   });
 });

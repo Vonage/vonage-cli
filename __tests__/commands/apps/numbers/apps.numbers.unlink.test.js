@@ -1,5 +1,5 @@
 process.env.FORCE_COLOR = 0;
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -11,25 +11,22 @@ import { Client } from '@vonage/server-client';
 const confirmMock = mock.fn();
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));
-const __moduleMocks = {
-  '../../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
-  'yargs': (() => ({ default: yargs }))(),
-};
 
 
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-
-const { handler } = await loadModule(import.meta.url, '../../../../src/commands/apps/numbers/unlink.js', __moduleMocks);
-
-suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('../../../../src/ux/confirm.js', { namedExports: { confirm: confirmMock } });
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  const { handler } = await import('../../../../src/commands/apps/numbers/unlink.js');
+  ctx.beforeEach(() => {
     mockConsole();
     confirmMock.mock.resetCalls();
     exitMock.mock.resetCalls();
   });
 
-  test('Will unlink number from an app', async () => {
+  await ctx.test('Will unlink number from an app', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -67,19 +64,22 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
       SDK: sdkMock,
     });
 
-    assertCalledWith(appMock, app.id);
-    assertCalledWith(numbersMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(numbersMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
       index: 1,
       pattern: numberNine.msisdn,
       size: 100,
-    });
-    assertCalledWith(confirmMock, `Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`);
-    assertCalledWith(updateMock, {
+    }])));
+    assert.deepStrictEqual(confirmMock.mock.calls[0].arguments, [`Are you sure you want to unlink ${numberNine.msisdn} from ${app.name}?`]);
+    assert.deepStrictEqual(updateMock.mock.calls[0].arguments, [{
       ...numberNine,
-    });
+    }]);
+    assert.deepStrictEqual(console.log.mock.calls[3 - 1].arguments, ['Number unlinked']);
+    assert.match(console.log.mock.calls[3].arguments[0], new RegExp(`Number: ${escapeRegExp(numberNine.msisdn)}`));
+    assert.match(console.log.mock.calls[3].arguments[0], /Linked Application ID: Not linked to any application/);
   });
 
-  test('Will unlink number from an app and dump json', async () => {
+  await ctx.test('Will unlink number from an app and dump json', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -118,16 +118,14 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
       json: true,
     });
 
-    assertCalledWith(appMock, app.id);
-    assertCalledWith(updateMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateMock.mock.calls[0].arguments, [{
       ...numberNine,
-    });
-    assertCalledWith(console.log, 
-      JSON.stringify(numberNine, null, 2),
-    );
+    }]);
+    assert.deepStrictEqual(console.log.mock.calls[2].arguments, [JSON.stringify(numberNine, null, 2)]);
   });
 
-  test('Will unlink number from an app and dump yaml', async () => {
+  await ctx.test('Will unlink number from an app and dump yaml', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -166,17 +164,15 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
       yaml: true,
     });
 
-    assertCalledWith(appMock, app.id);
-    assertCalledWith(updateMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [app.id]);
+    assert.deepStrictEqual(updateMock.mock.calls[0].arguments, [{
       ...numberNine,
-    });
-    assertCalledWith(console.log, 
-      yaml.stringify(numberNine, null, 2),
-    );
+    }]);
+    assert.deepStrictEqual(console.log.mock.calls[2].arguments, [yaml.stringify(numberNine, null, 2)]);
   });
 
 
-  test('Will not unlink number from an app when user declines', async () => {
+  await ctx.test('Will not unlink number from an app when user declines', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -218,9 +214,10 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
     assert.ok(numbersMock.mock.callCount() > 0);
     assert.ok(confirmMock.mock.callCount() > 0);
     assert.strictEqual(updateMock.mock.callCount(), 0);
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, ['Aborted']);
   });
 
-  test('Will exit when number is not linked to an application', async () => {
+  await ctx.test('Will exit when number is not linked to an application', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -230,7 +227,7 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = mock.fn(() => Promise.resolve(app));
-    const numbersMock = mock.fn(() => Promise.resolve({ numbers: [numberNine] }));
+    const numbersMock = mock.fn(() => Promise.resolve({ count: 1, numbers: [numberNine] }));
     const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
     confirmMock.mock.mockImplementation(() => Promise.resolve(false));
 
@@ -255,9 +252,10 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
     assert.ok(numbersMock.mock.callCount() > 0);
     assert.strictEqual(confirmMock.mock.callCount(), 0);
     assert.strictEqual(updateMock.mock.callCount(), 0);
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, ['Number is not linked to an application']);
   });
 
-  test('Will exit when number is linked to another application', async () => {
+  await ctx.test('Will exit when number is linked to another application', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -269,6 +267,7 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
     const otherAppId = faker.string.uuid();
     const appMock = mock.fn(() => Promise.resolve(app));
     const numbersMock = mock.fn(() => Promise.resolve({
+      count: 1,
       numbers: [
         {
           ...numberNine,
@@ -300,9 +299,10 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
     assert.ok(numbersMock.mock.callCount() > 0);
     assert.strictEqual(confirmMock.mock.callCount(), 0);
     assert.strictEqual(updateMock.mock.callCount(), 0);
+    assert.deepStrictEqual(console.error.mock.calls[0].arguments, ['Number is not linked to this application']);
   });
 
-  test('Will exit when no numbers are found', async () => {
+  await ctx.test('Will exit when no numbers are found', async () => {
     const app = Client.transformers.camelCaseObjectKeys(
       getBasicApplication(),
       true,
@@ -336,9 +336,9 @@ suite('Command: vonage apps numbers link', { concurrency: 1 }, () => {
       SDK: sdkMock,
     });
 
-    assertCalledWith(appMock, app.id);
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [app.id]);
     assert.strictEqual(confirmMock.mock.callCount(), 0);
     assert.strictEqual(updateMock.mock.callCount(), 0);
+    assert.deepStrictEqual(console.error.mock.calls[0].arguments, ['Number not found']);
   });
 });
-

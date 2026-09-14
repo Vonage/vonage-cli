@@ -1,5 +1,5 @@
 process.env.FORCE_COLOR = 0;
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import yaml from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -12,28 +12,24 @@ const writeFileMock = mock.fn();
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));
 
-const __moduleMocks = {
-  'yargs': (() => ({ default: yargs }))(),
-  '../../../src/ux/confirm.js': (() => ({ confirm: confirmMock }))(),
-  '../../../src/utils/fs.js': (() => ({ writeFile: writeFileMock }))(),
-};
 
 
 
 
 
-
-const { handler } = await loadModule(import.meta.url, '../../../src/commands/apps/create.js', __moduleMocks);
-
-suite('Command: vonage apps create', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage apps create', { concurrency: 1 }, async (ctx) => {
+  ctx.mock.module('yargs', { defaultExport: yargs });
+  ctx.mock.module('../../../src/ux/confirm.js', { namedExports: { confirm: confirmMock } });
+  ctx.mock.module('../../../src/utils/fs.js', { namedExports: { writeFile: writeFileMock } });
+  const { handler } = await import('../../../src/commands/apps/create.js');
+  ctx.beforeEach(() => {
     mockConsole();
     confirmMock.mock.resetCalls();
     writeFileMock.mock.resetCalls();
     exitMock.mock.resetCalls();
   });
 
-  test('Should create app and save private key', async () => {
+  await ctx.test('Should create app and save private key', async () => {
     const privateKeyFile = faker.system.filePath();
     const app = getBasicApplication();
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
@@ -55,7 +51,7 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(confirmMock.mock.callCount(), 0);
-    assertCalledWith(appMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [{
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -63,27 +59,21 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
       keys: {
         publicKey: undefined,
       },
-    });
+    }]);
 
-    assertCalledWith(writeFileMock, 
-      privateKeyFile,
-      app.keys.privateKey,
-    );
+    assert.deepStrictEqual(writeFileMock.mock.calls[0].arguments, [privateKeyFile, app.keys.privateKey]);
 
-    assertNthCalledWith(console.log, 1, 'Application created');
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, ['Application created']);
 
-    assertNthCalledWith(console.log, 
-      2,
-      [
-        `Name: ${app.name}`,
-        `Application ID: ${app.id}`,
-        'Improve AI: Off',
-        'Private/Public Key: Set',
-      ].join('\n'),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[2 - 1].arguments, [[
+      `Name: ${app.name}`,
+      `Application ID: ${app.id}`,
+      'Improve AI: Off',
+      'Private/Public Key: Set',
+    ].join('\n')]);
   });
 
-  test('Should create app and dump private key', async () => {
+  await ctx.test('Should create app and dump private key', async () => {
     const privateKeyFile = faker.system.filePath();
     const app = getBasicApplication();
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
@@ -108,7 +98,7 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
       SDK: sdkMock,
     });
 
-    assertCalledWith(appMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [{
       name: app.name,
       privacy: {
         improveAI: true,
@@ -116,15 +106,15 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
       keys: {
         publicKey: app.keys.publicKey,
       },
-    });
+    }]);
 
     assert.ok(writeFileMock.mock.callCount() > 0);
 
-    assertNthCalledWith(console.log, 5, 'Private key:');
-    assertNthCalledWith(console.log, 6, app.keys.privateKey);
+    assert.deepStrictEqual(console.log.mock.calls[5 - 1].arguments, ['Private key:']);
+    assert.deepStrictEqual(console.log.mock.calls[6 - 1].arguments, [app.keys.privateKey]);
   });
 
-  test('Should create app and output json', async () => {
+  await ctx.test('Should create app and output json', async () => {
     const app = getBasicApplication();
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
@@ -143,7 +133,7 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(confirmMock.mock.callCount(), 0);
-    assertCalledWith(appMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [{
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -151,20 +141,17 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
       keys: {
         publicKey: undefined,
       },
-    });
+    }]);
 
     assert.strictEqual(console.log.mock.callCount(), 1);
-    assertNthCalledWith(console.log, 
-      1,
-      JSON.stringify(
-        Client.transformers.snakeCaseObjectKeys(app, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [JSON.stringify(
+      Client.transformers.snakeCaseObjectKeys(app, true),
+      null,
+      2,
+    )]);
   });
 
-  test('Should create app and output yaml', async () => {
+  await ctx.test('Should create app and output yaml', async () => {
     const app = getBasicApplication();
     app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
     app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
@@ -183,7 +170,7 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
     });
 
     assert.strictEqual(confirmMock.mock.callCount(), 0);
-    assertCalledWith(appMock, {
+    assert.deepStrictEqual(appMock.mock.calls[0].arguments, [{
       name: app.name,
       privacy: {
         improveAI: undefined,
@@ -191,17 +178,41 @@ suite('Command: vonage apps create', { concurrency: 1 }, () => {
       keys: {
         publicKey: undefined,
       },
-    });
+    }]);
 
     assert.strictEqual(console.log.mock.callCount(), 1);
-    assertNthCalledWith(console.log, 
-      1,
-      yaml.stringify(
-        Client.transformers.snakeCaseObjectKeys(app, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[1 - 1].arguments, [yaml.stringify(
+      Client.transformers.snakeCaseObjectKeys(app, true),
+      null,
+      2,
+    )]);
+  });
+
+  await ctx.test('Should create app and dump private key when saving it fails', async () => {
+    const privateKeyFile = faker.system.filePath();
+    const app = getBasicApplication();
+    app.keys.privateKey = `-----BEGIN PRIVATE KEY-----\n${faker.string.alpha(16)}\n-----END PRIVATE KEY-----`;
+    app.keys.publicKey = `-----BEGIN PUBLIC KEY-----\n${faker.string.alpha(16)}\n-----END PUBLIC KEY-----`;
+
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const sdkMock = {
+      applications: {
+        createApplication: appMock,
+      },
+    };
+
+    const error = new Error('Disk full');
+    writeFileMock.mock.mockImplementation(() => Promise.reject(error));
+
+    await handler({
+      name: app.name,
+      privateKeyFile,
+      SDK: sdkMock,
+    });
+
+    assert.deepStrictEqual(writeFileMock.mock.calls[0].arguments, [privateKeyFile, app.keys.privateKey]);
+    assert.deepStrictEqual(console.error.mock.calls[0].arguments, ['Error saving private key:', error]);
+    assert.deepStrictEqual(console.log.mock.calls[5 - 1].arguments, ['Private key:']);
+    assert.deepStrictEqual(console.log.mock.calls[6 - 1].arguments, [app.keys.privateKey]);
   });
 });
-

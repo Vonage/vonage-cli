@@ -1,10 +1,10 @@
-import { suite, test } from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { aclDiff, status } from '../../src/utils/aclDiff.js';
 import { dumpAclDiff } from '../../src/ux/dumpAcl.js';
 
-suite('Utils: ACL Diff', () => {
-  test('Will pass when path in token and acl match', () => {
+test('Utils: ACL Diff', async (ctx) => {
+  await ctx.test('Will pass when path in token and acl match', () => {
     const tokenAcl = {
       'paths': {
         '/*/rtc/**': {},
@@ -42,7 +42,7 @@ suite('Utils: ACL Diff', () => {
     ].join('\n'));
   });
 
-  test('Will pass when path in token but not acl', () => {
+  await ctx.test('Will pass when path in token but not acl', () => {
     const tokenAcl = {
       'paths': {
         '/*/rtc/**': {},
@@ -85,7 +85,7 @@ suite('Utils: ACL Diff', () => {
     ].join('\n'));
   });
 
-  test('Will pass when filters in the flag but not the token', () => {
+  await ctx.test('Will pass when filters in the flag but not the token', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -116,7 +116,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['ℹ️ [ANY]  /messages/* (No filter is specified in the token)'].join('\n'));
   });
 
-  test('Will fail when methods in token but not flag', () => {
+  await ctx.test('Will fail when methods in token but not flag', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -144,7 +144,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (methods present in token)'].join('\n'));
   });
 
-  test('Will fail when methods in flag but not token', () => {
+  await ctx.test('Will fail when methods in flag but not token', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -173,7 +173,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['❌ [PUT, DELETE]  /messages/* (methods missing in token)'].join('\n'));
   });
 
-  test('Will fail when methods are mismatched', () => {
+  await ctx.test('Will fail when methods are mismatched', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -203,7 +203,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['❌ [GET, DELETE]  /messages/* (methods mismatch)'].join('\n'));
   });
 
-  test('Will fail when filters in token but not flag', () => {
+  await ctx.test('Will fail when filters in token but not flag', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -233,7 +233,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (filters present in token)'].join('\n'));
   });
 
-  test('Will fail when filters are mismatched', () => {
+  await ctx.test('Will fail when filters are mismatched', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -268,7 +268,7 @@ suite('Utils: ACL Diff', () => {
     assert.deepStrictEqual(dumpAclDiff(results), ['❌ [ANY]  /messages/* (filters mismatch)'].join('\n'));
   });
 
-  test('Will fail when both filters and methods are mismatched', () => {
+  await ctx.test('Will fail when both filters and methods are mismatched', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -308,7 +308,7 @@ suite('Utils: ACL Diff', () => {
     );
   });
 
-  test('Will fail when filters are missing and methods are mismatched', () => {
+  await ctx.test('Will fail when filters are missing and methods are mismatched', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -344,7 +344,7 @@ suite('Utils: ACL Diff', () => {
     );
   });
 
-  test('Will fail when filters are present and methods are mismatched', () => {
+  await ctx.test('Will fail when filters are present and methods are mismatched', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {
@@ -381,7 +381,7 @@ suite('Utils: ACL Diff', () => {
     );
   });
 
-  test('Will fail when filters are present and methods are missing', () => {
+  await ctx.test('Will fail when filters are present and methods are missing', () => {
     const tokenAcl = {
       'paths': {
         '/messages/*': {

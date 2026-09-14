@@ -1,4 +1,4 @@
-import { suite, mock, test } from 'node:test';
+import { mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 import YAML from 'yaml';
 import { faker } from '@faker-js/faker';
@@ -8,12 +8,13 @@ import { getTestMemberForAPI } from '../../members.js';
 import { getTestConversationForAPI } from '../../conversations.js';
 import { Client } from '@vonage/server-client';
 
-suite('Command: vonage members create', { concurrency: 1 }, () => {
-  beforeEach(() => {
+test('Command: vonage members create', { concurrency: 1 }, async (ctx) => {
+
+  ctx.beforeEach(() => {
     mockConsole();
   });
 
-  test('Will update a member without reason', async () => {
+  await ctx.test('Will update a member without reason', async () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
@@ -39,18 +40,15 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      updateMemberMock,
-      conversation.id,
+    assert.deepStrictEqual(updateMemberMock.mock.calls[0].arguments, [conversation.id,
       member.id,
       {
         state: 'joined',
         reason: {},
-      },
-    );
+      }]);
   });
 
-  test('Will update a member with reason', async () => {
+  await ctx.test('Will update a member with reason', async () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
@@ -81,9 +79,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      updateMemberMock,
-      conversation.id,
+    assert.deepStrictEqual(updateMemberMock.mock.calls[0].arguments, [conversation.id,
       member.id,
       {
         state: 'joined',
@@ -92,11 +88,10 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           code: reasonCode,
           text: reasonText,
         },
-      },
-    );
+      }]);
   });
 
-  test('Will update a member and return json', async () => {
+  await ctx.test('Will update a member and return json', async () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
@@ -128,9 +123,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      updateMemberMock,
-      conversation.id,
+    assert.deepStrictEqual(updateMemberMock.mock.calls[0].arguments, [conversation.id,
       member.id,
       {
         state: 'joined',
@@ -139,20 +132,16 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           code: reasonCode,
           text: reasonText,
         },
-      },
-    );
+      }]);
 
-    assertCalledWith(
-      console.log,
-      JSON.stringify(
-        Client.transformers.snakeCaseObjectKeys(member, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, [JSON.stringify(
+      Client.transformers.snakeCaseObjectKeys(member, true),
+      null,
+      2,
+    )]);
   });
 
-  test('Will update a member and return yaml', async () => {
+  await ctx.test('Will update a member and return yaml', async () => {
     const member = getTestMemberForAPI();
     const conversation = getTestConversationForAPI();
 
@@ -184,9 +173,7 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
 
     assert.strictEqual(memberMock.mock.callCount(), 1);
 
-    assertCalledWith(
-      updateMemberMock,
-      conversation.id,
+    assert.deepStrictEqual(updateMemberMock.mock.calls[0].arguments, [conversation.id,
       member.id,
       {
         state: 'joined',
@@ -195,16 +182,12 @@ suite('Command: vonage members create', { concurrency: 1 }, () => {
           code: reasonCode,
           text: reasonText,
         },
-      },
-    );
+      }]);
 
-    assertCalledWith(
-      console.log,
-      YAML.stringify(
-        Client.transformers.snakeCaseObjectKeys(member, true),
-        null,
-        2,
-      ),
-    );
+    assert.deepStrictEqual(console.log.mock.calls[0].arguments, [YAML.stringify(
+      Client.transformers.snakeCaseObjectKeys(member, true),
+      null,
+      2,
+    )]);
   });
 });
