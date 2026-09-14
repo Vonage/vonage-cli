@@ -33,6 +33,7 @@ export const command = 'show';
 
 export const description = ['Show configured Vonage API authentication information'].join('\n');
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options(showFlags)
   .example(
     dumpCommand('vonage auth show [--show-all]'),
@@ -45,6 +46,7 @@ export const builder = (yargs) => yargs.options(showFlags)
     ...configLoadingHelp(),
 
   ].join('\n'));
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Displaying auth information');

@@ -18,6 +18,7 @@ export const command = 'mock <api>';
 
 export const desc = 'Launch a mock server for Vonage APIs using Prism';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional('api', {
     describe: 'The API to mock',
@@ -71,6 +72,7 @@ export const builder = (yargs) => yargs
     'vonage mock <api> [--latest]',
     'Force re-download the latest SMS API spec and start the server',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { api, port, host, downloadOnly, latest } = argv;

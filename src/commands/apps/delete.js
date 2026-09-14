@@ -8,7 +8,7 @@ export const command = 'delete <id>';
 
 export const desc = 'Delete application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -24,6 +24,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps delete <id>'),
     'Delete an application',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info(`Deleting application: ${argv.id}`);

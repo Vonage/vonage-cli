@@ -8,6 +8,7 @@ export const command = '<id> voice';
 
 export const description = 'Update voice capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> voice [--voice-event-url <url>]'),
     'Update voice capability webhooks',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

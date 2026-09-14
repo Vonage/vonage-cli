@@ -8,6 +8,7 @@ export const command = 'show <conversation-id>';
 
 export const desc = 'Show conversation';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
@@ -21,6 +22,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage conversations show <conversation-id>'),
     'Show a conversation',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, conversationId } = argv;

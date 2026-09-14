@@ -10,7 +10,7 @@ export const command = 'rm <id> <which>';
 
 export const description = 'Remove a capability from an application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
@@ -35,6 +35,7 @@ export const builder = (yargs) => yargs
       describe: 'The application ID',
     },
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;
@@ -66,7 +67,7 @@ export const handler = async (argv) => {
     );
   }
 
-  console.log( okToRemove
+  console.log(okToRemove
     ? `Removed ${capabilityLabels[which]} capability from ${app.name}`
     : `Did not remove ${capabilityLabels[which]} capability from ${app.name}`,
   );

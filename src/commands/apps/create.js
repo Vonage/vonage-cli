@@ -13,7 +13,7 @@ export const command = 'create <name>';
 
 export const desc = 'Create a new application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'name',
@@ -57,6 +57,7 @@ export const builder = (yargs) => yargs
     `After creating the application, you can use ${dumpCommand('vonage apps capabilities')} to manage the capabilities.`,
     `${chalk.bold('Note:')} The private key is only shown once and cannot be retrieved later. You will have to use ${dumpCommand('vonage apps update')} to generate a new private key.`,
   ].join('\n'));
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Creating new application');
@@ -88,7 +89,7 @@ export const handler = async (argv) => {
   } catch (error) {
     dumpPrivateKey = true;
     console.debug(error.name);
-    switch(error.name) {
+    switch (error.name) {
     case 'UserDeclinedError':
       process.stderr.write('\rSaving private key ... User declined\n');
       break;

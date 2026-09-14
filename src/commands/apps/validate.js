@@ -14,7 +14,7 @@ export const description = 'Validate an application';
 
 export const command = 'validate <id>';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -79,7 +79,6 @@ export const builder = (yargs) => yargs
       describe: 'Validate the application has these numbers linked',
       type: 'string',
       group: flagGroup,
-      /* istanbul ignore next */
       coerce: (numbers) => numbers.split(','),
     },
     'api-key': apiKey,
@@ -109,6 +108,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps validate <id> [--linked-numbers <msisdn>,<msisdn>]'),
     'Validate application has the specified linked numbers',
   );
+/* node:coverage enable */
 
 const appHasCapability = (capability, app) => getAppCapabilities(app).includes(capability);
 

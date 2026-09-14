@@ -9,6 +9,7 @@ export const command = 'list';
 
 export const desc = 'List conversations';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   'page-size': {
     describe: 'Number of conversations to return per page',
@@ -24,6 +25,7 @@ export const builder = (yargs) => yargs.options({
     dumpCommand('vonage conversations list [--page-size <count>]'),
     'List conversations',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, pageSize, cursor } = argv;

@@ -17,7 +17,7 @@ export const command = 'update <id>';
 
 export const desc = 'Update a user';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -35,6 +35,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage users update <id> [--name <name>]'),
     'Update a user',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Updating user');

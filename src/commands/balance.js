@@ -12,6 +12,7 @@ export const command = 'balance';
 
 export const desc = 'Check your account balance';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
@@ -23,6 +24,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage balance'),
     'Show your account balance',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, yaml, json } = argv;

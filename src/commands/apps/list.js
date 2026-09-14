@@ -64,7 +64,7 @@ export const command = 'list';
 
 export const desc = 'List applications';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   'api-key': apiKey,
   'api-secret': apiSecret,
@@ -86,6 +86,7 @@ export const builder = (yargs) => yargs.options({
     dumpCommand('vonage apps list [--capability <capability>,<capability>]'),
     'List applications that have any specified capability',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Listing applications');

@@ -8,6 +8,7 @@ export const command = '<id> network_apis';
 
 export const description = 'Update network APIs capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> network_apis [--network-app-id <id>] [--network-redirect-url <url>]'),
     'Update network APIs capability',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

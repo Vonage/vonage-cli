@@ -40,6 +40,7 @@ export const command = 'list';
 
 export const desc = 'List all numbers that you own';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options(flags)
   .example(
@@ -47,6 +48,7 @@ export const builder = (yargs) => yargs
     'List owned numbers',
   )
   .epilogue(`To list numbers that are linked to an application, use ${dumpCommand('vonage apps numbers list <id>')}.`);
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, country, limit, pattern, searchPattern } = argv;
@@ -90,9 +92,9 @@ export const handler = async (argv) => {
 
   const qualifiers = [
     ...(country && [` in ${getCountryName(country)}`]) || [],
-    ...((pattern && searchPattern === 'contains' ) && [` containing ${pattern}`]) || [],
-    ...((pattern && searchPattern === 'ends' ) && [` ending with ${pattern}`]) || [],
-    ...((pattern && searchPattern === 'starts' ) && [` starting with ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'contains') && [` containing ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'ends') && [` ending with ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'starts') && [` starting with ${pattern}`]) || [],
   ];
 
   if (totalNumbers === 0) {

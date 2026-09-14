@@ -8,6 +8,7 @@ export const command = '<id> messages';
 
 export const description = 'Update messages capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> messages [--messages-inbound-url <url>] [--messages-status-url <url>]'),
     'Update messages capability webhooks',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

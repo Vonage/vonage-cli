@@ -8,6 +8,7 @@ export const command = 'delete <id>';
 
 export const desc = 'Delete conversation';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -23,6 +24,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage conversations delete <id>'),
     'Delete a conversation',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id } = argv;

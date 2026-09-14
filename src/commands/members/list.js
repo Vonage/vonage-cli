@@ -9,7 +9,7 @@ export const command = 'list <conversation-id>';
 
 export const desc = 'List members';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
@@ -34,6 +34,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage members list <conversation-id>'),
     'List members in a conversation',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('List members');

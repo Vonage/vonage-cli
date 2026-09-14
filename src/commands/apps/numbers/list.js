@@ -14,6 +14,7 @@ export const command = 'list <id>';
 
 export const desc = 'Show all numbers linked to an application';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -36,6 +37,7 @@ export const builder = (yargs) => yargs
     'List numbers linked to an application',
   )
   .epilogue(['The --fail flag will cause the command to exit with 15 code if the application does not have the voice or messages capability enabled.'].join('\n'));
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { id, SDK, fail } = argv;

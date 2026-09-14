@@ -10,6 +10,7 @@ export const command = 'check';
 
 export const description = 'Checks Vonage credentials';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   'local': {
     describe: 'Use local configuration',
@@ -26,6 +27,7 @@ export const builder = (yargs) => yargs.options({
     'Check the local configuration',
   )
   .epilogue([`By default, the global configuration is checked. Use the ${dumpCommand('--local')} flag to check the local configuration.`].join('\n'));
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Displaying auth information');

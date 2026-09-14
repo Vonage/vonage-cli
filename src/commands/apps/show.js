@@ -10,7 +10,7 @@ export const command = 'show <id>';
 
 export const desc = 'Get information for an application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -28,6 +28,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps show <id>'),
     'Show application details',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info(`Show information for application ${argv.id}`);

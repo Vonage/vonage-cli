@@ -6,6 +6,7 @@ export const command = 'auth [command]';
 
 export const description = 'Manage authentication information';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .commandDir('auth')
   .example(
@@ -17,5 +18,6 @@ export const builder = (yargs) => yargs
     '',
     `For more information, type ${dumpCommand('vonage auth show --help')}`,
   ].join('\n'));
+/* node:coverage enable */
 
 export { handler };

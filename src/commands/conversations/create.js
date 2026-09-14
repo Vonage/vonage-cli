@@ -110,6 +110,7 @@ export const command = 'create';
 
 export const desc = 'Create a conversation';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options({
     ...conversationFlags,
@@ -121,6 +122,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage conversations create [--name <name>]'),
     'Create a conversation',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Creating conversation');

@@ -9,7 +9,7 @@ export const command = 'list';
 
 export const desc = 'List users';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   'page-size': {
     describe: 'Number of users to return per page',
@@ -40,6 +40,7 @@ export const builder = (yargs) => yargs.options({
     dumpCommand('vonage users list'),
     'List a page of users',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, pageSize, cursor } = argv;

@@ -9,7 +9,7 @@ export const command = 'show <id>';
 
 export const desc = 'Show user';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -26,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage users show <id>'),
     'Show a user',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id } = argv;

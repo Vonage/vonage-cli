@@ -8,6 +8,7 @@ export const command = '<id> video';
 
 export const description = 'Update video capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> video [--video-archive-status-url <url>]'),
     'Update video capability webhooks',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

@@ -33,7 +33,7 @@
     "lint:fix": "eslint --fix .",
     "prepare": "husky",
     "test": "node --test --import ./__tests__/setup.js",
-    "test:coverage": "node --test --import ./__tests__/setup.js --experimental-test-coverage --test-reporter=junit --test-reporter-destination=junit.xml --test-reporter=spec --test-reporter-destination=stdout",
+    "test:coverage": "node --test --import ./__tests__/setup.js --experimental-test-coverage --test-reporter=junit --test-reporter-destination=junit.xml --test-reporter=spec --test-reporter-destination=stdout --test-coverage-include=\"src/**/*.js\"",
     "test:watch": "node --test --watch --import ./__tests__/setup.js"
   },
   "lint-staged": {

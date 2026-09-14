@@ -29,6 +29,7 @@ export const command = 'buy <country> <msisdn>';
 
 export const desc = 'Purchase a number';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'country',
@@ -51,6 +52,7 @@ export const builder = (yargs) => yargs
     'Buy a number',
   )
   .epilogue(`To search for a number to purchase, use ${dumpCommand('vonage numbers search')}.`);
+/* node:coverage enable */
 
 
 export const handler = async (argv) => {

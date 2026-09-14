@@ -40,6 +40,7 @@ export const command = 'create';
 
 export const description = 'Create a JWT token for authentication';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options(jwtFlags)
   .example(
     dumpCommand('vonage jwt create'),
@@ -60,6 +61,7 @@ export const builder = (yargs) => yargs.options(jwtFlags)
     '',
     `If you want to create a token with a different private key or application id, you can use the ${dumpCommand('--private-key')} and ${dumpCommand('--app-id')} flags to overwrite.`,
   ].join('\n'));
+/* node:coverage enable */
 
 export const handler = (argv) => {
   console.info('Creating JWT token');

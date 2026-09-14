@@ -12,6 +12,7 @@ export const command = 'unlink <id> <msisdn>';
 
 export const desc = 'Unlink a number from an application';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -35,6 +36,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps numbers unlink <id> <msisdn>'),
     'Unlink a number from an application',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
@@ -46,7 +48,7 @@ export const handler = async (argv) => {
     id,
   );
 
-  const  numbers  = await loadOwnedNumbersFromSDK(
+  const numbers = await loadOwnedNumbersFromSDK(
     SDK,
     {
       msisdn: msisdn,
@@ -71,7 +73,7 @@ export const handler = async (argv) => {
     return;
   }
 
-  const userConfirmedUnlink= await confirm(`Are you sure you want to unlink ${msisdn} from ${application.name}?`);
+  const userConfirmedUnlink = await confirm(`Are you sure you want to unlink ${msisdn} from ${application.name}?`);
   console.log('');
 
   if (!userConfirmedUnlink) {

@@ -8,6 +8,7 @@ export const command = '<id> rtc';
 
 export const description = 'Update rtc capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> rtc [--rtc-event-url <url>] [--rtc-event-method <method>]'),
     'Update RTC capability',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

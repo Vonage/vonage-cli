@@ -21,6 +21,7 @@ export const command = 'cancel <country> <msisdn>';
 
 export const desc = 'Cancel a number';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'country',
@@ -42,6 +43,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage numbers cancel <country> <msisdn>'),
     'Cancel an owned number',
   );
+/* node:coverage enable */
 
 
 export const handler = async (argv) => {

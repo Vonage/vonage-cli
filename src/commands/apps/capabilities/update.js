@@ -4,6 +4,7 @@ export const command = 'update <id> <which>';
 
 export const description = 'Update application capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.commandDir('update')
   .positional(
     'id',
@@ -16,3 +17,4 @@ export const builder = (yargs) => yargs.commandDir('update')
     dumpCommand('vonage apps capabilities update <id> <which>'),
     'Update an application capability',
   );
+/* node:coverage enable */

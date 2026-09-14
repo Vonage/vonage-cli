@@ -1,16 +1,18 @@
 /* istanbul ignore file */
-import { handler} from './users/list.js';
+import { handler } from './users/list.js';
 import { dumpCommand } from '../ux/dump.js';
 
 export const command = 'users [command]';
 
 export const desc = 'Manage users';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.commandDir('users')
   .example(
     dumpCommand('vonage users list'),
     'List users',
   )
   .epilogue(`When no command is given, ${dumpCommand('vonage users')} will act the same as ${dumpCommand('vonage users list')}. Run ${dumpCommand('vonage users list --help')} to see options.`);
+/* node:coverage enable */
 
 export { handler };

@@ -151,6 +151,7 @@ export const command = 'validate <token>';
 
 export const description = 'Validate a JWT token.';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   sub: jwtFlags.sub,
   acl: jwtFlags.acl,
@@ -177,6 +178,7 @@ export const builder = (yargs) => yargs.options({
       describe: 'The JWT token to validate',
     },
   );
+/* node:coverage enable */
 
 export const handler = (argv) => {
   console.info('Validating JWT token');

@@ -58,7 +58,8 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage tunnel ngrok <id> [--port <port>]'),
     'Open an ngrok tunnel for an application',
   );
-/* node:coverage enable  */
+/* node:coverage enable */
+
 const updateHooks = (config, ngrokUrl) => Object.entries(config).reduce(
   (acc, [key, value]) => {
     const varType = Array.isArray(value) ? 'array' : typeof value;

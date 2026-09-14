@@ -15,6 +15,7 @@ export const command = 'link <id> <msisdn>';
 
 export const desc = 'Link a number to an application';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -38,6 +39,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps numbers link <id> <msisdn>'),
     'Link a number to an application',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { id, SDK, msisdn } = argv;

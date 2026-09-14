@@ -17,7 +17,7 @@ export const command = 'init';
 
 export const desc = 'Interactively create a new application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options({
     'api-key': apiKey,
@@ -30,6 +30,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps init'),
     'Create a new application interactively',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Interactively creating application');

@@ -8,6 +8,7 @@ export const command = '<id> verify';
 
 export const description = 'Update verify capabilities';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -25,6 +26,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps capabilities update <id> verify [--verify-status-url <url>]'),
     'Update verify capability',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, id, which } = argv;

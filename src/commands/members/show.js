@@ -11,7 +11,7 @@ export const command = 'show <conversation-id> <member-id>';
 
 export const desc = 'Show a member. "me" is not supported as the CLI will automatically generate the JWT token. ';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
@@ -34,6 +34,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage members show <conversation-id> <member-id>'),
     'Show a conversation member',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Show member');

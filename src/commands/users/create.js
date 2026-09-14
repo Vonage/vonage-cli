@@ -198,7 +198,7 @@ export const command = 'create';
 
 export const desc = 'Create a user';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .options({
     ...userFlags,
@@ -209,6 +209,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage users create [--name <name>]'),
     'Create a user',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Creating user');

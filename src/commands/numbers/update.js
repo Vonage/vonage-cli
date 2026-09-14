@@ -37,6 +37,7 @@ export const command = 'update <country> <msisdn>';
 
 export const desc = 'Update a number';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'country',
@@ -59,6 +60,7 @@ export const builder = (yargs) => yargs
     'Update a number',
   )
   .epilogue('It is better to use application webhooks as they offer more flexibility and control over the number\'s behavior.');
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, country, msisdn } = argv;

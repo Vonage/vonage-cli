@@ -14,6 +14,7 @@ export const command = 'create <conversation-id>';
 
 export const desc = 'Create a member in a conversation';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
@@ -216,6 +217,7 @@ export const builder = (yargs) => yargs
     'Create a member in a conversation',
   )
   .demandOption(['state', 'channel-from-type']);
+/* node:coverage enable */
 
 
 const addChannelToMember = (member, argv) => {

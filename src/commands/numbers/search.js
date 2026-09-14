@@ -15,6 +15,7 @@ export const command = 'search <country>';
 
 export const desc = 'Search for numbers for purchase';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'country',
@@ -48,7 +49,7 @@ export const builder = (yargs) => yargs
     'limit': {
       describe: 'How many to search for',
       default: 10,
-      coerce: coerceNumber('limit', { min: 1, max: 100}),
+      coerce: coerceNumber('limit', { min: 1, max: 100 }),
       group: 'Numbers',
     },
     'api-key': apiKey,
@@ -60,6 +61,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage numbers search <country> [--pattern <pattern>]'),
     'Search for numbers to buy',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const { SDK, page, features, country, limit, type, pattern, searchPattern } = argv;
@@ -110,9 +112,9 @@ export const handler = async (argv) => {
 
   const qualifiers = [
     ` available for purchase in ${getCountryName(country)}`,
-    ...((pattern && searchPattern === 'contains' ) && [` containing ${pattern}`]) || [],
-    ...((pattern && searchPattern === 'ends' ) && [` ending with ${pattern}`]) || [],
-    ...((pattern && searchPattern === 'starts' ) && [` starting with ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'contains') && [` containing ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'ends') && [` ending with ${pattern}`]) || [],
+    ...((pattern && searchPattern === 'starts') && [` starting with ${pattern}`]) || [],
     ...((features && features.length > 0) && [` having the ${features.join(', ')} ${features.length > 1 ? 'features' : 'feature'}`]) || [],
   ];
 

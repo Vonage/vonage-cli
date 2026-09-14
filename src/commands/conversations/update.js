@@ -13,7 +13,7 @@ export const command = 'update <id>';
 
 export const desc = 'Update conversation';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -59,6 +59,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage conversations update <id> [--name <name>]'),
     'Update a conversation',
   );
+/* node:coverage enable */
 
 const updateCallback = ({
   callbackEventMask,

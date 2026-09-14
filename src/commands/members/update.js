@@ -11,6 +11,7 @@ export const command = 'update <conversation-id> <member-id>';
 
 export const desc = 'Update a member';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'conversation-id',
@@ -55,6 +56,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage members update <conversation-id> <member-id> [--state <state>]'),
     'Update a conversation member',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info('Update member');

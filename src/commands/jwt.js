@@ -5,10 +5,12 @@ export const command = 'jwt <command>';
 
 export const desc = 'Manage JWT tokens';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.commandDir('jwt')
   .example(
     dumpCommand('vonage jwt create'),
     'Create a JWT',
   );
+/* node:coverage enable */
 
-export const handler = () => {};
+export const handler = () => { };

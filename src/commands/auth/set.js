@@ -30,6 +30,7 @@ export const command = 'set';
 
 export const description = 'Set authentication information';
 
+/* node:coverage disable */
 export const builder = (yargs) => yargs.options({
   'local': {
     describe: 'Save local configuration only',
@@ -47,6 +48,7 @@ export const builder = (yargs) => yargs.options({
     'Set authentication values',
   )
   .demandOption(['api-key', 'api-secret']);
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   const apiKeySecret = await setApiKeyAndSecret(

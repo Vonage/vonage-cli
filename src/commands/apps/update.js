@@ -10,7 +10,7 @@ export const command = 'update <id>';
 
 export const desc = 'Update an application';
 
-/* istanbul ignore next */
+/* node:coverage disable */
 export const builder = (yargs) => yargs
   .positional(
     'id',
@@ -41,6 +41,7 @@ export const builder = (yargs) => yargs
     dumpCommand('vonage apps update <id> [--name <name>]'),
     'Update an application name',
   );
+/* node:coverage enable */
 
 export const handler = async (argv) => {
   console.info(`Updating application: ${argv.id}`);
