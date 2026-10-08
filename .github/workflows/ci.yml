@@ -42,6 +42,9 @@ jobs:
       - name: Install packages
         run: npm i --ignore-scripts
 
+      - name: Create coverage results directory
+        run: mkdir ./test-results
+
       - name: Test
         if: matrix.node != '22.x'
         run: NO_COLOR=1 node --test --test-reporter=spec --test-reporter-destination=stdout --import ./__tests__/setup.js
@@ -49,12 +52,6 @@ jobs:
       - name: Test
         if: matrix.node == '22.x'
         run: NO_COLOR=1 node --test --experimental-test-coverage --test-reporter=junit --test-reporter-destination=./test-results/junit.xml --test-reporter=spec --test-reporter-destination=stdout --import ./__tests__/setup.js
-
-      - name: Run codecov
-        if: matrix.node == '22.x'
-        uses: codecov/codecov-action@v3
-        with:
-          directory: ./coverage
 
       - name: Upload test results to Codecov
         if: matrix.node == '22.x' && ${{ !cancelled() }}
