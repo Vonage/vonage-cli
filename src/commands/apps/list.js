@@ -48,10 +48,10 @@ const matchCapability = (app, [operation, capabilities]) => {
   const appCapabilities = getAppCapabilities(app);
 
   switch (operation) {
-  case 'eq':
-    return capabilities.some((capability) => appCapabilities.includes(capability));
-  case 'and':
-    return capabilities.every((capability) => appCapabilities.includes(capability))
+    case 'eq':
+      return capabilities.some((capability) => appCapabilities.includes(capability));
+    case 'and':
+      return capabilities.every((capability) => appCapabilities.includes(capability))
         && capabilities.length === appCapabilities.length;
   }
 };

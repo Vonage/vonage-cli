@@ -143,25 +143,25 @@ export const select = async (
 
   const pressKey = (key) => {
     switch (key.name) {
-    case 'k':
-    case 'up':
-      toggleHighlight(getSelectedItem());
-      selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : 0;
-      toggleHighlight(getSelectedItem());
-      break;
+      case 'k':
+      case 'up':
+        toggleHighlight(getSelectedItem());
+        selectedIndex = selectedIndex > 0 ? selectedIndex - 1 : 0;
+        toggleHighlight(getSelectedItem());
+        break;
 
-    case 'j':
-    case 'down':
-      toggleHighlight(getSelectedItem());
-      selectedIndex = selectedIndex < items.length - 1
-        ? selectedIndex + 1
-        : items.length - 1;
-      toggleHighlight(getSelectedItem());
-      break;
+      case 'j':
+      case 'down':
+        toggleHighlight(getSelectedItem());
+        selectedIndex = selectedIndex < items.length - 1
+          ? selectedIndex + 1
+          : items.length - 1;
+        toggleHighlight(getSelectedItem());
+        break;
 
-    case 'space':
-      !multiple && resetSelected();
-      toggleSelected(getSelectedItem());
+      case 'space':
+        !multiple && resetSelected();
+        toggleSelected(getSelectedItem());
     }
 
     if (key.sequence === '?') {

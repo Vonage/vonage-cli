@@ -18,21 +18,21 @@ const descriptionDetail = (value, term, options) => {
   const varType = Array.isArray(value) ? 'array' : typeof value;
 
   switch (varType) {
-  case 'bigint':
+    case 'bigint':
     // falls through
-  case 'number':
-    return detailFormatter(value.toString(), term, options);
+    case 'number':
+      return detailFormatter(value.toString(), term, options);
 
-  case 'array':
-    return describeArray(value, options);
+    case 'array':
+      return describeArray(value, options);
 
-  case 'object':
-    return describeObject(value, options);
+    case 'object':
+      return describeObject(value, options);
 
-  case 'string':
+    case 'string':
     // falls through
-  default:
-    return detailFormatter(value, term, options);
+    default:
+      return detailFormatter(value, term, options);
   }
 };
 
@@ -72,20 +72,20 @@ const describeObject = (data, options) => [
 
       const varType = Array.isArray(detail) ? 'array' : typeof detail;
       switch (varType) {
-      case 'object':
-        return `${indentTerm(term, options)}: ${describeObject(
-          detail,
-          increaseIndent(options),
-        )}`;
+        case 'object':
+          return `${indentTerm(term, options)}: ${describeObject(
+            detail,
+            increaseIndent(options),
+          )}`;
 
-      case 'array':
-        return `${indentTerm(term, options)}: ${describeArray(
-          detail,
-          increaseIndent(options),
-        )}`;
+        case 'array':
+          return `${indentTerm(term, options)}: ${describeArray(
+            detail,
+            increaseIndent(options),
+          )}`;
 
-      default:
-        return `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`;
+        default:
+          return `${indentTerm(term, options)}: ${descriptionDetail(detail, term, options)}`;
       }
     }).join(EOL),
   EOL,
@@ -110,20 +110,20 @@ const describeArray = (data, options) => [
 
       const varType = Array.isArray(detail) ? 'array' : typeof detail;
       switch (varType) {
-      case 'object':
-        return `${indentTerm('', options)}${describeObject(
-          detail,
-          increaseIndent(options),
-        )}`;
+        case 'object':
+          return `${indentTerm('', options)}${describeObject(
+            detail,
+            increaseIndent(options),
+          )}`;
 
-      case 'array':
-        return `${indentTerm('', options)}${describeArray(
-          detail,
-          increaseIndent(options),
-        )}`;
+        case 'array':
+          return `${indentTerm('', options)}${describeArray(
+            detail,
+            increaseIndent(options),
+          )}`;
 
-      default:
-        return `${indentTerm('', options)}${descriptionDetail(detail, '', options)}`;
+        default:
+          return `${indentTerm('', options)}${descriptionDetail(detail, '', options)}`;
       }
     }).join(EOL),
   EOL,
@@ -141,12 +141,12 @@ const defaults = {
     const type = Array.isArray(val) ? 'array' : typeof val;
 
     switch (type) {
-    case 'number':
-    case 'bigint':
-      return chalk.dim(String(val));
-    case 'string':
-    default:
-      return chalk.blue(val);
+      case 'number':
+      case 'bigint':
+        return chalk.dim(String(val));
+      case 'string':
+      default:
+        return chalk.blue(val);
     }
   },
   padding: 2,

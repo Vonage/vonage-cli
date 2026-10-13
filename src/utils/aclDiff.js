@@ -56,15 +56,15 @@ const processPathMethodsAndFilters = (diff, acc, path) => {
   acc.paths[path].methodsStatus = methodsStatus;
 
   switch (true) {
-  case methodsStatus === status.OK && filtersStatus === status.MISSING:
-    acc.paths[path].state = status.PASS;
-    break;
+    case methodsStatus === status.OK && filtersStatus === status.MISSING:
+      acc.paths[path].state = status.PASS;
+      break;
 
-  case methodsStatus !== status.OK:
-  case filtersStatus !== status.OK && filtersStatus !== status.MISSING:
-  case filtersStatus === status.MISMATCH:
-    acc.paths[path].state = status.INVALID;
-    acc.ok = false;
+    case methodsStatus !== status.OK:
+    case filtersStatus !== status.OK && filtersStatus !== status.MISSING:
+    case filtersStatus === status.MISMATCH:
+      acc.paths[path].state = status.INVALID;
+      acc.ok = false;
   }
 };
 

@@ -146,22 +146,22 @@ const inputFromTTY = (
   // Signal Handles control signals. This will exit and kill
   const handleSignal = (signal) => {
     switch (signal) {
-    case 'SIGINT':
-      cleanup();
-      // eslint-disable-next-line n/no-process-exit
-      process.exit(130);
-      break;
+      case 'SIGINT':
+        cleanup();
+        // eslint-disable-next-line n/no-process-exit
+        process.exit(130);
+        break;
 
-    case 'SIGQUIT':
-      cleanup();
-      // eslint-disable-next-line n/no-process-exit
-      process.exit(131);
-      break;
+      case 'SIGQUIT':
+        cleanup();
+        // eslint-disable-next-line n/no-process-exit
+        process.exit(131);
+        break;
 
-    case 'SIGTSTP':
-      cleanup();
-      process.kill(process.pid, 'SIGTSTP'); // Allow OS to suspend the process
-      break;
+      case 'SIGTSTP':
+        cleanup();
+        process.kill(process.pid, 'SIGTSTP'); // Allow OS to suspend the process
+        break;
     }
   };
 

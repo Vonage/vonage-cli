@@ -26,15 +26,15 @@ const stateChars = {
 const dumpStatus = (pathStatus) => {
   switch (pathStatus) {
   // Methods or filters *should* never be invalid
-  case status.INVALID:
-  case status.MISMATCH:
-    return 'mismatch';
-  case status.MISSING:
-    return 'missing in token';
-  case status.PRESENT:
-    return 'present in token';
-  default:
-    return '';
+    case status.INVALID:
+    case status.MISMATCH:
+      return 'mismatch';
+    case status.MISSING:
+      return 'missing in token';
+    case status.PRESENT:
+      return 'present in token';
+    default:
+      return '';
   }
 };
 

@@ -78,12 +78,12 @@ export const handler = async (argv) => {
   } catch (error) {
     console.debug(error.name);
     switch (error.name) {
-    case 'UserDeclinedError':
-      overwriteWithNewLine('Saving private key ... User declined');
-      break;
-    default:
-      overwriteWithNewLine('Saving private key ... Failed');
-      console.error('Error saving private key:', error);
+      case 'UserDeclinedError':
+        overwriteWithNewLine('Saving private key ... User declined');
+        break;
+      default:
+        overwriteWithNewLine('Saving private key ... Failed');
+        console.error('Error saving private key:', error);
     }
   }
 

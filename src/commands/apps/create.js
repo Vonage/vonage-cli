@@ -90,12 +90,12 @@ export const handler = async (argv) => {
     dumpPrivateKey = true;
     console.debug(error.name);
     switch (error.name) {
-    case 'UserDeclinedError':
-      process.stderr.write('\rSaving private key ... User declined\n');
-      break;
-    default:
-      process.stderr.write('\rSaving private key ... Failed\n');
-      console.error('Error saving private key:', error);
+      case 'UserDeclinedError':
+        process.stderr.write('\rSaving private key ... User declined\n');
+        break;
+      default:
+        process.stderr.write('\rSaving private key ... Failed\n');
+        console.error('Error saving private key:', error);
     }
   }
 

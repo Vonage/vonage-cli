@@ -46,68 +46,68 @@ const memberChannel = (channel) =>  {
   };
 
   switch (channel?.type) {
-  case 'app':
-    Object.assign(
-      memberChannel,
-      {
-        'Can message user': channel?.to?.user,
-      },
-    );
-    break;
+    case 'app':
+      Object.assign(
+        memberChannel,
+        {
+          'Can message user': channel?.to?.user,
+        },
+      );
+      break;
 
-  case 'phone':
-    Object.assign(
-      memberChannel,
-      {
-        'Can call': channel?.to?.number,
-      },
-    );
-    break;
+    case 'phone':
+      Object.assign(
+        memberChannel,
+        {
+          'Can call': channel?.to?.number,
+        },
+      );
+      break;
 
-  case 'sms':
-    Object.assign(
-      memberChannel,
-      {
-        'Can send SMS messages to': channel?.to?.number,
-      },
-    );
-    break;
+    case 'sms':
+      Object.assign(
+        memberChannel,
+        {
+          'Can send SMS messages to': channel?.to?.number,
+        },
+      );
+      break;
 
-  case 'mms':
-    Object.assign(
-      memberChannel,
-      {
-        'Can send MMS messages to': channel?.to?.number,
-      },
-    );
-    break;
+    case 'mms':
+      Object.assign(
+        memberChannel,
+        {
+          'Can send MMS messages to': channel?.to?.number,
+        },
+      );
+      break;
 
-  case 'whatsapp':
-    Object.assign(
-      memberChannel,
-      {
-        'Can send WhatsApp messages to': channel?.to?.number,
-      },
-    );
-    break;
+    case 'whatsapp':
+      Object.assign(
+        memberChannel,
+        {
+          'Can send WhatsApp messages to': channel?.to?.number,
+        },
+      );
+      break;
 
-  case 'viber':
-    Object.assign(
-      memberChannel,
-      {
-        'Can send Viber messages to': channel?.to?.id,
-      },
-    );
-    break;
+    case 'viber':
+      Object.assign(
+        memberChannel,
+        {
+          'Can send Viber messages to': channel?.to?.id,
+        },
+      );
+      break;
 
-  case 'messenger':
-    Object.assign(
-      memberChannel,
-      {
-        'Can send Messenger messages to': channel?.to?.id,
-      },
-    );
-    break;
+    case 'messenger':
+      Object.assign(
+        memberChannel,
+        {
+          'Can send Messenger messages to': channel?.to?.id,
+        },
+      );
+      break;
   }
 
   return memberChannel;

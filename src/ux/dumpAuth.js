@@ -16,19 +16,19 @@ export const dumpAuth = (config, noRedact=false) => {
   console.debug('privateKey', privateKey);
 
   switch(true) {
-  case noRedact === true:
-    privateKey = dumpConfig.privateKey;
-    break;
+    case noRedact === true:
+      privateKey = dumpConfig.privateKey;
+      break;
 
-  case privateKey === null:
-    privateKey = null;
-    break;
+    case privateKey === null:
+      privateKey = null;
+      break;
 
-  default:
-    privateKey = dumpConfig.privateKey.startsWith('-----BEGIN PRIVATE KEY-----')
-      ? 'Is Set'
-      : 'INVALID KEY';
-    break;
+    default:
+      privateKey = dumpConfig.privateKey.startsWith('-----BEGIN PRIVATE KEY-----')
+        ? 'Is Set'
+        : 'INVALID KEY';
+      break;
   }
 
   const output = {};
