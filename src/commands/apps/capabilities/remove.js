@@ -26,6 +26,7 @@ export const builder = (yargs) => yargs
     {
       describe: 'Capability to remove',
       choices: capabilities,
+      demandOption: true
     },
   )
   .positional(
@@ -33,6 +34,7 @@ export const builder = (yargs) => yargs
     {
       type: 'string',
       describe: 'The application ID',
+      demandOption: true
     },
   );
 /* node:coverage enable */

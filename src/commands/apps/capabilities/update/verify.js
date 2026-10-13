@@ -37,10 +37,10 @@ export const handler = async (argv) => {
     'Fetching Application',
     id,
   );
+
   console.debug(`Loaded application ${app.name} (${app.id})`);
 
   updateVerify(app, argv);
-
 
   await makeSDKCall(
     SDK.applications.updateApplication.bind(SDK.applications),
