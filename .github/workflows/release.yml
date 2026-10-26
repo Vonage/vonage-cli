@@ -5,12 +5,12 @@ on:
     branches:
       - main
 
-#  workflow_dispatch:
-#    inputs:
-#      version:
-#        description: Exact version to publish (for example, 3.31.0)
-#        required: true
-#        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact version to publish (for example, 3.31.0)
+        required: true
+        type: string
 
 permissions:
   id-token: write
