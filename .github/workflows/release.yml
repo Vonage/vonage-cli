@@ -14,7 +14,7 @@ on:
 
 permissions:
   id-token: write
-  contents: write
+  contents: read
 
 jobs:
   publish:
@@ -28,4 +28,4 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false # never use caching in release builds
       - run: npm install --ignore-scripts
-      - run: npm publish # Or: npm stage publish
+      - run: npm publish --no-provenance
