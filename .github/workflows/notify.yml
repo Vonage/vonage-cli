@@ -9,34 +9,17 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN_COMMIT }}
 
 jobs:
-  publish-to-npm:
-    runs-on: ubuntu-latest
-    name: Update Release
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-        with:
-          ref: '3.x'
-          fetch-depth: 0
-
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-
-      - name: Publish to NPM
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
   notify-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     name: Notify Release
     strategy:
       matrix:
-        url: [SLACK_WEBHOOK_ASK_DEVREL_URL, SLACK_WEBHOOK_DEVREL_TOOLING_URL, SLACK_WEBHOOK_DEVREL_PRIVATE_URL]
+        url:
+          [
+            SLACK_WEBHOOK_ASK_DEVREL_URL,
+            SLACK_WEBHOOK_DEVREL_TOOLING_URL,
+            SLACK_WEBHOOK_DEVREL_PRIVATE_URL,
+          ]
     steps:
       - name: Send to slack channles
         uses: slackapi/slack-github-action@v2.0.0

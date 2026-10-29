@@ -5,27 +5,55 @@ on:
     branches:
       - main
 
-  workflow_dispatch:
-    inputs:
-      version:
-        description: Exact version to publish (for example, 3.31.0)
-        required: true
-        type: string
-
 permissions:
   id-token: write
   contents: read
 
 jobs:
   publish:
+    if: ${{ startsWith(github.event.head_commit.message, 'release:') || startsWith(github.event.head_commit.message, 'release(') || startsWith(github.event.head_commit.message, 'release!:') || startsWith(github.event.head_commit.message, 'release!(') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repo
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v6
+      - name: Setup node
+        uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false # never use caching in release builds
-      - run: npm install --ignore-scripts
-      - run: npm publish --no-provenance
+
+      - name: Install NPM packages
+        run: npm install --ignore-scripts
+
+      - name: Publish to NPM without no-provenance
+        run: npm publish --no-provenance
+
+      - name: Create GitHub release
+        if: ${{ steps.release-version.outputs.should-release == 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.release-version.outputs.version }}
+          RELEASE_SHA: ${{ github.sha }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          node --input-type=module > release-payload.json <<'EOF'
+          const payload = {
+            tag_name: `v${process.env.RELEASE_VERSION}`,
+            target_commitish: process.env.RELEASE_SHA,
+            name: process.env.RELEASE_VERSION,
+            generate_release_notes: true,
+          };
+          process.stdout.write(JSON.stringify(payload));
+          EOF
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.github.com/repos/$REPOSITORY/releases" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --header "Content-Type: application/json" \
+            --data-binary @release-payload.json
