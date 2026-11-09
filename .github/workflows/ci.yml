@@ -1,55 +1,51 @@
 ---
-name: Vonage
+name: Lint and Test
 
 on:
-  push:
-  pull_request:
+  - push
+  - pull_request
+
+permissions: read-all
 
 jobs:
-  static:
-    name: Static Code Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22.x
-
-      - name: Install packages
-        run: npm ci --ignore-scripts
-
-      - name: Lint
-        run: npm run lint
-
   test:
     runs-on: ${{ matrix.os }}
     name: Test and build
+    timeout-minutes: 10
+
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-slim, windows-latest]
         node: [22.x, 24.x, 26.x]
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code for ${{ matrix.node }}
+        uses: actions/checkout@v7
 
       - name: Set up Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
 
+        # We have to install on all versions of node to ensure packages will
+        # support those versions
       - name: Install packages
-        run: npm i --ignore-scripts
+        run: npm install --ignore-scripts --no-audit
 
-      - name: Create coverage results directory
-        run: mkdir ./test-results
+      - parallel:
+          # We only want to audit third-party packages that will be puslished
+          # So we exclude auditing dev packages
+          - name: Audit packages
+            run: npm audit --omit=dev --workspaces
 
-      - name: Test
-        run: npm run test:coverage
+          - name: Unit testing
+            run: npm run test:coverage
 
-      - name: Upload test results to Codecov
-        uses: codecov/test-results-action@v1
-        with:
-          files: ./test-results/junit.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          - name: Checking typescript building
+            run: npm run build --workspaces
+
+          - name: Linting code
+            run: npm run lint
+
+      - name: Checking Node module support
+        run: npm run check:pkg --workspaces

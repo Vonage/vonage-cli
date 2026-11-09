@@ -1,0 +1,31 @@
+name: Publish to NPM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  publish-package:
+    if: ${{ startsWith(github.event.head_commit.message, 'chore(publish):') }}
+    name: Publish all packages to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+
+      - name: Install npm packages
+        run: npm install --ignore-scripts
+
+      - name: Publish Package
+        run: NPM_CONFIG_PROVENANCE=false npm publish

@@ -1,37 +1,39 @@
-name: Publish to NPM
+name: Create Github Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows:
+      - Publish to NPM
+    types:
+      - completed
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
-  publish:
-    if: ${{ startsWith(github.event.head_commit.message, 'release:') || startsWith(github.event.head_commit.message, 'release(') || startsWith(github.event.head_commit.message, 'release!:') || startsWith(github.event.head_commit.message, 'release!(') }}
+  publish-package:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Setup node
+      - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "22.x"
           registry-url: "https://registry.npmjs.org"
-          package-manager-cache: false # never use caching in release builds
+          package-manager-cache: false
 
-      - name: Install NPM packages
+      - name: Install npm packages
         run: npm install --ignore-scripts
 
-      - name: Publish to NPM without no-provenance
-        run: npm publish --no-provenance
+      - name: Build packages
+        run: npm run build --workspaces
 
       - name: Create GitHub release
-        if: ${{ steps.release-version.outputs.should-release == 'true' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -57,3 +59,4 @@ jobs:
             --header "X-GitHub-Api-Version: 2022-11-28" \
             --header "Content-Type: application/json" \
             --data-binary @release-payload.json
+
