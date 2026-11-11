@@ -27,6 +27,7 @@ export const builder = (yargs) => yargs
     'msisdn',
     {
       describe: 'The number to link to the application',
+      type: 'string',
     },
   )
   .options({
@@ -43,7 +44,9 @@ export const builder = (yargs) => yargs
 
 export const handler = async (argv) => {
   const { id, SDK, msisdn } = argv;
-  console.info(`Linking number ${msisdn} to application ${id}`);
+  // Really force the number to be a string
+  const requestedMsisdn = String(msisdn);
+  console.info(`Linking number ${requestedMsisdn} to application ${id}`);
 
   const app = await makeSDKCall(
     SDK.applications.getApplication.bind(SDK.applications),
@@ -54,11 +57,13 @@ export const handler = async (argv) => {
   const numbers = await loadOwnedNumbersFromSDK(
     SDK,
     {
-      msisdn: msisdn,
+      msisdn: requestedMsisdn,
     },
   );
 
-  const number = numbers.numbers[0];
+  const number = (numbers.numbers || []).find(
+    (ownedNumber) => ownedNumber.msisdn === requestedMsisdn,
+  );
 
   if (!number) {
     console.error('Number not found');
@@ -91,25 +96,59 @@ export const handler = async (argv) => {
 
   console.info('Linking number to application');
 
-  number.appId = id;
-  await makeSDKCall(
+  const updateResult = await makeSDKCall(
     SDK.numbers.updateNumber.bind(SDK.numbers),
     'Linking number',
-    number,
+    {
+      ...number,
+      appId: id,
+    },
   );
 
+  if (!updateResult) {
+    // Sometimes yargs.exit wont bail in time while it waits for promises to
+    // resolved. This is new behavior
+    y.exit(99);
+    return;
+  }
+
+  if (updateResult.errorCode !== '200') {
+    console.error(updateResult.errorCodeLabel || 'Unable to link number');
+    y.exit(99);
+    return;
+  }
+
+  const linkedNumbers = await loadOwnedNumbersFromSDK(
+    SDK,
+    {
+      appId: id,
+      msisdn: requestedMsisdn,
+      size: 100,
+      all: true,
+    },
+  );
+  const linkedNumber = (linkedNumbers.numbers || []).find(
+    (ownedNumber) => ownedNumber.msisdn === requestedMsisdn && ownedNumber.appId === id,
+  );
+
+  if (!linkedNumber) {
+    console.error('Number was not linked to the application');
+    y.exit(99);
+    return;
+  }
+
   if (argv.json) {
-    console.log(JSON.stringify(number, null, 2));
+    console.log(JSON.stringify(linkedNumber, null, 2));
     return;
   }
 
   if (argv.yaml) {
-    console.log(YAML.stringify(number, null, 2));
+    console.log(YAML.stringify(linkedNumber, null, 2));
     return;
   }
 
   console.log('');
   console.log('Number linked');
-  console.log(descriptionList(displayFullNumber(number)));
+  console.log(descriptionList(displayFullNumber(linkedNumber)));
   return;
 };
