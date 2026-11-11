@@ -12,13 +12,10 @@ const confirmMock = mock.fn();
 const exitMock = mock.fn();
 const yargs = mock.fn(() => ({ exit: exitMock }));
 
-
-
-
-
 test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
   ctx.mock.module('../../../../src/ux/confirm.js', { namedExports: { confirm: confirmMock } });
   ctx.mock.module('yargs', { defaultExport: yargs });
+
   const { handler } = await import('../../../../src/commands/apps/numbers/link.js');
   ctx.beforeEach(() => {
     mockConsole();
@@ -36,10 +33,17 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = mock.fn(() => Promise.resolve(app));
-    const numbersMock = mock.fn(() => Promise.resolve({
-      count: 1,
-      numbers: [numberNine],
-    }));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [{
+          ...numberNine,
+          ...(numbersCallCount > 1 ? { appId: app.id } : {}),
+        }],
+      });
+    });
 
     const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
 
@@ -60,11 +64,36 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
     });
 
     assert.deepStrictEqual(appMock.mock.calls[0].arguments, [app.id]);
-    assert.deepStrictEqual(JSON.parse(JSON.stringify(numbersMock.mock.calls[0].arguments)), JSON.parse(JSON.stringify([{
-      pattern: numberNine.msisdn,
-      index: 1,
-      size: 100,
-    }])));
+
+    // Use JSON to compare as it removes undeinfed values
+    assert.deepStrictEqual(
+      JSON.parse(
+        JSON.stringify(numbersMock.mock.calls[0].arguments),
+      ),
+      JSON.parse(
+        JSON.stringify([{
+          pattern: numberNine.msisdn,
+          index: 1,
+          size: 100,
+        }]
+        )
+      )
+    );
+    assert.strictEqual(numbersMock.mock.callCount(), 2);
+
+    assert.deepStrictEqual(
+      JSON.parse(
+        JSON.stringify(numbersMock.mock.calls[1].arguments)
+      ),
+      JSON.parse(
+        JSON.stringify([{
+          applicationId: app.id,
+          pattern: numberNine.msisdn,
+          index: 1,
+          size: 100,
+        }])
+      ),
+    );
     assert.strictEqual(confirmMock.mock.callCount(), 0);
     assert.deepStrictEqual(updateMock.mock.calls[0].arguments, [{
       ...numberNine,
@@ -82,10 +111,17 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = mock.fn(() => Promise.resolve(app));
-    const numbersMock = mock.fn(() => Promise.resolve({
-      count: 1,
-      numbers: [numberNine],
-    }));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [{
+          ...numberNine,
+          ...(numbersCallCount > 1 ? { appId: app.id } : {}),
+        }],
+      });
+    });
 
     const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
 
@@ -130,10 +166,17 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
     const numberNine = getTestPhoneNumber();
 
     const appMock = mock.fn(() => Promise.resolve(app));
-    const numbersMock = mock.fn(() => Promise.resolve({
-      count: 1,
-      numbers: [numberNine],
-    }));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [{
+          ...numberNine,
+          ...(numbersCallCount > 1 ? { appId: app.id } : {}),
+        }],
+      });
+    });
 
     const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
 
@@ -179,15 +222,17 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
 
     const otherAppId = faker.string.uuid();
     const appMock = mock.fn(() => Promise.resolve(app));
-    const numbersMock = mock.fn(() => Promise.resolve({
-      count: 1,
-      numbers: [
-        {
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [{
           ...numberNine,
-          appId: otherAppId,
-        },
-      ],
-    }));
+          appId: numbersCallCount > 1 ? app.id : otherAppId,
+        }],
+      });
+    });
 
     const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
 
@@ -348,5 +393,231 @@ test('Command: vonage apps numbers link', { concurrency: 1 }, async (ctx) => {
     assert.strictEqual(confirmMock.mock.callCount(), 0);
     assert.strictEqual(updateMock.mock.callCount(), 0);
     assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [20]);
+  });
+
+  await ctx.test('Will match a numeric MSISDN against the exact owned number', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const targetNumber = {
+      ...getTestPhoneNumber(),
+      msisdn: '18334294643',
+    };
+    const otherNumber = {
+      ...getTestPhoneNumber(),
+      msisdn: '12089281193',
+    };
+
+    const appMock = mock.fn(() => Promise.resolve(app));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: numbersCallCount === 1 ? 2 : 1,
+        numbers: numbersCallCount === 1
+          ? [otherNumber, targetNumber]
+          : [{ ...targetNumber, appId: app.id }],
+      });
+    });
+
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: 18334294643,
+      SDK: sdkMock,
+    });
+
+    assert.strictEqual(numbersMock.mock.callCount(), 2);
+    assert.deepStrictEqual(updateMock.mock.calls[0].arguments, [{
+      ...targetNumber,
+      appId: app.id,
+    }]);
+    assert.strictEqual(exitMock.mock.callCount(), 0);
+  });
+
+  await ctx.test('Will exit 99 when the link API returns an error response', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
+      count: 1,
+      numbers: [numberNine],
+    }));
+    const updateMock = mock.fn(() => Promise.resolve({
+      errorCode: '401',
+      errorCodeLabel: 'Number cannot be linked',
+    }));
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+    });
+
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [99]);
+    assert.strictEqual(numbersMock.mock.callCount(), 1);
+    assert.strictEqual(console.error.mock.calls.at(-1).arguments[0], 'Number cannot be linked');
+    assert.strictEqual(console.log.mock.calls.some(
+      (call) => call.arguments[0] === 'Number linked',
+    ), false);
+  });
+
+  await ctx.test('Will exit 99 when the update result is undefined', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+    const appMock = mock.fn(() => Promise.resolve(app));
+    const numbersMock = mock.fn(() => Promise.resolve({
+      count: 1,
+      numbers: [numberNine],
+    }));
+    const updateMock = mock.fn(() => Promise.resolve(undefined));
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+    });
+
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [99]);
+    assert.strictEqual(numbersMock.mock.callCount(), 1);
+  });
+
+  await ctx.test('Will exit 99 when the link is not present after update', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+    const appMock = mock.fn(() => Promise.resolve(app));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [numberNine],
+      });
+    });
+    const updateMock = mock.fn(() => Promise.resolve({ errorCode: '200' }));
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+    });
+
+    assert.strictEqual(numbersCallCount, 2);
+    assert.deepStrictEqual(exitMock.mock.calls[0].arguments, [99]);
+    assert.strictEqual(console.log.mock.calls.some(
+      (call) => call.arguments[0] === 'Number linked',
+    ), false);
+  });
+
+  await ctx.test('Will use the verified number when the SDK mutates update params', async () => {
+    const app = Client.transformers.camelCaseObjectKeys(
+      getBasicApplication(),
+      true,
+      true,
+    );
+
+    const numberNine = getTestPhoneNumber();
+    const appMock = mock.fn(() => Promise.resolve(app));
+    let numbersCallCount = 0;
+    const numbersMock = mock.fn(() => {
+      numbersCallCount++;
+      return Promise.resolve({
+        count: 1,
+        numbers: [
+          numbersCallCount === 1
+            ? numberNine
+            : { ...numberNine, appId: app.id },
+        ],
+      });
+    });
+
+    let submittedNumber;
+    const updateMock = mock.fn((params) => {
+      submittedNumber = params;
+      delete params.appId;
+      return Promise.resolve({ errorCode: '200' });
+    });
+
+    const sdkMock = {
+      applications: {
+        getApplication: appMock,
+      },
+      numbers: {
+        getOwnedNumbers: numbersMock,
+        updateNumber: updateMock,
+      },
+    };
+
+    await handler({
+      id: app.id,
+      msisdn: numberNine.msisdn,
+      SDK: sdkMock,
+      json: true,
+    });
+
+    assert.strictEqual(submittedNumber.appId, undefined);
+    assert.deepStrictEqual(JSON.parse(console.log.mock.calls[1].arguments[0]), {
+      ...numberNine,
+      appId: app.id,
+    });
   });
 });
