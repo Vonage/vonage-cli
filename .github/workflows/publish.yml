@@ -54,7 +54,7 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         run: |
           node --input-type=module > release-payload.json <<'EOF'
-          import data from './packages.json' with {type: 'json'}
+          import data from './package.json' with {type: 'json'}
 
           const payload = {
             tag_name: `v${data.version}`,
